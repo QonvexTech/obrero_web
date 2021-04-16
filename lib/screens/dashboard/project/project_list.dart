@@ -3,44 +3,22 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/screens/dashboard/project/project_add.dart';
-import 'package:uitemplate/screens/dashboard/project/project_details.dart';
 import 'package:uitemplate/services/project_service.dart';
+import 'package:uitemplate/widgets/headerList.dart';
 
 class ProjectList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ProjectProvider projectService = Provider.of<ProjectProvider>(context);
     return Container(
-      padding: EdgeInsets.all(10),
+      color: Palette.contentBackground,
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.chevron_left),
-              ),
-              Text("Page ${projectService.page}"),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.chevron_right),
-              ),
-              MaterialButton(
-                color: Palette.buttonsColor1,
-                padding: EdgeInsets.all(5),
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                            content: ProjectAdd(),
-                          ));
-                },
-                child: Row(
-                  children: [Icon(Icons.add), Text("Project")],
-                ),
-              )
-            ],
+          SizedBox(
+            height: MySpacer.medium,
+          ),
+          HeaderList(toPage: ProjectAdd(), title: "Project"),
+          SizedBox(
+            height: MySpacer.large,
           ),
           Expanded(
               child: Container(
@@ -48,6 +26,17 @@ class ProjectList extends StatelessWidget {
             children: [
               Consumer<ProjectProvider>(
                 builder: (context, data, child) {
+                  if (data.projects.length <= 0) {
+                    return Container(
+                        width: 200,
+                        height: 200,
+                        child: Column(
+                          children: [
+                            Icon(Icons.now_widgets),
+                            Text("No project Yet")
+                          ],
+                        ));
+                  }
                   return DataTable(
                       headingTextStyle: TextStyle(color: Colors.white),
                       headingRowColor:
@@ -63,24 +52,26 @@ class ProjectList extends StatelessWidget {
                         DataColumn(
                             label: Text('NOM DU SITE',
                                 style: TextStyle(fontWeight: FontWeight.bold))),
-                        // DataColumn(
-                        //     label: Text('CLIENT',
-                        //         style: TextStyle(fontWeight: FontWeight.bold))),
-                        // DataColumn(
-                        //     label: Text('COORDINATES',
-                        //         style: TextStyle(fontWeight: FontWeight.bold))),
-                        // DataColumn(
-                        //     label: Text('ADRESSE',
-                        //         style: TextStyle(fontWeight: FontWeight.bold))),
-                        // DataColumn(
-                        //     label: Text('PROJET STATUS',
-                        //         style: TextStyle(fontWeight: FontWeight.bold))),
-
+                        DataColumn(
+                            label: Text('OWNER',
+                                style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(
+                            label: Text('LOCATION',
+                                style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(
+                            label: Text('AREA SIZE',
+                                style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(
+                            label: Text('START DATE',
+                                style: TextStyle(fontWeight: FontWeight.bold))),
+                        DataColumn(
+                            label: Text('END DATE',
+                                style: TextStyle(fontWeight: FontWeight.bold))),
                         DataColumn(label: Container()),
                       ],
                       rows: [
                         for (ProjectModel project in data.projects)
-                          ...widgetRows(context, project.name!, data)
+                          ...widgetRows(context, data, project)
                       ]);
                 },
               )
@@ -92,27 +83,39 @@ class ProjectList extends StatelessWidget {
   }
 }
 
-List<DataRow> widgetRows(context, String name, ProjectProvider project) {
+List<DataRow> widgetRows(
+    context, ProjectProvider projectProvider, ProjectModel projectModel) {
   return [
     DataRow(
         onSelectChanged: (value) {
           print("selec");
-          print(value);
-          project.setProjectScreen(ProjectDetails());
+          // projectProvider.setProjectScreen(ProjectDetails());
         },
         cells: [
           DataCell(
-            Text(name),
+            Text(projectModel.name!),
           ),
-          // DataCell(Text(date.toString())),
-          // DataCell(Text(description.toString())),
-          // DataCell(Text("${coordinates[0]}${coordinates[1]}")),
-          // DataCell(Text(id.toString())),
+          DataCell(Text(projectModel.customerId!.toString())),
+          DataCell(Text(projectModel.coordinates.toString())),
+          DataCell(Text(projectModel.areaSize.toString())),
+          DataCell(Text(projectModel.startDate.toString())),
+          DataCell(Text(projectModel.endDate.toString())),
           DataCell(Row(
             children: [
-              Icon(
-                Icons.edit,
-                color: Palette.drawerColor,
+              IconButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                          backgroundColor: Palette.contentBackground,
+                          content: ProjectAdd(
+                            projectToEdit: projectModel,
+                          )));
+                },
+                icon: Icon(
+                  Icons.edit,
+                  color: Palette.drawerColor,
+                ),
               ),
               SizedBox(
                 width: 50,
@@ -120,7 +123,7 @@ List<DataRow> widgetRows(context, String name, ProjectProvider project) {
               IconButton(
                 onPressed: () {
                   print("pressdelete");
-                  // Provider.of<ProjectProvider>(context).removeProject();
+                  projectProvider.removeProject(id: projectModel.id!);
                 },
                 icon: Icon(
                   Icons.delete,

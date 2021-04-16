@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-class PaymentModel extends ChangeNotifier {
+class PaymentModel {
   int? id;
   int? customerId;
   int? status;

@@ -11,15 +11,16 @@ class CustomerModel {
   String? contactNumber;
   List? customerProjects;
   double? amount;
+  bool isSelected = false;
 
   CustomerModel(
       {this.id,
-      required this.fname,
-      required this.lname,
-      required this.email,
-      required this.adress,
-      required this.picture,
-      required this.contactNumber,
+      this.fname,
+      this.lname,
+      this.email,
+      this.adress,
+      this.picture,
+      this.contactNumber,
       this.customerProjects,
       this.amount,
       this.status});
@@ -48,6 +49,20 @@ class CustomerModel {
     data["status"] = this.status.toString();
     data["contact_number"] = this.contactNumber;
     data["projects"] = this.customerProjects.toString();
+    return data;
+  }
+
+  Map<String, dynamic> toEdit() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data["id"] = this.id.toString();
+    data["first_name"] = this.fname;
+    data["last_name"] = this.lname;
+    data["email"] = this.email;
+    data["address"] = this.adress;
+    // data["picture"] = this.picture;
+    // data["status"] = this.status.toString();
+    data["contact_number"] = this.contactNumber;
+    // data["projects"] = this.customerProjects.toString();
     return data;
   }
 

@@ -1,66 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/models/customer_model.dart';
-import 'package:uitemplate/screens/dashboard/customer/customer_add.dart';
+import 'package:uitemplate/models/employes_model.dart';
+import 'package:uitemplate/screens/dashboard/employee/employee_add.dart';
 import 'package:uitemplate/screens/dashboard/employee/employee_details.dart';
-import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
-import 'package:uitemplate/widgets/adding_button.dart';
-import 'package:uitemplate/widgets/searchBox.dart';
+import 'package:uitemplate/widgets/headerList.dart';
 
-class EmployeeList extends StatelessWidget {
+class EmployeeList extends StatefulWidget {
+  @override
+  _EmployeeListState createState() => _EmployeeListState();
+}
+
+class _EmployeeListState extends State<EmployeeList> {
   @override
   Widget build(BuildContext context) {
-    CustomerService customerService = Provider.of<CustomerService>(context);
     EmployeeSevice employeeService = Provider.of<EmployeeSevice>(context);
     return Container(
       color: Palette.contentBackground,
       child: Column(
         children: [
           SizedBox(
-            height: MySpacer.large,
+            height: MySpacer.medium,
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "Clients",
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-                Container(width: 300, child: SearchBox()),
-                Icon(Icons.filter_list),
-                Expanded(child: Container()),
-
-                // IconButton(
-                //   onPressed: () {},
-                //   icon: const Icon(Icons.chevron_left),
-                // ),
-                // Text("Page ${customerService.page}"),
-                // IconButton(
-                //   onPressed: () {},
-                //   icon: const Icon(Icons.chevron_right),
-                // ),
-                AddingButton(
-                  addingPage: CustomerAdd(),
-                  buttonText: "Créer",
-                )
-              ],
-            ),
-          ),
+          HeaderList(toPage: EmployeeAdd(), title: "Employee"),
           SizedBox(
             height: MySpacer.large,
           ),
           Expanded(
-              child: customerService.customers.length <= 0
+              child: employeeService.users.length <= 0
                   ? Center(
                       child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.now_widgets),
-                        Text("No clients Yet")
+                        Text("No Employees Yet")
                       ],
                     ))
                   : Container(
@@ -93,63 +67,69 @@ class EmployeeList extends StatelessWidget {
                                 label: Text('ADDRESSE',
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold))),
-                            DataColumn(
-                                label: Text('PROJET STATUS',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold))),
+                            DataColumn(label: Container()),
                             DataColumn(label: Container()),
                           ],
                           rows: [
-                            // for (CustomerModel customer in customerService.customers)
-                            ...widgetRows(customerService, employeeService)
+                            for (EmployeesModel user in employeeService.users)
+                              DataRow(
+                                  selected: user.isSelected,
+                                  onSelectChanged: (value) {
+                                    setState(() {
+                                      user.isSelected = value!;
+                                    });
+                                  },
+                                  cells: [
+                                    DataCell(
+                                        Text("${user.fname!} ${user.lname!}")),
+                                    DataCell(Text(user.email!)),
+                                    DataCell(Text(user.contactNumber!)),
+                                    DataCell(Text(user.address!)),
+                                    DataCell(TextButton(
+                                        onPressed: () {
+                                          employeeService.setActivePageScreen(
+                                              EmployeeDetails());
+                                        },
+                                        child: Text("Details"))),
+                                    DataCell(Row(
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                    backgroundColor: Palette
+                                                        .contentBackground,
+                                                    content: EmployeeAdd(
+                                                      userToEdit: user,
+                                                    )));
+                                          },
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color: Palette.drawerColor,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 50,
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            print(user.id);
+                                            employeeService.removeUser(
+                                                id: user.id!);
+                                          },
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: Palette.drawerColor,
+                                          ),
+                                        )
+                                      ],
+                                    ))
+                                  ])
                           ]))),
+          //ROW PAGEr
         ],
       ),
     );
   }
-}
-
-List<DataRow> widgetRows(
-    CustomerService customerService, EmployeeSevice employeeSevice) {
-  return [
-    for (CustomerModel customer in customerService.customers)
-      DataRow(
-          // selected: isSelected,
-          onSelectChanged: (value) {
-            employeeSevice.setActivePageScreen(EmployeeDetails());
-          },
-          cells: [
-            DataCell(Text(customer.fname!)),
-            DataCell(Text(customer.email!)),
-            DataCell(Text(customer.contactNumber!)),
-            DataCell(Text(customer.adress!)),
-            DataCell(Text(
-              customer.status!.status == 1 ? "Terminate" : "En cours",
-              style: TextStyle(
-                  color: customer.status!.status == 1
-                      ? Colors.green
-                      : Colors.orange),
-            )),
-            DataCell(Row(
-              children: [
-                Icon(
-                  Icons.edit,
-                  color: Palette.drawerColor,
-                ),
-                SizedBox(
-                  width: 50,
-                ),
-                IconButton(
-                  onPressed: () {
-                    customerService.removeCustomer(customer.id!);
-                  },
-                  icon: Icon(
-                    Icons.delete,
-                    color: Palette.drawerColor,
-                  ),
-                )
-              ],
-            ))
-          ])
-  ];
 }

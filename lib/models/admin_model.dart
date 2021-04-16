@@ -1,5 +1,6 @@
 class Admin {
   int? id;
+  String? token;
   String? firstName;
   String? lastName;
   String? contacNumber;
@@ -11,6 +12,7 @@ class Admin {
 
   Admin(
       {this.id,
+      this.token,
       this.firstName,
       this.lastName,
       this.contacNumber,
@@ -21,6 +23,7 @@ class Admin {
       this.updatedAt});
 
   Admin.fromJson(Map<String, dynamic> json) {
+    this.token = json["token"];
     this.id = json["details"]["id"];
     this.firstName = json["details"]["first_name"];
     this.lastName = json["details"]["last_name"];

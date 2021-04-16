@@ -1,3 +1,4 @@
+import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -8,130 +9,81 @@ class LogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // EmployeeSevice customerService = Provider.of<EmployeeSevice>(context);
-    return Container(
-      child: Row(
-        children: [
-          Expanded(
-              flex: 2,
-              child: Container(
-                color: Palette.contentBackground,
-                padding: EdgeInsets.all(50),
+    return AdaptiveContainer(children: [
+      AdaptiveItem(
+          content: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Détails du"),
+            Text(
+              "LOG DE XYZ LE 24/10/20",
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            SizedBox(
+              height: MySpacer.large,
+            ),
+            Container(
+              color: Colors.red,
+              height: 150,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Heures Début",
+                            style: transHeader.copyWith(fontSize: 10),
+                          ),
+                          Text(
+                            "7:30",
+                            style: Theme.of(context).textTheme.headline3,
+                          ),
+                          Text(
+                            "AM",
+                            style: TextStyle(fontSize: 10),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 10),
+                      child: Column(
+                        children: [
+                          Text(
+                            "Heures Début",
+                            style: transHeader.copyWith(fontSize: 10),
+                          ),
+                          Text(
+                            "7:30",
+                            style: Theme.of(context).textTheme.headline3,
+                          ),
+                          Text(
+                            "AM",
+                            style: TextStyle(fontSize: 10),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              color: Colors.blue,
+              height: 300,
+              child: Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Détails du"),
-                    Text(
-                      "LOG DE XYZ LE 24/10/20",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 10),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Heures Début",
-                                  style: transHeader.copyWith(fontSize: 10),
-                                ),
-                                Text(
-                                  "7:30",
-                                  style: Theme.of(context).textTheme.headline3,
-                                ),
-                                Text(
-                                  "AM",
-                                  style: TextStyle(fontSize: 10),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Divider(
-                          thickness: 3,
-                          color: Colors.grey,
-                        ),
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 10),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Heures Début",
-                                  style: transHeader.copyWith(fontSize: 10),
-                                ),
-                                Text(
-                                  "7:30",
-                                  style: Theme.of(context).textTheme.headline3,
-                                ),
-                                Text(
-                                  "AM",
-                                  style: TextStyle(fontSize: 10),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Divider(
-                          thickness: 3,
-                          color: Colors.black,
-                        ),
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 10),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Heures Début",
-                                  style: transHeader.copyWith(fontSize: 10),
-                                ),
-                                Text(
-                                  "7:30",
-                                  style: Theme.of(context).textTheme.headline3,
-                                ),
-                                Text(
-                                  "AM",
-                                  style: TextStyle(fontSize: 10),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Divider(
-                          thickness: 3,
-                          color: Colors.black,
-                        ),
-                        Card(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 10),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Heures Début",
-                                  style: transHeader.copyWith(fontSize: 10),
-                                ),
-                                Text(
-                                  "7:30",
-                                  style: Theme.of(context).textTheme.headline3,
-                                ),
-                                Text(
-                                  "AM",
-                                  style: TextStyle(fontSize: 10),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
                     SizedBox(
                       height: MySpacer.large,
                     ),
@@ -147,84 +99,77 @@ class LogScreen extends StatelessWidget {
                     SizedBox(
                       height: MySpacer.large,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "DÉTAILS DU LOG",
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                      ],
+                    Text(
+                      "DÉTAILS DU LOG",
+                      style: Theme.of(context).textTheme.headline6,
                     ),
-                    SizedBox(
-                      height: MySpacer.small,
-                    ),
-                    Expanded(
-                      child: Container(
-                        child: ListView(
-                          children: [
-                            Card(
-                              child: ListTile(
-                                leading: Icon(Icons.notification_important),
-                                title: Row(
-                                  children: [
-                                    Text("Chantier"),
-                                    SizedBox(
-                                      width: MySpacer.small,
-                                    ),
-                                    Text("Avril")
-                                  ],
-                                ),
-                                subtitle: Text(
-                                    "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                              ),
-                            ),
-                            Card(
-                              child: ListTile(
-                                leading: Icon(Icons.notification_important),
-                                title: Row(
-                                  children: [
-                                    Text("Chantier"),
-                                    SizedBox(
-                                      width: MySpacer.small,
-                                    ),
-                                    Text("Avril")
-                                  ],
-                                ),
-                                subtitle: Text(
-                                    "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                              ),
-                            ),
-                            Card(
-                              child: ListTile(
-                                leading: Icon(Icons.notification_important),
-                                title: Row(
-                                  children: [
-                                    Text("Chantier"),
-                                    SizedBox(
-                                      width: MySpacer.small,
-                                    ),
-                                    Text("Avril")
-                                  ],
-                                ),
-                                subtitle: Text(
-                                    "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    )
                   ],
                 ),
-              )),
-          Expanded(
-              child: Container(
-            padding: EdgeInsets.all(50),
-            child: MapScreen(),
-          ))
-        ],
-      ),
-    );
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  Card(
+                    child: ListTile(
+                      leading: Icon(Icons.notification_important),
+                      title: Row(
+                        children: [
+                          Text("Chantier"),
+                          SizedBox(
+                            width: MySpacer.small,
+                          ),
+                          Text("Avril")
+                        ],
+                      ),
+                      subtitle: Text(
+                          "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: Icon(Icons.notification_important),
+                      title: Row(
+                        children: [
+                          Text("Chantier"),
+                          SizedBox(
+                            width: MySpacer.small,
+                          ),
+                          Text("Avril")
+                        ],
+                      ),
+                      subtitle: Text(
+                          "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: Icon(Icons.notification_important),
+                      title: Row(
+                        children: [
+                          Text("Chantier"),
+                          SizedBox(
+                            width: MySpacer.small,
+                          ),
+                          Text("Avril")
+                        ],
+                      ),
+                      subtitle: Text(
+                          "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      )),
+      AdaptiveItem(
+          content: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: MapScreen(),
+      ))
+    ]);
   }
 }

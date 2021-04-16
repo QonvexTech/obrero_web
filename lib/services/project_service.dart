@@ -4,11 +4,10 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/screens/dashboard/project/project_list.dart';
-import 'package:uitemplate/screens/dashboard/project/project_screen.dart';
+import 'package:uitemplate/services/autentication.dart';
 
 class ProjectProvider extends ChangeNotifier {
-  Widget projectScreen = ProjectList();
-
+  Widget activePageScreen = ProjectList();
   List<ProjectModel> _projects = [];
   double _latitude = 40.7143528;
   double _longitude = -74.0059731;
@@ -16,25 +15,33 @@ class ProjectProvider extends ChangeNotifier {
   int _perPage = 3;
   int _page = 1;
 
+  bool _isNext = false;
+  bool _isPrev = false;
+
+  get isNext => _isNext;
+  get isPrev => _isPrev;
+
+  void setPage(Widget page) {
+    activePageScreen = page;
+    notifyListeners();
+  }
+
+  void nextPage() {
+    _page += 1;
+    _isNext = false;
+    fetchProjects();
+  }
+
+  void prevPage() {
+    _page -= 1;
+    _isPrev = false;
+    fetchProjects();
+  }
+
   get projects => _projects;
   get latitude => _latitude;
   get longitude => _longitude;
   get page => _page;
-
-  setProjectScreen(Widget screen) {
-    projectScreen = screen;
-    notifyListeners();
-  }
-
-  set latitude(value) {
-    _latitude = value;
-    notifyListeners();
-  }
-
-  set longitude(value) {
-    _longitude = value;
-    notifyListeners();
-  }
 
   set page(value) {
     _page = value;
@@ -56,9 +63,21 @@ class ProjectProvider extends ChangeNotifier {
     var url = Uri.parse("$project_api$_perPage?page=$page");
     // final prefs = await SharedPreferences.getInstance();
     try {
-      var response = await http.get(url);
+      var response = await http.get(url, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer ${Authentication.token}",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
+        if (json.decode(response.body)["next_page_url"] != null) {
+          _isNext = true;
+          notifyListeners();
+        }
+        if (json.decode(response.body)["prev_page_url"] != null) {
+          _isPrev = true;
+          notifyListeners();
+        }
         fromJsonListToProject(data);
       } else {
         print(response.body);
@@ -68,13 +87,16 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  Future createProjects(ProjectModel newProject) async {
+  Future createProjects({required ProjectModel newProject}) async {
     var url = Uri.parse("$project_create_api");
-    // final prefs = await SharedPreferences.getInstance();
     try {
-      var response = await http.post(url, body: newProject.toJson());
+      var response = await http.post(url, body: newProject.toJson(), headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer ${Authentication.token}",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print("successfullt added");
+        fetchProjects();
       } else {
         print(response.body);
         print("fail to add");
@@ -84,17 +106,19 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  Future updateProject(
-      {required ProjectModel? newProject,
-      required ProjectModel? oldProject}) async {
-    var url = Uri.parse("$project_update_api/${oldProject!.id}");
+  Future updateProject({required ProjectModel? newProject}) async {
+    var url = Uri.parse("$project_update_api/${newProject!.id}");
 
     try {
-      await http
-          .put(url, headers: {"accept": "application/json"}).then((response) {
+      await http.put(url, body: newProject.toJson(), headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer ${Authentication.token}",
+        "Content-Type": "application/x-www-form-urlencoded"
+      }).then((response) {
         var data = json.decode(response.body);
-        oldProject = newProject;
+
         notifyListeners();
+
         print(data);
       });
     } catch (e) {
@@ -102,23 +126,26 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  Future removeProject(int id) async {
+  Future removeProject({required int id}) async {
     var url = Uri.parse("$project_delete_api/$id");
     try {
-      await http.delete(url, headers: {"accept": "application/json"}).then(
-          (response) {
+      await http.delete(url, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer ${Authentication.token}",
+        "Content-Type": "application/x-www-form-urlencoded"
+      }).then((response) {
         _projects.removeWhere((element) => element.id == id);
         notifyListeners();
+        if (_projects.length == 0) {
+          if (isPrev) {
+            prevPage();
+          }
+        }
         var data = json.decode(response.body);
         print(data);
       });
     } catch (e) {
       print(e);
     }
-  }
-
-  void addProject(ProjectModel project) {
-    _projects.add(project);
-    notifyListeners();
   }
 }

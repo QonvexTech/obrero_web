@@ -28,6 +28,11 @@ dependencies:
   google_maps_flutter_web: ^0.3.0
   location: ^4.1.1
   location_web: ^3.0.0
+  custom_info_window: ^1.0.0
+
+  adaptive_container:
+    git:
+      url: https://github.com/alnaughty/adaptive_container
 
   # Internet
   http: ^0.13.1
@@ -51,7 +56,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
   rxdart: ^0.25.0
-  firebase_messaging: ^9.0.0
+  firebase_messaging: ^9.1.1
   desktop_window: ^0.4.0
   simple_animations: ^1.3.3
 

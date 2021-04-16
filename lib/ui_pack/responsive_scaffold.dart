@@ -2,22 +2,24 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/services/push_notification.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/widgets/searchBox.dart';
 
 class ResponsiveScaffold extends StatefulWidget {
   final BuildContext? context;
   final Widget? title;
-  Color backgroundColor;
-  Color? drawerBackgroundColor;
+  final Color backgroundColor;
+  final Color? drawerBackgroundColor;
   final List<DrawerItem>? drawerItems;
-  Widget? body;
-  List<RemoteMessage>? notifications;
+  late Widget? body;
+  final List<RemoteMessage>? notifications;
 
-  OverlayState? overlayState;
+  final OverlayState? overlayState;
 
   ResponsiveScaffold(
       {this.context,
+      this.overlayState,
       this.title,
       this.drawerItems,
       this.body,
@@ -30,19 +32,23 @@ class ResponsiveScaffold extends StatefulWidget {
 }
 
 class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
+  void initializeFirebase() async {
+    await PushNotification().init();
+  }
+
   @override
   void initState() {
     init();
+    this.initializeFirebase();
     super.initState();
   }
 
-  void init() {
+  void init() async {
     if (widget.body == null) {
       widget.body = Container(
         color: Colors.white,
       );
     }
-
     if (mounted) {
       setState(() {
         showDrawerText = drawerWidth == maximumDrawerWidth;
@@ -134,6 +140,13 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
           drawerWidth = maximumDrawerWidth;
           showDrawerText = true;
         }
+      } else {
+        minimumDrawerWidth = 0;
+        if (_showDrawer) {
+          drawerWidth = minimumDrawerWidth;
+        }
+        _showDrawer = false;
+//          drawerWidth = maximumDrawerWidth;
       }
       return Scaffold(
         key: _key,
@@ -141,7 +154,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
             ? null
             : Drawer(
                 child: Container(
-                  color: Colors.white,
+                  color: Palette.drawerColor,
                   width: 500,
                   height: MediaQuery.of(context).size.height,
                   child: Column(
@@ -177,7 +190,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                             for (var item in widget.drawerItems!) ...{
                               Container(
                                 width: double.infinity,
-                                color: Palette.contentBackground,
+                                color: Palette.drawerColor,
                                 height: 60,
                                 child: MaterialButton(
                                   padding: const EdgeInsets.symmetric(
@@ -209,12 +222,18 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                     children: [
                                       Icon(
                                         item.icon,
+                                        color: Colors.white,
                                       ),
                                       const SizedBox(
                                         width: 10,
                                       ),
                                       Expanded(
-                                        child: Text("${item.text}"),
+                                        child: Text(
+                                          "${item.text}",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
                                       ),
                                       if ((item.subItems != null &&
                                           item.subItems!.length > 0)) ...{
@@ -226,7 +245,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                   ),
                                 ),
                               ),
-                              if ((item.subItems! != null &&
+                              if ((item.subItems != null &&
                                   item.subItems!.length > 0)) ...{
                                 for (var sub_items in item.subItems!) ...{
                                   AnimatedContainer(

@@ -11,19 +11,18 @@ class SearchBox extends StatelessWidget {
           color: Palette.contentBackground,
           borderRadius: BorderRadius.circular(
               MediaQuery.of(context).size.width > 900 ? 5 : 10000)),
-      width: MediaQuery.of(context).size.width > 900
-          ? MediaQuery.of(context).size.width / 3
-          : 40,
+      width: MediaQuery.of(context).size.width / 3,
       height: 40,
-      child: MediaQuery.of(context).size.width > 900
-          ? TextField(
-              decoration: InputDecoration(
-                  hintStyle: TextStyle(color: Colors.black12),
-                  prefixIcon: Icon(Icons.search),
-                  hintText: "Recherche",
-                  border: InputBorder.none),
-            )
-          : IconButton(icon: Icon(Icons.search), onPressed: () {}),
+      child: TextField(
+        decoration: InputDecoration(
+            hintStyle: TextStyle(color: Colors.black12),
+            prefixIcon: Icon(
+              Icons.search,
+              color: Palette.drawerColor,
+            ),
+            hintText: "Recherche",
+            border: InputBorder.none),
+      ),
     );
   }
 }

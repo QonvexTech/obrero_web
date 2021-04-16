@@ -5,9 +5,9 @@ import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/autentication.dart';
 
 class AdminProfile extends StatefulWidget {
-  final bool? showProfile;
-
-  const AdminProfile({Key? key, @required this.showProfile}) : super(key: key);
+  const AdminProfile({
+    Key? key,
+  }) : super(key: key);
   @override
   _AdminProfileState createState() => _AdminProfileState();
 }

@@ -7,14 +7,14 @@ import 'package:uitemplate/models/mapInfo_model.dart';
 
 class MapService extends ChangeNotifier {
   Location _location = Location();
+  String? coordinates;
   bool? _serviceEnabled;
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
 
-  //MAP
   bool _showInfoWindow = false;
   bool _tempHidden = false;
-  MapInfo? _info;
+  User? _user;
   double? _leftMargin;
   double? _topMargin;
 
@@ -22,12 +22,17 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateUser(MapInfo info) {
-    _info = info;
+  void updateUser(User user) {
+    _user = user;
   }
 
   void updateVisibility(bool visibility) {
     _showInfoWindow = visibility;
+  }
+
+  void setCoordinates(String value) {
+    coordinates = value;
+    notifyListeners();
   }
 
   void updateInfoWindow(
@@ -61,9 +66,7 @@ class MapService extends ChangeNotifier {
 
   double get topMargin => _topMargin!;
 
-  MapInfo get info => _info!;
-
-  LocationData get locationData => _locationData!;
+  User get user => _user!;
 
   checkLocationPermission() async {
     _serviceEnabled = await _location.serviceEnabled();
@@ -82,4 +85,20 @@ class MapService extends ChangeNotifier {
     }
     _locationData = await _location.getLocation();
   }
+}
+
+class User {
+  final int rating;
+  final String username;
+  final String name;
+  final String image;
+  final LatLng location;
+
+  User(
+    this.username,
+    this.name,
+    this.image,
+    this.location,
+    this.rating,
+  );
 }

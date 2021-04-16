@@ -2,25 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/models/admin_model.dart';
-import 'package:uitemplate/models/customer_model.dart';
-import 'package:uitemplate/services/autentication.dart';
-import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/models/employes_model.dart';
+import 'package:uitemplate/services/employee_service.dart';
 
-class CustomerAdd extends StatefulWidget {
-  final CustomerModel? customerToEdit;
-
-  const CustomerAdd({Key? key, this.customerToEdit}) : super(key: key);
+class EmployeeAdd extends StatefulWidget {
+  final EmployeesModel? userToEdit;
+  const EmployeeAdd({Key? key, this.userToEdit}) : super(key: key);
   @override
   _CustomerAddState createState() => _CustomerAddState();
 }
 
-class _CustomerAddState extends State<CustomerAdd> {
+class _CustomerAddState extends State<EmployeeAdd> {
   bool isEdit = false;
+  Map<String, dynamic> bodyToUpdate = {};
   //TODO: complete the fields
-  // String? adress;
   // String? picture;
-  // List? customerProjects;
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -29,17 +25,16 @@ class _CustomerAddState extends State<CustomerAdd> {
   // TextEditingController stateController = TextEditingController();
   // TextEditingController cityController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
-  TextEditingController amountController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
-    if (widget.customerToEdit != null) {
-      fnameController.text = widget.customerToEdit!.fname!;
-      lnameController.text = widget.customerToEdit!.lname!;
-      emailController.text = widget.customerToEdit!.email!;
-      addressController.text = widget.customerToEdit!.adress!;
-      contactNumberController.text = widget.customerToEdit!.contactNumber!;
-      amountController.text = widget.customerToEdit!.status!.amount!.toString();
+    if (widget.userToEdit != null) {
+      fnameController.text = widget.userToEdit!.fname!;
+      lnameController.text = widget.userToEdit!.lname!;
+      emailController.text = widget.userToEdit!.email!;
+      addressController.text = widget.userToEdit!.address!;
+      contactNumberController.text = widget.userToEdit!.contactNumber!;
       isEdit = true;
     }
     super.initState();
@@ -47,9 +42,10 @@ class _CustomerAddState extends State<CustomerAdd> {
 
   @override
   Widget build(BuildContext context) {
-    Admin admin = Provider.of<Authentication>(context, listen: false).data;
+    // Admin admin = Provider.of<Authentication>(context, listen: false).data;s
 
-    var customerService = Provider.of<CustomerService>(context, listen: false);
+    EmployeeSevice employeeService =
+        Provider.of<EmployeeSevice>(context, listen: false);
     final Size size = MediaQuery.of(context).size;
     return Container(
       width: size.width - (size.width * .5),
@@ -63,7 +59,7 @@ class _CustomerAddState extends State<CustomerAdd> {
                   child: ListView(
             children: [
               Text(
-                "Ajouter un Client",
+                "Ajouter un Employee",
                 style: Theme.of(context)
                     .textTheme
                     .headline5!
@@ -79,6 +75,9 @@ class _CustomerAddState extends State<CustomerAdd> {
                     border: OutlineInputBorder(),
                     hintStyle: transHeader),
                 controller: fnameController,
+                onChanged: (value) {
+                  bodyToUpdate.addAll({"first_name": value});
+                },
               ),
               SizedBox(
                 height: MySpacer.small,
@@ -90,6 +89,9 @@ class _CustomerAddState extends State<CustomerAdd> {
                   border: OutlineInputBorder(),
                 ),
                 controller: lnameController,
+                onChanged: (value) {
+                  bodyToUpdate.addAll({"last_name": value});
+                },
               ),
               SizedBox(
                 height: MySpacer.small,
@@ -100,7 +102,19 @@ class _CustomerAddState extends State<CustomerAdd> {
                   border: OutlineInputBorder(),
                 ),
                 controller: emailController,
+                onChanged: (value) {
+                  bodyToUpdate.addAll({"email": value});
+                },
               ),
+              isEdit
+                  ? SizedBox()
+                  : TextField(
+                      decoration: InputDecoration(
+                        hintText: "Password",
+                        border: OutlineInputBorder(),
+                      ),
+                      controller: passwordController,
+                    ),
               SizedBox(
                 height: MySpacer.small,
               ),
@@ -110,6 +124,9 @@ class _CustomerAddState extends State<CustomerAdd> {
                   border: OutlineInputBorder(),
                 ),
                 controller: contactNumberController,
+                onChanged: (value) {
+                  bodyToUpdate.addAll({"contact_number": value});
+                },
               ),
               SizedBox(
                 height: MySpacer.small,
@@ -120,20 +137,16 @@ class _CustomerAddState extends State<CustomerAdd> {
                   border: OutlineInputBorder(),
                 ),
                 controller: addressController,
+                onChanged: (value) {
+                  bodyToUpdate.addAll({"address": value});
+                },
               ),
               SizedBox(
                 height: MySpacer.small,
               ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Amount",
-                  border: OutlineInputBorder(),
-                ),
-                controller: amountController,
-              ),
+
               // Row(
               //   children: [
-
               //     SizedBox(
               //       width: MySpacer.large,
               //     ),
@@ -190,7 +203,6 @@ class _CustomerAddState extends State<CustomerAdd> {
               // ),
             ],
           ))),
-
           // const SizedBox(
           //   height: MySpacer.small,
           // ),
@@ -201,33 +213,32 @@ class _CustomerAddState extends State<CustomerAdd> {
             color: Palette.drawerColor,
             onPressed: () {
               if (isEdit) {
-                widget.customerToEdit!.fname = fnameController.text;
-                widget.customerToEdit!.lname = lnameController.text;
-                widget.customerToEdit!.email = emailController.text;
-                widget.customerToEdit!.adress = addressController.text;
-                widget.customerToEdit!.picture = "pic";
-                widget.customerToEdit!.contactNumber =
-                    contactNumberController.text;
-                widget.customerToEdit!.amount =
-                    double.parse(amountController.text);
-
-                customerService
-                    .updateCustomer(
-                      editCustomer: widget.customerToEdit!,
-                    )
-                    .whenComplete(() => Navigator.pop(context));
+                bodyToUpdate
+                    .addAll({"user_id": widget.userToEdit!.id.toString()});
+                print(bodyToUpdate);
+                employeeService.updateUser(body: bodyToUpdate).whenComplete(() {
+                  setState(() {
+                    widget.userToEdit!.fname = fnameController.text;
+                    widget.userToEdit!.lname = lnameController.text;
+                    widget.userToEdit!.email = emailController.text;
+                    widget.userToEdit!.address = addressController.text;
+                    widget.userToEdit!.contactNumber =
+                        contactNumberController.text;
+                  });
+                  Navigator.pop(context);
+                });
               } else {
-                CustomerModel newCustomer = CustomerModel(
-                    fname: fnameController.text,
-                    lname: lnameController.text,
-                    email: emailController.text,
-                    adress: addressController.text,
-                    picture: "pic",
-                    contactNumber: contactNumberController.text,
-                    amount: double.parse(amountController.text));
+                EmployeesModel newEmployee = EmployeesModel(
+                  fname: fnameController.text,
+                  lname: lnameController.text,
+                  email: emailController.text,
+                  password: passwordController.text,
+                  address: addressController.text,
+                  contactNumber: contactNumberController.text,
+                );
 
-                customerService
-                    .createCustomer(newCustomer: newCustomer)
+                employeeService
+                    .createUser(newEmployee)
                     .whenComplete(() => Navigator.pop(context));
               }
             },

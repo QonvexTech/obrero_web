@@ -26,7 +26,7 @@ class PushNotification extends ChangeNotifier {
     print('Handling a background message ${message.messageId}');
   }
 
-  Future<void> listen() async {
+  void listen() {
     // while open
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
@@ -42,6 +42,8 @@ class PushNotification extends ChangeNotifier {
     });
 
     //background
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+    print("HAS LISTENED");
   }
 
   Future<void> initialize() async {
@@ -69,6 +71,5 @@ class PushNotification extends ChangeNotifier {
     print("Token : ${await fcmToken}");
 
     this.initialize();
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   }
 }

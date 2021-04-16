@@ -11,15 +11,6 @@ class _ProjectState extends State<Project> {
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectService = Provider.of<ProjectProvider>(context);
-
-    if (projectService.projects.length <= 0) {
-      return Container(
-          width: 200,
-          height: 200,
-          child: Column(
-            children: [Icon(Icons.now_widgets), Text("No project Yet")],
-          ));
-    }
-    return projectService.projectScreen;
+    return projectService.activePageScreen;
   }
 }
