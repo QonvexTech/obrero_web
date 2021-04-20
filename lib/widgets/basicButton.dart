@@ -14,9 +14,9 @@ class BasicButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
         onPressed: this.onPressed == null
             ? null
-            : () {
-                this.onPressed!();
-              },
+            : (){
+          this.onPressed!();
+        },
         child: Text(
           buttonText!,
           style: TextStyle(color: Colors.white),

@@ -34,3 +34,4 @@ const String message_send_api = "$api/messaging/send";
 //TEXT STYLE
 const TextStyle transHeader = TextStyle(color: Colors.grey);
 const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);
+String? authToken;

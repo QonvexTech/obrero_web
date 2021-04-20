@@ -8,11 +8,14 @@ import 'package:http/http.dart' as http;
 import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/push_notification.dart';
 
+import '../config/global.dart';
+import '../models/employes_model.dart';
+
 class MessageService extends ChangeNotifier {
   List<EmployeesModel> _usersToMessage = [];
   TextEditingController messageController = TextEditingController();
 
-  get userToMessage => _usersToMessage;
+  List<EmployeesModel> get userToMessage => _usersToMessage;
 
   void messageUpdate() {
     notifyListeners();
@@ -33,21 +36,21 @@ class MessageService extends ChangeNotifier {
         "to": ids,
       };
       String mess = '';
-      // if (message != null) {
-      //   body['message'] = message;
-      //   mess = message;
-      // }
-      // if (base64File != null) {
-      //   body['file'] = base64File;
-      //   mess = "Sent an attachment";
-      // }
+      if (message != null) {
+        body['message'] = message;
+        mess = message;
+      }
+      if (base64File != null) {
+        body['file'] = base64File;
+        mess = "Sent an attachment";
+      }
       print(ids);
       print(auth.token);
       PushNotification notification = new PushNotification();
       var url = Uri.parse(message_send_api);
       await http.post(url, body: body, headers: {
         "accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer ${auth.token}"
+        HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) {
         var data = json.decode(response.body);
         print(data);

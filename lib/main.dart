@@ -22,6 +22,7 @@ import 'package:uitemplate/ui_pack/responsive_scaffold.dart';
 import 'config/pallete.dart';
 import 'screens/dashboard/messages/message_screen.dart';
 import 'screens/dashboard/project/project_screen.dart';
+import 'screens/splash_screen.dart';
 import 'services/map_service.dart';
 
 void main() async {
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
         accentColor: Palette.buttonsColor1,
         iconTheme: const IconThemeData(color: Colors.black),
       ),
-      initialRoute: '/splash',
+      home: SplashScreen(),
       routes: {
         '/splash': (context) => SplashScreen(),
         '/login': (context) => Login(),

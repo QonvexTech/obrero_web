@@ -7,6 +7,9 @@ import 'package:uitemplate/services/message_service.dart';
 import 'package:uitemplate/widgets/adding_button.dart';
 import 'package:uitemplate/widgets/basicButton.dart';
 
+import '../../../config/global.dart';
+import '../../../services/autentication.dart';
+
 class MessageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -68,16 +71,16 @@ class MessageScreen extends StatelessWidget {
                       height: MySpacer.small,
                     ),
                     BasicButton(
-                        onPressed: messageService.messageController.text.isEmpty
+                        onPressed: messageService.messageController.text.isEmpty || messageService.userToMessage.length == 0
                             ? null
                             : () {
-                                MessageService messageService =
-                                    new MessageService();
+
                                 List ids = messageService.userToMessage
                                     .map((element) => element.id)
                                     .toList();
                                 String strIds = ids.join(',');
                                 print(strIds);
+                                print(authToken);
                                 messageService.sendMessage(
                                     ids: strIds,
                                     message:

@@ -7,6 +7,8 @@ import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/push_notification.dart';
 
+import '../config/global.dart';
+
 class Authentication extends ChangeNotifier {
   Admin? _data;
   String? token;
@@ -33,6 +35,7 @@ class Authentication extends ChangeNotifier {
         DataCacher().saveCredentials(email, password);
         token = jsonDecode(response.body)['data']['token'];
         print("This is the TOken $token");
+        authToken = jsonDecode(response.body)['data']['token'];
         success = true;
         return success;
       } else {
