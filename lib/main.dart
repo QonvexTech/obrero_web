@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/screens/dashboard/customer/customer_screen.dart';
 import 'package:uitemplate/screens/dashboard/dashboard_screen.dart';
 import 'package:uitemplate/screens/dashboard/employee/employee_screen.dart';
@@ -14,8 +12,10 @@ import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/services/message_service.dart';
 import 'package:uitemplate/services/project_service.dart';
 import 'package:uitemplate/services/push_notification.dart';
+import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/ui_pack/children/sub_drawer_item.dart';
 import 'package:uitemplate/ui_pack/responsive_scaffold.dart';
@@ -34,7 +34,9 @@ void main() async {
     ChangeNotifierProvider(create: (_) => EmployeeSevice()),
     ChangeNotifierProvider(create: (_) => ProjectProvider()),
     ChangeNotifierProvider(create: (_) => MapService()),
+    ChangeNotifierProvider(create: (_) => PaginationService()),
     ChangeNotifierProvider(create: (_) => CustomerService()),
+    ChangeNotifierProvider(create: (_) => MessageService()),
   ], child: MyApp()));
 }
 
@@ -43,7 +45,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Obrero Admin',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         appBarTheme: const AppBarTheme(backgroundColor: Palette.background),
@@ -51,8 +53,6 @@ class MyApp extends StatelessWidget {
         primaryColor: Palette.drawerColor,
         accentColor: Palette.buttonsColor1,
         iconTheme: const IconThemeData(color: Colors.black),
-        // fontFamily: GoogleFonts.montserrat().fontFamily,
-        // textTheme: GoogleFonts.montserratTextTheme(),
       ),
       initialRoute: '/splash',
       routes: {
@@ -73,11 +73,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    // List<CustomerModel> customers =
-    //     Provider.of<CustomerService>(context).customers;
-    //
     try {
-      Provider.of<Authentication>(context).getLocalProfile();
       PushNotification pushNotify = Provider.of<PushNotification>(context);
       return ResponsiveScaffold(
           notifications: pushNotify.notifications,
@@ -107,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 content: EmployeeScreen()),
             DrawerItem(icon: Icons.list, text: "Logs", content: LogScreen()),
             DrawerItem(
-                icon: Icons.message, text: "Pushs", content: MassageScreen()),
+                icon: Icons.message, text: "Pushs", content: MessageScreen()),
             DrawerItem(
                 icon: Icons.settings,
                 text: "Préférences",

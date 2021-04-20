@@ -5,10 +5,12 @@ import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/screens/dashboard/project/project_add.dart';
 import 'package:uitemplate/services/project_service.dart';
 import 'package:uitemplate/widgets/headerList.dart';
+import 'package:uitemplate/widgets/tablePagination.dart';
 
 class ProjectList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -77,6 +79,12 @@ class ProjectList extends StatelessWidget {
               )
             ],
           ))),
+          TablePagination(
+            paginationModel: projectProvider.pagination,
+          ),
+          SizedBox(
+            height: MySpacer.large,
+          )
         ],
       ),
     );

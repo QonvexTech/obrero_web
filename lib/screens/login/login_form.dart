@@ -70,13 +70,6 @@ class _LoginFormState extends State<LoginForm> {
         }
       });
     }
-
-    // Timer(Duration(seconds: 2), () {
-    //   setState(() {
-    //     loader = false;
-    //     Navigator.pushReplacementNamed(context, "/home");
-    //   });
-    // });
   }
 
   @override

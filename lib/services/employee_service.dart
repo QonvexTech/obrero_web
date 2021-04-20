@@ -2,47 +2,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/employes_model.dart';
+import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/screens/dashboard/employee/employee_list.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/services/autentication.dart';
+import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 
 class EmployeeSevice extends ChangeNotifier {
   Widget activePageScreen = EmployeeList();
   List<EmployeesModel>? _users;
-  int _perPage = 10;
-  int _page = 1;
-  int? _lastPage;
+  PaginationService paginationService = PaginationService();
+  late PaginationModel _pagination =
+      PaginationModel(lastPage: 1, fetch: fetchUsers);
 
-  bool _isNext = false;
-  bool _isPrev = false;
-
-  get isNext => _isNext;
-  get isPrev => _isPrev;
-  get lastPage => _lastPage;
-  get page => _page;
+  get pagination => _pagination;
 
   void setPageScreen(Widget page) {
     activePageScreen = page;
     notifyListeners();
-  }
-
-  void setTablePage(int value) {
-    _isNext = false;
-    _isPrev = false;
-    _page = value;
-    fetchUsers();
-  }
-
-  void nextPage() {
-    _page += 1;
-    _isNext = false;
-    fetchUsers();
-  }
-
-  void prevPage() {
-    _page -= 1;
-    _isPrev = false;
-    fetchUsers();
   }
 
   setActivePageScreen(Widget newPage) {
@@ -62,25 +39,26 @@ class EmployeeSevice extends ChangeNotifier {
   }
 
   Future fetchUsers() async {
-    var url = Uri.parse("$user_api$_perPage?page=$_page");
+    var url =
+        Uri.parse("$user_api${_pagination.perPage}?page=${_pagination.page}");
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${Authentication.token}",
+        "Authorization": "Bearer ${auth.token}",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
         if (json.decode(response.body)["next_page_url"] != null) {
-          _isNext = true;
+          _pagination.isNext = true;
           notifyListeners();
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
-          _isPrev = true;
+          _pagination.isPrev = true;
           notifyListeners();
         }
         if (json.decode(response.body)["last_page"] != null) {
-          _lastPage = json.decode(response.body)["last_page"];
+          _pagination.lastPage = json.decode(response.body)["last_page"];
 
           notifyListeners();
         }
@@ -101,7 +79,7 @@ class EmployeeSevice extends ChangeNotifier {
         newEmployee.toJson()
       }, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${Authentication.token}",
+        "Authorization": "Bearer ${auth.token}",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -119,7 +97,7 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       await http.post(url, body: body, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer " + Authentication.token,
+        "Authorization": "Bearer ${auth.token}",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
@@ -138,18 +116,19 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       await http.delete(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${Authentication.token}",
+        "Authorization": "Bearer ${auth.token}",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
-        print(data);
+        // print(data);
         _users!.removeWhere((element) => element.id == id);
-        notifyListeners();
+
         if (_users!.length == 0) {
-          if (isPrev) {
-            prevPage();
+          if (_pagination.isPrev) {
+            paginationService.prevPage(_pagination);
           }
         }
+        notifyListeners();
       });
     } catch (e) {
       print(e);

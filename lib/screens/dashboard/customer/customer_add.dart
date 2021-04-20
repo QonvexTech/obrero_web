@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/models/customer_model.dart';
-import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/customer_service.dart';
 
 class CustomerAdd extends StatefulWidget {
@@ -17,17 +15,10 @@ class CustomerAdd extends StatefulWidget {
 
 class _CustomerAddState extends State<CustomerAdd> {
   bool isEdit = false;
-  //TODO: complete the fields
-  // String? adress;
-  // String? picture;
-  // List? customerProjects;
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  // TextEditingController countryController = TextEditingController();
-  // TextEditingController stateController = TextEditingController();
-  // TextEditingController cityController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
   TextEditingController amountController = TextEditingController();
 
@@ -47,8 +38,6 @@ class _CustomerAddState extends State<CustomerAdd> {
 
   @override
   Widget build(BuildContext context) {
-    Admin admin = Provider.of<Authentication>(context, listen: false).data;
-
     var customerService = Provider.of<CustomerService>(context, listen: false);
     final Size size = MediaQuery.of(context).size;
     return Container(
@@ -131,70 +120,8 @@ class _CustomerAddState extends State<CustomerAdd> {
                 ),
                 controller: amountController,
               ),
-              // Row(
-              //   children: [
-
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "State",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "City",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // SizedBox(
-              //   height: MySpacer.large,
-              // ),
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "Démarrer",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "Terminer",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ],
           ))),
-
-          // const SizedBox(
-          //   height: MySpacer.small,
-          // ),
-
           MaterialButton(
             height: 60,
             minWidth: double.infinity,
@@ -236,11 +163,6 @@ class _CustomerAddState extends State<CustomerAdd> {
               style: TextStyle(color: Colors.white),
             ),
           )
-
-          //TODO: dropdown client
-          //TODO: map or coordinates
-          // TODO: warnigs
-          // TODO:Start date/end
         ],
       )),
     );

@@ -16,7 +16,6 @@ class _AdminProfileState extends State<AdminProfile> {
   @override
   Widget build(BuildContext context) {
     var auth = Provider.of<Authentication>(context, listen: false);
-    auth.getLocalProfile();
     Admin admin = auth.data;
     return Card(
       elevation: 10,

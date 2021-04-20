@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:uitemplate/config/global.dart';
 
 class PushNotification extends ChangeNotifier {
   List<RemoteMessage> _notifications = [];
+  final String serverToken =
+      "AAAA-hFmhDQ:APA91bH1_ygbm_F46KflszWDkQCaY2MwVSltQw4itwkjBQoiOSnSam4BkhTiH5fBcV9sBjd52-d8bxc_00RO48_iaWZYsw20b7tilcKqIqDkIh-J_xv1y8TBxtoDAMlkroj7EcM8ayqO";
   get notifications => _notifications;
 
   void addNote(value) {
@@ -33,8 +39,6 @@ class PushNotification extends ChangeNotifier {
       // AndroidNotification? android = message.notification?.android;
       print(notification!.title);
       print(message.data);
-    }).onData((message) {
-      addNote(message);
     });
     // on open
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
@@ -71,5 +75,34 @@ class PushNotification extends ChangeNotifier {
     print("Token : ${await fcmToken}");
 
     this.initialize();
+  }
+
+  Future sendNotification(
+      ownerFcmToken, Map<String, dynamic>? notifBody) async {
+    print(ownerFcmToken);
+    print("Sending....");
+    var url = Uri.parse("$message_send_api");
+    await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverToken',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'body': 'ADMIN',
+            'title': 'Purchasing your product'
+          },
+          'priority': 'high',
+          'data': <String, dynamic>{
+            'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+            'id': '1',
+            'purchasing': true
+          },
+          'registration_ids': ownerFcmToken,
+        },
+      ),
+    );
   }
 }

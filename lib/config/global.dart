@@ -28,6 +28,9 @@ const String user_update = "$api/user/admin-update";
 const String user_delete = "$api/user/delete";
 const String user_register = "$api/register";
 
+//MESSAGING
+const String message_send_api = "$api/messaging/send";
+
 //TEXT STYLE
 const TextStyle transHeader = TextStyle(color: Colors.grey);
 const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);

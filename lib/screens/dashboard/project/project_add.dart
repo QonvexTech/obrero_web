@@ -105,10 +105,10 @@ class _ProjectAddState extends State<ProjectAdd> with Helper {
   @override
   Widget build(BuildContext context) {
     var projectService = Provider.of<ProjectProvider>(context, listen: false);
-    if (isEdit) {
-      Provider.of<MapService>(context, listen: false)
-          .setCoordinates(widget.projectToEdit!.coordinates!);
-    }
+    // if (isEdit) {
+    //   Provider.of<MapService>(context, listen: false)
+    //       .setCoordinates(widget.projectToEdit!.coordinates!);
+    // }
     List<CustomerModel> customers =
         Provider.of<CustomerService>(context, listen: false).customers;
 
@@ -117,188 +117,184 @@ class _ProjectAddState extends State<ProjectAdd> with Helper {
         height: MediaQuery.of(context).size.height,
         child: AdaptiveContainer(children: [
           AdaptiveItem(
-            content: Expanded(
-              child: Container(
-                padding: EdgeInsets.all(10),
-                child: Form(
-                    child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
+            content: Container(
+              padding: EdgeInsets.all(10),
+              child: Form(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: "Nom du Chantier",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
+                  Container(
+                    height: 5 * 24.0,
+                    child: TextField(
+                      maxLines: 5,
                       decoration: InputDecoration(
-                        hintText: "Nom du Chantier",
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5)),
+                        hintText: "Description",
                       ),
+                      controller: descriptionController,
                     ),
-                    SizedBox(
-                      height: MySpacer.small,
+                  ),
+                  DropdownButton<CustomerModel>(
+                    value: dropdownValue,
+                    isExpanded: true,
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down,
                     ),
-                    Container(
-                      height: 5 * 24.0,
-                      child: TextField(
-                        maxLines: 5,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                          hintText: "Description",
-                        ),
-                        controller: descriptionController,
-                      ),
+                    iconSize: 20,
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.deepPurple),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.deepPurpleAccent,
                     ),
-                    DropdownButton<CustomerModel>(
-                      value: dropdownValue,
-                      isExpanded: true,
-                      icon: const Icon(
-                        Icons.keyboard_arrow_down,
-                      ),
-                      iconSize: 20,
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
-                      ),
-                      onChanged: (CustomerModel? newValue) {
-                        setState(() {
-                          dropdownValue = newValue!;
-                        });
-                      },
-                      items: <CustomerModel>[copy!, ...customers.map((e) => e)]
-                          .map<DropdownMenuItem<CustomerModel>>(
-                              (CustomerModel value) {
-                        return DropdownMenuItem<CustomerModel>(
-                          value: value,
-                          child: Text(value.fname!),
-                        );
-                      }).toList(),
+                    onChanged: (CustomerModel? newValue) {
+                      setState(() {
+                        dropdownValue = newValue!;
+                      });
+                    },
+                    items: <CustomerModel>[copy!, ...customers.map((e) => e)]
+                        .map<DropdownMenuItem<CustomerModel>>(
+                            (CustomerModel value) {
+                      return DropdownMenuItem<CustomerModel>(
+                        value: value,
+                        child: Text(value.fname!),
+                      );
+                    }).toList(),
+                  ),
+                  Container(
+                    height: 150,
+                    width: double.infinity,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: asignee.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            width: 50,
+                            child: Text(asignee[index].fname!),
+                          );
+                        }),
+                  ),
+                  DropdownButton<EmployeesModel>(
+                    value: selectedEmployee,
+                    isExpanded: true,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    iconSize: 20,
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.deepPurple),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.deepPurpleAccent,
                     ),
-                    Container(
-                      height: 150,
-                      width: double.infinity,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: asignee.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              width: 50,
-                              child: Text(asignee[index].fname!),
-                            );
-                          }),
-                    ),
-                    DropdownButton<EmployeesModel>(
-                      value: selectedEmployee,
-                      isExpanded: true,
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      iconSize: 20,
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
-                      ),
-                      onChanged: (EmployeesModel? newValue) {
-                        setState(() {
-                          selectedEmployee = newValue!;
-                          print(asignee.map((e) => e.id).toList());
+                    onChanged: (EmployeesModel? newValue) {
+                      setState(() {
+                        selectedEmployee = newValue!;
+                        print(asignee.map((e) => e.id).toList());
 
-                          if (!userExist(asignee, newValue)) {
-                            asignee.add(newValue);
-                          }
-                        });
-                      },
-                      items: <EmployeesModel>[
-                        nCopy!,
-                        ..._employeeCopy.map((e) => e)
-                      ].map<DropdownMenuItem<EmployeesModel>>(
-                          (EmployeesModel value) {
-                        return DropdownMenuItem<EmployeesModel>(
-                          value: value,
-                          child: Text(value.fname!),
-                        );
-                      }).toList(),
-                    ),
-                    Row(
-                      children: [
-                        Text("Start Date"),
-                        SizedBox(
-                          width: MySpacer.small,
-                        ),
-                        Text("${startDate.toLocal()}".split(' ')[0]),
-                        MaterialButton(
-                          onPressed: () => _selectStartDate(context),
-                          child: Text('Start date'),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: MySpacer.medium,
-                    ),
-                    Row(
-                      children: [
-                        Text("End Date"),
-                        SizedBox(
-                          width: MySpacer.small,
-                        ),
-                        Text("${endDate.toLocal()}".split(' ')[0]),
-                        MaterialButton(
-                          onPressed: () => _selectEndDate(context),
-                          child: Text('End date'),
-                        ),
-                      ],
-                    ),
-                    Consumer<MapService>(
-                      builder: (_, data, child) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                "Location ${data.coordinates ?? "No coordinates specified"}"),
-                            MaterialButton(
-                              onPressed: () {
-                                if (isEdit) {
-                                  widget.projectToEdit!.name =
-                                      nameController.text;
-                                  widget.projectToEdit!.customerId =
-                                      dropdownValue.id == null
-                                          ? widget.projectToEdit!.customerId
-                                          : dropdownValue.id;
-                                  widget.projectToEdit!.description =
-                                      descriptionController.text;
-                                  widget.projectToEdit!.coordinates =
-                                      data.coordinates;
-                                  widget.projectToEdit!.startDate =
-                                      this.startDate;
-                                  widget.projectToEdit!.endDate = this.endDate;
-                                  projectService.updateProject(
-                                      newProject: widget.projectToEdit);
-                                } else {
-                                  ProjectModel newProject = ProjectModel(
-                                      assignee: [...asignee.map((e) => e.id!)],
-                                      customerId: dropdownValue.id,
-                                      description: descriptionController.text,
-                                      name: nameController.text,
-                                      coordinates: data.coordinates,
-                                      startDate: this.startDate,
-                                      endDate: this.endDate);
+                        if (!userExist(asignee, newValue)) {
+                          asignee.add(newValue);
+                        }
+                      });
+                    },
+                    items: <EmployeesModel>[
+                      nCopy!,
+                      ..._employeeCopy.map((e) => e)
+                    ].map<DropdownMenuItem<EmployeesModel>>(
+                        (EmployeesModel value) {
+                      return DropdownMenuItem<EmployeesModel>(
+                        value: value,
+                        child: Text(value.fname!),
+                      );
+                    }).toList(),
+                  ),
+                  Row(
+                    children: [
+                      Text("Start Date"),
+                      SizedBox(
+                        width: MySpacer.small,
+                      ),
+                      Text("${startDate.toLocal()}".split(' ')[0]),
+                      MaterialButton(
+                        onPressed: () => _selectStartDate(context),
+                        child: Text('Start date'),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: MySpacer.medium,
+                  ),
+                  Row(
+                    children: [
+                      Text("End Date"),
+                      SizedBox(
+                        width: MySpacer.small,
+                      ),
+                      Text("${endDate.toLocal()}".split(' ')[0]),
+                      MaterialButton(
+                        onPressed: () => _selectEndDate(context),
+                        child: Text('End date'),
+                      ),
+                    ],
+                  ),
+                  Consumer<MapService>(
+                    builder: (_, data, child) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Location ${data.coordinates}"),
+                          MaterialButton(
+                            onPressed: () {
+                              if (isEdit) {
+                                widget.projectToEdit!.name =
+                                    nameController.text;
+                                widget.projectToEdit!.customerId =
+                                    dropdownValue.id == null
+                                        ? widget.projectToEdit!.customerId
+                                        : dropdownValue.id;
+                                widget.projectToEdit!.description =
+                                    descriptionController.text;
+                                widget.projectToEdit!.coordinates =
+                                    data.coordinates;
+                                widget.projectToEdit!.startDate =
+                                    this.startDate;
+                                widget.projectToEdit!.endDate = this.endDate;
+                                projectService.updateProject(
+                                    newProject: widget.projectToEdit);
+                              } else {
+                                ProjectModel newProject = ProjectModel(
+                                    assignee: [...asignee.map((e) => e.id!)],
+                                    customerId: dropdownValue.id,
+                                    description: descriptionController.text,
+                                    name: nameController.text,
+                                    coordinates: data.coordinates,
+                                    startDate: this.startDate,
+                                    endDate: this.endDate);
 
-                                  projectService
-                                      .createProjects(
-                                        newProject: newProject,
-                                      )
-                                      .whenComplete(
-                                          () => Navigator.pop(context));
-                                }
-                              },
-                              child: Text("Create Project"),
-                            )
-                          ],
-                        );
-                      },
-                    )
-                  ],
-                )),
-              ),
+                                projectService
+                                    .createProjects(
+                                      newProject: newProject,
+                                    )
+                                    .whenComplete(() => Navigator.pop(context));
+                              }
+                            },
+                            child: Text("Create Project"),
+                          )
+                        ],
+                      );
+                    },
+                  )
+                ],
+              )),
             ),
           ),
           AdaptiveItem(

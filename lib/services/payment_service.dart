@@ -28,7 +28,7 @@ class PaymentService extends ChangeNotifier {
     try {
       await http.delete(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${Authentication.token}",
+        "Authorization": "Bearer ${auth.token}",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
@@ -44,7 +44,7 @@ class PaymentService extends ChangeNotifier {
     try {
       await http.put(url, body: editPayment.toJson(), headers: {
         "Accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer " + Authentication.token,
+        HttpHeaders.authorizationHeader: "Bearer ${auth.token}",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);

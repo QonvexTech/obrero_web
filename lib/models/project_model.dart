@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ProjectModel extends ChangeNotifier {
   int? id;
@@ -6,7 +7,7 @@ class ProjectModel extends ChangeNotifier {
   int? customerId;
   String? name;
   String? description;
-  String? coordinates;
+  LatLng? coordinates;
   List? warnings;
   DateTime? startDate;
   DateTime? endDate;
@@ -26,12 +27,17 @@ class ProjectModel extends ChangeNotifier {
       required this.startDate,
       required this.endDate});
 
+  LatLng convertedCoord(String value) {
+    return LatLng(
+        double.parse(value.split(",")[0]), double.parse(value.split(",")[1]));
+  }
+
   ProjectModel.fromJson(Map<String, dynamic> json) {
     this.id = json["id"];
     this.areaSize = json["area_size"];
     this.name = json["name"];
     this.customerId = json["customer_id"];
-    this.coordinates = json["coordinates"];
+    this.coordinates = convertedCoord(json["coordinates"]);
     this.description = json["description"];
     this.startDate =
         json["start_date"] != null ? DateTime.parse(json["start_date"]) : null;
@@ -45,7 +51,10 @@ class ProjectModel extends ChangeNotifier {
     data["area_size"] = this.areaSize.toString();
     data["name"] = this.name;
     data["customer_id"] = this.customerId.toString();
-    data["coordinates"] = this.coordinates![0] + "," + this.coordinates![1];
+    data["coordinates"] = (this.coordinates!.latitude.toString() +
+        "," +
+        this.coordinates!.longitude.toString());
+
     data["description"] = this.description;
     data["start_date"] = this.startDate!.toString();
     data["end_date"] = this.endDate!.toString();

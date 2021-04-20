@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/screens/dashboard/customer/customer_add.dart';
 import 'package:uitemplate/screens/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/services/customer_service.dart';
@@ -9,6 +10,9 @@ import 'package:uitemplate/widgets/adding_button.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class CustomerDetails extends StatelessWidget {
+  final CustomerModel? customer;
+
+  const CustomerDetails({Key? key, required this.customer}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     try {
@@ -35,13 +39,13 @@ class CustomerDetails extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "JOHN DOE",
+                              "${customer!.fname} ${customer!.lname}",
                               style: Theme.of(context).textTheme.headline5,
                             ),
-                            Text(
-                              "#1234",
-                              style: Theme.of(context).textTheme.subtitle1,
-                            )
+                            // Text(
+                            //   "${customer!.contactNumber}",
+                            //   style: Theme.of(context).textTheme.subtitle1,
+                            // )
                           ],
                         )
                       ],
@@ -50,6 +54,7 @@ class CustomerDetails extends StatelessWidget {
                       height: MySpacer.large,
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
                           child: Column(
@@ -59,7 +64,8 @@ class CustomerDetails extends StatelessWidget {
                               SizedBox(
                                 height: MySpacer.small,
                               ),
-                              Text("1234-678-899", style: boldText)
+                              Text("${customer!.contactNumber}",
+                                  style: boldText)
                             ],
                           ),
                         ),
@@ -72,7 +78,7 @@ class CustomerDetails extends StatelessWidget {
                                 height: MySpacer.small,
                               ),
                               Text(
-                                "Johndoe@gmail.com",
+                                "${customer!.email}",
                                 style: boldText,
                               )
                             ],
@@ -86,7 +92,7 @@ class CustomerDetails extends StatelessWidget {
                               SizedBox(
                                 height: MySpacer.small,
                               ),
-                              Text("LOREM IPSUM", style: boldText)
+                              Text("${customer!.adress}", style: boldText)
                             ],
                           ),
                         )
@@ -95,37 +101,37 @@ class CustomerDetails extends StatelessWidget {
                     SizedBox(
                       height: MySpacer.large,
                     ),
-                    Text(
-                      "Détails du site",
-                      style: Theme.of(context).textTheme.headline5,
-                    ),
-                    SizedBox(
-                      height: MySpacer.small,
-                    ),
-                    Text("Chantier XYZ"),
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
+                    // Text(
+                    //   "Détails du site",
+                    //   style: Theme.of(context).textTheme.headline5,
+                    // ),
+                    // SizedBox(
+                    //   height: MySpacer.small,
+                    // ),
+                    // // Text("${customer!}"),
+                    // SizedBox(
+                    //   height: MySpacer.large,
+                    // ),
                     Row(
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Address",
-                                style: transHeader,
-                              ),
-                              SizedBox(
-                                height: MySpacer.small,
-                              ),
-                              Text(
-                                "LOREM IPSUM DOLOR",
-                                style: boldText,
-                              )
-                            ],
-                          ),
-                        ),
+                        // Expanded(
+                        //   child: Column(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       Text(
+                        //         "Address",
+                        //         style: transHeader,
+                        //       ),
+                        //       SizedBox(
+                        //         height: MySpacer.small,
+                        //       ),
+                        //       Text(
+                        //         "LOREM IPSUM DOLOR",
+                        //         style: boldText,
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

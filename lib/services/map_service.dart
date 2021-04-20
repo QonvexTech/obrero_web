@@ -1,72 +1,39 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:uitemplate/models/mapInfo_model.dart';
+import 'package:uitemplate/models/project_model.dart';
 
 class MapService extends ChangeNotifier {
+  double _zoom = 15.0;
   Location _location = Location();
-  String? coordinates;
   bool? _serviceEnabled;
+  LatLng coordinates = LatLng(28.709106207008052, 77.09902385711672);
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
 
-  bool _showInfoWindow = false;
-  bool _tempHidden = false;
-  User? _user;
-  double? _leftMargin;
-  double? _topMargin;
+  Set<Marker> _markers = {};
 
-  void rebuildInfoWindow() {
-    notifyListeners();
-  }
+  get zoom => _zoom;
+  get markers => _markers;
 
-  void updateUser(User user) {
-    _user = user;
-  }
-
-  void updateVisibility(bool visibility) {
-    _showInfoWindow = visibility;
-  }
-
-  void setCoordinates(String value) {
-    coordinates = value;
-    notifyListeners();
-  }
-
-  void updateInfoWindow(
-    BuildContext context,
-    GoogleMapController controller,
-    LatLng location,
-    double infoWindowWidth,
-    double markerOffset,
-  ) async {
-    ScreenCoordinate screenCoordinate =
-        await controller.getScreenCoordinate(location);
-    double devicePixelRatio =
-        Platform.isAndroid ? MediaQuery.of(context).devicePixelRatio : 1.0;
-    double left = (screenCoordinate.x.toDouble() / devicePixelRatio) -
-        (infoWindowWidth / 2);
-    double top =
-        (screenCoordinate.y.toDouble() / devicePixelRatio) - markerOffset;
-    if (left < 0 || top < 0) {
-      _tempHidden = true;
-    } else {
-      _tempHidden = false;
-      _leftMargin = left;
-      _topMargin = top;
+  mapInit(List<ProjectModel> projects) {
+    for (var project in projects) {
+      _markers.add(Marker(
+          markerId: MarkerId(project.id.toString()),
+          position: project.coordinates!));
     }
+    notifyListeners();
   }
 
-  bool get showInfoWindow =>
-      (_showInfoWindow == true && _tempHidden == false) ? true : false;
+  void setCoordinates(LatLng coord) {
+    coordinates = coord;
+    notifyListeners();
+  }
 
-  double get leftMargin => _leftMargin!;
-
-  double get topMargin => _topMargin!;
-
-  User get user => _user!;
+  // LatLng convertedCoord(String value) {
+  //   return LatLng(
+  //       double.parse(value.split(",")[0]), double.parse(value.split(",")[1]));
+  // }
 
   checkLocationPermission() async {
     _serviceEnabled = await _location.serviceEnabled();
@@ -85,20 +52,4 @@ class MapService extends ChangeNotifier {
     }
     _locationData = await _location.getLocation();
   }
-}
-
-class User {
-  final int rating;
-  final String username;
-  final String name;
-  final String image;
-  final LatLng location;
-
-  User(
-    this.username,
-    this.name,
-    this.image,
-    this.location,
-    this.rating,
-  );
 }

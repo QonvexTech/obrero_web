@@ -4,22 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/screens/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 
 class CustomerService extends ChangeNotifier {
   Widget activePageScreen = CustomerList(); //change to list adfter
+  PaginationService paginationService = PaginationService();
   List<CustomerModel> _customers = [];
-  int _page = 1;
-  int? _lastPage;
-  int? perPage = 10;
+  late PaginationModel _pagination =
+      PaginationModel(lastPage: 1, fetch: fetchCustomers);
   Map bodyToUpdate = {};
-  PaginationService? paginationService;
 
   get customers => _customers;
-  get lastPage => _lastPage;
-
+  get pagination => _pagination;
   void setPage(Widget page) {
     activePageScreen = page;
     notifyListeners();
@@ -51,32 +50,27 @@ class CustomerService extends ChangeNotifier {
   }
 
   Future fetchCustomers() async {
-    var url =
-        Uri.parse("$customer_api${paginationService!.perPage}?page=$_page");
+    var url = Uri.parse(
+        "$customer_api${_pagination.perPage}?page=${_pagination.page}");
     // final prefs = await SharedPreferences.getInstance();
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${Authentication.token}",
+        "Authorization": "Bearer ${Authentication().token}",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print(response.body);
+        // print(response.body);
         List data = json.decode(response.body)["data"];
         if (json.decode(response.body)["next_page_url"] != null) {
-          paginationService!.isNext = true;
-          notifyListeners();
+          _pagination.isNext = true;
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
-          paginationService!.isPrev = true;
-          notifyListeners();
+          _pagination.isPrev = true;
         }
         if (json.decode(response.body)["last_page"] != null) {
-          _lastPage = json.decode(response.body)["last_page"];
-          print(lastPage);
-          notifyListeners();
+          _pagination.lastPage = json.decode(response.body)["last_page"];
         }
-
         fromJsonListToCustomer(data);
       } else {
         print(response.body);
@@ -91,7 +85,7 @@ class CustomerService extends ChangeNotifier {
     try {
       await http.post(url, body: newCustomer.toPayload(), headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${Authentication.token}",
+        "Authorization": "Bearer ${auth.token}",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
@@ -108,14 +102,14 @@ class CustomerService extends ChangeNotifier {
     try {
       await http.delete(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${Authentication.token}",
+        "Authorization": "Bearer ${auth.token}",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         _customers.removeWhere((element) => element.id == id);
         notifyListeners();
         if (_customers.length == 0) {
-          if (paginationService!.getPrev) {
-            paginationService!.prevPage(fetchCustomers);
+          if (_pagination.isPrev) {
+            paginationService.prevPage(_pagination);
           }
         }
         var data = json.decode(response.body);
@@ -131,7 +125,7 @@ class CustomerService extends ChangeNotifier {
     try {
       await http.put(url, body: editCustomer.toEdit(), headers: {
         "Accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer " + Authentication.token,
+        HttpHeaders.authorizationHeader: "Bearer ${auth.token}",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);

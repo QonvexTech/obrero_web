@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:uitemplate/screens/login/desktop_mode.dart';
 import 'package:uitemplate/screens/login/mobile_mode.dart';
-import 'package:uitemplate/services/autentication.dart';
 
 class Login extends StatelessWidget {
   @override

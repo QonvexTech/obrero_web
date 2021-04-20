@@ -9,18 +9,10 @@ import 'package:uitemplate/services/push_notification.dart';
 
 class Authentication extends ChangeNotifier {
   Admin? _data;
-  static String token = "";
+  String? token;
+
   var error;
   get data => _data;
-
-  getLocalProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    _data = Admin.fromJson(
-        json.decode(prefs.getString("profile_details")!)["data"]);
-
-    token = _data!.token!;
-  }
 
   Future logout() async {
     final prefs = await SharedPreferences.getInstance();
@@ -31,14 +23,16 @@ class Authentication extends ChangeNotifier {
     try {
       bool success = false;
       var fcmToken = await PushNotification().fcmToken;
-
+      print("LOGGING IN");
       var url = Uri.parse(login_api);
       var response = await http.post(url,
           body: {'email': email, 'password': password, 'fcm_token': fcmToken});
       if (response.statusCode == 200 || response.statusCode == 201) {
         this._data = Admin.fromJson(json.decode(response.body)["data"]);
         print("login success");
-        cacher.saveCredentials(email, password);
+        DataCacher().saveCredentials(email, password);
+        token = jsonDecode(response.body)['data']['token'];
+        print("This is the TOken $token");
         success = true;
         return success;
       } else {
@@ -51,3 +45,5 @@ class Authentication extends ChangeNotifier {
     }
   }
 }
+
+Authentication auth = Authentication();

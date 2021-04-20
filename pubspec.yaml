@@ -28,7 +28,6 @@ dependencies:
   google_maps_flutter_web: ^0.3.0
   location: ^4.1.1
   location_web: ^3.0.0
-  custom_info_window: ^1.0.0
 
   adaptive_container:
     git:

@@ -8,11 +8,11 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  @override
   void init() async {
-    await cacher.getCredentials(context);
+    await DataCacher().getCredentials(context);
   }
 
+  @override
   void initState() {
     this.init();
     super.initState();

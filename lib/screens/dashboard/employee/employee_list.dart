@@ -6,6 +6,7 @@ import 'package:uitemplate/screens/dashboard/employee/employee_add.dart';
 import 'package:uitemplate/screens/dashboard/employee/employee_details.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/widgets/headerList.dart';
+import 'package:uitemplate/widgets/tablePagination.dart';
 
 class EmployeeList extends StatefulWidget {
   @override
@@ -128,6 +129,12 @@ class _EmployeeListState extends State<EmployeeList> {
                                   ])
                           ]))),
           //ROW PAGEr
+          TablePagination(
+            paginationModel: employeeService.pagination,
+          ),
+          SizedBox(
+            height: MySpacer.large,
+          )
         ],
       ),
     );
