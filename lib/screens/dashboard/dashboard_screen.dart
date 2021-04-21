@@ -133,7 +133,8 @@ class _DashBoardState extends State<DashBoard> {
                       Text(
                           "Its time to create a project \n choose the right client and location for your project"),
                       AddingButton(
-                          addingPage: ProjectAdd(), buttonText: "Add Project")
+                          addingPage: ProjectAddScreen(),
+                          buttonText: "Add Project")
                     ],
                   ))
               : Container(

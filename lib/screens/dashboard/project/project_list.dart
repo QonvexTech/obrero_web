@@ -18,7 +18,7 @@ class ProjectList extends StatelessWidget {
           SizedBox(
             height: MySpacer.medium,
           ),
-          HeaderList(toPage: ProjectAdd(), title: "Project"),
+          HeaderList(toPage: ProjectAddScreen(), title: "Project"),
           SizedBox(
             height: MySpacer.large,
           ),
@@ -116,7 +116,7 @@ List<DataRow> widgetRows(
                       context: context,
                       builder: (_) => AlertDialog(
                           backgroundColor: Palette.contentBackground,
-                          content: ProjectAdd(
+                          content: ProjectAddScreen(
                             projectToEdit: projectModel,
                           )));
                 },

@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => SplashScreen(),
         '/login': (context) => Login(),
         '/home': (context) => MyHomePage(),
-        '/project/add': (context) => ProjectAdd(),
+        '/project/add': (context) => ProjectAddScreen(),
       },
     );
   }
@@ -80,7 +80,10 @@ class _MyHomePageState extends State<MyHomePage> {
           notifications: pushNotify.notifications,
           title: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Image.asset('assets/icons/logo1.png',height: 50,),
+            child: Image.asset(
+              'assets/icons/logo1.png',
+              height: 50,
+            ),
           ),
           drawerItems: [
             DrawerItem(
