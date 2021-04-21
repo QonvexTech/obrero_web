@@ -78,16 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
       PushNotification pushNotify = Provider.of<PushNotification>(context);
       return ResponsiveScaffold(
           notifications: pushNotify.notifications,
-          title: Row(
-            children: [
-              Text(
-                "LOGO",
-                style: TextStyle(
-                    color: Palette.drawerColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
-              ),
-            ],
+          title: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Image.asset('assets/icons/logo1.png',height: 50,),
           ),
           drawerItems: [
             DrawerItem(
