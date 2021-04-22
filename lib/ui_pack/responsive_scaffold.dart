@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/firebase_message.dart';
-import 'package:uitemplate/services/notofication.dart';
+import 'package:uitemplate/services/notofication_service.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/widgets/notifications.dart';
 

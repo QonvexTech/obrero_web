@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/config/global.dart';
-import 'package:uitemplate/services/notofication.dart';
+import 'package:uitemplate/services/notofication_service.dart';
 
 class FireBase {
   final String serverToken =
