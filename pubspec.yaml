@@ -48,9 +48,6 @@ dependencies:
   #DATE
   date_picker_timeline: ^1.2.3
 
-  #TOAST
-  oktoast: ^3.0.0
-
 
 
 

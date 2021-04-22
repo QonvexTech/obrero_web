@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/screens/dashboard/customer/customer_screen.dart';
 import 'package:uitemplate/screens/dashboard/dashboard_screen.dart';
@@ -46,29 +45,23 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return OKToast(
-      animationCurve: Curves.easeIn,
-      animationBuilder: Miui10AnimBuilder(),
-      animationDuration: Duration(milliseconds: 200),
-      duration: Duration(seconds: 3),
-      child: MaterialApp(
-        title: 'Obrero Admin',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          appBarTheme: const AppBarTheme(backgroundColor: Palette.background),
-          scaffoldBackgroundColor: Palette.background,
-          primaryColor: Palette.drawerColor,
-          accentColor: Palette.buttonsColor1,
-          iconTheme: const IconThemeData(color: Colors.black),
-        ),
-        home: SplashScreen(),
-        routes: {
-          '/splash': (context) => SplashScreen(),
-          '/login': (context) => Login(),
-          '/home': (context) => MyHomePage(),
-          '/project/add': (context) => ProjectAddScreen(),
-        },
+    return MaterialApp(
+      title: 'Obrero Admin',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(backgroundColor: Palette.background),
+        scaffoldBackgroundColor: Palette.background,
+        primaryColor: Palette.drawerColor,
+        accentColor: Palette.buttonsColor1,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
+      home: SplashScreen(),
+      routes: {
+        '/splash': (context) => SplashScreen(),
+        '/login': (context) => Login(),
+        '/home': (context) => MyHomePage(),
+        '/project/add': (context) => ProjectAddScreen(),
+      },
     );
   }
 }
@@ -86,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Image.asset(
-              'assets/icons/logo1.png',
+              'assets/icons/logo.png',
               height: 50,
             ),
           ),

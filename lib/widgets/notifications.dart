@@ -26,13 +26,7 @@ class _NotificationCardState extends State<NotificationCard> {
         offset: Offset(50, 50),
         icon: Stack(
           children: [
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    newMessage = false;
-                  });
-                },
-                icon: Icon(Icons.notifications)),
+            Icon(Icons.notifications),
             newMessage
                 ? Positioned(
                     top: 0,
@@ -45,64 +39,42 @@ class _NotificationCardState extends State<NotificationCard> {
                 : Container(),
           ],
         ),
-        itemBuilder: (context) => [
-              PopupMenuItem(
-                child: Container(
-                    height: MediaQuery.of(context).size.height - 100,
-                    width: MediaQuery.of(context).size.width / 3,
-                    child: ListView(
-                      children: [
-                        for (RemoteMessage message in _messages)
-                          GestureDetector(
-                            onTap: () {
-                              // showToastWidget(
-                              //     Center(
-                              //       child: Container(
-                              //         color: Colors.transparent,
-                              //         margin: EdgeInsets.only(top: 30),
-                              //         child: ClipRRect(
-                              //           child: Column(
-                              //             mainAxisAlignment:
-                              //                 MainAxisAlignment.start,
-                              //             children: [
-                              //               Row(
-                              //                 mainAxisAlignment:
-                              //                     MainAxisAlignment.end,
-                              //                 children: [
-                              //                   Card(
-                              //                     child: Container(
-                              //                         padding: EdgeInsets.all(10),
-                              //                         width: 300.0,
-                              //                         height: 80.0,
-                              //                         color: Palette
-                              //                             .contentBackground,
-                              //                         child:
-                              //                             Text("Notifications")),
-                              //                   ),
-                              //                   SizedBox(
-                              //                     width: 60,
-                              //                   )
-                              //                 ],
-                              //               ),
-                              //             ],
-                              //           ),
-                              //         ),
-                              //       ),
-                              //     ), onDismiss: () {
-                              //   print(
-                              //       "the toast dismiss"); // The method will be called on toast dismiss.
-                              // }, position: ToastPosition.bottom);
-                            },
-                            child: Card(
+        itemBuilder: (context) {
+          setState(() {
+            newMessage = false;
+            print("false");
+          });
+          return [
+            PopupMenuItem(
+              child: Container(
+                  height: MediaQuery.of(context).size.height - 100,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView(
+                    children: [
+                      if (_messages.length <= 0)
+                        Container(
+                          height: 200,
+                          color: Colors.grey[200],
+                          child: Center(child: Text("No notification yet!")),
+                        ),
+                      for (RemoteMessage message in _messages)
+                        GestureDetector(
+                          onTap: () {},
+                          child: Card(
+                            child: Container(
                               child: ListTile(
                                 leading: CircleAvatar(),
-                                title: Text("message.data.t"),
+                                title: Text(message.notification!.title!),
+                                subtitle:
+                                    Text(message.sentTime!.hour.toString()),
                               ),
                             ),
                           ),
-                      ],
-                    )),
-              )
-            ]);
+                        ),
+                    ],
+                  )),
+            )
+          ];
+        });
   }
 }
