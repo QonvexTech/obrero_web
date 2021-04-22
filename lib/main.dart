@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Image.asset(
-              'assets/icons/logo1.png',
+              'assets/icons/logo.png',
               height: 50,
             ),
           ),
