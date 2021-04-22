@@ -37,5 +37,3 @@ const String firebase_messaging = "https://fcm.googleapis.com/fcm/send";
 const TextStyle transHeader = TextStyle(color: Colors.grey);
 const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);
 String? authToken;
-
-RemoteNotification? notifications;

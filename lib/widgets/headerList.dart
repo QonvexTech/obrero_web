@@ -29,21 +29,22 @@ class HeaderList extends StatelessWidget {
             height: 50,
             content: Row(
               children: [
-                Container(
-                    width: 300,
-                    child: Theme(
-                      data: ThemeData(
-                        primaryColor: Palette.drawerColor,
-                      ),
-                      child: TextField(
-                        cursorColor: Palette.drawerColor,
-                        decoration: InputDecoration(
-                            hintStyle: TextStyle(color: Colors.black12),
-                            prefixIcon: Icon(Icons.search),
-                            hintText: "Recherche",
-                            border: InputBorder.none),
-                      ),
-                    )),
+                Expanded(
+                  child: Container(
+                      child: Theme(
+                    data: ThemeData(
+                      primaryColor: Palette.drawerColor,
+                    ),
+                    child: TextField(
+                      cursorColor: Palette.drawerColor,
+                      decoration: InputDecoration(
+                          hintStyle: TextStyle(color: Colors.black12),
+                          prefixIcon: Icon(Icons.search),
+                          hintText: "Recherche",
+                          border: InputBorder.none),
+                    ),
+                  )),
+                ),
                 Expanded(child: Container()),
                 Container(
                   // width: 40,

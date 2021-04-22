@@ -6,6 +6,7 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
+import 'package:uitemplate/services/notification_services.dart';
 
 import '../config/global.dart';
 
@@ -24,7 +25,7 @@ class Authentication extends ChangeNotifier {
   Future<bool> login(String email, String password) async {
     try {
       bool success = false;
-      var fcmToken = await FireBase().fcmToken;
+      var fcmToken = await fireBase.fcmToken;
       print("LOGGING IN");
       var url = Uri.parse(login_api);
       var response = await http.post(url,
@@ -36,6 +37,7 @@ class Authentication extends ChangeNotifier {
         token = jsonDecode(response.body)['data']['token'];
         print("This is the TOken $token");
         authToken = jsonDecode(response.body)['data']['token'];
+        rxNotificationService.fetchOld();
         success = true;
         return success;
       } else {

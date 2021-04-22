@@ -5,9 +5,9 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/models/pagination_model.dart';
-import 'package:uitemplate/screens/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 
 class CustomerService extends ChangeNotifier {
   Widget activePageScreen = CustomerList(); //change to list adfter

@@ -1,6 +1,6 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:uitemplate/screens/dashboard/customer/customer_screen.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
 
 class DashboardService extends ChangeNotifier {
   Widget clientPage = Customer();

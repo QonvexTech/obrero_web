@@ -3,47 +3,31 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
-import 'package:uitemplate/services/notofication_service.dart';
+import 'package:uitemplate/services/notification_services.dart';
 
-class FireBase {
+class FireBase extends ChangeNotifier {
   final String serverToken =
       "AAAA-hFmhDQ:APA91bH1_ygbm_F46KflszWDkQCaY2MwVSltQw4itwkjBQoiOSnSam4BkhTiH5fBcV9sBjd52-d8bxc_00RO48_iaWZYsw20b7tilcKqIqDkIh-J_xv1y8TBxtoDAMlkroj7EcM8ayqO";
 
-  BuildContext? context;
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  PushNotification _notification = PushNotification();
-
   Future<String?> get fcmToken async => await _firebaseMessaging.getToken();
 
-  Future<void> subscribe(String subscription) async {
-    await _firebaseMessaging.subscribeToTopic("$subscription}").then(print);
+  List messages = [];
+  bool _newMessage = false;
+
+  get newMessage => _newMessage;
+  set newMessage(value) {
+    _newMessage = value;
+    notifyListeners();
   }
 
-  void listen() {
-    // while open
+  // Future<void> subscribe(String subscription) async {
+  //   await _firebaseMessaging.subscribeToTopic("$subscription}").then(print);
+  // }
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      RemoteNotification notification = message.notification!;
-      print("ON APP");
-      print(notification);
-    });
-
-    // on open
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print("MESSAGE OPENED :${event.notification!.title}");
-    });
-
-    //background
-    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-      // If you're going to use other Firebase services in the background, such as Firestore,
-      // make sure you call `initializeApp` before using other Firebase services.
-      await Firebase.initializeApp();
-      print('Handling a background message ${message.messageId}');
-    });
-  }
-
-  Future<void> initialize() async {
+  Future<void> initialize({required context}) async {
     await _firebaseMessaging.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
@@ -60,13 +44,40 @@ class FireBase {
     );
 
     print("Notification Settings : ${settings.announcement}");
-    this.listen();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      if (message.data['notification_data'] != null) {
+        // messages.add(message.data['notification_data']);
+        rxNotificationService
+            .append(json.decode(message.data['notification_data']));
+        print(rxNotificationService.current);
+        // print(messages);
+      } else {
+        //chat
+
+      }
+      return;
+      // print(messages);
+    });
+
+    // on open
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      print("MESSAGE OPENED :${event.notification!.title}");
+    });
+
+    //background
+    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
+      // If you're going to use other Firebase services in the background, such as Firestore,
+      // make sure you call `initializeApp` before using other Firebase services.
+      // await Firebase.initializeApp();
+      print('Handling a background message ${message.messageId}');
+    });
+    print("lisening");
   }
 
-  init() async {
+  init({required context}) async {
     await Firebase.initializeApp();
     print("Token : ${await fcmToken}");
-    this.initialize();
+    this.initialize(context: context);
   }
 
   Future sendNotification(
@@ -101,3 +112,5 @@ class FireBase {
     });
   }
 }
+
+FireBase fireBase = FireBase();
