@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/screens/dashboard/customer/customer_screen.dart';
 import 'package:uitemplate/screens/dashboard/dashboard_screen.dart';
@@ -13,8 +14,8 @@ import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/message_service.dart';
+import 'package:uitemplate/services/notofication.dart';
 import 'package:uitemplate/services/project_service.dart';
-import 'package:uitemplate/services/push_notification.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/ui_pack/children/sub_drawer_item.dart';
@@ -45,23 +46,29 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Obrero Admin',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(backgroundColor: Palette.background),
-        scaffoldBackgroundColor: Palette.background,
-        primaryColor: Palette.drawerColor,
-        accentColor: Palette.buttonsColor1,
-        iconTheme: const IconThemeData(color: Colors.black),
+    return OKToast(
+      animationCurve: Curves.easeIn,
+      animationBuilder: Miui10AnimBuilder(),
+      animationDuration: Duration(milliseconds: 200),
+      duration: Duration(seconds: 3),
+      child: MaterialApp(
+        title: 'Obrero Admin',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(backgroundColor: Palette.background),
+          scaffoldBackgroundColor: Palette.background,
+          primaryColor: Palette.drawerColor,
+          accentColor: Palette.buttonsColor1,
+          iconTheme: const IconThemeData(color: Colors.black),
+        ),
+        home: SplashScreen(),
+        routes: {
+          '/splash': (context) => SplashScreen(),
+          '/login': (context) => Login(),
+          '/home': (context) => MyHomePage(),
+          '/project/add': (context) => ProjectAddScreen(),
+        },
       ),
-      home: SplashScreen(),
-      routes: {
-        '/splash': (context) => SplashScreen(),
-        '/login': (context) => Login(),
-        '/home': (context) => MyHomePage(),
-        '/project/add': (context) => ProjectAddScreen(),
-      },
     );
   }
 }
@@ -75,9 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     try {
-      PushNotification pushNotify = Provider.of<PushNotification>(context);
       return ResponsiveScaffold(
-          notifications: pushNotify.notifications,
           title: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Image.asset(

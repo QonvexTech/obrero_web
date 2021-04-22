@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/caching.dart';
-import 'package:uitemplate/services/push_notification.dart';
+import 'package:uitemplate/services/firebase_message.dart';
 
 import '../config/global.dart';
 
@@ -24,7 +24,7 @@ class Authentication extends ChangeNotifier {
   Future<bool> login(String email, String password) async {
     try {
       bool success = false;
-      var fcmToken = await PushNotification().fcmToken;
+      var fcmToken = await FireBase().fcmToken;
       print("LOGGING IN");
       var url = Uri.parse(login_api);
       var response = await http.post(url,

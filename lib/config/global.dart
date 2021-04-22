@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 const String api = "https://obrero.checkmy.dev/api";
@@ -30,8 +31,11 @@ const String user_register = "$api/register";
 
 //MESSAGING
 const String message_send_api = "$api/messaging/send";
+const String firebase_messaging = "https://fcm.googleapis.com/fcm/send";
 
 //TEXT STYLE
 const TextStyle transHeader = TextStyle(color: Colors.grey);
 const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);
 String? authToken;
+
+RemoteNotification? notifications;

@@ -11,6 +11,7 @@ import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project_service.dart';
+import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/widgets/adding_button.dart';
 import 'package:uitemplate/widgets/map.dart';
 import 'package:uitemplate/widgets/map_details.dart';
@@ -31,6 +32,11 @@ class _DashBoardState extends State<DashBoard> {
 
     Provider.of<CustomerService>(context, listen: false).fetchCustomers();
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
+    // PushNotification pushNotify =
+    //     Provider.of<PushNotification>(context, listen: false)
+    //         .pushNotify
+    //         .updateContext(context);
+
     super.initState();
   }
 
