@@ -58,7 +58,7 @@ class ProjectModel extends ChangeNotifier {
     data["description"] = this.description;
     data["start_date"] = this.startDate!.toString();
     data["end_date"] = this.endDate!.toString();
-    data["assignee_id"] =
+    data["assignee_ids"] =
         this.assignee.toString().replaceAll("[", "").replaceAll("]", "");
     return data;
   }

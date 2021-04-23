@@ -23,21 +23,36 @@ class TablePagination extends StatelessWidget {
           ),
           Row(
             children: [
-              MaterialButton(
-                minWidth: 100,
-                onPressed: this.paginationModel.isPrev
-                    ? () {
-                        pageService.prevPage(paginationModel);
-                      }
-                    : null,
-                child: Text(
-                  "Previous",
-                  style: TextStyle(
-                      color: this.paginationModel.isPrev
-                          ? Palette.drawerColor
-                          : Colors.grey),
-                ),
+              TextButton(
+                onPressed: () {},
+                child: MediaQuery.of(context).size.width <= 400
+                    ? Icon(
+                        Icons.arrow_back_ios,
+                        size: 20,
+                      )
+                    : Text(
+                        "Next",
+                        style: TextStyle(
+                            color: paginationModel.isNext
+                                ? Palette.drawerColor
+                                : Colors.grey),
+                      ),
               ),
+              // MaterialButton(
+              //   minWidth: 100,
+              //   onPressed: this.paginationModel.isPrev
+              //       ? () {
+              //           pageService.prevPage(paginationModel);
+              //         }
+              //       : null,
+              //   child: Text(
+              //     "Previous",
+              //     style: TextStyle(
+              //         color: this.paginationModel.isPrev
+              //             ? Palette.drawerColor
+              //             : Colors.grey),
+              //   ),
+              // ),
               for (var index = 1;
                   index <= this.paginationModel.lastPage;
                   index++)
@@ -51,15 +66,14 @@ class TablePagination extends StatelessWidget {
                   },
                   child: Text((index).toString()),
                 ),
-              MaterialButton(
-                minWidth: 100,
-                onPressed: paginationModel.isNext
-                    ? () {
-                        pageService.nextPage(paginationModel);
-                      }
-                    : null,
+
+              TextButton(
+                onPressed: () {},
                 child: MediaQuery.of(context).size.width <= 400
-                    ? Icon(Icons.arrow_forward_ios)
+                    ? Icon(
+                        Icons.arrow_forward_ios,
+                        size: 20,
+                      )
                     : Text(
                         "Next",
                         style: TextStyle(
@@ -68,6 +82,23 @@ class TablePagination extends StatelessWidget {
                                 : Colors.grey),
                       ),
               )
+              // MaterialButton(
+              //   minWidth: 100,
+              //   onPressed: paginationModel.isNext
+              //       ? () {
+              //           pageService.nextPage(paginationModel);
+              //         }
+              //       : null,
+              //   child: MediaQuery.of(context).size.width <= 400
+              //       ? Icon(Icons.arrow_forward_ios)
+              //       : Text(
+              //           "Next",
+              //           style: TextStyle(
+              //               color: paginationModel.isNext
+              //                   ? Palette.drawerColor
+              //                   : Colors.grey),
+              //         ),
+              // ),
             ],
           )
         ],

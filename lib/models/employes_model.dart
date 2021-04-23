@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class EmployeesModel extends ChangeNotifier {
   int? id;
+  bool? isAdmin;
   String? fname;
   String? lname;
   String? email;
@@ -18,6 +19,7 @@ class EmployeesModel extends ChangeNotifier {
 
   EmployeesModel({
     this.id,
+    this.isAdmin = false,
     this.picture,
     this.createdAt,
     this.updatedAt,
@@ -34,6 +36,7 @@ class EmployeesModel extends ChangeNotifier {
 
   EmployeesModel.fromJson(Map<String, dynamic> json) {
     this.id = json["id"];
+    this.isAdmin = json["is_admin"] > 0;
     this.fname = json["first_name"];
     this.lname = json["last_name"];
     this.email = json["email"];
