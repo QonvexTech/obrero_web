@@ -128,21 +128,6 @@ class _CustomerAddState extends State<CustomerAdd> {
             color: Palette.drawerColor,
             onPressed: () {
               if (isEdit) {
-                widget.customerToEdit!.fname = fnameController.text;
-                widget.customerToEdit!.lname = lnameController.text;
-                widget.customerToEdit!.email = emailController.text;
-                widget.customerToEdit!.adress = addressController.text;
-                widget.customerToEdit!.picture = "pic";
-                widget.customerToEdit!.contactNumber =
-                    contactNumberController.text;
-                widget.customerToEdit!.amount =
-                    double.parse(amountController.text);
-
-                customerService
-                    .updateCustomer(
-                      editCustomer: widget.customerToEdit!,
-                    )
-                    .whenComplete(() => Navigator.pop(context));
               } else {
                 CustomerModel newCustomer = CustomerModel(
                     fname: fnameController.text,

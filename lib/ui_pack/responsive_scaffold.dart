@@ -30,7 +30,7 @@ class ResponsiveScaffold extends StatefulWidget {
 
 class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   void initializeFirebase() async {
-    await fireBase.init(context: context);
+    await FireBase().init(context: context);
   }
 
   @override

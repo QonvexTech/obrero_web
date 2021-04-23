@@ -44,7 +44,7 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -79,7 +79,7 @@ class EmployeeSevice extends ChangeNotifier {
         newEmployee.toJson()
       }, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -97,7 +97,7 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       await http.post(url, body: body, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
@@ -116,7 +116,7 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       await http.delete(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);

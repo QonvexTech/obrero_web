@@ -44,7 +44,7 @@ class MessageService extends ChangeNotifier {
         mess = "Sent an attachment";
       }
       print(ids);
-      print(auth.token);
+
       var url = Uri.parse(message_send_api);
       await http.post(url, body: body, headers: {
         "accept": "application/json",
@@ -58,14 +58,14 @@ class MessageService extends ChangeNotifier {
             if (item['receiver_notify'] == 1) {
               nBody = {"title": "Admin", "body": mess};
             }
-            await fireBase.sendNotification(item['fcm_tokens'], nBody, item);
+            await FireBase().sendNotification(item['fcm_tokens'], nBody, item);
           }
         } else {
           Map<String, dynamic> nBody = Map<String, dynamic>();
           if (data['data']['receiver_notify'] == 1) {
             nBody = {"title": "Admin", "body": mess};
           }
-          await fireBase.sendNotification(
+          await FireBase().sendNotification(
               data['data']['fcm_tokens'], nBody, data['data']);
         }
       });

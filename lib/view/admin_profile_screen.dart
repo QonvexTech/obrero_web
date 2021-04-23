@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/models/admin_model.dart';
-import 'package:uitemplate/services/autentication.dart';
+import 'package:uitemplate/services/profile_service.dart';
 
 class AdminProfile extends StatefulWidget {
   const AdminProfile({
@@ -15,8 +14,7 @@ class AdminProfile extends StatefulWidget {
 class _AdminProfileState extends State<AdminProfile> {
   @override
   Widget build(BuildContext context) {
-    var auth = Provider.of<Authentication>(context, listen: false);
-    Admin admin = auth.data;
+    ProfileService adminService = Provider.of<ProfileService>(context);
     return Card(
       elevation: 10,
       child: Padding(
@@ -29,8 +27,8 @@ class _AdminProfileState extends State<AdminProfile> {
             SizedBox(
               height: MySpacer.medium,
             ),
-            Text(admin.firstName!),
-            Text(admin.email!),
+            Text(adminService.admin!.firstName!),
+            Text(adminService.admin!.email!),
             Expanded(child: Container()),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,

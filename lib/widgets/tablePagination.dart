@@ -14,47 +14,55 @@ class TablePagination extends StatelessWidget {
   Widget build(BuildContext context) {
     PaginationService pageService = Provider.of<PaginationService>(context);
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        MaterialButton(
-          minWidth: 100,
-          onPressed: this.paginationModel.isPrev
-              ? () {
-                  pageService.prevPage(paginationModel);
-                }
-              : null,
-          child: Text(
-            "Previous",
-            style: TextStyle(
-                color: this.paginationModel.isPrev
-                    ? Palette.drawerColor
-                    : Colors.grey),
-          ),
+        Row(
+          children: [Text("Showing 10 of ${paginationModel.page} entries")],
         ),
-        for (var index = 1; index <= this.paginationModel.lastPage; index++)
-          MaterialButton(
-            minWidth: 50,
-            color: this.paginationModel.page == index
-                ? Palette.drawerColor
-                : Palette.contentBackground,
-            onPressed: () {
-              pageService.setTablePage(index, paginationModel);
-            },
-            child: Text((index).toString()),
-          ),
-        MaterialButton(
-          minWidth: 100,
-          onPressed: paginationModel.isNext
-              ? () {
-                  pageService.nextPage(paginationModel);
-                }
-              : null,
-          child: Text(
-            "Next",
-            style: TextStyle(
-                color:
-                    paginationModel.isNext ? Palette.drawerColor : Colors.grey),
-          ),
+        Row(
+          children: [
+            MaterialButton(
+              minWidth: 100,
+              onPressed: this.paginationModel.isPrev
+                  ? () {
+                      pageService.prevPage(paginationModel);
+                    }
+                  : null,
+              child: Text(
+                "Previous",
+                style: TextStyle(
+                    color: this.paginationModel.isPrev
+                        ? Palette.drawerColor
+                        : Colors.grey),
+              ),
+            ),
+            for (var index = 1; index <= this.paginationModel.lastPage; index++)
+              MaterialButton(
+                minWidth: 50,
+                color: this.paginationModel.page == index
+                    ? Palette.drawerColor
+                    : Palette.contentBackground,
+                onPressed: () {
+                  pageService.setTablePage(index, paginationModel);
+                },
+                child: Text((index).toString()),
+              ),
+            MaterialButton(
+              minWidth: 100,
+              onPressed: paginationModel.isNext
+                  ? () {
+                      pageService.nextPage(paginationModel);
+                    }
+                  : null,
+              child: Text(
+                "Next",
+                style: TextStyle(
+                    color: paginationModel.isNext
+                        ? Palette.drawerColor
+                        : Colors.grey),
+              ),
+            )
+          ],
         )
       ],
     );

@@ -30,7 +30,6 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => FireBase()),
     ChangeNotifierProvider(create: (_) => DashboardService()),
-    ChangeNotifierProvider(create: (_) => Authentication()),
     ChangeNotifierProvider(create: (_) => EmployeeSevice()),
     ChangeNotifierProvider(create: (_) => ProjectProvider()),
     ChangeNotifierProvider(create: (_) => MapService()),

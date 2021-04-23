@@ -1,11 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/autentication.dart';
-import 'package:uitemplate/services/customer_service.dart';
-import 'package:uitemplate/services/project_service.dart';
 
 class LoginForm extends StatefulWidget {
   final paddingTopForm,
@@ -83,7 +80,6 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     final double widthSize = MediaQuery.of(context).size.width;
     final double heightSize = MediaQuery.of(context).size.height;
-    Authentication auth = Provider.of<Authentication>(context, listen: false);
     return loader
         ? Expanded(
             child: Container(

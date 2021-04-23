@@ -1,6 +1,8 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/widgets/adding_button.dart';
 
 class HeaderList extends StatelessWidget {
@@ -11,6 +13,7 @@ class HeaderList extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
+    var searchProvider = Provider.of<CustomerService>(context, listen: false);
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -36,6 +39,13 @@ class HeaderList extends StatelessWidget {
                       primaryColor: Palette.drawerColor,
                     ),
                     child: TextField(
+                      controller: searchProvider.searchController,
+                      onSubmitted: (value) {
+                        searchProvider.search(value);
+                      },
+                      onChanged: (value) {
+                        searchProvider.search(value);
+                      },
                       cursorColor: Palette.drawerColor,
                       decoration: InputDecoration(
                           hintStyle: TextStyle(color: Colors.black12),
@@ -47,7 +57,6 @@ class HeaderList extends StatelessWidget {
                 ),
                 Expanded(child: Container()),
                 Container(
-                  // width: 40,
                   height: 40,
                   color: Colors.red,
                   child: AddingButton(addingPage: toPage, buttonText: "Créer"),

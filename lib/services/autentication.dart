@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uitemplate/config/global.dart';
@@ -10,9 +9,8 @@ import 'package:uitemplate/services/notification_services.dart';
 
 import '../config/global.dart';
 
-class Authentication extends ChangeNotifier {
+class Authentication {
   Admin? _data;
-  String? token;
 
   var error;
   get data => _data;
@@ -25,7 +23,7 @@ class Authentication extends ChangeNotifier {
   Future<bool> login(String email, String password) async {
     try {
       bool success = false;
-      var fcmToken = await fireBase.fcmToken;
+      var fcmToken = await FireBase().fcmToken;
       print("LOGGING IN");
       var url = Uri.parse(login_api);
       var response = await http.post(url,
@@ -34,14 +32,14 @@ class Authentication extends ChangeNotifier {
         this._data = Admin.fromJson(json.decode(response.body)["data"]);
         print("login success");
         DataCacher().saveCredentials(email, password);
-        token = jsonDecode(response.body)['data']['token'];
-        print("This is the TOken $token");
+
         authToken = jsonDecode(response.body)['data']['token'];
+        print("This is the TOken $authToken");
         rxNotificationService.fetchOld();
         success = true;
         return success;
       } else {
-        print(response.body);
+        print(response.statusCode);
         return false;
       }
     } catch (e) {

@@ -112,5 +112,3 @@ class FireBase extends ChangeNotifier {
     });
   }
 }
-
-FireBase fireBase = FireBase();
