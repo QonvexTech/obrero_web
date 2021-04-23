@@ -12,7 +12,6 @@ class AddingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialButton(
       color: Palette.drawerColor,
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
       onPressed: () {
         showDialog(
             context: context,
@@ -21,6 +20,7 @@ class AddingButton extends StatelessWidget {
                 content: addingPage));
       },
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.add_circle,

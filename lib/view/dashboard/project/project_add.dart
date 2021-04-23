@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project_add_service.dart';
 import 'package:uitemplate/widgets/map.dart';
@@ -50,24 +51,23 @@ class ProjectAddScreen extends StatelessWidget {
                       controller: projectAddService.descriptionController,
                     ),
                   ),
-                  //list of customers
-                  Consumer<CustomerService>(
+
+                  //list of users
+                  Consumer<EmployeeSevice>(
                     builder: (_, data, child) {
-                      return Container(
-                        height: 150,
-                        width: double.infinity,
+                      return Expanded(
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: projectAddService.assignee.length,
+                            itemCount: data.users.length,
                             itemBuilder: (context, index) {
                               return ListTile(
-                                title: data.customers[index].fname,
+                                title: Text(data.users[index].fname),
                               );
                             }),
                       );
                     },
                   ),
-                  //List of usrr
+
                   Row(
                     children: [
                       Text("Start Date"),

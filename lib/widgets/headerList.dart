@@ -16,7 +16,7 @@ class HeaderList extends StatelessWidget {
     var searchProvider = Provider.of<CustomerService>(context, listen: false);
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: AdaptiveContainer(children: [
         AdaptiveItem(
           height: 50,
