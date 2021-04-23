@@ -13,9 +13,10 @@ class CustomerService extends ChangeNotifier {
   PaginationService paginationService = PaginationService();
   List<CustomerModel> _customers = [];
   List<CustomerModel> _tempCustomer = [];
-  int _totalEntries = 0;
   late PaginationModel _pagination = PaginationModel(
-      lastPage: 1, fetch: fetchCustomers, totalEntries: _totalEntries);
+    lastPage: 1,
+    fetch: fetchCustomers,
+  );
   Map bodyToUpdate = {};
 
   TextEditingController _searchController = TextEditingController();
@@ -89,8 +90,7 @@ class CustomerService extends ChangeNotifier {
         if (json.decode(response.body)["last_page"] != null) {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
-
-        // _totalEntries = json.decode(response.body)["next_page_url"];
+        _pagination.totalEntries = json.decode(response.body)["total"];
         print(json.decode(response.body));
         fromJsonListToCustomer(data);
       } else {

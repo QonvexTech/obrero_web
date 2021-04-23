@@ -79,8 +79,11 @@ class ProjectList extends StatelessWidget {
               )
             ],
           ))),
-          TablePagination(
-            paginationModel: projectProvider.pagination,
+          Expanded(
+            child: TablePagination(
+              showingLength: projectProvider.projects.length,
+              paginationModel: projectProvider.pagination,
+            ),
           ),
           SizedBox(
             height: MySpacer.large,

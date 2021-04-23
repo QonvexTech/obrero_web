@@ -17,6 +17,7 @@ class _CustomerListState extends State<CustomerList> {
   @override
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
+
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -57,7 +58,9 @@ class _CustomerListState extends State<CustomerList> {
                     SizedBox(
                       height: MySpacer.small,
                     ),
-                    TablePagination(paginationModel: customerService.pagination)
+                    TablePagination(
+                        showingLength: customerService.customers.length,
+                        paginationModel: customerService.pagination)
                   ],
                 ),
               ),

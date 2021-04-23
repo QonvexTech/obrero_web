@@ -130,6 +130,7 @@ class _EmployeeListState extends State<EmployeeList> {
                           ]))),
           //ROW PAGEr
           TablePagination(
+            showingLength: employeeService.users.length,
             paginationModel: employeeService.pagination,
           ),
           SizedBox(
