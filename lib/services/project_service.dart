@@ -4,13 +4,14 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/screens/dashboard/project/project_list.dart';
 import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
+import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
 class ProjectProvider extends ChangeNotifier {
   Widget activePageScreen = ProjectList();
   List<ProjectModel> _projects = [];
+  DateTime dateBase = DateTime.now();
 
   //TODO: update map
 
@@ -44,7 +45,7 @@ class ProjectProvider extends ChangeNotifier {
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -66,12 +67,42 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
+  // Future fetchProjectsBaseOnDates() async {
+  //   var url = Uri.parse("$project_api ${dateBase.toString().split(" ")[0]}");
+  //   // final prefs = await SharedPreferences.getInstance();
+  //   try {
+  //     var response = await http.get(url, headers: {
+  //       "Accept": "application/json",
+  //       "Authorization": "Bearer ${auth.token}",
+  //       "Content-Type": "application/x-www-form-urlencoded"
+  //     });
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       List data = json.decode(response.body)["data"];
+  //       print(data);
+  //       // if (json.decode(response.body)["next_page_url"] != null) {
+  //       //   _pagination.isNext = true;
+  //       //   notifyListeners();
+  //       // }
+  //       // if (json.decode(response.body)["prev_page_url"] != null) {
+  //       //   _pagination.isPrev = true;
+  //       //   notifyListeners();
+  //       // }
+  //       // fromJsonListToProject(data);
+  //     } else {
+  //       print("error");
+  //       print(response.body);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
   Future createProjects({required ProjectModel newProject}) async {
     var url = Uri.parse("$project_create_api");
     try {
       var response = await http.post(url, body: newProject.toJson(), headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -92,7 +123,7 @@ class ProjectProvider extends ChangeNotifier {
     try {
       await http.put(url, body: newProject.toJson(), headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
@@ -111,7 +142,7 @@ class ProjectProvider extends ChangeNotifier {
     try {
       await http.delete(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         _projects.removeWhere((element) => element.id == id);

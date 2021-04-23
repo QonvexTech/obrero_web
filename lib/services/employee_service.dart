@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/pagination_model.dart';
-import 'package:uitemplate/screens/dashboard/employee/employee_list.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
+import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 
 class EmployeeSevice extends ChangeNotifier {
   Widget activePageScreen = EmployeeList();
@@ -44,7 +44,7 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -79,7 +79,7 @@ class EmployeeSevice extends ChangeNotifier {
         newEmployee.toJson()
       }, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -97,7 +97,7 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       await http.post(url, body: body, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
@@ -116,7 +116,7 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       await http.delete(url, headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer ${auth.token}",
+        "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);

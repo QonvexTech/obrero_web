@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/services/autentication.dart';
-import 'package:uitemplate/services/push_notification.dart';
+import 'package:uitemplate/services/firebase_message.dart';
 
 import '../config/global.dart';
 import '../models/employes_model.dart';
@@ -45,13 +44,12 @@ class MessageService extends ChangeNotifier {
         mess = "Sent an attachment";
       }
       print(ids);
-      print(auth.token);
-      PushNotification notification = new PushNotification();
+
       var url = Uri.parse(message_send_api);
       await http.post(url, body: body, headers: {
         "accept": "application/json",
         HttpHeaders.authorizationHeader: "Bearer $authToken"
-      }).then((response) {
+      }).then((response) async {
         var data = json.decode(response.body);
         print(data);
         if (data['data'] is List) {
@@ -60,14 +58,15 @@ class MessageService extends ChangeNotifier {
             if (item['receiver_notify'] == 1) {
               nBody = {"title": "Admin", "body": mess};
             }
-            notification.sendNotification(item['fcm_tokens'], nBody);
+            await FireBase().sendNotification(item['fcm_tokens'], nBody, item);
           }
         } else {
           Map<String, dynamic> nBody = Map<String, dynamic>();
           if (data['data']['receiver_notify'] == 1) {
             nBody = {"title": "Admin", "body": mess};
           }
-          notification.sendNotification(data['data']['fcm_tokens'], nBody);
+          await FireBase().sendNotification(
+              data['data']['fcm_tokens'], nBody, data['data']);
         }
       });
     } catch (e) {}

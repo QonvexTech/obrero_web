@@ -1,37 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uitemplate/screens/dashboard/customer/customer_screen.dart';
-import 'package:uitemplate/screens/dashboard/dashboard_screen.dart';
-import 'package:uitemplate/screens/dashboard/employee/employee_screen.dart';
-import 'package:uitemplate/screens/dashboard/logs/log_screen.dart';
-import 'package:uitemplate/screens/dashboard/project/project_add.dart';
-import 'package:uitemplate/screens/dashboard/settings/general_settings.dart';
-import 'package:uitemplate/screens/login/login_screen.dart';
-import 'package:uitemplate/screens/splash_screen.dart';
 import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/message_service.dart';
 import 'package:uitemplate/services/project_service.dart';
-import 'package:uitemplate/services/push_notification.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/ui_pack/children/sub_drawer_item.dart';
 import 'package:uitemplate/ui_pack/responsive_scaffold.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
+import 'package:uitemplate/view/dashboard/dashboard_screen.dart';
+import 'package:uitemplate/view/dashboard/employee/employee_screen.dart';
+import 'package:uitemplate/view/dashboard/logs/log_screen.dart';
+import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
+import 'package:uitemplate/view/dashboard/project/project_add.dart';
+import 'package:uitemplate/view/dashboard/project/project_screen.dart';
+import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
+import 'package:uitemplate/view/login/login_screen.dart';
+import 'package:uitemplate/view/splash_screen.dart';
 import 'config/pallete.dart';
-import 'screens/dashboard/messages/message_screen.dart';
-import 'screens/dashboard/project/project_screen.dart';
-import 'screens/splash_screen.dart';
 import 'services/map_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MapService().checkLocationPermission();
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => PushNotification()),
+    ChangeNotifierProvider(create: (_) => FireBase()),
     ChangeNotifierProvider(create: (_) => DashboardService()),
-    ChangeNotifierProvider(create: (_) => Authentication()),
     ChangeNotifierProvider(create: (_) => EmployeeSevice()),
     ChangeNotifierProvider(create: (_) => ProjectProvider()),
     ChangeNotifierProvider(create: (_) => MapService()),
@@ -60,7 +58,7 @@ class MyApp extends StatelessWidget {
         '/splash': (context) => SplashScreen(),
         '/login': (context) => Login(),
         '/home': (context) => MyHomePage(),
-        '/project/add': (context) => ProjectAdd(),
+        '/project/add': (context) => ProjectAddScreen(),
       },
     );
   }
@@ -75,12 +73,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     try {
-      PushNotification pushNotify = Provider.of<PushNotification>(context);
       return ResponsiveScaffold(
-          notifications: pushNotify.notifications,
           title: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Image.asset('assets/icons/logo1.png',height: 50,),
+            child: Image.asset(
+              'assets/icons/logo.png',
+              height: 50,
+            ),
           ),
           drawerItems: [
             DrawerItem(

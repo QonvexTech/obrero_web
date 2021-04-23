@@ -1,10 +1,9 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/services/push_notification.dart';
+import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
-import 'package:uitemplate/widgets/searchBox.dart';
+import 'package:uitemplate/widgets/notifications.dart';
 
 class ResponsiveScaffold extends StatefulWidget {
   final BuildContext? context;
@@ -13,7 +12,6 @@ class ResponsiveScaffold extends StatefulWidget {
   final Color? drawerBackgroundColor;
   final List<DrawerItem>? drawerItems;
   late Widget? body;
-  final List<RemoteMessage>? notifications;
 
   final OverlayState? overlayState;
 
@@ -24,8 +22,7 @@ class ResponsiveScaffold extends StatefulWidget {
       this.drawerItems,
       this.body,
       this.backgroundColor = Colors.white,
-      this.drawerBackgroundColor,
-      this.notifications});
+      this.drawerBackgroundColor});
 
   @override
   _ResponsiveScaffoldState createState() => _ResponsiveScaffoldState();
@@ -33,7 +30,7 @@ class ResponsiveScaffold extends StatefulWidget {
 
 class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   void initializeFirebase() async {
-    await PushNotification().init();
+    await FireBase().init(context: context);
   }
 
   @override
@@ -120,6 +117,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    // PushNotification pushNotification = Provider.of<PushNotification>(context, listen: false);
+
     return OrientationBuilder(builder: (context, orientation) {
       // if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       //   DesktopWindow.setMinWindowSize(Size(500, 700));
@@ -354,47 +353,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                         ),
                       },
                       Spacer(),
-                      SearchBox(),
-                      PopupMenuButton(
-                          offset: Offset(0, 50),
-                          icon: Stack(
-                            children: [
-                              // Text("${widget.notifications!.length}"),
-                              Icon(Icons.notifications),
-                              Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: Icon(
-                                    Icons.circle,
-                                    size: 10,
-                                    color: Colors.green,
-                                  )),
-                              widget.notifications!.length > 0
-                                  ? Positioned(
-                                      top: 0,
-                                      right: 0,
-                                      child: Icon(
-                                        Icons.circle,
-                                        size: 10,
-                                        color: Colors.red,
-                                      ))
-                                  : SizedBox(),
-                            ],
-                          ),
-                          itemBuilder: (context) => [
-                                for (RemoteMessage notification
-                                    in widget.notifications!)
-                                  PopupMenuItem(
-                                    // value: sub_items.content,
-                                    child: Row(
-                                      children: [
-                                        CircleAvatar(),
-                                        Text("${notification.data}")
-                                      ],
-                                    ),
-                                  )
-                              ]),
-
+                      NotificationCard(),
                       PopupMenuButton(
                           offset: Offset(0, 50),
                           icon: FittedBox(
