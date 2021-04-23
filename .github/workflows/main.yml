@@ -1,5 +1,5 @@
 name: Build & Deploy Website
-on: 
+on:
   push:
     branches:
       - master

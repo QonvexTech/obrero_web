@@ -4,7 +4,6 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 
@@ -32,9 +31,13 @@ class EmployeeSevice extends ChangeNotifier {
   fromJsonListToUsers(List users) {
     List<EmployeesModel> newUsers = [];
     for (var user in users) {
-      newUsers.add(EmployeesModel.fromJson(user));
+      EmployeesModel userModel = EmployeesModel.fromJson(user);
+      if (!userModel.isAdmin!) {
+        newUsers.add(userModel);
+      }
     }
     _users = newUsers;
+
     notifyListeners();
   }
 

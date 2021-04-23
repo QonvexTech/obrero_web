@@ -31,6 +31,11 @@ class ProjectAddService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeAssigne(int id) {
+    _assignee.remove(id);
+    notifyListeners();
+  }
+
   init(projectToEdit, CustomerModel firstCustomer) {
     if (projectToEdit != null) {
       print("not null");
@@ -64,7 +69,6 @@ class ProjectAddService extends ChangeNotifier {
   void submit(
       {required projectToEdit,
       required projectService,
-      required customers,
       required coordinates,
       required context}) {
     if (isEdit) {
@@ -76,10 +80,9 @@ class ProjectAddService extends ChangeNotifier {
       projectToEdit!.endDate = endDate;
       projectService.updateProject(newProject: projectToEdit);
     } else {
-      print("Submit");
       ProjectModel newProject = ProjectModel(
-          assignee: assignee,
-          customerId: customers[activeOwnerIndex].id,
+          assignee: _assignee,
+          customerId: _activeOwnerIndex,
           description: descriptionController.text,
           name: nameController.text,
           coordinates: coordinates,
