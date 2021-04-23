@@ -6,6 +6,7 @@ import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/message_service.dart';
+import 'package:uitemplate/services/project_add_service.dart';
 import 'package:uitemplate/services/project_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
@@ -32,6 +33,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => DashboardService()),
     ChangeNotifierProvider(create: (_) => EmployeeSevice()),
     ChangeNotifierProvider(create: (_) => ProjectProvider()),
+    ChangeNotifierProvider(create: (_) => ProjectAddService()),
     ChangeNotifierProvider(create: (_) => MapService()),
     ChangeNotifierProvider(create: (_) => PaginationService()),
     ChangeNotifierProvider(create: (_) => CustomerService()),

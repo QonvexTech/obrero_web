@@ -13,58 +13,65 @@ class TablePagination extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PaginationService pageService = Provider.of<PaginationService>(context);
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [Text("Showing 10 of ${paginationModel.page} entries")],
-        ),
-        Row(
-          children: [
-            MaterialButton(
-              minWidth: 100,
-              onPressed: this.paginationModel.isPrev
-                  ? () {
-                      pageService.prevPage(paginationModel);
-                    }
-                  : null,
-              child: Text(
-                "Previous",
-                style: TextStyle(
-                    color: this.paginationModel.isPrev
-                        ? Palette.drawerColor
-                        : Colors.grey),
-              ),
-            ),
-            for (var index = 1; index <= this.paginationModel.lastPage; index++)
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [Text("Showing 10 of ${paginationModel.page} entries")],
+          ),
+          Row(
+            children: [
               MaterialButton(
-                minWidth: 50,
-                color: this.paginationModel.page == index
-                    ? Palette.drawerColor
-                    : Palette.contentBackground,
-                onPressed: () {
-                  pageService.setTablePage(index, paginationModel);
-                },
-                child: Text((index).toString()),
+                minWidth: 100,
+                onPressed: this.paginationModel.isPrev
+                    ? () {
+                        pageService.prevPage(paginationModel);
+                      }
+                    : null,
+                child: Text(
+                  "Previous",
+                  style: TextStyle(
+                      color: this.paginationModel.isPrev
+                          ? Palette.drawerColor
+                          : Colors.grey),
+                ),
               ),
-            MaterialButton(
-              minWidth: 100,
-              onPressed: paginationModel.isNext
-                  ? () {
-                      pageService.nextPage(paginationModel);
-                    }
-                  : null,
-              child: Text(
-                "Next",
-                style: TextStyle(
-                    color: paginationModel.isNext
-                        ? Palette.drawerColor
-                        : Colors.grey),
-              ),
-            )
-          ],
-        )
-      ],
+              for (var index = 1;
+                  index <= this.paginationModel.lastPage;
+                  index++)
+                MaterialButton(
+                  minWidth: 50,
+                  color: this.paginationModel.page == index
+                      ? Palette.drawerColor
+                      : Palette.contentBackground,
+                  onPressed: () {
+                    pageService.setTablePage(index, paginationModel);
+                  },
+                  child: Text((index).toString()),
+                ),
+              MaterialButton(
+                minWidth: 100,
+                onPressed: paginationModel.isNext
+                    ? () {
+                        pageService.nextPage(paginationModel);
+                      }
+                    : null,
+                child: MediaQuery.of(context).size.width <= 400
+                    ? Icon(Icons.arrow_forward_ios)
+                    : Text(
+                        "Next",
+                        style: TextStyle(
+                            color: paginationModel.isNext
+                                ? Palette.drawerColor
+                                : Colors.grey),
+                      ),
+              )
+            ],
+          )
+        ],
+      ),
     );
   }
 }

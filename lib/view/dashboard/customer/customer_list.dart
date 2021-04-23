@@ -30,33 +30,36 @@ class _CustomerListState extends State<CustomerList> {
           ),
           Expanded(
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  AllTable(
-                      datas: customerService.customers,
-                      rowWidget: rowWidget(context, customerService.customers,
-                          customerService.removeCustomer),
-                      rowWidgetMobile: rowWidgetMobile(
-                          context,
-                          customerService.customers,
-                          customerService.removeCustomer),
-                      headersMobile: [
-                        "NOM",
-                        "EMAIL",
-                        "STATUS"
-                      ],
-                      headers: [
-                        "NOM",
-                        "EMAIL",
-                        "TÉLÉPHONE",
-                        "ADDRESSE",
-                        "STATUS"
-                      ]),
-                  SizedBox(
-                    height: MySpacer.small,
-                  ),
-                  TablePagination(paginationModel: customerService.pagination)
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    AllTable(
+                        datas: customerService.customers,
+                        rowWidget: rowWidget(context, customerService.customers,
+                            customerService.removeCustomer),
+                        rowWidgetMobile: rowWidgetMobile(
+                            context,
+                            customerService.customers,
+                            customerService.removeCustomer),
+                        headersMobile: [
+                          "NOM",
+                          "EMAIL",
+                          "STATUS"
+                        ],
+                        headers: [
+                          "NOM",
+                          "EMAIL",
+                          "TÉLÉPHONE",
+                          "ADDRESSE",
+                          "STATUS"
+                        ]),
+                    SizedBox(
+                      height: MySpacer.small,
+                    ),
+                    TablePagination(paginationModel: customerService.pagination)
+                  ],
+                ),
               ),
             ),
           ),
@@ -107,7 +110,7 @@ List<TableRow> rowWidgetMobile(
         TableCell(
           child: PopupMenuButton(
               padding: EdgeInsets.all(0),
-              offset: Offset(-40, 20),
+              offset: Offset(0, 40),
               icon: Icon(
                 Icons.more_horiz_rounded,
                 color: Palette.drawerColor,
