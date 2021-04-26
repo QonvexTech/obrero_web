@@ -202,7 +202,7 @@ class CustomerDetails extends StatelessWidget {
                             MaterialButton(
                               color: Palette.drawerColor,
                               onPressed: () {
-                                customerService.setPage(CustomerList());
+                                customerService.setPage(page: CustomerList());
                               },
                               child: Text(
                                 "CustomerList",

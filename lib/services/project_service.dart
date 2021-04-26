@@ -10,11 +10,30 @@ import 'package:uitemplate/view/dashboard/project/project_list.dart';
 class ProjectProvider extends ChangeNotifier {
   Widget activePageScreen = ProjectList();
   List<ProjectModel> _projects = [];
+  List<ProjectModel> _tempProjects = [];
   DateTime dateBase = DateTime.now();
 
   PaginationService paginationService = PaginationService();
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchProjects);
+
+  //SEARCH
+  TextEditingController _searchController = TextEditingController();
+  get searchController => _searchController;
+  void search(String text) {
+    _projects = _projects
+        .where((element) =>
+            element.name!.toLowerCase().contains(text.toLowerCase()) ||
+            "${element.coordinates!.latitude}, ${element.coordinates!.longitude}"
+                .toLowerCase()
+                .contains(text.toLowerCase()))
+        .toList();
+    if (text.isEmpty) {
+      _projects = _tempProjects;
+    }
+    notifyListeners();
+  }
+  //-------------
 
   void setPage(Widget page) {
     activePageScreen = page;
@@ -32,6 +51,8 @@ class ProjectProvider extends ChangeNotifier {
     }
 
     _projects = newProjects;
+    _tempProjects = newProjects;
+    _searchController.clear();
     notifyListeners();
   }
 
@@ -55,6 +76,11 @@ class ProjectProvider extends ChangeNotifier {
           _pagination.isPrev = true;
           notifyListeners();
         }
+        if (json.decode(response.body)["last_page"] != null) {
+          _pagination.lastPage = json.decode(response.body)["last_page"];
+        }
+        _pagination.totalEntries = json.decode(response.body)["total"];
+
         fromJsonListToProject(data);
       } else {
         print(response.body);

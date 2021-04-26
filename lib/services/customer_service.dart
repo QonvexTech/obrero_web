@@ -18,18 +18,9 @@ class CustomerService extends ChangeNotifier {
     fetch: fetchCustomers,
   );
   Map bodyToUpdate = {};
-
+  //SEARCH CUSTOMER
   TextEditingController _searchController = TextEditingController();
-
   get searchController => _searchController;
-
-  get customers => _customers;
-  get pagination => _pagination;
-  void setPage(Widget page) {
-    activePageScreen = page;
-    notifyListeners();
-  }
-
   void search(String text) {
     _customers = _customers
         .where((element) =>
@@ -39,6 +30,13 @@ class CustomerService extends ChangeNotifier {
     if (text.isEmpty) {
       _customers = _tempCustomer;
     }
+    notifyListeners();
+  }
+
+  get customers => _customers;
+  get pagination => _pagination;
+  void setPage({required Widget page}) {
+    activePageScreen = page;
     notifyListeners();
   }
 

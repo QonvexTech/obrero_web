@@ -1,4 +1,3 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -17,6 +16,8 @@ class TablePagination extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PaginationService pageService = Provider.of<PaginationService>(context);
+    pageService.loadperPageList(paginationModel.totalEntries);
+    print("biuld");
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -24,21 +25,16 @@ class TablePagination extends StatelessWidget {
           child: Row(
             children: [
               Text("Showing"),
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: TextField(
-                    controller: pageService.perPageController,
-                    onChanged: (value) {
-                      try {
-                        pageService.customPerPage(
-                            paginationModel, int.parse(value));
-                      } catch (e) {
-                        print(e);
-                      }
-                    },
-                    decoration: InputDecoration(hintText: "$showingLength"),
-                  ),
+              Container(
+                width: 100,
+                padding: EdgeInsets.symmetric(horizontal: 5),
+                child: DropdownButton(
+                  items: pageService.perPageList,
+                  value: pageService.selectedPerPage,
+                  onChanged: (value) {
+                    pageService.updatePerPage(value, paginationModel);
+                  },
+                  isExpanded: true,
                 ),
               ),
               Text("of ${paginationModel.totalEntries} entries")

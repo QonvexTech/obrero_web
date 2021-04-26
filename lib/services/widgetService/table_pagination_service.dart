@@ -3,7 +3,29 @@ import 'package:uitemplate/models/pagination_model.dart';
 
 class PaginationService extends ChangeNotifier {
   ScrollController scrollController = ScrollController();
-  TextEditingController perPageController = TextEditingController();
+
+  var selectedPerPage = 10;
+
+  List<DropdownMenuItem<int>> perPageList = [];
+
+  void loadperPageList(int totalPage) {
+    perPageList = [];
+    for (var x = 1; x <= totalPage; x++) {
+      perPageList.add(new DropdownMenuItem(
+        child: new Text('$x'),
+        value: x,
+      ));
+    }
+  }
+
+  void updatePerPage(var value, PaginationModel page) {
+    selectedPerPage = value;
+    page.perPage = selectedPerPage;
+    page.isNext = false;
+    page.isPrev = false;
+    page.fetch();
+    notifyListeners();
+  }
 
   void customPerPage(PaginationModel page, int newPerPage) {
     page.perPage = newPerPage;

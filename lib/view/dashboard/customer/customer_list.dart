@@ -4,6 +4,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_add.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
@@ -37,12 +38,16 @@ class _CustomerListState extends State<CustomerList> {
                   children: [
                     AllTable(
                         datas: customerService.customers,
-                        rowWidget: rowWidget(context, customerService.customers,
-                            customerService.removeCustomer),
+                        rowWidget: rowWidget(
+                            context,
+                            customerService.customers,
+                            customerService.removeCustomer,
+                            customerService.setPage),
                         rowWidgetMobile: rowWidgetMobile(
                             context,
                             customerService.customers,
-                            customerService.removeCustomer),
+                            customerService.removeCustomer,
+                            customerService.setPage),
                         headersMobile: [
                           "NOM",
                           "EMAIL",
@@ -75,8 +80,8 @@ class _CustomerListState extends State<CustomerList> {
   }
 }
 
-List<TableRow> rowWidgetMobile(
-    BuildContext context, List<CustomerModel> datas, Function remove) {
+List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
+    Function remove, Function setPage) {
   return [
     for (var data in datas)
       TableRow(children: [
@@ -85,9 +90,14 @@ List<TableRow> rowWidgetMobile(
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                data.fname!,
-                overflow: TextOverflow.ellipsis,
+              child: TextButton(
+                onPressed: () {
+                  setPage(page: CustomerDetails(customer: data));
+                },
+                child: Text(
+                  "${data.fname!} ${data.lname!}",
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ))),
         TableCell(
@@ -157,8 +167,8 @@ List<TableRow> rowWidgetMobile(
   ];
 }
 
-List<TableRow> rowWidget(
-    BuildContext context, List<CustomerModel> datas, Function remove) {
+List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
+    Function remove, Function setPage) {
   return [
     for (var data in datas)
       TableRow(children: [
@@ -167,9 +177,14 @@ List<TableRow> rowWidget(
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                data.fname!,
-                overflow: TextOverflow.ellipsis,
+              child: TextButton(
+                onPressed: () {
+                  setPage(page: CustomerDetails(customer: data));
+                },
+                child: Text(
+                  "${data.fname!} ${data.lname!}",
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ))),
         TableCell(
@@ -208,7 +223,7 @@ List<TableRow> rowWidget(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.status.toString(),
+                data.status!.status.toString(),
                 overflow: TextOverflow.ellipsis,
               ),
             ))),

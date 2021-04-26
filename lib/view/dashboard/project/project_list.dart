@@ -5,12 +5,14 @@ import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/headerList.dart';
+import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
 
 class ProjectList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -23,66 +25,41 @@ class ProjectList extends StatelessWidget {
             height: MySpacer.large,
           ),
           Expanded(
-              child: Container(
-                  child: ListView(
-            children: [
-              Consumer<ProjectProvider>(
-                builder: (context, data, child) {
-                  if (data.projects.length <= 0) {
-                    return Container(
-                        width: 200,
-                        height: 200,
-                        child: Column(
-                          children: [
-                            Icon(Icons.now_widgets),
-                            Text("No project Yet")
-                          ],
-                        ));
-                  }
-                  return DataTable(
-                      headingTextStyle: TextStyle(color: Colors.white),
-                      headingRowColor:
-                          MaterialStateProperty.resolveWith((states) {
-                        if (states.contains(MaterialState.hovered)) {
-                          return Palette.drawerColor.withOpacity(0.5);
-                        } else {
-                          return Palette.drawerColor;
-                        }
-                      }),
-                      showCheckboxColumn: true,
-                      columns: [
-                        DataColumn(
-                            label: Text('NOM DU SITE',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('OWNER',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('LOCATION',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('AREA SIZE',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('START DATE',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('END DATE',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Container()),
-                      ],
-                      rows: [
-                        for (ProjectModel project in data.projects)
-                          ...widgetRows(context, data, project)
-                      ]);
-                },
-              )
-            ],
-          ))),
-          Expanded(
-            child: TablePagination(
-              showingLength: projectProvider.projects.length,
-              paginationModel: projectProvider.pagination,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    AllTable(
+                        datas: projectProvider.projects,
+                        rowWidget: rowWidget(context, projectProvider.projects,
+                            projectProvider.removeProject),
+                        rowWidgetMobile: rowWidgetMobile(
+                            context,
+                            projectProvider.projects,
+                            projectProvider.removeProject),
+                        headersMobile: [
+                          "NOM DU SITE",
+                          "OWNER",
+                          "LOCATION"
+                        ],
+                        headers: [
+                          "NOM DU SITE",
+                          "OWNER",
+                          "LOCATION",
+                          "AREA SIZE",
+                          "START DATE",
+                          "END DATE"
+                        ]),
+                    SizedBox(
+                      height: MySpacer.small,
+                    ),
+                    TablePagination(
+                        showingLength: projectProvider.projects.length,
+                        paginationModel: projectProvider.pagination)
+                  ],
+                ),
+              ),
             ),
           ),
           SizedBox(
@@ -94,24 +71,156 @@ class ProjectList extends StatelessWidget {
   }
 }
 
-List<DataRow> widgetRows(
-    context, ProjectProvider projectProvider, ProjectModel projectModel) {
+List<TableRow> rowWidgetMobile(
+    BuildContext context, List<ProjectModel> datas, Function remove) {
   return [
-    DataRow(
-        onSelectChanged: (value) {
-          print("selec");
-          // projectProvider.setProjectScreen(ProjectDetails());
-        },
-        cells: [
-          DataCell(
-            Text(projectModel.name!),
-          ),
-          DataCell(Text(projectModel.customerId!.toString())),
-          DataCell(Text(projectModel.coordinates.toString())),
-          DataCell(Text(projectModel.areaSize.toString())),
-          DataCell(Text(projectModel.startDate.toString())),
-          DataCell(Text(projectModel.endDate.toString())),
-          DataCell(Row(
+    for (ProjectModel data in datas)
+      TableRow(children: [
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                data.name!,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                data.customerId.toString(),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                "${data.coordinates!.latitude},${data.coordinates!.longitude}",
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+          child: PopupMenuButton(
+              padding: EdgeInsets.all(0),
+              offset: Offset(0, 40),
+              icon: Icon(
+                Icons.more_horiz_rounded,
+                color: Palette.drawerColor,
+              ),
+              itemBuilder: (context) => [
+                    PopupMenuItem(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.edit,
+                              color: Palette.drawerColor,
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                      backgroundColor:
+                                          Palette.contentBackground,
+                                      content: ProjectAddScreen(
+                                        projectToEdit: data,
+                                      )));
+                            },
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              remove(id: data.id);
+                            },
+                            icon: Icon(
+                              Icons.delete,
+                              color: Palette.drawerColor,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ]),
+        ),
+      ])
+  ];
+}
+
+List<TableRow> rowWidget(
+    BuildContext context, List<ProjectModel> datas, Function remove) {
+  return [
+    for (ProjectModel data in datas)
+      TableRow(children: [
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                data.name!,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                data.customerId.toString(),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                "${data.coordinates!.latitude},${data.coordinates!.longitude}",
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                data.areaSize.toString(),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                data.startDate.toString(),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                data.endDate.toString(),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
                 onPressed: () {
@@ -119,22 +228,16 @@ List<DataRow> widgetRows(
                       context: context,
                       builder: (_) => AlertDialog(
                           backgroundColor: Palette.contentBackground,
-                          content: ProjectAddScreen(
-                            projectToEdit: projectModel,
-                          )));
+                          content: ProjectAddScreen()));
                 },
                 icon: Icon(
                   Icons.edit,
                   color: Palette.drawerColor,
                 ),
               ),
-              SizedBox(
-                width: 50,
-              ),
               IconButton(
                 onPressed: () {
-                  print("pressdelete");
-                  projectProvider.removeProject(id: projectModel.id!);
+                  remove(id: data.id);
                 },
                 icon: Icon(
                   Icons.delete,
@@ -142,7 +245,8 @@ List<DataRow> widgetRows(
                 ),
               )
             ],
-          ))
-        ])
+          ),
+        ),
+      ])
   ];
 }
