@@ -18,6 +18,7 @@ class EmployeeSevice extends ChangeNotifier {
 
   //TODO saerch un finish
   search(String text) {
+    _users = _tempUsers;
     _users = _users!
         .where((element) =>
             "${element.fname!} ${element.lname!}"

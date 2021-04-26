@@ -2,8 +2,6 @@ import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/widgets/basicButton.dart';
-import 'package:uitemplate/widgets/map.dart';
 
 class LogScreen extends StatelessWidget {
   @override
@@ -78,98 +76,98 @@ class LogScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              color: Colors.blue,
-              height: 300,
-              child: Expanded(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
-                    Text(
-                      "Description",
-                      style: transHeader,
-                    ),
-                    SizedBox(
-                      height: MySpacer.small,
-                    ),
-                    Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscingaadadfbv elit, sed do eius  mod tempor incididunt ut labore et dolore magnmagnaaliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
-                    Text(
-                      "DÉTAILS DU LOG",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                children: [
-                  Card(
-                    child: ListTile(
-                      leading: Icon(Icons.notification_important),
-                      title: Row(
-                        children: [
-                          Text("Chantier"),
-                          SizedBox(
-                            width: MySpacer.small,
-                          ),
-                          Text("Avril")
-                        ],
-                      ),
-                      subtitle: Text(
-                          "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                    ),
-                  ),
-                  Card(
-                    child: ListTile(
-                      leading: Icon(Icons.notification_important),
-                      title: Row(
-                        children: [
-                          Text("Chantier"),
-                          SizedBox(
-                            width: MySpacer.small,
-                          ),
-                          Text("Avril")
-                        ],
-                      ),
-                      subtitle: Text(
-                          "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                    ),
-                  ),
-                  Card(
-                    child: ListTile(
-                      leading: Icon(Icons.notification_important),
-                      title: Row(
-                        children: [
-                          Text("Chantier"),
-                          SizedBox(
-                            width: MySpacer.small,
-                          ),
-                          Text("Avril")
-                        ],
-                      ),
-                      subtitle: Text(
-                          "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                    ),
-                  )
-                ],
-              ),
-            )
+            // Container(
+            //   color: Colors.blue,
+            //   height: 300,
+            //   child: Expanded(
+            //     child: Column(
+            //       children: [
+            //         SizedBox(
+            //           height: MySpacer.large,
+            //         ),
+            //         Text(
+            //           "Description",
+            //           style: transHeader,
+            //         ),
+            //         SizedBox(
+            //           height: MySpacer.small,
+            //         ),
+            //         Text(
+            //             "Lorem ipsum dolor sit amet, consectetur adipiscingaadadfbv elit, sed do eius  mod tempor incididunt ut labore et dolore magnmagnaaliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+            //         SizedBox(
+            //           height: MySpacer.large,
+            //         ),
+            //         Text(
+            //           "DÉTAILS DU LOG",
+            //           style: Theme.of(context).textTheme.headline6,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // Expanded(
+            //   child: ListView(
+            //     children: [
+            //       Card(
+            //         child: ListTile(
+            //           leading: Icon(Icons.notification_important),
+            //           title: Row(
+            //             children: [
+            //               Text("Chantier"),
+            //               SizedBox(
+            //                 width: MySpacer.small,
+            //               ),
+            //               Text("Avril")
+            //             ],
+            //           ),
+            //           subtitle: Text(
+            //               "Attention, il nous manque les plaques pour le toit de la terrasse"),
+            //         ),
+            //       ),
+            //       Card(
+            //         child: ListTile(
+            //           leading: Icon(Icons.notification_important),
+            //           title: Row(
+            //             children: [
+            //               Text("Chantier"),
+            //               SizedBox(
+            //                 width: MySpacer.small,
+            //               ),
+            //               Text("Avril")
+            //             ],
+            //           ),
+            //           subtitle: Text(
+            //               "Attention, il nous manque les plaques pour le toit de la terrasse"),
+            //         ),
+            //       ),
+            //       Card(
+            //         child: ListTile(
+            //           leading: Icon(Icons.notification_important),
+            //           title: Row(
+            //             children: [
+            //               Text("Chantier"),
+            //               SizedBox(
+            //                 width: MySpacer.small,
+            //               ),
+            //               Text("Avril")
+            //             ],
+            //           ),
+            //           subtitle: Text(
+            //               "Attention, il nous manque les plaques pour le toit de la terrasse"),
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // )
           ],
         ),
       )),
-      AdaptiveItem(
-          content: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: MapScreen(),
-      ))
+      // AdaptiveItem(
+      //     content: Container(
+      //   height: MediaQuery.of(context).size.height,
+      //   width: MediaQuery.of(context).size.width,
+      //   child: MapScreen(),
+      // ))
     ]);
   }
 }
