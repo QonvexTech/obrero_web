@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_add.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_details.dart';
 import 'package:uitemplate/widgets/headerList.dart';
@@ -18,6 +19,8 @@ class _EmployeeListState extends State<EmployeeList> {
   @override
   Widget build(BuildContext context) {
     EmployeeSevice employeeService = Provider.of<EmployeeSevice>(context);
+    PaginationService pageService = Provider.of<PaginationService>(context);
+    pageService.loadperPageList(employeeService.pagination);
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -67,9 +70,8 @@ class _EmployeeListState extends State<EmployeeList> {
                     SizedBox(
                       height: MySpacer.small,
                     ),
-                    TablePagination(
-                        showingLength: employeeService.users.length,
-                        paginationModel: employeeService.pagination)
+                    pageControll(
+                        pageService, employeeService.pagination, context)
                   ],
                 ),
               ),

@@ -14,7 +14,7 @@ class EmployeeSevice extends ChangeNotifier {
   PaginationService paginationService = PaginationService();
   TextEditingController searchController = TextEditingController();
   late PaginationModel _pagination =
-      PaginationModel(lastPage: 1, fetch: fetchUsers);
+      PaginationModel(lastPage: 1, fetch: fetchUsers, perPage: 10);
 
   //TODO saerch un finish
   search(String text) {
@@ -84,9 +84,9 @@ class EmployeeSevice extends ChangeNotifier {
 
           notifyListeners();
         }
+
         _pagination.totalEntries = json.decode(response.body)["total"];
         fromJsonListToUsers(data);
-        // print(data);
       } else {
         print(response.body);
       }

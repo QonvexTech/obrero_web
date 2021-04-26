@@ -14,10 +14,8 @@ class CustomerService extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
   List<CustomerModel> _customers = [];
   List<CustomerModel> _tempCustomer = [];
-  late PaginationModel _pagination = PaginationModel(
-    lastPage: 1,
-    fetch: fetchCustomers,
-  );
+  late PaginationModel _pagination =
+      PaginationModel(lastPage: 1, fetch: fetchCustomers, perPage: 10);
   Map bodyToUpdate = {};
   //SEARCH CUSTOMER
   void search(String text) {
@@ -63,6 +61,16 @@ class CustomerService extends ChangeNotifier {
     }
     _customers = newCustomers;
     _tempCustomer = newCustomers;
+
+    if (_customers.length == 0) {
+      if (_pagination.isPrev) {
+        if (_customers.length == 0) {
+          if (_pagination.isPrev) {
+            paginationService.prevPage(_pagination);
+          }
+        }
+      }
+    }
     searchController.clear();
     notifyListeners();
   }

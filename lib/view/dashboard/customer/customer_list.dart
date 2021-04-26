@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_add.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
 import 'package:uitemplate/widgets/headerList.dart';
@@ -19,6 +20,8 @@ class _CustomerListState extends State<CustomerList> {
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
 
+    PaginationService pageService = Provider.of<PaginationService>(context);
+    pageService.loadperPageList(customerService.pagination);
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -68,9 +71,8 @@ class _CustomerListState extends State<CustomerList> {
                     SizedBox(
                       height: MySpacer.small,
                     ),
-                    TablePagination(
-                        showingLength: customerService.customers.length,
-                        paginationModel: customerService.pagination)
+                    pageControll(
+                        pageService, customerService.pagination, context)
                   ],
                 ),
               ),
@@ -88,7 +90,7 @@ class _CustomerListState extends State<CustomerList> {
 List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
     Function remove, Function setPage) {
   return [
-    for (var data in datas)
+    for (CustomerModel data in datas)
       TableRow(children: [
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
@@ -175,7 +177,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
 List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
     Function remove, Function setPage) {
   return [
-    for (var data in datas)
+    for (CustomerModel data in datas)
       TableRow(children: [
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,

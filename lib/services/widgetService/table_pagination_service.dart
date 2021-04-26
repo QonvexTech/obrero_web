@@ -3,14 +3,14 @@ import 'package:uitemplate/models/pagination_model.dart';
 
 class PaginationService extends ChangeNotifier {
   ScrollController scrollController = ScrollController();
-
-  var selectedPerPage = 10;
+  int _value = 10;
 
   List<DropdownMenuItem<int>> perPageList = [];
 
-  void loadperPageList(int totalPage) {
+  void loadperPageList(PaginationModel page) {
     perPageList = [];
-    for (var x = 1; x <= totalPage; x++) {
+    _value = page.perPage;
+    for (var x = 1; x <= page.totalEntries; x++) {
       perPageList.add(new DropdownMenuItem(
         child: new Text('$x'),
         value: x,
@@ -18,9 +18,15 @@ class PaginationService extends ChangeNotifier {
     }
   }
 
-  void updatePerPage(var value, PaginationModel page) {
-    selectedPerPage = value;
-    page.perPage = selectedPerPage;
+  get value => _value;
+
+  void updatePerPage(
+    int value,
+    PaginationModel page,
+  ) {
+    this._value = value;
+
+    page.perPage = value;
     page.isNext = false;
     page.isPrev = false;
     page.fetch();
@@ -45,8 +51,10 @@ class PaginationService extends ChangeNotifier {
   }
 
   void animate(double offset) {
-    scrollController.animateTo(offset,
-        duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+    if (scrollController.positions.isNotEmpty) {
+      scrollController.animateTo(offset,
+          duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+    }
   }
 
   void prevPage(PaginationModel page) {

@@ -16,7 +16,7 @@ class ProjectProvider extends ChangeNotifier {
   PaginationService paginationService = PaginationService();
 
   late PaginationModel _pagination =
-      PaginationModel(lastPage: 1, fetch: fetchProjects);
+      PaginationModel(lastPage: 1, fetch: fetchProjects, perPage: 10);
 
   //SEARCH
   TextEditingController searchController = TextEditingController();
@@ -79,9 +79,10 @@ class ProjectProvider extends ChangeNotifier {
         }
         if (json.decode(response.body)["last_page"] != null) {
           _pagination.lastPage = json.decode(response.body)["last_page"];
+          notifyListeners();
         }
         _pagination.totalEntries = json.decode(response.body)["total"];
-
+        print(response.body);
         fromJsonListToProject(data);
       } else {
         print(response.body);

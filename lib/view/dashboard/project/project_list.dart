@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_details.dart';
+import 'package:uitemplate/widgets/emtylist.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
@@ -13,7 +15,21 @@ class ProjectList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
-
+    PaginationService pageService = Provider.of<PaginationService>(context);
+    pageService.loadperPageList(projectProvider.pagination);
+    if (projectProvider.projects.length <= 0) {
+      return Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Palette.contentBackground,
+        child: EmtyList(
+            showButton: true,
+            addingFunc: ProjectAddScreen(),
+            title: "Project Empty",
+            description: "Start creating Project",
+            buttonText: "Créer"),
+      );
+    }
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -64,9 +80,8 @@ class ProjectList extends StatelessWidget {
                     SizedBox(
                       height: MySpacer.small,
                     ),
-                    TablePagination(
-                        showingLength: projectProvider.projects.length,
-                        paginationModel: projectProvider.pagination)
+                    pageControll(
+                        pageService, projectProvider.pagination, context)
                   ],
                 ),
               ),
