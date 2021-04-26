@@ -34,7 +34,7 @@ class EmployeeSevice extends ChangeNotifier {
 
   get pagination => _pagination;
 
-  void setPageScreen(Widget page) {
+  void setPageScreen({required Widget page}) {
     activePageScreen = page;
     notifyListeners();
   }

@@ -36,7 +36,7 @@ class ProjectProvider extends ChangeNotifier {
   }
   //-------------
 
-  void setPage(Widget page) {
+  void setPage({required Widget page}) {
     activePageScreen = page;
     notifyListeners();
   }

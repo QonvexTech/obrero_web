@@ -4,6 +4,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
+import 'package:uitemplate/view/dashboard/project/project_details.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
@@ -37,12 +38,16 @@ class ProjectList extends StatelessWidget {
                   children: [
                     AllTable(
                         datas: projectProvider.projects,
-                        rowWidget: rowWidget(context, projectProvider.projects,
-                            projectProvider.removeProject),
+                        rowWidget: rowWidget(
+                            context,
+                            projectProvider.projects,
+                            projectProvider.removeProject,
+                            projectProvider.setPage),
                         rowWidgetMobile: rowWidgetMobile(
                             context,
                             projectProvider.projects,
-                            projectProvider.removeProject),
+                            projectProvider.removeProject,
+                            projectProvider.setPage),
                         headersMobile: [
                           "NOM DU SITE",
                           "OWNER",
@@ -76,21 +81,28 @@ class ProjectList extends StatelessWidget {
   }
 }
 
-List<TableRow> rowWidgetMobile(
-    BuildContext context, List<ProjectModel> datas, Function remove) {
+List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
+    Function remove, Function setPage) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
-        TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                data.name!,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ))),
+        GestureDetector(
+          child: TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: Center(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: TextButton(
+                  onPressed: () {
+                    setPage(page: ProjectDetails());
+                  },
+                  child: Text(
+                    data.name!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ))),
+        ),
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(
@@ -158,8 +170,8 @@ List<TableRow> rowWidgetMobile(
   ];
 }
 
-List<TableRow> rowWidget(
-    BuildContext context, List<ProjectModel> datas, Function remove) {
+List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
+    Function remove, Function setPage) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -168,9 +180,14 @@ List<TableRow> rowWidget(
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                data.name!,
-                overflow: TextOverflow.ellipsis,
+              child: TextButton(
+                onPressed: () {
+                  setPage(page: ProjectDetails());
+                },
+                child: Text(
+                  data.name!,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ))),
         TableCell(
