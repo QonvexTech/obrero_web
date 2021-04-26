@@ -12,6 +12,7 @@ import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/adding_button.dart';
+import 'package:uitemplate/widgets/emtylist.dart';
 import 'package:uitemplate/widgets/map.dart';
 import 'package:uitemplate/widgets/map_details.dart';
 import 'package:uitemplate/widgets/project_card.dart';
@@ -114,30 +115,19 @@ class _DashBoardState extends State<DashBoard> {
               ? MediaQuery.of(context).size.height
               : MediaQuery.of(context).size.height * .5,
           content: projectProvider.projects.length <= 0
-              ? Container(
-                  padding: EdgeInsets.all(20),
-                  color: Palette.contentBackground,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "No projects yet",
-                        style: boldText,
-                      ),
-                      SizedBox(
-                        height: MySpacer.large,
-                      ),
-                      Icon(Icons.file_present),
-                      SizedBox(
-                        height: MySpacer.small,
-                      ),
-                      Text(
-                          "Its time to create a project \n choose the right client and location for your project"),
-                      AddingButton(
-                          addingPage: ProjectAddScreen(),
-                          buttonText: "Add Project")
-                    ],
-                  ))
+              ? Expanded(
+                  child: Container(
+                    color: Palette.contentBackground,
+                    child: EmtyList(
+                      addingFunc: ProjectAddScreen(),
+                      title: "No projects yet",
+                      description:
+                          "Its time to create a project \n choose the right client and location for your project",
+                      buttonText: "Créer",
+                      showButton: true,
+                    ),
+                  ),
+                )
               : Container(
                   color: Palette.contentBackground,
                   padding: EdgeInsets.all(20),
