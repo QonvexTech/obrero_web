@@ -9,7 +9,7 @@ import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/map_service.dart';
-import 'package:uitemplate/services/project_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/adding_button.dart';
 import 'package:uitemplate/widgets/map.dart';

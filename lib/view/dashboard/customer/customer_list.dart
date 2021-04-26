@@ -26,7 +26,12 @@ class _CustomerListState extends State<CustomerList> {
           SizedBox(
             height: MySpacer.medium,
           ),
-          HeaderList(toPage: CustomerAdd(), title: "Customer"),
+          HeaderList(
+            toPage: CustomerAdd(),
+            title: "Customer",
+            search: customerService.search,
+            searchController: customerService.searchController,
+          ),
           SizedBox(
             height: MySpacer.large,
           ),
@@ -237,7 +242,9 @@ List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
                       context: context,
                       builder: (_) => AlertDialog(
                           backgroundColor: Palette.contentBackground,
-                          content: CustomerAdd()));
+                          content: CustomerAdd(
+                            customerToEdit: data,
+                          )));
                 },
                 icon: Icon(
                   Icons.edit,

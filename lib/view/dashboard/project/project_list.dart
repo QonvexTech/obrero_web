@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
-import 'package:uitemplate/services/project_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
@@ -20,7 +20,12 @@ class ProjectList extends StatelessWidget {
           SizedBox(
             height: MySpacer.medium,
           ),
-          HeaderList(toPage: ProjectAddScreen(), title: "Project"),
+          HeaderList(
+            toPage: ProjectAddScreen(),
+            title: "Project",
+            search: projectProvider.search,
+            searchController: projectProvider.searchController,
+          ),
           SizedBox(
             height: MySpacer.large,
           ),
@@ -228,7 +233,9 @@ List<TableRow> rowWidget(
                       context: context,
                       builder: (_) => AlertDialog(
                           backgroundColor: Palette.contentBackground,
-                          content: ProjectAddScreen()));
+                          content: ProjectAddScreen(
+                            projectToEdit: data,
+                          )));
                 },
                 icon: Icon(
                   Icons.edit,

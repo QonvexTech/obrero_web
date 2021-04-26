@@ -11,6 +11,7 @@ import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 class CustomerService extends ChangeNotifier {
   Widget activePageScreen = CustomerList(); //change to list adfter
   PaginationService paginationService = PaginationService();
+  TextEditingController searchController = TextEditingController();
   List<CustomerModel> _customers = [];
   List<CustomerModel> _tempCustomer = [];
   late PaginationModel _pagination = PaginationModel(
@@ -19,17 +20,17 @@ class CustomerService extends ChangeNotifier {
   );
   Map bodyToUpdate = {};
   //SEARCH CUSTOMER
-  TextEditingController _searchController = TextEditingController();
-  get searchController => _searchController;
   void search(String text) {
+    _customers = _tempCustomer;
     _customers = _customers
         .where((element) =>
-            element.fname!.toLowerCase().contains(text.toLowerCase()) ||
+            "${element.fname!} ${element.lname!}"
+                .toLowerCase()
+                .contains(text.toLowerCase()) ||
+            // element.lname!.toLowerCase().contains(text.toLowerCase()) ||
+            element.adress!.toLowerCase().contains(text.toLowerCase()) ||
             element.email!.toLowerCase().contains(text.toLowerCase()))
         .toList();
-    if (text.isEmpty) {
-      _customers = _tempCustomer;
-    }
     notifyListeners();
   }
 
@@ -62,7 +63,7 @@ class CustomerService extends ChangeNotifier {
     }
     _customers = newCustomers;
     _tempCustomer = newCustomers;
-    _searchController.clear();
+    searchController.clear();
     notifyListeners();
   }
 
@@ -89,7 +90,7 @@ class CustomerService extends ChangeNotifier {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
         _pagination.totalEntries = json.decode(response.body)["total"];
-        print(json.decode(response.body));
+
         fromJsonListToCustomer(data);
       } else {
         print(response.body);

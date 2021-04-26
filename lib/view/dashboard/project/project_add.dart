@@ -7,8 +7,8 @@ import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/map_service.dart';
-import 'package:uitemplate/services/project_add_service.dart';
-import 'package:uitemplate/services/project_service.dart';
+import 'package:uitemplate/services/project/project_add_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class ProjectAddScreen extends StatelessWidget {

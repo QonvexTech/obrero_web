@@ -26,7 +26,7 @@ class TablePagination extends StatelessWidget {
             children: [
               Text("Showing"),
               Container(
-                width: 100,
+                width: 60,
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 child: DropdownButton(
                   items: pageService.perPageList,
