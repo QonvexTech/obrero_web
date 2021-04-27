@@ -20,7 +20,7 @@ class _EmployeeListState extends State<EmployeeList> {
   Widget build(BuildContext context) {
     EmployeeSevice employeeService = Provider.of<EmployeeSevice>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
-    pageService.loadperPageList(employeeService.pagination);
+
     return Container(
       color: Palette.contentBackground,
       child: Column(

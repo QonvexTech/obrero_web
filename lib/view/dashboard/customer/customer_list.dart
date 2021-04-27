@@ -19,9 +19,8 @@ class _CustomerListState extends State<CustomerList> {
   @override
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
-
     PaginationService pageService = Provider.of<PaginationService>(context);
-    pageService.loadperPageList(customerService.pagination);
+
     return Container(
       color: Palette.contentBackground,
       child: Column(

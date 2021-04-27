@@ -34,7 +34,9 @@ class ProjectDetails extends StatelessWidget {
                         ],
                       ),
                       Spacer(),
-                      BasicButton(buttonText: "Planning"),
+                      BasicButton(
+                        buttonText: "Planning",
+                      ),
                       SizedBox(
                         width: MySpacer.medium,
                       ),

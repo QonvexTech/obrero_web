@@ -19,6 +19,7 @@ import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_screen.dart';
 import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
+import 'package:uitemplate/view/dashboard/settings/warning_settings.dart';
 import 'package:uitemplate/view/login/login_screen.dart';
 import 'package:uitemplate/view/splash_screen.dart';
 import 'config/pallete.dart';
@@ -105,13 +106,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   SubDrawerItems(
                       icon: Icons.warning,
                       title: "Warning",
-                      content: GeneralSettings()),
+                      content: WarningSettings()),
                   SubDrawerItems(
                       icon: Icons.all_out,
                       title: "General",
-                      content: Container(
-                        color: Colors.blueGrey,
-                      ))
+                      content: GeneralSettings())
                 ],
                 content: Container(
                   color: Colors.red,

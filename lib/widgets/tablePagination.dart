@@ -11,18 +11,26 @@ Widget pageControll(
         child: Row(
           children: [
             Text("Showing"),
-            Container(
-              width: 60,
-              padding: EdgeInsets.symmetric(horizontal: 5),
-              child: DropdownButton<int>(
-                items: pageService.perPageList,
-                value: pageService.value,
-                onChanged: (value) {
-                  pageService.updatePerPage(value!, paginationModel);
-                },
-                isExpanded: true,
-              ),
+            SizedBox(
+              width: MySpacer.small,
             ),
+            PopupMenuButton(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                offset: Offset(0, 40),
+                child: Row(
+                  children: [Text("10"), Icon(Icons.arrow_drop_down_sharp)],
+                ),
+                itemBuilder: (context) => [
+                      for (var x = 1; x <= paginationModel.totalEntries; x++)
+                        PopupMenuItem(
+                          child: IconButton(
+                              onPressed: () {
+                                pageService.updatePerPage(x, paginationModel);
+                                Navigator.pop(context);
+                              },
+                              icon: Center(child: Text("$x"))),
+                        ),
+                    ]),
             Text("of ${paginationModel.totalEntries} entries")
           ],
         ),

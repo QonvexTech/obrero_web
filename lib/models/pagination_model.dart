@@ -7,12 +7,13 @@ class PaginationModel {
   bool isPrev;
   Function fetch;
 
-  PaginationModel(
-      {required this.perPage,
-      this.page = 1,
-      this.totalEntries = 0,
-      required this.lastPage,
-      required this.fetch,
-      this.isNext = false,
-      this.isPrev = false});
+  PaginationModel({
+    required this.perPage,
+    this.page = 1,
+    this.totalEntries = 0,
+    required this.lastPage,
+    required this.fetch,
+    this.isNext = false,
+    this.isPrev = false,
+  });
 }

@@ -16,7 +16,7 @@ class ProjectList extends StatelessWidget {
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
-    pageService.loadperPageList(projectProvider.pagination);
+
     if (projectProvider.projects.length <= 0) {
       return Container(
         width: double.infinity,
