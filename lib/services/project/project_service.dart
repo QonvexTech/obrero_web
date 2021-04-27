@@ -85,7 +85,6 @@ class ProjectProvider extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        print(response.body);
         fromJsonListToProject(data);
       } else {
         print(response.body);

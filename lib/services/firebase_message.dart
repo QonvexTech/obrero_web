@@ -3,7 +3,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/services/notification_services.dart';
 
@@ -13,15 +12,6 @@ class FireBase extends ChangeNotifier {
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   Future<String?> get fcmToken async => await _firebaseMessaging.getToken();
-
-  List messages = [];
-  bool _newMessage = false;
-
-  get newMessage => _newMessage;
-  set newMessage(value) {
-    _newMessage = value;
-    notifyListeners();
-  }
 
   // Future<void> subscribe(String subscription) async {
   //   await _firebaseMessaging.subscribeToTopic("$subscription}").then(print);
@@ -45,16 +35,20 @@ class FireBase extends ChangeNotifier {
 
     print("Notification Settings : ${settings.announcement}");
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      if (message.data['notification_data'] != null) {
-        // messages.add(message.data['notification_data']);
-        rxNotificationService
-            .append(json.decode(message.data['notification_data']));
-        print(rxNotificationService.current);
-        // print(messages);
-      } else {
-        //chat
+      rxNotificationService
+          .append(json.decode(message.data['notification_data']));
 
-      }
+      // if (message.data['notification_data'] != null) {
+      //   // messages.add(message.data['notification_data']);
+      //   rxNotificationService.append(
+      //       json.decode(message.data['notification_data']), _newMessage);
+      //   print(rxNotificationService.current);
+      //   // print(messages);
+      // } else {
+      //   //chat
+      //   print(message.notification!.body);
+      // }
+
       return;
       // print(messages);
     });
@@ -66,9 +60,6 @@ class FireBase extends ChangeNotifier {
 
     //background
     FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-      // If you're going to use other Firebase services in the background, such as Firestore,
-      // make sure you call `initializeApp` before using other Firebase services.
-      // await Firebase.initializeApp();
       print('Handling a background message ${message.messageId}');
     });
     print("lisening");

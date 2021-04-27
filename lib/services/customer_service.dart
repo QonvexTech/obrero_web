@@ -121,7 +121,6 @@ class CustomerService extends ChangeNotifier {
         var data = json.decode(response.body);
         paginationService.addedItem(_pagination);
         fetchCustomers();
-        print(data);
       });
     } catch (e) {
       print(e);

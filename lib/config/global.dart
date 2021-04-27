@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:uitemplate/models/message.dart';
 
 const String api = "https://obrero.checkmy.dev/api";
 
@@ -37,3 +38,4 @@ const String firebase_messaging = "https://fcm.googleapis.com/fcm/send";
 const TextStyle transHeader = TextStyle(color: Colors.grey);
 const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);
 String? authToken;
+// List<NotificationModel> notificationList = [];
