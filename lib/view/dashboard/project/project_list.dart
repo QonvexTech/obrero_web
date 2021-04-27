@@ -109,7 +109,10 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: TextButton(
                   onPressed: () {
-                    setPage(page: ProjectDetails());
+                    setPage(
+                        page: ProjectDetails(
+                      projectModel: data,
+                    ));
                   },
                   child: Text(
                     data.name!,
@@ -197,7 +200,10 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextButton(
                 onPressed: () {
-                  setPage(page: ProjectDetails());
+                  setPage(
+                      page: ProjectDetails(
+                    projectModel: data,
+                  ));
                 },
                 child: Text(
                   data.name!,

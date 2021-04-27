@@ -34,7 +34,7 @@ class CustomerService extends ChangeNotifier {
 
   get customers => _customers;
   get pagination => _pagination;
-  void setPage({required Widget page}) {
+  setPage({required Widget page}) {
     activePageScreen = page;
     notifyListeners();
   }

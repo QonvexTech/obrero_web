@@ -6,6 +6,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
+import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class CustomerDetails extends StatelessWidget {
@@ -23,49 +24,13 @@ class CustomerDetails extends StatelessWidget {
           child: AdaptiveContainer(children: [
             AdaptiveItem(
               content: Container(
-                padding: EdgeInsets.all(50),
+                padding: EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppBar(
-                      centerTitle: false,
-                      title: Text(
-                        "Retour",
-                        style: TextStyle(color: Theme.of(context).accentColor),
-                      ),
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                      leading: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Palette.drawerColor,
-                        ),
-                        onPressed: () {
-                          customerService.setPage(page: CustomerList());
-                        },
-                      ),
-                    ),
-                    // Align(
-                    //   alignment: Alignment.centerLeft,
-                    //   child: MaterialButton(
-                    //       color: Palette.drawerColor,
-                    //       onPressed: () {
-                    //         customerService.setPage(page: CustomerList());
-                    //       },
-                    //       child: Row(
-                    //         children: [
-                    //           Icon(
-                    //             Icons.arrow_back,
-                    //             size: 20,
-                    //             color: Colors.white,
-                    //           ),
-                    //           Text(
-                    //             "Retour",
-                    //             style: TextStyle(color: Colors.white),
-                    //           )
-                    //         ],
-                    //       )),
-                    // ),
+                    backButton(
+                        context, customerService.setPage, CustomerList()),
+
                     SizedBox(
                       height: MySpacer.large,
                     ),

@@ -99,7 +99,10 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<EmployeesModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextButton(
                 onPressed: () {
-                  setPage(page: EmployeeDetails());
+                  setPage(
+                      page: EmployeeDetails(
+                    employeesModel: data,
+                  ));
                 },
                 child: Text(
                   "${data.fname!} ${data.lname!}",
@@ -186,7 +189,10 @@ List<TableRow> rowWidget(BuildContext context, List<EmployeesModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextButton(
                 onPressed: () {
-                  setPage(page: EmployeeDetails());
+                  setPage(
+                      page: EmployeeDetails(
+                    employeesModel: data,
+                  ));
                 },
                 child: Text(
                   "${data.fname!} ${data.lname!}",
