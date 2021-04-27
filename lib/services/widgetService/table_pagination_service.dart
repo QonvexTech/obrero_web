@@ -47,6 +47,17 @@ class PaginationService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeItem(PaginationModel page) {
+    page.perPage -= 1;
+    page.totalEntries -= 1;
+    notifyListeners();
+  }
+
+  void addedItem(PaginationModel page) {
+    page.perPage -= 1;
+    notifyListeners();
+  }
+
   void setTablePage(int value, PaginationModel page) {
     page.isNext = false;
     page.isPrev = false;

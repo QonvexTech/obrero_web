@@ -158,6 +158,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
                           IconButton(
                             onPressed: () {
                               remove(id: data.id);
+                              Navigator.pop(context);
                             },
                             icon: Icon(
                               Icons.delete,

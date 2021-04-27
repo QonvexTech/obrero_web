@@ -15,7 +15,7 @@ class CustomerService extends ChangeNotifier {
   List<CustomerModel> _customers = [];
   List<CustomerModel> _tempCustomer = [];
   late PaginationModel _pagination =
-      PaginationModel(lastPage: 1, fetch: fetchCustomers, perPage: 10);
+      PaginationModel(lastPage: 1, fetch: fetchCustomers);
   Map bodyToUpdate = {};
   //SEARCH CUSTOMER
   void search(String text) {
@@ -98,7 +98,9 @@ class CustomerService extends ChangeNotifier {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
         _pagination.totalEntries = json.decode(response.body)["total"];
-
+        if (_pagination.totalEntries < _pagination.perPage) {
+          _pagination.perPage = _pagination.totalEntries;
+        }
         fromJsonListToCustomer(data);
       } else {
         print(response.body);
@@ -117,6 +119,7 @@ class CustomerService extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
+        paginationService.addedItem(_pagination);
         fetchCustomers();
         print(data);
       });
@@ -134,6 +137,7 @@ class CustomerService extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         _customers.removeWhere((element) => element.id == id);
+        paginationService.removeItem(_pagination);
         notifyListeners();
         if (_customers.length == 0) {
           if (_pagination.isPrev) {

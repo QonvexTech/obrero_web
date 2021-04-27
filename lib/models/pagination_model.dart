@@ -8,7 +8,7 @@ class PaginationModel {
   Function fetch;
 
   PaginationModel({
-    required this.perPage,
+    this.perPage = 10,
     this.page = 1,
     this.totalEntries = 0,
     required this.lastPage,

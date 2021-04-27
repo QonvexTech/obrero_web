@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 
 Widget pageControll(
-    PaginationService pageService, dynamic paginationModel, context) {
+    PaginationService pageService, PaginationModel paginationModel, context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -18,10 +19,13 @@ Widget pageControll(
                 padding: EdgeInsets.symmetric(horizontal: 10),
                 offset: Offset(0, 40),
                 child: Row(
-                  children: [Text("10"), Icon(Icons.arrow_drop_down_sharp)],
+                  children: [
+                    Text(paginationModel.perPage.toString()),
+                    Icon(Icons.arrow_drop_down_sharp)
+                  ],
                 ),
                 itemBuilder: (context) => [
-                      for (var x = 1; x <= paginationModel.totalEntries; x++)
+                      for (var x = 1; x < paginationModel.totalEntries + 1; x++)
                         PopupMenuItem(
                           child: IconButton(
                               onPressed: () {

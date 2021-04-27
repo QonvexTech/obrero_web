@@ -14,7 +14,7 @@ class EmployeeSevice extends ChangeNotifier {
   PaginationService paginationService = PaginationService();
 
   late PaginationModel _pagination =
-      PaginationModel(lastPage: 1, fetch: fetchUsers, perPage: 10);
+      PaginationModel(lastPage: 1, fetch: fetchUsers);
 
   //TODO saerch un finish
   TextEditingController searchController = TextEditingController();
@@ -88,6 +88,9 @@ class EmployeeSevice extends ChangeNotifier {
         }
 
         _pagination.totalEntries = json.decode(response.body)["total"];
+        if (_pagination.totalEntries < _pagination.perPage) {
+          _pagination.perPage = _pagination.totalEntries;
+        }
         fromJsonListToUsers(data);
       } else {
         print(response.body);

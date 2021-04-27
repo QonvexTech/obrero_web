@@ -16,7 +16,7 @@ class ProjectProvider extends ChangeNotifier {
   PaginationService paginationService = PaginationService();
 
   late PaginationModel _pagination =
-      PaginationModel(lastPage: 1, fetch: fetchProjects, perPage: 2);
+      PaginationModel(lastPage: 1, fetch: fetchProjects);
 
   //SEARCH
   TextEditingController searchController = TextEditingController();
@@ -82,6 +82,9 @@ class ProjectProvider extends ChangeNotifier {
           notifyListeners();
         }
         _pagination.totalEntries = json.decode(response.body)["total"];
+        if (_pagination.totalEntries < _pagination.perPage) {
+          _pagination.perPage = _pagination.totalEntries;
+        }
         print(response.body);
         fromJsonListToProject(data);
       } else {
