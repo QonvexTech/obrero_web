@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/firebase_message.dart';
@@ -368,7 +369,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                           ),
                           itemBuilder: (context) => [
                                 PopupMenuItem(
-                                  // value: sub_items.content,
                                   child: Container(
                                     child: Center(
                                       child: Column(
@@ -381,8 +381,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                           SizedBox(
                                             height: MySpacer.medium,
                                           ),
-                                          Text(auth.data.firstName),
-                                          Text(auth.data.email),
+                                          Text(profileData!.firstName!),
+                                          Text(profileData!.email!),
                                           SizedBox(
                                             height: MySpacer.medium,
                                           ),
