@@ -17,13 +17,16 @@ class _MapScreenState extends State<MapScreen> {
     MapService mapService = Provider.of<MapService>(context);
 
     return GoogleMap(
-        // mapType: MapType.satellite,
+        buildingsEnabled: true,
+        onMapCreated: (controller) {
+          mapService.mapController = controller;
+        },
+        mapType: MapType.none,
         myLocationEnabled: true,
         markers: mapService.markers,
         onTap: (position) {
           mapService.setCoordinates(position);
         },
-        initialCameraPosition: CameraPosition(
-            target: mapService.coordinates, zoom: mapService.zoom));
+        initialCameraPosition: mapService.cameraPosition);
   }
 }

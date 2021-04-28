@@ -10,10 +10,7 @@ import 'package:uitemplate/services/notification_services.dart';
 import '../config/global.dart';
 
 class Authentication {
-  Admin? _data;
-
   var error;
-  get data => _data;
 
   Future logout() async {
     final prefs = await SharedPreferences.getInstance();
@@ -29,7 +26,7 @@ class Authentication {
       var response = await http.post(url,
           body: {'email': email, 'password': password, 'fcm_token': fcmToken});
       if (response.statusCode == 200 || response.statusCode == 201) {
-        this._data = Admin.fromJson(json.decode(response.body)["data"]);
+        profileData = Admin.fromJson(json.decode(response.body)["data"]);
         print("login success");
         DataCacher().saveCredentials(email, password);
 
