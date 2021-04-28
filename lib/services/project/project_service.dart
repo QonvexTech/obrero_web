@@ -20,6 +20,19 @@ class ProjectProvider extends ChangeNotifier {
 
   //SEARCH
   TextEditingController searchController = TextEditingController();
+
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015),
+        lastDate: DateTime(2025));
+    if (picked != null && picked != selectedDate) selectedDate = picked;
+    print(selectedDate);
+    fetchProjectsBaseOnDates();
+    notifyListeners();
+  }
+
   search(String text) {
     _projects = _tempProjects;
     _projects = _projects

@@ -41,71 +41,110 @@ class _DashBoardState extends State<DashBoard> {
 
       return AdaptiveContainer(children: [
         AdaptiveItem(
-            height: MediaQuery.of(context).size.height,
             content: Container(
-              padding: EdgeInsets.all(20),
-              color: Palette.contentBackground,
-              child: Column(
-                children: [
-                  Container(
-                    color: Palette.contentBackground,
-                    child: Card(
-                      child: Row(
-                        children: [
-                          IconButton(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.all(20),
+          color: Palette.contentBackground,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // MaterialButton(
+              //   onPressed: () {
+              //     projectProvider.selectDate(context);
+              //   },
+              //   child: Text("${projectProvider.selectedDate.toLocal()}"
+              //       .split(' ')[0]),
+              // ),
+              Container(
+                color: Palette.contentBackground,
+                child: Card(
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Palette.drawerColor,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: IconButton(
+                              padding: EdgeInsets.all(5),
+                              constraints:
+                                  BoxConstraints(minWidth: 15, minHeight: 15),
+                              iconSize: 20,
                               onPressed: () {
                                 dashboardService.prevDate();
                               },
-                              icon: Icon(Icons.arrow_back_ios_rounded)),
-                          SizedBox(
-                            width: 5,
+                              icon: Icon(
+                                Icons.arrow_back_ios_rounded,
+                                color: Colors.white,
+                                size: 15,
+                              )),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: DatePicker(
+                            dashboardService.startDate,
+                            initialSelectedDate: projectProvider.selectedDate,
+                            selectionColor: Palette.drawerColor,
+                            selectedTextColor: Colors.white,
+                            deactivatedColor: Palette.contentBackground,
+                            locale: "fr_FR",
+                            controller: dashboardService.dateController,
+                            onDateChange: (date) {
+                              //New Date
+                              print("selected date");
+                              Provider.of<ProjectProvider>(context,
+                                      listen: false)
+                                  .fetchProjectsBaseOnDates(dateSelected: date);
+                            },
+                            width: 75,
                           ),
-                          Expanded(
-                            child: DatePicker(
-                              dashboardService.startDate,
-                              initialSelectedDate: projectProvider.selectedDate,
-                              selectionColor: Palette.drawerColor,
-                              selectedTextColor: Colors.white,
-                              locale: "fr_FR",
-                              controller: dashboardService.dateController,
-                              onDateChange: (date) {
-                                //New Date
-                                print("selected date");
-                                Provider.of<ProjectProvider>(context,
-                                        listen: false)
-                                    .fetchProjectsBaseOnDates(
-                                        dateSelected: date);
-                              },
-                              width: 75,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          IconButton(
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Palette.drawerColor,
+                              borderRadius: BorderRadius.circular(100)),
+                          child: IconButton(
+                              padding: EdgeInsets.all(5),
+                              constraints:
+                                  BoxConstraints(minWidth: 15, minHeight: 15),
+                              iconSize: 20,
                               onPressed: () {
                                 dashboardService.nextDate();
                               },
-                              icon: Icon(Icons.arrow_forward_ios_rounded))
-                        ],
-                      ),
+                              icon: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 15,
+                                color: Colors.white,
+                              )),
+                        ),
+                      ],
                     ),
                   ),
-                  projectProvider.projectDateBased.length > 0
-                      ? Container(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          child: MapDetails(
-                            project: projectProvider.projectDateBased,
-                          ))
-                      : SizedBox(),
-                  Expanded(
-                    child: MapScreen(
-                      projects: projectProvider.projectDateBased,
-                    ),
-                  )
-                ],
+                ),
               ),
-            )),
+              projectProvider.projectDateBased.length > 0
+                  ? Container(
+                      padding: EdgeInsets.symmetric(vertical: 20),
+                      child: MapDetails(
+                        project: projectProvider.projectDateBased,
+                      ))
+                  : SizedBox(),
+              Expanded(
+                child: MapScreen(
+                  projects: projectProvider.projectDateBased,
+                ),
+              )
+            ],
+          ),
+        )),
         AdaptiveItem(
           height: MediaQuery.of(context).size.width > 800
               ? MediaQuery.of(context).size.height
