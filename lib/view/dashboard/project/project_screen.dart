@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uitemplate/services/project_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 
 class Project extends StatefulWidget {
   @override

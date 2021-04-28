@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/message_service.dart';
-import 'package:uitemplate/services/project_add_service.dart';
-import 'package:uitemplate/services/project_service.dart';
+import 'package:uitemplate/services/project/project_add_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/ui_pack/children/sub_drawer_item.dart';
@@ -20,6 +19,7 @@ import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_screen.dart';
 import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
+import 'package:uitemplate/view/dashboard/settings/warning_settings.dart';
 import 'package:uitemplate/view/login/login_screen.dart';
 import 'package:uitemplate/view/splash_screen.dart';
 import 'config/pallete.dart';
@@ -106,13 +106,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   SubDrawerItems(
                       icon: Icons.warning,
                       title: "Warning",
-                      content: GeneralSettings()),
+                      content: WarningSettings()),
                   SubDrawerItems(
                       icon: Icons.all_out,
                       title: "General",
-                      content: Container(
-                        color: Colors.blueGrey,
-                      ))
+                      content: GeneralSettings())
                 ],
                 content: Container(
                   color: Colors.red,

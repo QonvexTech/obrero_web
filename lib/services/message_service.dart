@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/firebase_message.dart';
-
 import '../config/global.dart';
 import '../models/employes_model.dart';
 
@@ -22,6 +20,11 @@ class MessageService extends ChangeNotifier {
 
   void addUserToMessage(EmployeesModel user) {
     _usersToMessage.add(user);
+    notifyListeners();
+  }
+
+  void removeUser(EmployeesModel user) {
+    _usersToMessage.remove(user);
     notifyListeners();
   }
 

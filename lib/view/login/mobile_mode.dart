@@ -15,19 +15,10 @@ class _MobileModeState extends State<MobileMode> {
     return Scaffold(
         body: SafeArea(
             child: Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                      Color.fromRGBO(66, 105, 255, 1),
-                      Color.fromRGBO(66, 205, 255, 1)
-                    ])),
+                color: Color.fromRGBO(224, 245, 255, 1),
                 child: Column(children: [
-                  Image.network(
-                      'https://raw.githubusercontent.com/RonaldoMurakamiK/flutter-web-login-ui/master/assets/images/login-form.png',
-                      height: heightSize * 0.3,
-                      width: widthSize * 0.6),
+                  Image.asset('assets/icons/logo.png',
+                      height: heightSize * 0.3, width: widthSize * 0.6),
                   SingleChildScrollView(
                       child: LoginForm(
                           0.007,
@@ -37,7 +28,7 @@ class _MobileModeState extends State<MobileMode> {
                           0.04,
                           0.07,
                           widthSize * 0.09,
-                          0.05,
+                          0.03,
                           0.032,
                           0.04,
                           0.032))

@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_add.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
@@ -17,6 +19,8 @@ class _CustomerListState extends State<CustomerList> {
   @override
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
+    PaginationService pageService = Provider.of<PaginationService>(context);
+
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -24,7 +28,12 @@ class _CustomerListState extends State<CustomerList> {
           SizedBox(
             height: MySpacer.medium,
           ),
-          HeaderList(toPage: CustomerAdd(), title: "Customer"),
+          HeaderList(
+            toPage: CustomerAdd(),
+            title: "Customer",
+            search: customerService.search,
+            searchController: customerService.searchController,
+          ),
           SizedBox(
             height: MySpacer.large,
           ),
@@ -36,12 +45,16 @@ class _CustomerListState extends State<CustomerList> {
                   children: [
                     AllTable(
                         datas: customerService.customers,
-                        rowWidget: rowWidget(context, customerService.customers,
-                            customerService.removeCustomer),
+                        rowWidget: rowWidget(
+                            context,
+                            customerService.customers,
+                            customerService.removeCustomer,
+                            customerService.setPage),
                         rowWidgetMobile: rowWidgetMobile(
                             context,
                             customerService.customers,
-                            customerService.removeCustomer),
+                            customerService.removeCustomer,
+                            customerService.setPage),
                         headersMobile: [
                           "NOM",
                           "EMAIL",
@@ -57,7 +70,8 @@ class _CustomerListState extends State<CustomerList> {
                     SizedBox(
                       height: MySpacer.small,
                     ),
-                    TablePagination(paginationModel: customerService.pagination)
+                    pageControll(
+                        pageService, customerService.pagination, context)
                   ],
                 ),
               ),
@@ -72,19 +86,24 @@ class _CustomerListState extends State<CustomerList> {
   }
 }
 
-List<TableRow> rowWidgetMobile(
-    BuildContext context, List<CustomerModel> datas, Function remove) {
+List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
+    Function remove, Function setPage) {
   return [
-    for (var data in datas)
+    for (CustomerModel data in datas)
       TableRow(children: [
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                data.fname!,
-                overflow: TextOverflow.ellipsis,
+              child: TextButton(
+                onPressed: () {
+                  setPage(page: CustomerDetails(customer: data));
+                },
+                child: Text(
+                  "${data.fname!} ${data.lname!}",
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ))),
         TableCell(
@@ -139,6 +158,7 @@ List<TableRow> rowWidgetMobile(
                           IconButton(
                             onPressed: () {
                               remove(id: data.id);
+                              Navigator.pop(context);
                             },
                             icon: Icon(
                               Icons.delete,
@@ -154,19 +174,24 @@ List<TableRow> rowWidgetMobile(
   ];
 }
 
-List<TableRow> rowWidget(
-    BuildContext context, List<CustomerModel> datas, Function remove) {
+List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
+    Function remove, Function setPage) {
   return [
-    for (var data in datas)
+    for (CustomerModel data in datas)
       TableRow(children: [
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                data.fname!,
-                overflow: TextOverflow.ellipsis,
+              child: TextButton(
+                onPressed: () {
+                  setPage(page: CustomerDetails(customer: data));
+                },
+                child: Text(
+                  "${data.fname!} ${data.lname!}",
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ))),
         TableCell(
@@ -205,7 +230,7 @@ List<TableRow> rowWidget(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.status.toString(),
+                data.status!.status.toString(),
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -219,7 +244,9 @@ List<TableRow> rowWidget(
                       context: context,
                       builder: (_) => AlertDialog(
                           backgroundColor: Palette.contentBackground,
-                          content: CustomerAdd()));
+                          content: CustomerAdd(
+                            customerToEdit: data,
+                          )));
                 },
                 icon: Icon(
                   Icons.edit,

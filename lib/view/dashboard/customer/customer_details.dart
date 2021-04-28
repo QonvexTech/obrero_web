@@ -1,12 +1,12 @@
+import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer_service.dart';
-import 'package:uitemplate/view/dashboard/customer/customer_add.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
-import 'package:uitemplate/widgets/adding_button.dart';
+import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class CustomerDetails extends StatelessWidget {
@@ -18,15 +18,22 @@ class CustomerDetails extends StatelessWidget {
     try {
       CustomerService customerService = Provider.of<CustomerService>(context);
       return Container(
-        color: Palette.contentBackground,
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.all(50),
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          color: Palette.contentBackground,
+          child: AdaptiveContainer(children: [
+            AdaptiveItem(
+              content: Container(
+                padding: EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    backButton(
+                        context, customerService.setPage, CustomerList()),
+
+                    SizedBox(
+                      height: MySpacer.large,
+                    ),
                     Row(
                       children: [
                         CircleAvatar(
@@ -113,6 +120,7 @@ class CustomerDetails extends StatelessWidget {
                     //   height: MySpacer.large,
                     // ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         // Expanded(
                         //   child: Column(
@@ -174,20 +182,21 @@ class CustomerDetails extends StatelessWidget {
                       height: MySpacer.large,
                     ),
                     Text(
-                      "Description",
+                      "Projets",
                       style: transHeader,
                     ),
                     SizedBox(
                       height: MySpacer.small,
                     ),
+                    //TODO: LISTVIEW of projects
                     Text(
                         "Lorem ipsum dolor sit amet, consectetur adipiscingaadadfbv elit, sed do eius  mod tempor incididunt ut labore et dolore magnmagnaaliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
                   ],
                 ),
               ),
             ),
-            Expanded(
-                child: Container(
+            AdaptiveItem(
+                content: Container(
                     padding: EdgeInsets.all(50),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,118 +208,105 @@ class CustomerDetails extends StatelessWidget {
                               "Chantier emplacement",
                               style: Theme.of(context).textTheme.headline5,
                             ),
-                            MaterialButton(
-                              color: Palette.drawerColor,
-                              onPressed: () {
-                                customerService.setPage(CustomerList());
-                              },
-                              child: Text(
-                                "CustomerList",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            )
                           ],
                         ),
                         SizedBox(
                           height: MySpacer.medium,
                         ),
-                        Expanded(
-                            flex: 2,
-                            child: Container(
-                              child: MapScreen(),
-                            )),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          child: MapScreen(),
+                        ),
                         SizedBox(
                           height: MySpacer.large,
                         ),
-                        Expanded(
-                            flex: 3,
-                            child: Container(
-                              child: Column(
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                  Text(
+                                    "Demande client et mise à jour",
+                                    style: boldText,
+                                  ),
+                                  IconButton(
+                                      icon: Icon(Icons.add_circle),
+                                      onPressed: () {
+                                        //LOGS
+                                      })
+                                ],
+                              ),
+                              SizedBox(
+                                height: MySpacer.small,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: ListView(
                                     children: [
-                                      Text(
-                                        "Demande client et mise à jour",
-                                        style: boldText,
+                                      Card(
+                                        child: ListTile(
+                                          leading: Icon(
+                                              Icons.notification_important),
+                                          title: Row(
+                                            children: [
+                                              Text("Chantier"),
+                                              SizedBox(
+                                                width: MySpacer.small,
+                                              ),
+                                              Text("Avril")
+                                            ],
+                                          ),
+                                          subtitle: Text(
+                                              "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                                        ),
                                       ),
-                                      AddingButton(
-                                        addingPage: CustomerAdd(),
-                                        buttonText: "Créer",
+                                      Card(
+                                        child: ListTile(
+                                          leading: Icon(
+                                              Icons.notification_important),
+                                          title: Row(
+                                            children: [
+                                              Text("Chantier"),
+                                              SizedBox(
+                                                width: MySpacer.small,
+                                              ),
+                                              Text("Avril")
+                                            ],
+                                          ),
+                                          subtitle: Text(
+                                              "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                                        ),
+                                      ),
+                                      Card(
+                                        child: ListTile(
+                                          leading: Icon(
+                                              Icons.notification_important),
+                                          title: Row(
+                                            children: [
+                                              Text("Chantier"),
+                                              SizedBox(
+                                                width: MySpacer.small,
+                                              ),
+                                              Text("Avril")
+                                            ],
+                                          ),
+                                          subtitle: Text(
+                                              "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                                        ),
                                       )
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: MySpacer.small,
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      child: ListView(
-                                        children: [
-                                          Card(
-                                            child: ListTile(
-                                              leading: Icon(
-                                                  Icons.notification_important),
-                                              title: Row(
-                                                children: [
-                                                  Text("Chantier"),
-                                                  SizedBox(
-                                                    width: MySpacer.small,
-                                                  ),
-                                                  Text("Avril")
-                                                ],
-                                              ),
-                                              subtitle: Text(
-                                                  "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                            ),
-                                          ),
-                                          Card(
-                                            child: ListTile(
-                                              leading: Icon(
-                                                  Icons.notification_important),
-                                              title: Row(
-                                                children: [
-                                                  Text("Chantier"),
-                                                  SizedBox(
-                                                    width: MySpacer.small,
-                                                  ),
-                                                  Text("Avril")
-                                                ],
-                                              ),
-                                              subtitle: Text(
-                                                  "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                            ),
-                                          ),
-                                          Card(
-                                            child: ListTile(
-                                              leading: Icon(
-                                                  Icons.notification_important),
-                                              title: Row(
-                                                children: [
-                                                  Text("Chantier"),
-                                                  SizedBox(
-                                                    width: MySpacer.small,
-                                                  ),
-                                                  Text("Avril")
-                                                ],
-                                              ),
-                                              subtitle: Text(
-                                                  "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )),
+                                ),
+                              )
+                            ],
+                          ),
+                        )
                       ],
                     )))
-          ],
-        ),
-      );
+          ]));
     } catch (e) {
       return Center(
         child: CircularProgressIndicator(),

@@ -1,22 +1,34 @@
+import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/view/dashboard/project/project_list.dart';
+import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/basicButton.dart';
 
 class ProjectDetails extends StatelessWidget {
+  final ProjectModel? projectModel;
+
+  const ProjectDetails({Key? key, required this.projectModel})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     return Container(
-      child: Row(
-        children: [
-          Expanded(
-            flex: 2,
-            child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: AdaptiveContainer(children: [
+          AdaptiveItem(
+            content: Container(
               color: Palette.contentBackground,
-              padding: EdgeInsets.all(50),
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  backButton(context, projectProvider.setPage, ProjectList()),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -24,67 +36,67 @@ class ProjectDetails extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Chantier XYZ",
+                            projectModel!.name!,
                             style: Theme.of(context).textTheme.headline5,
                           ),
                           Text(
-                            "Planifié du 03/05/20 au 06/07/20",
+                            "Planifié du ${projectModel!.startDate.toString().split(" ")[0]} au ${projectModel!.endDate.toString().split(" ")[0]} ",
                             style: Theme.of(context).textTheme.headline6,
                           ),
                         ],
                       ),
                       Spacer(),
-                      BasicButton(buttonText: "Planning"),
-                      SizedBox(
-                        width: MySpacer.medium,
-                      ),
-                      BasicButton(buttonText: "Logs")
+                      // BasicButton(
+                      //   onPressed: () {},
+                      //   buttonText: "Planning",
+                      // ),
+                      // SizedBox(
+                      //   width: MySpacer.medium,
+                      // ),
+                      // BasicButton(onPressed: () {}, buttonText: "Logs")
                     ],
                   ),
                   SizedBox(
                     height: MySpacer.large,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Téléphone", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text("1234-678-899", style: boldText)
-                          ],
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("AreaSize", style: transHeader),
+                          SizedBox(
+                            height: MySpacer.small,
+                          ),
+                          Text(projectModel!.areaSize.toString(),
+                              style: boldText)
+                        ],
                       ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Email", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text(
-                              "Johndoe@gmail.com",
-                              style: boldText,
-                            )
-                          ],
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Location", style: transHeader),
+                          SizedBox(
+                            height: MySpacer.small,
+                          ),
+                          Text(
+                            "${projectModel!.coordinates!.latitude},${projectModel!.coordinates!.longitude}",
+                            style: boldText,
+                          )
+                        ],
                       ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Adresse", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text("LOREM IPSUM", style: boldText)
-                          ],
-                        ),
-                      )
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Owner", style: transHeader),
+                          SizedBox(
+                            height: MySpacer.small,
+                          ),
+                          Text(projectModel!.customerId.toString(),
+                              style: boldText)
+                        ],
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -97,61 +109,36 @@ class ProjectDetails extends StatelessWidget {
                   SizedBox(
                     height: MySpacer.small,
                   ),
-                  Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscingaadadfbv elit, sed do eius  mod tempor incididunt ut labore et dolore magnmagnaaliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+                  Text(projectModel!.description!),
                   SizedBox(
                     height: MySpacer.large,
                   ),
+                  Text(
+                    "Employees",
+                    style: transHeader,
+                  ),
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
                   Row(
                     children: [
-                      Expanded(
-                          child: Container(
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                            ),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text(
-                              "JOHN DOE",
-                            ),
-                          ],
-                        ),
-                      )),
-                      Expanded(
-                          child: Container(
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                            ),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text(
-                              "JANE DOE",
-                            ),
-                          ],
-                        ),
-                      )),
-                      Expanded(
-                          child: Container(
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                            ),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text(
-                              "JOHN DOE",
-                            ),
-                          ],
-                        ),
-                      )),
+                      for (var x = 0; x < 3; x++)
+                        Expanded(
+                            child: Container(
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                              ),
+                              SizedBox(
+                                width: MySpacer.small,
+                              ),
+                              Text(
+                                "JOHN DOE",
+                              ),
+                            ],
+                          ),
+                        )),
                     ],
                   ),
                   SizedBox(
@@ -164,7 +151,8 @@ class ProjectDetails extends StatelessWidget {
                   SizedBox(
                     height: MySpacer.small,
                   ),
-                  Expanded(
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.35,
                     child: GridView.count(
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
@@ -250,10 +238,10 @@ class ProjectDetails extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-              child: Container(
+          AdaptiveItem(
+              content: Container(
             color: Palette.contentBackground,
-            padding: EdgeInsets.all(50),
+            padding: EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -262,7 +250,7 @@ class ProjectDetails extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline6,
                 ),
                 SizedBox(
-                  height: MySpacer.large,
+                  height: MySpacer.small,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -350,73 +338,74 @@ class ProjectDetails extends StatelessWidget {
                       "Statistics",
                       style: Theme.of(context).textTheme.headline6,
                     ),
-                    BasicButton(buttonText: "Warning")
+                    IconButton(
+                        icon: Icon(Icons.add_circle),
+                        onPressed: () {
+                          //LOGS
+                        })
                   ],
                 ),
                 SizedBox(
                   height: MySpacer.small,
                 ),
-                Expanded(
-                  child: Container(
-                    child: ListView(
-                      children: [
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.notification_important),
-                            title: Row(
-                              children: [
-                                Text("Chantier"),
-                                SizedBox(
-                                  width: MySpacer.small,
-                                ),
-                                Text("Avril")
-                              ],
-                            ),
-                            subtitle: Text(
-                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  child: ListView(
+                    children: [
+                      Card(
+                        child: ListTile(
+                          leading: Icon(Icons.notification_important),
+                          title: Row(
+                            children: [
+                              Text("Chantier"),
+                              SizedBox(
+                                width: MySpacer.small,
+                              ),
+                              Text("Avril")
+                            ],
                           ),
+                          subtitle: Text(
+                              "Attention, il nous manque les plaques pour le toit de la terrasse"),
                         ),
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.notification_important),
-                            title: Row(
-                              children: [
-                                Text("Chantier"),
-                                SizedBox(
-                                  width: MySpacer.small,
-                                ),
-                                Text("Avril")
-                              ],
-                            ),
-                            subtitle: Text(
-                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                      ),
+                      Card(
+                        child: ListTile(
+                          leading: Icon(Icons.notification_important),
+                          title: Row(
+                            children: [
+                              Text("Chantier"),
+                              SizedBox(
+                                width: MySpacer.small,
+                              ),
+                              Text("Avril")
+                            ],
                           ),
+                          subtitle: Text(
+                              "Attention, il nous manque les plaques pour le toit de la terrasse"),
                         ),
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.notification_important),
-                            title: Row(
-                              children: [
-                                Text("Chantier"),
-                                SizedBox(
-                                  width: MySpacer.small,
-                                ),
-                                Text("Avril")
-                              ],
-                            ),
-                            subtitle: Text(
-                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                      ),
+                      Card(
+                        child: ListTile(
+                          leading: Icon(Icons.notification_important),
+                          title: Row(
+                            children: [
+                              Text("Chantier"),
+                              SizedBox(
+                                width: MySpacer.small,
+                              ),
+                              Text("Avril")
+                            ],
                           ),
-                        )
-                      ],
-                    ),
+                          subtitle: Text(
+                              "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                        ),
+                      )
+                    ],
                   ),
-                )
+                ),
               ],
             ),
           ))
-        ],
-      ),
-    );
+        ]));
   }
 }

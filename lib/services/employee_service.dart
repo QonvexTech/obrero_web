@@ -10,13 +10,33 @@ import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 class EmployeeSevice extends ChangeNotifier {
   Widget activePageScreen = EmployeeList();
   List<EmployeesModel>? _users;
+  List<EmployeesModel>? _tempUsers;
   PaginationService paginationService = PaginationService();
+
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchUsers);
 
+  //TODO saerch un finish
+  TextEditingController searchController = TextEditingController();
+  search(String text) {
+    _users = _tempUsers;
+    _users = _users!
+        .where((element) =>
+            "${element.fname!} ${element.lname!}"
+                .toLowerCase()
+                .contains(text.toLowerCase()) ||
+            element.lname!.toLowerCase().contains(text.toLowerCase()) ||
+            element.email!.toLowerCase().contains(text.toLowerCase()))
+        .toList();
+    if (text.isEmpty) {
+      _users = _tempUsers;
+    }
+    notifyListeners();
+  }
+
   get pagination => _pagination;
 
-  void setPageScreen(Widget page) {
+  void setPageScreen({required Widget page}) {
     activePageScreen = page;
     notifyListeners();
   }
@@ -37,7 +57,8 @@ class EmployeeSevice extends ChangeNotifier {
       }
     }
     _users = newUsers;
-
+    _tempUsers = newUsers;
+    searchController.clear();
     notifyListeners();
   }
 
@@ -65,8 +86,12 @@ class EmployeeSevice extends ChangeNotifier {
 
           notifyListeners();
         }
+
+        _pagination.totalEntries = json.decode(response.body)["total"];
+        if (_pagination.totalEntries < _pagination.perPage) {
+          _pagination.perPage = _pagination.totalEntries;
+        }
         fromJsonListToUsers(data);
-        // print(data);
       } else {
         print(response.body);
       }

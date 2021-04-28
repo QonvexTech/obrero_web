@@ -11,33 +11,31 @@ import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 class CustomerService extends ChangeNotifier {
   Widget activePageScreen = CustomerList(); //change to list adfter
   PaginationService paginationService = PaginationService();
+  TextEditingController searchController = TextEditingController();
   List<CustomerModel> _customers = [];
   List<CustomerModel> _tempCustomer = [];
-  int _totalEntries = 0;
-  late PaginationModel _pagination = PaginationModel(
-      lastPage: 1, fetch: fetchCustomers, totalEntries: _totalEntries);
+  late PaginationModel _pagination =
+      PaginationModel(lastPage: 1, fetch: fetchCustomers);
   Map bodyToUpdate = {};
-
-  TextEditingController _searchController = TextEditingController();
-
-  get searchController => _searchController;
-
-  get customers => _customers;
-  get pagination => _pagination;
-  void setPage(Widget page) {
-    activePageScreen = page;
+  //SEARCH CUSTOMER
+  void search(String text) {
+    _customers = _tempCustomer;
+    _customers = _customers
+        .where((element) =>
+            "${element.fname!} ${element.lname!}"
+                .toLowerCase()
+                .contains(text.toLowerCase()) ||
+            // element.lname!.toLowerCase().contains(text.toLowerCase()) ||
+            element.adress!.toLowerCase().contains(text.toLowerCase()) ||
+            element.email!.toLowerCase().contains(text.toLowerCase()))
+        .toList();
     notifyListeners();
   }
 
-  void search(String text) {
-    _customers = _customers
-        .where((element) =>
-            element.fname!.toLowerCase().contains(text.toLowerCase()) ||
-            element.email!.toLowerCase().contains(text.toLowerCase()))
-        .toList();
-    if (text.isEmpty) {
-      _customers = _tempCustomer;
-    }
+  get customers => _customers;
+  get pagination => _pagination;
+  setPage({required Widget page}) {
+    activePageScreen = page;
     notifyListeners();
   }
 
@@ -63,7 +61,17 @@ class CustomerService extends ChangeNotifier {
     }
     _customers = newCustomers;
     _tempCustomer = newCustomers;
-    _searchController.clear();
+
+    if (_customers.length == 0) {
+      if (_pagination.isPrev) {
+        if (_customers.length == 0) {
+          if (_pagination.isPrev) {
+            paginationService.prevPage(_pagination);
+          }
+        }
+      }
+    }
+    searchController.clear();
     notifyListeners();
   }
 
@@ -89,9 +97,10 @@ class CustomerService extends ChangeNotifier {
         if (json.decode(response.body)["last_page"] != null) {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
-
-        // _totalEntries = json.decode(response.body)["next_page_url"];
-        print(json.decode(response.body));
+        _pagination.totalEntries = json.decode(response.body)["total"];
+        if (_pagination.totalEntries < _pagination.perPage) {
+          _pagination.perPage = _pagination.totalEntries;
+        }
         fromJsonListToCustomer(data);
       } else {
         print(response.body);
@@ -110,8 +119,8 @@ class CustomerService extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
+        paginationService.addedItem(_pagination);
         fetchCustomers();
-        print(data);
       });
     } catch (e) {
       print(e);
@@ -127,6 +136,7 @@ class CustomerService extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         _customers.removeWhere((element) => element.id == id);
+        paginationService.removeItem(_pagination);
         notifyListeners();
         if (_customers.length == 0) {
           if (_pagination.isPrev) {

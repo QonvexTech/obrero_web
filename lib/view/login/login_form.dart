@@ -103,7 +103,7 @@ class _LoginFormState extends State<LoginForm> {
                           style: TextStyle(
                               fontSize: widthSize * widget.fontSizeTextField,
                               fontFamily: 'Poppins',
-                              color: Colors.white))),
+                              color: Colors.black))),
                   TextFormField(
                       autofocus: true,
                       focusNode: _emailFocus,
@@ -119,33 +119,32 @@ class _LoginFormState extends State<LoginForm> {
                           return 'Invalid Email!';
                         }
                       },
-                      cursorColor: Colors.white,
+                      cursorColor: Colors.black,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                        // hintText: "Email",
-                        fillColor: Colors.white,
+                        fillColor: Colors.black,
                         border: UnderlineInputBorder(
                             borderSide:
                                 BorderSide(color: Colors.red, width: 2)),
                         enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white30, width: 2)),
+                            borderSide: BorderSide(
+                                color: Palette.drawerColorLight, width: 2)),
                         focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 2)),
-                        labelStyle: TextStyle(color: Colors.white),
+                            borderSide: BorderSide(
+                                color: Palette.drawerColor, width: 2)),
+                        labelStyle: TextStyle(color: Colors.black),
                         errorStyle: TextStyle(
-                            color: Colors.white,
+                            color: Colors.red,
                             fontSize: widthSize * widget.errorFormMessage),
                         prefixIcon: Icon(
                           Icons.person,
                           size: widthSize * widget.iconFormSize,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                       ),
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: widget.fontSizeTextFormField)),
                   SizedBox(height: heightSize * widget.spaceBetweenFields),
                   Align(
@@ -154,7 +153,7 @@ class _LoginFormState extends State<LoginForm> {
                           style: TextStyle(
                               fontSize: widthSize * widget.fontSizeTextField,
                               fontFamily: 'Poppins',
-                              color: Colors.white))),
+                              color: Colors.black))),
                   TextFormField(
                       focusNode: _passwordFocus,
                       onFieldSubmitted: (value) {
@@ -166,28 +165,28 @@ class _LoginFormState extends State<LoginForm> {
                           return 'Mot de passe Required!';
                         }
                       },
-                      cursorColor: Colors.white,
+                      cursorColor: Colors.black,
                       keyboardType: TextInputType.text,
                       obscureText: _passwordVisible,
                       decoration: InputDecoration(
-                          fillColor: Colors.white,
+                          fillColor: Colors.black,
                           border: UnderlineInputBorder(
                               borderSide:
                                   BorderSide(color: Colors.red, width: 2)),
                           enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white30, width: 2)),
+                              borderSide: BorderSide(
+                                  color: Palette.drawerColorLight, width: 2)),
                           focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 2)),
-                          labelStyle: TextStyle(color: Colors.white),
+                              borderSide: BorderSide(
+                                  color: Palette.drawerColor, width: 2)),
+                          labelStyle: TextStyle(color: Colors.black),
                           errorStyle: TextStyle(
-                              color: Colors.white,
+                              color: Colors.red,
                               fontSize: widthSize * widget.errorFormMessage),
                           prefixIcon: Icon(
                             Icons.lock,
                             size: widthSize * widget.iconFormSize,
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                           suffixIcon: IconButton(
                             onPressed: () {
@@ -200,12 +199,12 @@ class _LoginFormState extends State<LoginForm> {
                                   ? Icons.visibility_off
                                   : Icons.visibility,
                               size: widthSize * widget.iconFormSize,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           )),
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: widget.fontSizeTextFormField)),
                   SizedBox(
                       height: heightSize * widget.spaceBetweenFieldAndButton),
@@ -222,7 +221,8 @@ class _LoginFormState extends State<LoginForm> {
                           style: TextStyle(
                               fontSize: widthSize * widget.fontSizeButton,
                               fontFamily: 'Poppins',
-                              color: Color.fromRGBO(41, 187, 255, 1)))),
+                              fontWeight: FontWeight.bold,
+                              color: Palette.drawerColor))),
                   SizedBox(height: heightSize * 0.01),
                 ])));
   }

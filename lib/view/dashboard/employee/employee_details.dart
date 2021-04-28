@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
-import 'package:uitemplate/widgets/adding_button.dart';
-import 'package:uitemplate/widgets/basicButton.dart';
+import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class EmployeeDetails extends StatelessWidget {
+  final EmployeesModel? employeesModel;
+
+  const EmployeeDetails({Key? key, required this.employeesModel})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
-    CustomerService customerService = Provider.of<CustomerService>(context);
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
     return Container(
       color: Palette.contentBackground,
@@ -20,10 +22,12 @@ class EmployeeDetails extends StatelessWidget {
         children: [
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(50),
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  backButton(
+                      context, employeeSevice.setPageScreen, EmployeeList()),
                   Row(
                     children: [
                       CircleAvatar(
@@ -32,23 +36,13 @@ class EmployeeDetails extends StatelessWidget {
                       SizedBox(
                         width: MySpacer.small,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "JOHN DOE",
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
-                          Text(
-                            "#1234",
-                            style: Theme.of(context).textTheme.subtitle1,
-                          )
-                        ],
+                      Text(
+                        "${employeesModel!.fname!} ${employeesModel!.lname!}",
+                        style: Theme.of(context).textTheme.headline5,
                       ),
                       SizedBox(
                         width: MySpacer.large,
                       ),
-                      BasicButton(buttonText: "Logs")
                     ],
                   ),
                   SizedBox(
@@ -64,7 +58,8 @@ class EmployeeDetails extends StatelessWidget {
                             SizedBox(
                               height: MySpacer.small,
                             ),
-                            Text("1234-678-899", style: boldText)
+                            Text("${employeesModel!.contactNumber!}",
+                                style: boldText)
                           ],
                         ),
                       ),
@@ -77,7 +72,7 @@ class EmployeeDetails extends StatelessWidget {
                               height: MySpacer.small,
                             ),
                             Text(
-                              "Johndoe@gmail.com",
+                              "${employeesModel!.email!}",
                               style: boldText,
                             )
                           ],
@@ -91,7 +86,7 @@ class EmployeeDetails extends StatelessWidget {
                             SizedBox(
                               height: MySpacer.small,
                             ),
-                            Text("LOREM IPSUM", style: boldText)
+                            Text("${employeesModel!.address!}", style: boldText)
                           ],
                         ),
                       )
@@ -100,6 +95,7 @@ class EmployeeDetails extends StatelessWidget {
                   SizedBox(
                     height: MySpacer.large,
                   ),
+                  //TODO: Assign projext
                   Text(
                     "Sites Attribués",
                     style: Theme.of(context).textTheme.headline5,
@@ -172,15 +168,14 @@ class EmployeeDetails extends StatelessWidget {
                   SizedBox(
                     height: MySpacer.large,
                   ),
-                  Text(
-                    "Description",
-                    style: transHeader,
-                  ),
-                  SizedBox(
-                    height: MySpacer.small,
-                  ),
-                  Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscingaadadfbv elit, sed do eius  mod tempor incididunt ut labore et dolore magnmagnaaliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+                  // Text(
+                  //   "Description",
+                  //   style: transHeader,
+                  // ),
+                  // SizedBox(
+                  //   height: MySpacer.small,
+                  // ),
+                  // Text("${employeesModel!.!}")
                 ],
               ),
             ),
@@ -191,25 +186,9 @@ class EmployeeDetails extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Chantier emplacement",
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
-                          MaterialButton(
-                            color: Palette.drawerColor,
-                            onPressed: () {
-                              employeeSevice
-                                  .setActivePageScreen(EmployeeList());
-                            },
-                            child: Text(
-                              "Emplyee List",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          )
-                        ],
+                      Text(
+                        "Chantier emplacement",
+                        style: Theme.of(context).textTheme.headline5,
                       ),
                       SizedBox(
                         height: MySpacer.medium,
@@ -235,6 +214,11 @@ class EmployeeDetails extends StatelessWidget {
                                       "Avertissements récents et mise à jour",
                                       style: boldText,
                                     ),
+                                    IconButton(
+                                        icon: Icon(Icons.add_circle),
+                                        onPressed: () {
+                                          //LOGS
+                                        })
                                   ],
                                 ),
                                 SizedBox(

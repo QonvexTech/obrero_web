@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:uitemplate/models/message.dart';
 
 const String api = "https://obrero.checkmy.dev/api";
 
@@ -11,6 +12,7 @@ const String project_api = "$api/project/";
 const String project_create_api = "$api/project/create";
 const String project_update_api = "$api/project/update";
 const String project_delete_api = "$api/project/remove"; //id
+const String project_api_date = "$api/project/date-based";
 
 //CUSTOMER or CLIENT
 const String customer_api = "$api/customer/";
@@ -37,3 +39,4 @@ const String firebase_messaging = "https://fcm.googleapis.com/fcm/send";
 const TextStyle transHeader = TextStyle(color: Colors.grey);
 const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);
 String? authToken;
+// List<NotificationModel> notificationList = [];
