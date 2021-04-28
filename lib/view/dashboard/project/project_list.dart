@@ -11,7 +11,18 @@ import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
 
-class ProjectList extends StatelessWidget {
+class ProjectList extends StatefulWidget {
+  @override
+  _ProjectListState createState() => _ProjectListState();
+}
+
+class _ProjectListState extends State<ProjectList> {
+  @override
+  void initState() {
+    Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);

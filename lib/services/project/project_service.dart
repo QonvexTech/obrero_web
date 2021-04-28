@@ -10,10 +10,10 @@ import 'package:uitemplate/view/dashboard/project/project_list.dart';
 class ProjectProvider extends ChangeNotifier {
   Widget activePageScreen = ProjectList();
   List<ProjectModel> _projects = [];
+  List<ProjectModel> _projectsDateBase = [];
   List<ProjectModel> _tempProjects = [];
-  DateTime dateBase = DateTime.now();
-
   PaginationService paginationService = PaginationService();
+  DateTime selectedDate = DateTime.now();
 
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchProjects);
@@ -43,6 +43,7 @@ class ProjectProvider extends ChangeNotifier {
 
   get pagination => _pagination;
   get projects => _projects;
+  get projectDateBased => _projectsDateBase;
 
   fromJsonListToProject(List projects) {
     List<ProjectModel> newProjects = [];
@@ -94,35 +95,41 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  // Future fetchProjectsBaseOnDates() async {
-  //   var url = Uri.parse("$project_api ${dateBase.toString().split(" ")[0]}");
-  //   // final prefs = await SharedPreferences.getInstance();
-  //   try {
-  //     var response = await http.get(url, headers: {
-  //       "Accept": "application/json",
-  //       "Authorization": "Bearer ${auth.token}",
-  //       "Content-Type": "application/x-www-form-urlencoded"
-  //     });
-  //     if (response.statusCode == 200 || response.statusCode == 201) {
-  //       List data = json.decode(response.body)["data"];
-  //       print(data);
-  //       // if (json.decode(response.body)["next_page_url"] != null) {
-  //       //   _pagination.isNext = true;
-  //       //   notifyListeners();
-  //       // }
-  //       // if (json.decode(response.body)["prev_page_url"] != null) {
-  //       //   _pagination.isPrev = true;
-  //       //   notifyListeners();
-  //       // }
-  //       // fromJsonListToProject(data);
-  //     } else {
-  //       print("error");
-  //       print(response.body);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  Future fetchProjectsBaseOnDates({DateTime? dateSelected}) async {
+    if (dateSelected == null) {
+      dateSelected = selectedDate;
+    } else {
+      selectedDate = dateSelected;
+    }
+    var url = Uri.parse("$project_api_date");
+    // final prefs = await SharedPreferences.getInstance();
+    try {
+      var response = await http.post(url, body: {
+        "date": dateSelected.toString().split(" ")[0]
+      }, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        _projectsDateBase.clear();
+        List datas = json.decode(response.body);
+        if (datas.length > 0) {
+          for (var data in datas) {
+            _projectsDateBase.add(ProjectModel.fromJson(data));
+          }
+        }
+        print(response.body);
+      } else {
+        _projectsDateBase.clear();
+        print("error");
+        print(response.body);
+      }
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Future createProjects({required ProjectModel newProject}) async {
     var url = Uri.parse("$project_create_api");
@@ -134,6 +141,7 @@ class ProjectProvider extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         print("success to add");
+        fetchProjectsBaseOnDates();
         fetchProjects();
       } else {
         print(response.body);
@@ -154,10 +162,11 @@ class ProjectProvider extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
+        print(data);
+        fetchProjectsBaseOnDates();
+        fetchProjects();
 
         notifyListeners();
-
-        print(data);
       });
     } catch (e) {
       print(e);
@@ -173,6 +182,7 @@ class ProjectProvider extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         _projects.removeWhere((element) => element.id == id);
+        _projectsDateBase.removeWhere((element) => element.id == id);
         notifyListeners();
         if (_projects.length == 0) {
           if (_pagination.isPrev) {

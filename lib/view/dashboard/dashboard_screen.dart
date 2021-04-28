@@ -6,7 +6,6 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/customer_service.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
-import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
@@ -24,7 +23,7 @@ class _DashBoardState extends State<DashBoard> {
   @override
   void initState() {
     var projectsService = Provider.of<ProjectProvider>(context, listen: false);
-    projectsService.fetchProjects().whenComplete(() =>
+    projectsService.fetchProjectsBaseOnDates().whenComplete(() =>
         Provider.of<MapService>(context, listen: false)
             .mapInit(projectsService.projects));
 
@@ -36,9 +35,7 @@ class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
     try {
-      ProjectProvider projectProvider =
-          Provider.of<ProjectProvider>(context, listen: false);
-
+      ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
       DashboardService dashboardService =
           Provider.of<DashboardService>(context);
 
@@ -66,15 +63,18 @@ class _DashBoardState extends State<DashBoard> {
                           Expanded(
                             child: DatePicker(
                               dashboardService.startDate,
-                              initialSelectedDate: DateTime.now(),
+                              initialSelectedDate: projectProvider.selectedDate,
                               selectionColor: Palette.drawerColor,
                               selectedTextColor: Colors.white,
                               locale: "fr_FR",
                               controller: dashboardService.dateController,
                               onDateChange: (date) {
                                 //New Date
-
                                 print("selected date");
+                                Provider.of<ProjectProvider>(context,
+                                        listen: false)
+                                    .fetchProjectsBaseOnDates(
+                                        dateSelected: date);
                               },
                               width: 75,
                             ),
@@ -91,16 +91,16 @@ class _DashBoardState extends State<DashBoard> {
                       ),
                     ),
                   ),
-                  projectProvider.projects.length > 0
+                  projectProvider.projectDateBased.length > 0
                       ? Container(
                           padding: EdgeInsets.symmetric(vertical: 20),
                           child: MapDetails(
-                            project: projectProvider.projects,
+                            project: projectProvider.projectDateBased,
                           ))
                       : SizedBox(),
                   Expanded(
                     child: MapScreen(
-                      projects: projectProvider.projects,
+                      projects: projectProvider.projectDateBased,
                     ),
                   )
                 ],
@@ -110,7 +110,7 @@ class _DashBoardState extends State<DashBoard> {
           height: MediaQuery.of(context).size.width > 800
               ? MediaQuery.of(context).size.height
               : MediaQuery.of(context).size.height * .5,
-          content: projectProvider.projects.length <= 0
+          content: projectProvider.projectDateBased.length <= 0
               ? Expanded(
                   child: Container(
                     color: Palette.contentBackground,
@@ -128,19 +128,22 @@ class _DashBoardState extends State<DashBoard> {
                   color: Palette.contentBackground,
                   padding: EdgeInsets.all(20),
                   child: ListView.builder(
-                      itemCount: projectProvider.projects.length,
+                      itemCount: projectProvider.projectDateBased.length,
                       itemBuilder: (context, index) {
                         return ProjectCard(
-                          startDate:
-                              projectProvider.projects[index].startDate == null
-                                  ? DateTime.now()
-                                  : projectProvider.projects[index].startDate!,
-                          name: projectProvider.projects[index].name!,
+                          startDate: projectProvider
+                                      .projectDateBased[index].startDate ==
+                                  null
+                              ? DateTime.now()
+                              : projectProvider
+                                  .projectDateBased[index].startDate!,
+                          name: projectProvider.projectDateBased[index].name!,
                           description: projectProvider
-                                      .projects[index].description ==
+                                      .projectDateBased[index].description ==
                                   null
                               ? ""
-                              : projectProvider.projects[index].description!,
+                              : projectProvider
+                                  .projectDateBased[index].description!,
                         );
                       }),
                 ),
