@@ -159,9 +159,7 @@ class _DashBoardState extends State<DashBoard> {
                   height: MySpacer.small,
                 ),
                 Expanded(
-                  child: MapScreen(
-                    projects: projectProvider.projectDateBased,
-                  ),
+                  child: MapScreen(),
                 )
               ],
             ),

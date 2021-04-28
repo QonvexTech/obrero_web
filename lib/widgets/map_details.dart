@@ -30,7 +30,7 @@ class MapDetails extends StatelessWidget {
             child: GestureDetector(
           onTap: () {
             print("Locate Map");
-            mapService.setCoordinates(project![index].coordinates!);
+            mapService.setCoordinates(coord: project![index].coordinates!);
           },
           child: Container(
               child: Center(

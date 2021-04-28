@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:uitemplate/services/notification_services.dart';
 
-class NotificationCard extends StatelessWidget {
+class NotificationCard extends StatefulWidget {
+  @override
+  _NotificationCardState createState() => _NotificationCardState();
+}
+
+class _NotificationCardState extends State<NotificationCard> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List>(
@@ -40,19 +45,23 @@ class NotificationCard extends StatelessWidget {
                     ),
                   )
                 } else ...{
-                  for (var item in snapshot.data!) ...{
-                    PopupMenuItem(
-                      child: Container(
+                  PopupMenuItem(
+                    child: Container(
                         width: 650,
-                        child: ListTile(
-                          leading: CircleAvatar(),
-                          title: Text(item["title"]),
-                          subtitle:
-                              Text(item["created_at"].toString().split(" ")[0]),
-                        ),
-                      ),
-                    )
-                  }
+                        height: MediaQuery.of(context).size.height - 100,
+                        child: ListView(
+                          children: [
+                            for (var item in snapshot.data!)
+                              ListTile(
+                                leading: CircleAvatar(),
+                                title: Text(item["title"]),
+                                subtitle: Text(item["created_at"]
+                                    .toString()
+                                    .split(" ")[0]),
+                              ),
+                          ],
+                        )),
+                  )
                 }
               ];
             },

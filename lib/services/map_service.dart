@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -48,12 +47,37 @@ class MapService extends ChangeNotifier {
           markerId: MarkerId(project.id.toString()),
           position: project.coordinates!));
     }
-
     notifyListeners();
   }
 
-  void setCoordinates(LatLng coord) {
-    coordinates = coord;
+  void setCoordinates({LatLng? coord}) {
+    if (coord != null) {
+      coordinates = coord;
+    }
+    addNewMarker(coordinates);
+    notifyListeners();
+  }
+
+  void addNewMarker(LatLng coord) {
+    Marker newMarker = Marker(markerId: MarkerId("value"), position: coord);
+    _markers.add(newMarker);
+    notifyListeners();
+  }
+
+  void changePosition(MarkerId markerId) {
+    final Marker marker = markers[markerId]!;
+    final LatLng current = marker.position;
+    final Offset offset = Offset(
+      coordinates.latitude - current.latitude,
+      coordinates.longitude - current.longitude,
+    );
+
+    markers[markerId] = marker.copyWith(
+      positionParam: LatLng(
+        coordinates.latitude + offset.dy,
+        coordinates.longitude + offset.dx,
+      ),
+    );
     notifyListeners();
   }
 
