@@ -32,8 +32,6 @@ class FireBase extends ChangeNotifier {
       provisional: true,
       sound: true,
     );
-
-    print("Notification Settings : ${settings.announcement}");
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       rxNotificationService
           .append(json.decode(message.data['notification_data']));
@@ -62,7 +60,6 @@ class FireBase extends ChangeNotifier {
     FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
       print('Handling a background message ${message.messageId}');
     });
-    print("lisening");
   }
 
   init({required context}) async {

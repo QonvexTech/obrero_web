@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
+import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
 import 'package:uitemplate/widgets/notifications.dart';
 
 class ResponsiveScaffold extends StatefulWidget {
@@ -353,7 +354,9 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                         ),
                       },
                       Spacer(),
-                      NotificationCard(),
+
+                      //errpr on stream
+                      Container(child: NotificationCard()),
                       PopupMenuButton(
                           offset: Offset(0, 50),
                           icon: FittedBox(
@@ -391,7 +394,12 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                   color: Colors.black38,
                                                 )),
                                             child: MaterialButton(
-                                                onPressed: () {},
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _selectedContent =
+                                                        GeneralSettings();
+                                                  });
+                                                },
                                                 child: Text("Manage Account")),
                                           ),
                                           SizedBox(
