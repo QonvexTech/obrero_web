@@ -48,8 +48,10 @@ class _CustomerAddState extends State<EmployeeAdd> {
         Provider.of<EmployeeSevice>(context, listen: false);
     final Size size = MediaQuery.of(context).size;
     return Container(
-      width: size.width - (size.width * .5),
-      height: size.height / 2,
+      width: size.width,
+      height: size.height,
+      constraints: BoxConstraints(maxWidth: 800, maxHeight: size.height / 1.8),
+      padding: EdgeInsets.all(20),
       child: Form(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,6 +107,9 @@ class _CustomerAddState extends State<EmployeeAdd> {
                 onChanged: (value) {
                   bodyToUpdate.addAll({"email": value});
                 },
+              ),
+              SizedBox(
+                height: MySpacer.small,
               ),
               isEdit
                   ? SizedBox()

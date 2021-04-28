@@ -1,3 +1,4 @@
+import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
@@ -17,12 +18,13 @@ class EmployeeDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
     return Container(
-      color: Palette.contentBackground,
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(20),
+        color: Palette.contentBackground,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        padding: EdgeInsets.all(20),
+        child: AdaptiveContainer(children: [
+          AdaptiveItem(
+            content: Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -180,9 +182,10 @@ class EmployeeDetails extends StatelessWidget {
               ),
             ),
           ),
-          Expanded(
-              child: Container(
-                  padding: EdgeInsets.all(50),
+          AdaptiveItem(
+              content: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -288,8 +291,6 @@ class EmployeeDetails extends StatelessWidget {
                           )),
                     ],
                   )))
-        ],
-      ),
-    );
+        ]));
   }
 }
