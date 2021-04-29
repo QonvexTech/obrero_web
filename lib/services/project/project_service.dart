@@ -58,19 +58,6 @@ class ProjectProvider extends ChangeNotifier {
   get projects => _projects;
   get projectDateBased => _projectsDateBase;
 
-  fromJsonListToProject(List projects) {
-    List<ProjectModel> newProjects = [];
-
-    for (var project in projects) {
-      newProjects.add(ProjectModel.fromJson(project));
-    }
-
-    _projects = newProjects;
-    _tempProjects = newProjects;
-    searchController.clear();
-    notifyListeners();
-  }
-
   Future fetchProjects() async {
     var url = Uri.parse(
         "$project_api${_pagination.perPage}?page=${_pagination.page}");
@@ -99,7 +86,9 @@ class ProjectProvider extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        fromJsonListToProject(data);
+        var projects = ProjectModel.fromJsonListToProject(data);
+        _projects = projects;
+        _tempProjects = projects;
       } else {
         print(response.body);
       }
@@ -127,11 +116,11 @@ class ProjectProvider extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         _projectsDateBase.clear();
         List datas = json.decode(response.body);
-        if (datas.length > 0) {
-          for (var data in datas) {
-            _projectsDateBase.add(ProjectModel.fromJson(data));
-          }
+
+        for (var data in datas) {
+          _projectsDateBase.add(ProjectModel.fromJson(data));
         }
+
         print(response.body);
       } else {
         _projectsDateBase.clear();
@@ -140,7 +129,7 @@ class ProjectProvider extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
-      print(e);
+      print("project fetch error : $e");
     }
   }
 

@@ -85,7 +85,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           drawerItems: [
             DrawerItem(
-                icon: Icons.dashboard, text: "Dashboard", content: DashBoard()),
+                icon: Icons.dashboard,
+                text: "Dashboard",
+                content: DashBoardScreen()),
             DrawerItem(
                 icon: Icons.people, text: "Customers", content: Customer()),
             DrawerItem(
