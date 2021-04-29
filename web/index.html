@@ -67,7 +67,9 @@
   measurementId: "G-YQRRGCF8WR"
   };
   firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
+  if (firebase.messaging.isSupported())
+	const messaging = firebase.messaging();
+  }
 </script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
