@@ -17,73 +17,83 @@ class EmployeeList extends StatefulWidget {
 
 class _EmployeeListState extends State<EmployeeList> {
   @override
+  void initState() {
+    Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     EmployeeSevice employeeService = Provider.of<EmployeeSevice>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
 
-    return Container(
-      color: Palette.contentBackground,
-      child: Column(
-        children: [
-          SizedBox(
-            height: MySpacer.medium,
-          ),
-          HeaderList(
-            toPage: EmployeeAdd(),
-            title: "Employee",
-            search: employeeService.search,
-            searchController: employeeService.searchController,
-          ),
-          SizedBox(
-            height: MySpacer.large,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  children: [
-                    AllTable(
-                        datas: employeeService.users,
-                        rowWidget: rowWidget(
-                            context,
-                            employeeService.users,
-                            employeeService.removeUser,
-                            employeeService.setPageScreen),
-                        rowWidgetMobile: rowWidgetMobile(
-                            context,
-                            employeeService.users,
-                            employeeService.removeUser,
-                            employeeService.setPageScreen),
-                        headersMobile: [
-                          "NOM",
-                          "EMAIL",
-                          "STATUS"
-                        ],
-                        headers: [
-                          "NOM",
-                          "EMAIL",
-                          "TÉLÉPHONE",
-                          "ADDRESSE",
-                          "STATUS"
-                        ]),
-                    SizedBox(
-                      height: MySpacer.small,
-                    ),
-                    pageControll(
-                        pageService, employeeService.pagination, context)
-                  ],
-                ),
-              ),
-            ),
-          ),
-          //ROW PAGEr
-          SizedBox(
-            height: MySpacer.large,
+    return employeeService.users == null
+        ? Center(
+            child: CircularProgressIndicator(),
           )
-        ],
-      ),
-    );
+        : Container(
+            color: Palette.contentBackground,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MySpacer.medium,
+                ),
+                HeaderList(
+                  toPage: EmployeeAdd(),
+                  title: "Employee",
+                  search: employeeService.search,
+                  searchController: employeeService.searchController,
+                ),
+                SizedBox(
+                  height: MySpacer.large,
+                ),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        children: [
+                          AllTable(
+                              datas: employeeService.users,
+                              rowWidget: rowWidget(
+                                  context,
+                                  employeeService.users,
+                                  employeeService.removeUser,
+                                  employeeService.setPageScreen),
+                              rowWidgetMobile: rowWidgetMobile(
+                                  context,
+                                  employeeService.users,
+                                  employeeService.removeUser,
+                                  employeeService.setPageScreen),
+                              headersMobile: [
+                                "NOM",
+                                "EMAIL",
+                                "STATUS"
+                              ],
+                              headers: [
+                                "NOM",
+                                "EMAIL",
+                                "TÉLÉPHONE",
+                                "ADDRESSE",
+                                "STATUS"
+                              ]),
+                          SizedBox(
+                            height: MySpacer.small,
+                          ),
+                          pageControll(
+                              pageService, employeeService.pagination, context)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                //ROW PAGEr
+                SizedBox(
+                  height: MySpacer.large,
+                )
+              ],
+            ),
+          );
   }
 }
 

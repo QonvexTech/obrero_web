@@ -12,7 +12,7 @@ class CustomerService extends ChangeNotifier {
   Widget activePageScreen = CustomerList(); //change to list adfter
   PaginationService paginationService = PaginationService();
   TextEditingController searchController = TextEditingController();
-  List<CustomerModel> _customers = [];
+  List<CustomerModel>? _customers;
   List<CustomerModel> _tempCustomer = [];
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchCustomers);
@@ -20,7 +20,7 @@ class CustomerService extends ChangeNotifier {
   //SEARCH CUSTOMER
   void search(String text) {
     _customers = _tempCustomer;
-    _customers = _customers
+    _customers = _customers!
         .where((element) =>
             "${element.fname!} ${element.lname!}"
                 .toLowerCase()
@@ -62,9 +62,9 @@ class CustomerService extends ChangeNotifier {
     _customers = newCustomers;
     _tempCustomer = newCustomers;
 
-    if (_customers.length == 0) {
+    if (_customers!.length == 0) {
       if (_pagination.isPrev) {
-        if (_customers.length == 0) {
+        if (_customers!.length == 0) {
           if (_pagination.isPrev) {
             paginationService.prevPage(_pagination);
           }
@@ -101,7 +101,7 @@ class CustomerService extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        print(data);
+
         fromJsonListToCustomer(data);
       } else {
         print(response.body);
@@ -136,10 +136,10 @@ class CustomerService extends ChangeNotifier {
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
-        _customers.removeWhere((element) => element.id == id);
+        _customers!.removeWhere((element) => element.id == id);
         paginationService.removeItem(_pagination);
         notifyListeners();
-        if (_customers.length == 0) {
+        if (_customers!.length == 0) {
           if (_pagination.isPrev) {
             paginationService.prevPage(_pagination);
           }

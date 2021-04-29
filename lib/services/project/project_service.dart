@@ -9,8 +9,8 @@ import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
 class ProjectProvider extends ChangeNotifier {
   Widget activePageScreen = ProjectList();
-  List<ProjectModel> _projects = [];
-  List<ProjectModel> _projectsDateBase = [];
+  List<ProjectModel>? _projects;
+  List<ProjectModel>? _projectsDateBase;
   List<ProjectModel> _tempProjects = [];
   PaginationService paginationService = PaginationService();
   DateTime selectedDate = DateTime.now();
@@ -35,7 +35,7 @@ class ProjectProvider extends ChangeNotifier {
 
   search(String text) {
     _projects = _tempProjects;
-    _projects = _projects
+    _projects = _projects!
         .where((element) =>
             element.name!.toLowerCase().contains(text.toLowerCase()) ||
             "${element.coordinates!.latitude}, ${element.coordinates!.longitude}"
@@ -72,15 +72,12 @@ class ProjectProvider extends ChangeNotifier {
         List data = json.decode(response.body)["data"];
         if (json.decode(response.body)["next_page_url"] != null) {
           _pagination.isNext = true;
-          notifyListeners();
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
           _pagination.isPrev = true;
-          notifyListeners();
         }
         if (json.decode(response.body)["last_page"] != null) {
           _pagination.lastPage = json.decode(response.body)["last_page"];
-          notifyListeners();
         }
         _pagination.totalEntries = json.decode(response.body)["total"];
         if (_pagination.totalEntries < _pagination.perPage) {
@@ -95,6 +92,7 @@ class ProjectProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
 
   Future fetchProjectsBaseOnDates({DateTime? dateSelected}) async {
@@ -114,20 +112,23 @@ class ProjectProvider extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        _projectsDateBase.clear();
         List datas = json.decode(response.body);
-
-        for (var data in datas) {
-          _projectsDateBase.add(ProjectModel.fromJson(data));
+        if (projectDateBased != null) {
+          _projectsDateBase!.clear();
+          for (var data in datas) {
+            _projectsDateBase!.add(ProjectModel.fromJson(data));
+          }
+        } else {
+          _projectsDateBase = [];
         }
 
         print(response.body);
+        notifyListeners();
       } else {
-        _projectsDateBase.clear();
-        print("error");
+        _projectsDateBase!.clear();
+
         print(response.body);
       }
-      notifyListeners();
     } catch (e) {
       print("project fetch error : $e");
     }
@@ -183,10 +184,10 @@ class ProjectProvider extends ChangeNotifier {
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
-        _projects.removeWhere((element) => element.id == id);
-        _projectsDateBase.removeWhere((element) => element.id == id);
+        _projects!.removeWhere((element) => element.id == id);
+        _projectsDateBase!.removeWhere((element) => element.id == id);
         notifyListeners();
-        if (_projects.length == 0) {
+        if (_projects!.length == 0) {
           if (_pagination.isPrev) {
             paginationService.prevPage(_pagination);
           }

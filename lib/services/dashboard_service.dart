@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
 
 class DashboardService extends ChangeNotifier {
-  Widget clientPage = Customer();
+  Widget clientPage = CustomerScreen();
   DatePickerController dateController = DatePickerController();
   DateTime _startDate = DateTime.now();
   DateTime? tempDate;

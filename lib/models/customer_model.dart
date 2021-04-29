@@ -10,7 +10,7 @@ class CustomerModel {
   String? picture;
   PaymentModel? status;
   String? contactNumber;
-  List<ProjectModel>? customerProjects;
+  List? customerProjects;
   double? amount;
   bool isSelected = false;
 

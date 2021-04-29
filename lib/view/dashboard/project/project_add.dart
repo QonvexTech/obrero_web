@@ -20,6 +20,11 @@ class ProjectAddScreen extends StatelessWidget {
     ProjectAddService projectAddService =
         Provider.of<ProjectAddService>(context);
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+    EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
+    CustomerService customerService = Provider.of<CustomerService>(context);
+    employeeSevice.fetchUsers();
+    customerService.fetchCustomers();
+
     return Container(
         width: MediaQuery.of(context).size.width / 1.5,
         height: MediaQuery.of(context).size.height - 300,
@@ -135,58 +140,69 @@ class ProjectAddScreen extends StatelessWidget {
                         style: boldText,
                       ),
                     ),
-                    Consumer<CustomerService>(
-                      builder: (_, data, child) {
-                        return Container(
-                          height: 60,
-                          width: double.infinity,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: data.customers.length,
-                              itemBuilder: (context, index) {
-                                return projectAddService.activeOwnerIndex ==
-                                        data.customers[index].id
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          projectAddService.setOwner =
-                                              data.customers[index].id;
-                                        },
-                                        child: Container(
-                                            margin: EdgeInsets.all(5),
-                                            height: 60,
-                                            width: 150,
-                                            child: Card(
-                                              color: Palette.drawerColor,
-                                              margin: EdgeInsets.all(0),
-                                              child: ListTile(
-                                                title: Text(
-                                                  data.customers[index].fname,
-                                                  style: TextStyle(
-                                                      color: Colors.white),
+                    customerService.customers == null
+                        ? CircularProgressIndicator()
+                        : customerService.customers.length == 0
+                            ? Text("No client to assign")
+                            : Container(
+                                height: 60,
+                                width: double.infinity,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: customerService
+                                        .customers.customers.length,
+                                    itemBuilder: (context, index) {
+                                      return projectAddService
+                                                  .activeOwnerIndex ==
+                                              customerService
+                                                  .customers.customers[index].id
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                projectAddService.setOwner =
+                                                    customerService.customers
+                                                        .customers[index].id;
+                                              },
+                                              child: Container(
+                                                  margin: EdgeInsets.all(5),
+                                                  height: 60,
+                                                  width: 150,
+                                                  child: Card(
+                                                    color: Palette.drawerColor,
+                                                    margin: EdgeInsets.all(0),
+                                                    child: ListTile(
+                                                      title: Text(
+                                                        customerService
+                                                            .customers
+                                                            .customers[index]
+                                                            .fname,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  )),
+                                            )
+                                          : GestureDetector(
+                                              onTap: () {
+                                                projectAddService.setOwner =
+                                                    customerService.customers
+                                                        .customers[index].id;
+                                              },
+                                              child: Container(
+                                                margin: EdgeInsets.all(5),
+                                                height: 60,
+                                                width: 150,
+                                                child: Card(
+                                                  child: ListTile(
+                                                    title: Text(customerService
+                                                        .customers
+                                                        .customers[index]
+                                                        .fname),
+                                                  ),
                                                 ),
-                                              ),
-                                            )),
-                                      )
-                                    : GestureDetector(
-                                        onTap: () {
-                                          projectAddService.setOwner =
-                                              data.customers[index].id;
-                                        },
-                                        child: Container(
-                                          margin: EdgeInsets.all(5),
-                                          height: 60,
-                                          width: 150,
-                                          child: Card(
-                                            child: ListTile(
-                                              title: Text(
-                                                  data.customers[index].fname),
-                                            ),
-                                          ),
-                                        ));
-                              }),
-                        );
-                      },
-                    ),
+                                              ));
+                                    }),
+                              ),
 
                     Padding(
                       padding:
@@ -196,58 +212,63 @@ class ProjectAddScreen extends StatelessWidget {
                         style: boldText,
                       ),
                     ),
-                    Consumer<EmployeeSevice>(
-                      builder: (_, data, child) {
-                        return Container(
-                          height: 60,
-                          width: double.infinity,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: data.users.length,
-                              itemBuilder: (context, index) {
-                                return projectAddService.assignee
-                                        .contains(data.users[index].id)
-                                    ? GestureDetector(
-                                        onTap: () {
-                                          projectAddService.removeAssigne(
-                                              data.users[index].id);
-                                        },
-                                        child: Container(
-                                            margin: EdgeInsets.all(5),
-                                            height: 60,
-                                            width: 150,
-                                            child: Card(
-                                              color: Palette.drawerColor,
-                                              margin: EdgeInsets.all(0),
-                                              child: ListTile(
-                                                title: Text(
-                                                  data.users[index].fname,
-                                                  style: TextStyle(
-                                                      color: Colors.white),
+                    employeeSevice.users == null
+                        ? CircularProgressIndicator()
+                        : employeeSevice.users.length == 0
+                            ? Text("No employee to assign")
+                            : Container(
+                                height: 60,
+                                width: double.infinity,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: employeeSevice.users.length,
+                                    itemBuilder: (context, index) {
+                                      return projectAddService.assignee
+                                              .contains(employeeSevice
+                                                  .users[index].id)
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                projectAddService.removeAssigne(
+                                                    employeeSevice
+                                                        .users[index].id);
+                                              },
+                                              child: Container(
+                                                  margin: EdgeInsets.all(5),
+                                                  height: 60,
+                                                  width: 150,
+                                                  child: Card(
+                                                    color: Palette.drawerColor,
+                                                    margin: EdgeInsets.all(0),
+                                                    child: ListTile(
+                                                      title: Text(
+                                                        employeeSevice
+                                                            .users[index].fname,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  )),
+                                            )
+                                          : GestureDetector(
+                                              onTap: () {
+                                                projectAddService.asignUser(
+                                                    employeeSevice
+                                                        .users[index].id);
+                                              },
+                                              child: Container(
+                                                margin: EdgeInsets.all(5),
+                                                height: 60,
+                                                width: 150,
+                                                child: Card(
+                                                  child: ListTile(
+                                                    title: Text(employeeSevice
+                                                        .users[index].fname),
+                                                  ),
                                                 ),
-                                              ),
-                                            )),
-                                      )
-                                    : GestureDetector(
-                                        onTap: () {
-                                          projectAddService
-                                              .asignUser(data.users[index].id);
-                                        },
-                                        child: Container(
-                                          margin: EdgeInsets.all(5),
-                                          height: 60,
-                                          width: 150,
-                                          child: Card(
-                                            child: ListTile(
-                                              title:
-                                                  Text(data.users[index].fname),
-                                            ),
-                                          ),
-                                        ));
-                              }),
-                        );
-                      },
-                    ),
+                                              ));
+                                    }),
+                              )
                   ],
                 )),
                 AdaptiveItem(

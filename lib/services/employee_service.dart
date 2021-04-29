@@ -76,16 +76,12 @@ class EmployeeSevice extends ChangeNotifier {
         List data = json.decode(response.body)["data"];
         if (json.decode(response.body)["next_page_url"] != null) {
           _pagination.isNext = true;
-          notifyListeners();
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
           _pagination.isPrev = true;
-          notifyListeners();
         }
         if (json.decode(response.body)["last_page"] != null) {
           _pagination.lastPage = json.decode(response.body)["last_page"];
-
-          notifyListeners();
         }
 
         _pagination.totalEntries = json.decode(response.body)["total"];
@@ -121,7 +117,8 @@ class EmployeeSevice extends ChangeNotifier {
     }
   }
 
-  Future updateUser({required Map<String, dynamic> body, bool isAdmin = false}) async {
+  Future updateUser(
+      {required Map<String, dynamic> body, bool isAdmin = false}) async {
     var url = Uri.parse("$user_update");
     try {
       await http.post(url, body: body, headers: {
@@ -129,7 +126,7 @@ class EmployeeSevice extends ChangeNotifier {
         "Authorization": "Bearer $authToken",
       }).then((response) {
         var data = json.decode(response.body);
-        if(isAdmin){
+        if (isAdmin) {
           profileData = Admin.fromJsonUpdate(data['data']);
           notifyListeners();
         }

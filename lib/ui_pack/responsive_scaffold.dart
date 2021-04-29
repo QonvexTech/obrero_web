@@ -6,7 +6,6 @@ import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
-import 'package:uitemplate/widgets/notifications.dart';
 
 import '../services/caching.dart';
 
