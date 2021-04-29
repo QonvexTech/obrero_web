@@ -5,18 +5,21 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class CustomerDetails extends StatelessWidget {
   final CustomerModel? customer;
-
   const CustomerDetails({Key? key, required this.customer}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     try {
       CustomerService customerService = Provider.of<CustomerService>(context);
+      MapService mapService = Provider.of<MapService>(context);
+      // mapService.mapInit(customer.);
+
       return Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -49,10 +52,10 @@ class CustomerDetails extends StatelessWidget {
                               "${customer!.fname} ${customer!.lname}",
                               style: Theme.of(context).textTheme.headline5,
                             ),
-                            // Text(
-                            //   "${customer!.contactNumber}",
-                            //   style: Theme.of(context).textTheme.subtitle1,
-                            // )
+                            Text(
+                              "${customer!.contactNumber}",
+                              style: Theme.of(context).textTheme.subtitle1,
+                            )
                           ],
                         )
                       ],
@@ -170,7 +173,7 @@ class CustomerDetails extends StatelessWidget {
                                 height: MySpacer.small,
                               ),
                               Text(
-                                "En cours",
+                                customer!.customerProjects!.toString(),
                                 style: boldText,
                               )
                             ],

@@ -1,4 +1,5 @@
 import 'package:uitemplate/models/payment_model.dart';
+import 'package:uitemplate/models/project_model.dart';
 
 class CustomerModel {
   int? id;
@@ -9,7 +10,7 @@ class CustomerModel {
   String? picture;
   PaymentModel? status;
   String? contactNumber;
-  List? customerProjects;
+  List<ProjectModel>? customerProjects;
   double? amount;
   bool isSelected = false;
 
