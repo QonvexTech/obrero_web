@@ -4,9 +4,12 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/firebase_message.dart';
+import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
 import 'package:uitemplate/widgets/notifications.dart';
+
+import '../services/caching.dart';
 
 class ResponsiveScaffold extends StatefulWidget {
   final BuildContext? context;
@@ -31,7 +34,7 @@ class ResponsiveScaffold extends StatefulWidget {
   _ResponsiveScaffoldState createState() => _ResponsiveScaffoldState();
 }
 
-class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
+class _ResponsiveScaffoldState extends State<ResponsiveScaffold> with SettingsHelper {
   void initializeFirebase() async {
     await FireBase().init(context: context);
   }
@@ -126,6 +129,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
       //   DesktopWindow.setMinWindowSize(Size(500, 700));
       // }
       //check if tablet or not
+
       if (MediaQuery.of(context).size.width > 900 &&
           MediaQuery.of(context).size.width < 1600) {
         minimumDrawerWidth = 60;
@@ -359,16 +363,29 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                       //errpr on stream
                       Container(child: NotificationCard()),
                       PopupMenuButton(
+                        onSelected: (val) async {
+                          if(val == 1){
+                            setState(() {
+                              _selectedContent =
+                                  GeneralSettings();
+                            });
+                          }else if(val == 2){
+                            //change pass
+                          }
+                          else {
+                            await DataCacher().removeCredentials(context);
+                          }
+                        },
                           offset: Offset(0, 50),
                           icon: FittedBox(
-                            child: Row(
-                              children: [
-                                CircleAvatar(),
-                              ],
+                            child:  CircleAvatar(
+                              backgroundColor: Colors.grey.shade100,
+                              backgroundImage: imageProvider,
                             ),
                           ),
                           itemBuilder: (context) => [
                                 PopupMenuItem(
+                                  value: 1,
                                   child: Container(
                                     child: Center(
                                       child: Column(
@@ -376,54 +393,29 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor: Colors.red,
+                                            backgroundColor: Colors.grey.shade100,
+                                            backgroundImage: imageProvider,
                                           ),
                                           SizedBox(
                                             height: MySpacer.medium,
                                           ),
                                           Text(profileData!.firstName!),
                                           Text(profileData!.email!),
-                                          SizedBox(
-                                            height: MySpacer.medium,
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                border: Border.all(
-                                                  color: Colors.black38,
-                                                )),
-                                            child: MaterialButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _selectedContent =
-                                                        GeneralSettings();
-                                                  });
-                                                },
-                                                child: Text("Manage Account")),
-                                          ),
-                                          SizedBox(
-                                            height: MySpacer.medium,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator
-                                                      .pushReplacementNamed(
-                                                          context, "/login");
-                                                },
-                                                child: Text("logout"),
-                                              )
-                                            ],
-                                          )
                                         ],
                                       ),
                                     ),
                                   ),
-                                )
+                                ),
+                            PopupMenuItem(
+                              value: 2,
+                              child: Text("Changer le mot de passe"),
+                            ),
+                            PopupMenuItem(
+                              value: 3,
+                              child: Text("Logout",style: TextStyle(
+                                color: Colors.red
+                              ),),
+                            ),
                               ]),
                     ],
                   ),
