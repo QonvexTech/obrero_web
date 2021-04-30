@@ -5,8 +5,10 @@ import 'dart:ui';
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/services/profile_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import '../../../config/global.dart';
 import '../../../config/pallete.dart';
@@ -19,13 +21,12 @@ class GeneralSettings extends StatefulWidget {
 
 class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
   EmployeeSevice _service = new EmployeeSevice();
-  bool _isLoading = false;
-  File? file;
-  Uint8List? base64Image;
+
   @override
   Widget build(BuildContext context) {
     final double _scrw = MediaQuery.of(context).size.width;
     final double _scrh = MediaQuery.of(context).size.height;
+    ProfileService profileService = Provider.of<ProfileService>(context);
     return Stack(
       children: [
         Container(
@@ -49,9 +50,8 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                             'png'
                           ]).then((pickedFile) {
                         if (pickedFile != null) {
-                          setState(() {
-                            base64Image = pickedFile.files[0].bytes;
-                          });
+                          profileService.base64Image =
+                              pickedFile.files[0].bytes;
                         }
                       });
                     },
@@ -74,14 +74,16 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                           ],
                           image: DecorationImage(
                               fit: profileData?.picture == null &&
-                                      base64Image == null
+                                      profileService.base64Image == null
                                   ? BoxFit.scaleDown
                                   : BoxFit.cover,
                               alignment: profileData?.picture == null &&
-                                      base64Image == null
+                                      profileService.base64Image == null
                                   ? AlignmentDirectional.bottomCenter
                                   : AlignmentDirectional.center,
-                              image: tempImageProvider(file: base64Image),
+                              image: tempImageProvider(
+                                  file: profileService.base64Image,
+                                  netWorkImage: profileData?.picture),
                               scale: profileData?.picture == null ? 5 : 1)),
                     ),
                   )),
@@ -126,18 +128,20 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                       if (last_name.text != profileData!.lastName) {
                         body.addAll({"last_name": last_name.text});
                       }
-                      if (base64Image != null) {
-                        String b64 = base64.encode(base64Image!.toList());
-                        body.addAll({"picture": "data:image/jpg;base64,$b64"});
+                      if (profileService.base64Image != null) {
+                        body.addAll({
+                          "picture":
+                              "data:image/jpg;base64,${profileService.base64ImageEncoded}"
+                        });
                       }
                       if (body.length > 1) {
                         setState(() {
-                          _isLoading = true;
+                          profileService.isLoading = true;
                         });
                         await _service
                             .updateUser(body: body, isAdmin: true)
-                            .whenComplete(
-                                () => setState(() => _isLoading = false));
+                            .whenComplete(() => setState(
+                                () => profileService.isLoading = false));
                       } else {
                         print("CANT UPDATE");
                       }
@@ -156,7 +160,7 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                 )
               ],
             )),
-        _isLoading
+        profileService.isLoading
             ? BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 4, sigmaY: 4),
                 child: Container(

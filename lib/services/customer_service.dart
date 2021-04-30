@@ -102,6 +102,8 @@ class CustomerService extends ChangeNotifier {
           _pagination.perPage = _pagination.totalEntries;
         }
 
+        print(data);
+
         fromJsonListToCustomer(data);
       } else {
         print(response.body);

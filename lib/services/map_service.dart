@@ -37,7 +37,7 @@ class MapService extends ChangeNotifier {
 
   mapInit(List<ProjectModel> projects) async {
     print(projects.length);
-    // _markers.clear();
+    _markers.clear();
     for (ProjectModel project in projects) {
       final Uint8List markerIcon =
           await getBytesFromAsset('assets/icons/green.png', 200);

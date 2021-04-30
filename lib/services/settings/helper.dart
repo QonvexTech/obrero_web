@@ -33,13 +33,13 @@ class SettingsHelper {
     );
   }
 
-  ImageProvider tempImageProvider({Uint8List? file}) {
+  ImageProvider tempImageProvider(
+      {Uint8List? file, required var netWorkImage}) {
     if (file == null) {
-      if (profileData!.picture == null) {
+      if (netWorkImage == null || netWorkImage == "") {
         return AssetImage('icons/admin_icon.png');
       } else {
-        return NetworkImage(
-            "https://obrero.checkmy.dev${profileData!.picture}");
+        return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
       }
     } else {
       return MemoryImage(file);

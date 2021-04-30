@@ -1,5 +1,4 @@
 import 'package:uitemplate/models/payment_model.dart';
-import 'package:uitemplate/models/project_model.dart';
 
 class CustomerModel {
   int? id;

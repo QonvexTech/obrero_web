@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/firebase_message.dart';
+import 'package:uitemplate/services/profile_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
 
 import '../services/caching.dart';
 
-class ResponsiveScaffold extends StatefulWidget {
+class ResponsiveScaffold extends StatefulWidget with SettingsHelper {
   final BuildContext? context;
   final Widget? title;
   final Color backgroundColor;
@@ -123,6 +125,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold>
 
   @override
   Widget build(BuildContext context) {
+    ProfileService profileService = Provider.of(context);
     return OrientationBuilder(builder: (context, orientation) {
       // if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       //   DesktopWindow.setMinWindowSize(Size(500, 700));
@@ -377,7 +380,9 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold>
                           icon: FittedBox(
                             child: CircleAvatar(
                               backgroundColor: Colors.grey.shade100,
-                              backgroundImage: imageProvider,
+                              backgroundImage: tempImageProvider(
+                                  file: profileService.base64Image,
+                                  netWorkImage: profileData?.picture),
                             ),
                           ),
                           itemBuilder: (context) => [
@@ -392,7 +397,11 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold>
                                           CircleAvatar(
                                             backgroundColor:
                                                 Colors.grey.shade100,
-                                            backgroundImage: imageProvider,
+                                            backgroundImage: tempImageProvider(
+                                                file:
+                                                    profileService.base64Image,
+                                                netWorkImage:
+                                                    profileData?.picture),
                                           ),
                                           SizedBox(
                                             height: MySpacer.medium,
