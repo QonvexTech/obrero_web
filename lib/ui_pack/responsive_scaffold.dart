@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
@@ -62,7 +63,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
     }
   }
 
-  double drawerWidth = 0.0;
+  double drawerWidth = 60;
   double maximumDrawerWidth = 300;
   bool showTextField = false;
   double minimumDrawerWidth = 0.0;
@@ -73,6 +74,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   DrawerItem? _selectedDrawerItem;
   dynamic _selectedContent;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
+
   void onUpdate(DragUpdateDetails details) {
     setState(() {
       if (details.localPosition.dx <= maximumDrawerWidth &&
@@ -118,8 +120,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    // PushNotification pushNotification = Provider.of<PushNotification>(context, listen: false);
-
     return OrientationBuilder(builder: (context, orientation) {
       // if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       //   DesktopWindow.setMinWindowSize(Size(500, 700));
@@ -356,7 +356,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                       Spacer(),
 
                       //errpr on stream
-                      Container(child: NotificationCard()),
+                      NotificationCard(),
                       PopupMenuButton(
                           offset: Offset(0, 50),
                           icon: FittedBox(
@@ -368,7 +368,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                           ),
                           itemBuilder: (context) => [
                                 PopupMenuItem(
-                                  // value: sub_items.content,
                                   child: Container(
                                     child: Center(
                                       child: Column(
@@ -381,8 +380,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                           SizedBox(
                                             height: MySpacer.medium,
                                           ),
-                                          Text("admin.firstName!"),
-                                          Text("admin.email!"),
+                                          Text(profileData!.firstName!),
+                                          Text(profileData!.email!),
                                           SizedBox(
                                             height: MySpacer.medium,
                                           ),

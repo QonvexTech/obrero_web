@@ -53,7 +53,7 @@ class ProjectAddScreen extends StatelessWidget {
                       padding:
                           const EdgeInsets.symmetric(vertical: MySpacer.small),
                       child: Text(
-                        "Description",
+                        "La description",
                         style: boldText,
                       ),
                     ),
@@ -80,7 +80,7 @@ class ProjectAddScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "End Date",
+                                "Date de fin",
                                 style: boldText,
                               ),
                               MaterialButton(
@@ -96,7 +96,7 @@ class ProjectAddScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Start Date",
+                                "Date de début",
                                 style: boldText,
                               ),
                               MaterialButton(
@@ -112,7 +112,7 @@ class ProjectAddScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Location",
+                                "Coordinates",
                                 style: boldText,
                               ),
                               MaterialButton(
@@ -126,9 +126,7 @@ class ProjectAddScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-
                     //list of users
-
                     Padding(
                       padding:
                           const EdgeInsets.symmetric(vertical: MySpacer.small),

@@ -59,7 +59,8 @@ class HeaderList extends StatelessWidget {
                 Expanded(child: Container()),
                 Container(
                   height: 40,
-                  color: Colors.red,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
                   child: AddingButton(addingPage: toPage, buttonText: "Créer"),
                 ),
               ],
