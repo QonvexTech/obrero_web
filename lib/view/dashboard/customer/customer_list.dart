@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
-import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/customer/customer_service.dart';
+import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_add.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
@@ -26,6 +27,7 @@ class _CustomerListState extends State<CustomerList> {
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
+
     return customerService.customers == null
         ? Center(
             child: CircularProgressIndicator(),
@@ -62,10 +64,11 @@ class _CustomerListState extends State<CustomerList> {
                                       customerService.removeCustomer,
                                       customerService.setPage),
                                   rowWidgetMobile: rowWidgetMobile(
-                                      context,
-                                      customerService.customers,
-                                      customerService.removeCustomer,
-                                      customerService.setPage),
+                                    context,
+                                    customerService.customers,
+                                    customerService.removeCustomer,
+                                    customerService.setPage,
+                                  ),
                                   headersMobile: [
                                     "NOM",
                                     "EMAIL",

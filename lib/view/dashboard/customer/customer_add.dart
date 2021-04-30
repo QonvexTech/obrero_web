@@ -1,13 +1,10 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
-import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 
 class CustomerAdd extends StatefulWidget {
@@ -43,9 +40,8 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
 
   @override
   Widget build(BuildContext context) {
-    var customerService = Provider.of<CustomerService>(context, listen: false);
+    CustomerService customerService = Provider.of<CustomerService>(context);
     final Size size = MediaQuery.of(context).size;
-    Uint8List? base64Image;
     return Container(
       width: size.width,
       height: size.height,
@@ -82,9 +78,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                           'png'
                         ]).then((pickedFile) {
                       if (pickedFile != null) {
-                        setState(() {
-                          base64Image = pickedFile.files[0].bytes;
-                        });
+                        customerService.base64Image = pickedFile.files[0].bytes;
                       }
                     });
                   },
@@ -109,7 +103,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                             fit: BoxFit.cover,
                             alignment: AlignmentDirectional.center,
                             image: tempImageProvider(
-                                file: base64Image,
+                                file: customerService.base64Image,
                                 netWorkImage: widget.customerToEdit?.picture),
                             scale: 1)),
                   ),
@@ -187,8 +181,8 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
               if (isEdit) {
               } else {
                 String picture = "";
-                if (base64Image != null) {
-                  picture = base64.encode(base64Image!.toList());
+                if (customerService.base64Image != null) {
+                  picture = customerService.base64ImageEncoded;
                 }
 
                 CustomerModel newCustomer = CustomerModel(
@@ -196,8 +190,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                     lname: lnameController.text,
                     email: emailController.text,
                     adress: addressController.text,
-                    picture:
-                        picture.isEmpty ? "" : "data:image/jpg;base64,$picture",
+                    picture: picture,
                     contactNumber: contactNumberController.text,
                     amount: double.parse(amountController.text));
 

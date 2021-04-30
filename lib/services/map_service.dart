@@ -36,22 +36,28 @@ class MapService extends ChangeNotifier {
   }
 
   mapInit(List<ProjectModel> projects) async {
-    print(projects.length);
     _markers.clear();
-    for (ProjectModel project in projects) {
-      final Uint8List markerIcon =
-          await getBytesFromAsset('assets/icons/green.png', 200);
+    try {
+      for (ProjectModel project in projects) {
+        print(project.id);
+        print(project.coordinates);
+        print(project.name);
 
-      _markers.add(Marker(
-          zIndex: 20,
-          infoWindow: InfoWindow(
-              title: project.name, snippet: project.coordinates.toString()),
-          icon: BitmapDescriptor.fromBytes(markerIcon),
-          markerId: MarkerId(project.id.toString()),
-          position: project.coordinates!));
+        // print(markerIcon);
+
+        _markers.add(Marker(
+            zIndex: 20,
+            infoWindow: InfoWindow(
+                title: project.name, snippet: project.coordinates.toString()),
+            icon: await BitmapDescriptor.fromAssetImage(
+                ImageConfiguration(), "assets/icons/green.png"),
+            markerId: MarkerId(project.id.toString()),
+            position: project.coordinates!));
+      }
+    } catch (e) {
+      print(e);
     }
     print("markers : ${_markers.length}");
-    notifyListeners();
   }
 
   void setCoordinates({LatLng? coord}) {
@@ -85,7 +91,7 @@ class MapService extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void focusMap(LatLng coordinates) {
+  void focusMap({required LatLng coordinates}) {
     mapController!.animateCamera(CameraUpdate.newLatLng(coordinates));
     notifyListeners();
   }

@@ -63,7 +63,7 @@ class ProjectModel extends ChangeNotifier {
     return data;
   }
 
-  static fromJsonListToProject(List projects) {
+  static List<ProjectModel> fromJsonListToProject(List projects) {
     List<ProjectModel> newProjects = [];
 
     for (var project in projects) {

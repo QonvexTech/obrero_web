@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/services/map_service.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+  final LatLng? initialCoord;
+  const MapScreen({Key? key, this.initialCoord}) : super(key: key);
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -24,6 +25,10 @@ class _MapScreenState extends State<MapScreen> {
         myLocationEnabled: true,
         markers: mapService.markers,
         onTap: (position) {},
-        initialCameraPosition: mapService.cameraPosition);
+        initialCameraPosition: CameraPosition(
+            target: widget.initialCoord == null
+                ? mapService.coordinates
+                : widget.initialCoord!,
+            zoom: mapService.zoom));
   }
 }

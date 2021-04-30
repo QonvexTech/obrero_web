@@ -21,7 +21,7 @@ class ProjectCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         print("Card");
-        mapService.focusMap(coordinates);
+        mapService.focusMap(coordinates: coordinates);
       },
       child: Card(
         child: ListTile(
