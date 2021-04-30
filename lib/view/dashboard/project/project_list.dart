@@ -28,6 +28,16 @@ class _ProjectListState extends State<ProjectList> {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
 
+    if (projectProvider.projects == null) {
+      return Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Palette.contentBackground,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     if (projectProvider.projects.length <= 0) {
       return Container(
         width: double.infinity,

@@ -5,6 +5,7 @@ import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/message_service.dart';
+import 'package:uitemplate/services/profile_service.dart';
 import 'package:uitemplate/services/project/project_add_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
@@ -38,6 +39,7 @@ void main() async {
     ChangeNotifierProvider(create: (_) => PaginationService()),
     ChangeNotifierProvider(create: (_) => CustomerService()),
     ChangeNotifierProvider(create: (_) => MessageService()),
+    ChangeNotifierProvider(create: (_) => ProfileService()),
   ], child: MyApp()));
 }
 
@@ -66,84 +68,73 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    try {
-      return ResponsiveScaffold(
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Image.asset(
-              'assets/icons/logo.png',
-              height: 50,
-            ),
+    return ResponsiveScaffold(
+        title: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Image.asset(
+            'assets/icons/logo.png',
+            height: 50,
           ),
-          drawerItems: [
-            DrawerItem(
-                icon: Icons.dashboard, text: "Dashboard", content: DashBoard()),
-            DrawerItem(
-                icon: Icons.people, text: "Customers", content: Customer()),
-            DrawerItem(
-                icon: Icons.pin_drop_outlined,
-                text: "Chantiers",
-                content: Project()),
-            DrawerItem(
-                icon: Icons.person_pin_circle_outlined,
-                text: "Employee",
-                content: EmployeeScreen()),
-            DrawerItem(icon: Icons.list, text: "Logs", content: LogScreen()),
-            DrawerItem(
-                icon: Icons.message, text: "Pushs", content: MessageScreen()),
-            DrawerItem(
-                icon: Icons.settings,
-                text: "Préférences",
-                subItems: [
-                  SubDrawerItems(
-                      icon: Icons.warning,
-                      title: "Warning",
-                      content: WarningSettings()),
-                  SubDrawerItems(
-                      icon: Icons.all_out,
-                      title: "General",
-                      content: GeneralSettings())
-                ],
-                content: Container(
-                  color: Colors.red,
-                )),
-          ],
-          drawerBackgroundColor: Palette.drawerColor,
-          backgroundColor: Palette.contentBackground,
-          body: Container(
-            color: Colors.black,
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              children: [
-                for (var x = 1; x < 20; x++) ...{
-                  GestureDetector(
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 20),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.blue),
-                      height: 150,
-                    ),
-                  )
-                }
-              ],
-            ),
-          ));
-    } catch (e) {
-      return Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Palette.drawerColor),
         ),
-      );
-    }
+        drawerItems: [
+          DrawerItem(
+              icon: Icons.dashboard,
+              text: "Dashboard",
+              content: DashBoardScreen()),
+          DrawerItem(
+              icon: Icons.people, text: "Customers", content: CustomerScreen()),
+          DrawerItem(
+              icon: Icons.pin_drop_outlined,
+              text: "Chantiers",
+              content: ProjectScreen()),
+          DrawerItem(
+              icon: Icons.person_pin_circle_outlined,
+              text: "Employee",
+              content: EmployeeScreen()),
+          DrawerItem(icon: Icons.list, text: "Logs", content: LogScreen()),
+          DrawerItem(
+              icon: Icons.message, text: "Pushs", content: MessageScreen()),
+          DrawerItem(
+              icon: Icons.settings,
+              text: "Préférences",
+              subItems: [
+                SubDrawerItems(
+                    icon: Icons.warning,
+                    title: "Warning",
+                    content: WarningSettings()),
+                SubDrawerItems(
+                    icon: Icons.all_out,
+                    title: "General",
+                    content: GeneralSettings())
+              ],
+              content: Container(
+                color: Colors.red,
+              )),
+        ],
+        drawerBackgroundColor: Palette.drawerColor,
+        backgroundColor: Palette.contentBackground,
+        body: Container(
+          color: Colors.black,
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            children: [
+              for (var x = 1; x < 20; x++) ...{
+                GestureDetector(
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 20),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.blue),
+                    height: 150,
+                  ),
+                )
+              }
+            ],
+          ),
+        ));
   }
 }

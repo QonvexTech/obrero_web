@@ -6,15 +6,15 @@ import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/notification_services.dart';
-
 import '../config/global.dart';
 
 class Authentication {
   var error;
 
   Future logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    try {
+      //TODO: logout
+    } catch (e) {}
   }
 
   Future<bool> login(String email, String password) async {
