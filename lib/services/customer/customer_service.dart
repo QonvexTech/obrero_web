@@ -14,8 +14,7 @@ class CustomerService extends ChangeNotifier {
   PaginationService paginationService = PaginationService();
   TextEditingController searchController = TextEditingController();
   List<CustomerModel>? _customers;
-  List<CustomerModel> _tempCustomer = [];
-  // bool loader = false;
+  List<CustomerModel>? _tempCustomer;
   // void loaderOn() {
   //   loader = true;
   //   notifyListeners();
@@ -92,7 +91,6 @@ class CustomerService extends ChangeNotifier {
       }
     }
     searchController.clear();
-    notifyListeners();
   }
 
   Future fetchCustomers() async {
@@ -121,9 +119,6 @@ class CustomerService extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-
-        // print(data);
-
         fromJsonListToCustomer(data);
       } else {
         print(response.body);
@@ -131,6 +126,7 @@ class CustomerService extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
 
   Future createCustomer({required CustomerModel newCustomer}) async {

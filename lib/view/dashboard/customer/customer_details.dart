@@ -33,8 +33,6 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
-    // Provider.of<MapService>(context, listen: false)
-    //     .focusMap(coordinates: customerProjects[0].coordinates!);
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -77,19 +75,10 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                       SizedBox(
                         width: MySpacer.medium,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "${widget.customer!.fname} ${widget.customer!.lname}",
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
-                          Text(
-                            "${widget.customer!.contactNumber}",
-                            style: Theme.of(context).textTheme.subtitle1,
-                          )
-                        ],
-                      )
+                      Text(
+                        "${widget.customer!.fname} ${widget.customer!.lname}",
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -150,15 +139,29 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                   SizedBox(
                     height: MySpacer.small,
                   ),
-
                   for (ProjectModel project in customerProjects)
-                    Card(
-                      child: ListTile(
-                        title: Text(project.name!),
-                        subtitle: Text(project.description!),
-                      ),
-                    )
-                  //TODO: LISTVIEW of projects
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          project.name!,
+                          style: boldText,
+                        ),
+                        SizedBox(
+                          height: MySpacer.small,
+                        ),
+                        Text("Description", style: transHeader),
+                        Text(project.description!),
+                        Container(
+                            height: 100,
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            width: MediaQuery.of(context).size.width,
+                            child: Image.asset("assets/images/dashLine.png")),
+                        SizedBox(
+                          height: MySpacer.large,
+                        )
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -173,7 +176,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Chantier emplacement",
+                            "Chantier Emplacement",
                             style: Theme.of(context).textTheme.headline5,
                           ),
                         ],
@@ -234,40 +237,6 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                             "Attention, il nous manque les plaques pour le toit de la terrasse"),
                                       ),
                                     ),
-                                    Card(
-                                      child: ListTile(
-                                        leading:
-                                            Icon(Icons.notification_important),
-                                        title: Row(
-                                          children: [
-                                            Text("Chantier"),
-                                            SizedBox(
-                                              width: MySpacer.small,
-                                            ),
-                                            Text("Avril")
-                                          ],
-                                        ),
-                                        subtitle: Text(
-                                            "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                      ),
-                                    ),
-                                    Card(
-                                      child: ListTile(
-                                        leading:
-                                            Icon(Icons.notification_important),
-                                        title: Row(
-                                          children: [
-                                            Text("Chantier"),
-                                            SizedBox(
-                                              width: MySpacer.small,
-                                            ),
-                                            Text("Avril")
-                                          ],
-                                        ),
-                                        subtitle: Text(
-                                            "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                      ),
-                                    )
                                   ],
                                 ),
                               ),

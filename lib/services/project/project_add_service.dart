@@ -81,7 +81,7 @@ class ProjectAddService extends ChangeNotifier {
       projectService.updateProject(newProject: projectToEdit);
     } else {
       ProjectModel newProject = ProjectModel(
-          assignee: _assignee,
+          assigneeIds: _assignee,
           customerId: _activeOwnerIndex,
           description: descriptionController.text,
           name: nameController.text,

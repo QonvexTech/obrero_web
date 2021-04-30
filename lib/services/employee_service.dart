@@ -49,20 +49,6 @@ class EmployeeSevice extends ChangeNotifier {
 
   get users => _users;
 
-  fromJsonListToUsers(List users) {
-    List<EmployeesModel> newUsers = [];
-    for (var user in users) {
-      EmployeesModel userModel = EmployeesModel.fromJson(user);
-      if (!userModel.isAdmin!) {
-        newUsers.add(userModel);
-      }
-    }
-    _users = newUsers;
-    _tempUsers = newUsers;
-    searchController.clear();
-    notifyListeners();
-  }
-
   Future fetchUsers() async {
     var url =
         Uri.parse("$user_api${_pagination.perPage}?page=${_pagination.page}");
@@ -88,13 +74,17 @@ class EmployeeSevice extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        fromJsonListToUsers(data);
+        var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
+        _users = listOfUsers;
+        _tempUsers = listOfUsers;
+        searchController.clear();
       } else {
         print(response.body);
       }
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
 
   Future createUser(EmployeesModel newEmployee) async {

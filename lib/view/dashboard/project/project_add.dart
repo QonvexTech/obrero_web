@@ -151,81 +151,67 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
                       ),
                     ),
                     customerService.customers == null
-                        ? CircularProgressIndicator()
-                        : customerService.customers == null
-                            ? Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : customerService.customers.length == 0
-                                ? Text("No client to assign")
-                                : Container(
-                                    height: 60,
-                                    width: double.infinity,
-                                    child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: customerService
-                                            .customers.customers.length,
-                                        itemBuilder: (context, index) {
-                                          return projectAddService
-                                                      .activeOwnerIndex ==
-                                                  customerService.customers
-                                                      .customers[index].id
-                                              ? GestureDetector(
-                                                  onTap: () {
-                                                    projectAddService.setOwner =
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : customerService.customers.length == 0
+                            ? Text("No client to assign")
+                            : Container(
+                                height: 60,
+                                width: double.infinity,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: customerService.customers.length,
+                                    itemBuilder: (context, index) {
+                                      return projectAddService
+                                                  .activeOwnerIndex ==
+                                              customerService
+                                                  .customers[index].id
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                projectAddService.setOwner =
+                                                    customerService
+                                                        .customers[index].id;
+                                              },
+                                              child: Container(
+                                                  margin: EdgeInsets.all(5),
+                                                  height: 60,
+                                                  width: 150,
+                                                  child: Card(
+                                                    color: Palette.drawerColor,
+                                                    margin: EdgeInsets.all(0),
+                                                    child: ListTile(
+                                                      title: Text(
                                                         customerService
-                                                            .customers
                                                             .customers[index]
-                                                            .id;
-                                                  },
-                                                  child: Container(
-                                                      margin: EdgeInsets.all(5),
-                                                      height: 60,
-                                                      width: 150,
-                                                      child: Card(
-                                                        color:
-                                                            Palette.drawerColor,
-                                                        margin:
-                                                            EdgeInsets.all(0),
-                                                        child: ListTile(
-                                                          title: Text(
-                                                            customerService
-                                                                .customers
-                                                                .customers[
-                                                                    index]
-                                                                .fname,
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                      )),
-                                                )
-                                              : GestureDetector(
-                                                  onTap: () {
-                                                    projectAddService.setOwner =
-                                                        customerService
-                                                            .customers
-                                                            .customers[index]
-                                                            .id;
-                                                  },
-                                                  child: Container(
-                                                    margin: EdgeInsets.all(5),
-                                                    height: 60,
-                                                    width: 150,
-                                                    child: Card(
-                                                      child: ListTile(
-                                                        title: Text(
-                                                            customerService
-                                                                .customers
-                                                                .customers[
-                                                                    index]
-                                                                .fname),
+                                                            .fname,
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
                                                       ),
                                                     ),
-                                                  ));
-                                        }),
-                                  ),
+                                                  )),
+                                            )
+                                          : GestureDetector(
+                                              onTap: () {
+                                                projectAddService.setOwner =
+                                                    customerService
+                                                        .customers[index].id;
+                                              },
+                                              child: Container(
+                                                margin: EdgeInsets.all(5),
+                                                height: 60,
+                                                width: 150,
+                                                child: Card(
+                                                  child: ListTile(
+                                                    title: Text(customerService
+                                                        .customers[index]
+                                                        .fname),
+                                                  ),
+                                                ),
+                                              ));
+                                    }),
+                              ),
 
                     Padding(
                       padding:

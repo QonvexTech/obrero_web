@@ -11,14 +11,16 @@ class ProjectModel extends ChangeNotifier {
   List? warnings;
   DateTime? startDate;
   DateTime? endDate;
-  List<int>? assignee;
+  List<int>? assigneeIds;
+  List? assignees;
 
   bool isSelected = false; //for table purposes
 
   ProjectModel(
       {this.id,
       this.areaSize,
-      this.assignee,
+      this.assigneeIds,
+      this.assignees,
       required this.customerId,
       required this.name,
       this.description,
@@ -44,6 +46,7 @@ class ProjectModel extends ChangeNotifier {
     this.endDate =
         json["end_date"] != null ? DateTime.parse(json["end_date"]) : null;
     this.warnings = json["warnings"];
+    this.assignees = json["assignee"];
   }
 
   Map<String, dynamic> toJson() {
@@ -59,7 +62,7 @@ class ProjectModel extends ChangeNotifier {
     data["start_date"] = this.startDate!.toString();
     data["end_date"] = this.endDate!.toString();
     data["assignee_ids"] =
-        this.assignee.toString().replaceAll("[", "").replaceAll("]", "");
+        this.assigneeIds.toString().replaceAll("[", "").replaceAll("]", "");
     return data;
   }
 
