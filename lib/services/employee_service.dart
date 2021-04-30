@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
+import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:http/http.dart' as http;
@@ -75,16 +76,12 @@ class EmployeeSevice extends ChangeNotifier {
         List data = json.decode(response.body)["data"];
         if (json.decode(response.body)["next_page_url"] != null) {
           _pagination.isNext = true;
-          notifyListeners();
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
           _pagination.isPrev = true;
-          notifyListeners();
         }
         if (json.decode(response.body)["last_page"] != null) {
           _pagination.lastPage = json.decode(response.body)["last_page"];
-
-          notifyListeners();
         }
 
         _pagination.totalEntries = json.decode(response.body)["total"];
@@ -120,20 +117,23 @@ class EmployeeSevice extends ChangeNotifier {
     }
   }
 
-  Future updateUser({required Map<String, dynamic> body}) async {
+  Future updateUser(
+      {required Map<String, dynamic> body, bool isAdmin = false}) async {
     var url = Uri.parse("$user_update");
     try {
       await http.post(url, body: body, headers: {
         "Accept": "application/json",
         "Authorization": "Bearer $authToken",
-        "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
-        notifyListeners();
+        if (isAdmin) {
+          profileData = Admin.fromJsonUpdate(data['data']);
+          notifyListeners();
+        }
         print(data);
       });
     } catch (e) {
-      print(e);
+      print("UPDATE ERROR:$e");
     }
   }
 

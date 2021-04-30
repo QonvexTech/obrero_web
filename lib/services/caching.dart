@@ -32,4 +32,12 @@ class DataCacher {
       Navigator.pushReplacementNamed(context, '/login');
     }
   }
+  Future removeCredentials(context) async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.remove('email');
+    _prefs.remove('password');
+    Navigator
+        .pushReplacementNamed(
+        context, "/login");
+  }
 }

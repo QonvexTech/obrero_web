@@ -62,4 +62,13 @@ class ProjectModel extends ChangeNotifier {
         this.assignee.toString().replaceAll("[", "").replaceAll("]", "");
     return data;
   }
+
+  static fromJsonListToProject(List projects) {
+    List<ProjectModel> newProjects = [];
+
+    for (var project in projects) {
+      newProjects.add(ProjectModel.fromJson(project));
+    }
+    return newProjects;
+  }
 }

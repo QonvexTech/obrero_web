@@ -17,72 +17,83 @@ class CustomerList extends StatefulWidget {
 
 class _CustomerListState extends State<CustomerList> {
   @override
+  void initState() {
+    Provider.of<CustomerService>(context, listen: false).fetchCustomers();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
-
-    return Container(
-      color: Palette.contentBackground,
-      child: Column(
-        children: [
-          SizedBox(
-            height: MySpacer.medium,
-          ),
-          HeaderList(
-            toPage: CustomerAdd(),
-            title: "Customer",
-            search: customerService.search,
-            searchController: customerService.searchController,
-          ),
-          SizedBox(
-            height: MySpacer.large,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
+    return customerService.customers == null
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : customerService.customers.length == 0
+            ? Text("No Clients")
+            : Container(
+                color: Palette.contentBackground,
                 child: Column(
                   children: [
-                    AllTable(
-                        datas: customerService.customers,
-                        rowWidget: rowWidget(
-                            context,
-                            customerService.customers,
-                            customerService.removeCustomer,
-                            customerService.setPage),
-                        rowWidgetMobile: rowWidgetMobile(
-                            context,
-                            customerService.customers,
-                            customerService.removeCustomer,
-                            customerService.setPage),
-                        headersMobile: [
-                          "NOM",
-                          "EMAIL",
-                          "STATUS"
-                        ],
-                        headers: [
-                          "NOM",
-                          "EMAIL",
-                          "TÉLÉPHONE",
-                          "ADDRESSE",
-                          "STATUS"
-                        ]),
                     SizedBox(
-                      height: MySpacer.small,
+                      height: MySpacer.medium,
                     ),
-                    pageControll(
-                        pageService, customerService.pagination, context)
+                    HeaderList(
+                      toPage: CustomerAdd(),
+                      title: "Customer",
+                      search: customerService.search,
+                      searchController: customerService.searchController,
+                    ),
+                    SizedBox(
+                      height: MySpacer.large,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            children: [
+                              AllTable(
+                                  datas: customerService.customers,
+                                  rowWidget: rowWidget(
+                                      context,
+                                      customerService.customers,
+                                      customerService.removeCustomer,
+                                      customerService.setPage),
+                                  rowWidgetMobile: rowWidgetMobile(
+                                      context,
+                                      customerService.customers,
+                                      customerService.removeCustomer,
+                                      customerService.setPage),
+                                  headersMobile: [
+                                    "NOM",
+                                    "EMAIL",
+                                    "STATUS"
+                                  ],
+                                  headers: [
+                                    "NOM",
+                                    "EMAIL",
+                                    "TÉLÉPHONE",
+                                    "ADDRESSE",
+                                    "STATUS"
+                                  ]),
+                              SizedBox(
+                                height: MySpacer.small,
+                              ),
+                              pageControll(pageService,
+                                  customerService.pagination, context)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MySpacer.large,
+                    )
                   ],
                 ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: MySpacer.large,
-          )
-        ],
-      ),
-    );
+              );
   }
 }
 

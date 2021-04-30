@@ -4,15 +4,31 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
+import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/map.dart';
 
-class CustomerDetails extends StatelessWidget {
+class CustomerDetails extends StatefulWidget {
   final CustomerModel? customer;
-
   const CustomerDetails({Key? key, required this.customer}) : super(key: key);
+
+  @override
+  _CustomerDetailsState createState() => _CustomerDetailsState();
+}
+
+class _CustomerDetailsState extends State<CustomerDetails> {
+  @override
+  void initState() {
+    MapService mapService = Provider.of<MapService>(context, listen: false);
+    print("picture : ${widget.customer!.picture}");
+    mapService.mapInit(
+        ProjectModel.fromJsonListToProject(widget.customer!.customerProjects!));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     try {
@@ -30,29 +46,48 @@ class CustomerDetails extends StatelessWidget {
                   children: [
                     backButton(
                         context, customerService.setPage, CustomerList()),
-
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
                     Row(
                       children: [
-                        CircleAvatar(
-                          radius: 60,
+                        Container(
+                          width: MediaQuery.of(context).size.height * .15,
+                          height: MediaQuery.of(context).size.height * .15,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10000),
+                              color: Colors.grey.shade100,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.shade400,
+                                  offset: Offset(3, 3),
+                                  blurRadius: 2,
+                                )
+                              ],
+                              image: DecorationImage(
+                                  fit: widget.customer!.picture == null
+                                      ? BoxFit.scaleDown
+                                      : BoxFit.cover,
+                                  alignment: widget.customer!.picture == null
+                                      ? AlignmentDirectional.bottomCenter
+                                      : AlignmentDirectional.center,
+                                  image: NetworkImage(
+                                      "https://obrero.checkmy.dev${widget.customer!.picture!}"),
+                                  scale: widget.customer!.picture == null
+                                      ? 5
+                                      : 1)),
                         ),
                         SizedBox(
-                          width: MySpacer.small,
+                          width: MySpacer.medium,
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${customer!.fname} ${customer!.lname}",
+                              "${widget.customer!.fname} ${widget.customer!.lname}",
                               style: Theme.of(context).textTheme.headline5,
                             ),
-                            // Text(
-                            //   "${customer!.contactNumber}",
-                            //   style: Theme.of(context).textTheme.subtitle1,
-                            // )
+                            Text(
+                              "${widget.customer!.contactNumber}",
+                              style: Theme.of(context).textTheme.subtitle1,
+                            )
                           ],
                         )
                       ],
@@ -71,7 +106,7 @@ class CustomerDetails extends StatelessWidget {
                               SizedBox(
                                 height: MySpacer.small,
                               ),
-                              Text("${customer!.contactNumber}",
+                              Text("${widget.customer!.contactNumber}",
                                   style: boldText)
                             ],
                           ),
@@ -85,7 +120,7 @@ class CustomerDetails extends StatelessWidget {
                                 height: MySpacer.small,
                               ),
                               Text(
-                                "${customer!.email}",
+                                "${widget.customer!.email}",
                                 style: boldText,
                               )
                             ],
@@ -99,7 +134,8 @@ class CustomerDetails extends StatelessWidget {
                               SizedBox(
                                 height: MySpacer.small,
                               ),
-                              Text("${customer!.adress}", style: boldText)
+                              Text("${widget.customer!.adress}",
+                                  style: boldText)
                             ],
                           ),
                         )
@@ -170,7 +206,7 @@ class CustomerDetails extends StatelessWidget {
                                 height: MySpacer.small,
                               ),
                               Text(
-                                "En cours",
+                                widget.customer!.customerProjects!.toString(),
                                 style: boldText,
                               )
                             ],

@@ -35,7 +35,8 @@ class _AdminProfileState extends State<AdminProfile> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, "/login");
+                    // Navigator.pushReplacementNamed(context, "/login");
+                    print("log");
                   },
                   child: Text("logout"),
                 )

@@ -9,9 +9,10 @@ import 'package:uitemplate/models/project_model.dart';
 
 class MapService extends ChangeNotifier {
   double _zoom = 15.0;
+  LatLng coordinates = LatLng(28.709106207008052, 77.09902385711672);
   Location _location = Location();
   bool? _serviceEnabled;
-  LatLng coordinates = LatLng(28.709106207008052, 77.09902385711672);
+
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
   GoogleMapController? mapController;
@@ -35,6 +36,8 @@ class MapService extends ChangeNotifier {
   }
 
   mapInit(List<ProjectModel> projects) async {
+    print(projects.length);
+    _markers.clear();
     for (ProjectModel project in projects) {
       final Uint8List markerIcon =
           await getBytesFromAsset('assets/icons/green.png', 200);
@@ -47,6 +50,7 @@ class MapService extends ChangeNotifier {
           markerId: MarkerId(project.id.toString()),
           position: project.coordinates!));
     }
+    print("markers : ${_markers.length}");
     notifyListeners();
   }
 
@@ -54,32 +58,32 @@ class MapService extends ChangeNotifier {
     if (coord != null) {
       coordinates = coord;
     }
-    addNewMarker(coordinates);
+
     notifyListeners();
   }
 
-  void addNewMarker(LatLng coord) {
-    Marker newMarker = Marker(markerId: MarkerId("value"), position: coord);
-    _markers.add(newMarker);
-    notifyListeners();
-  }
+  // void addNewMarker(LatLng coord) {
+  //   Marker newMarker = Marker(markerId: MarkerId("value"), position: coord);
+  //   _markers.add(newMarker);
+  //   notifyListeners();
+  // }
 
-  void changePosition(MarkerId markerId) {
-    final Marker marker = markers[markerId]!;
-    final LatLng current = marker.position;
-    final Offset offset = Offset(
-      coordinates.latitude - current.latitude,
-      coordinates.longitude - current.longitude,
-    );
+  // void changePosition(MarkerId markerId) {
+  //   final Marker marker = markers[markerId]!;
+  //   final LatLng current = marker.position;
+  //   final Offset offset = Offset(
+  //     coordinates.latitude - current.latitude,
+  //     coordinates.longitude - current.longitude,
+  //   );
 
-    markers[markerId] = marker.copyWith(
-      positionParam: LatLng(
-        coordinates.latitude + offset.dy,
-        coordinates.longitude + offset.dx,
-      ),
-    );
-    notifyListeners();
-  }
+  //   markers[markerId] = marker.copyWith(
+  //     positionParam: LatLng(
+  //       coordinates.latitude + offset.dy,
+  //       coordinates.longitude + offset.dx,
+  //     ),
+  //   );
+  //   notifyListeners();
+  // }
 
   void focusMap(LatLng coordinates) {
     mapController!.animateCamera(CameraUpdate.newLatLng(coordinates));

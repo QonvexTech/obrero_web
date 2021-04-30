@@ -11,7 +11,6 @@ import '../models/employes_model.dart';
 class MessageService extends ChangeNotifier {
   List<EmployeesModel> _usersToMessage = [];
   TextEditingController messageController = TextEditingController();
-
   List<EmployeesModel> get userToMessage => _usersToMessage;
 
   void messageUpdate() {
@@ -30,23 +29,20 @@ class MessageService extends ChangeNotifier {
 
   Future<void> sendMessage(
       {required String ids, String? message, String? base64File}) async {
-    //ids = 1,2,3
-    //
-
     try {
       Map body = {
         "to": ids,
       };
       String mess = '';
       if (message != null) {
-        body['message'] = message;
+        body.addAll({"message": message});
         mess = message;
       }
+
       if (base64File != null) {
-        body['file'] = base64File;
+        body.addAll({"file": "data:image/jpg;base64,$base64File"});
         mess = "Sent an attachment";
       }
-      print(ids);
 
       var url = Uri.parse(message_send_api);
       await http.post(url, body: body, headers: {
