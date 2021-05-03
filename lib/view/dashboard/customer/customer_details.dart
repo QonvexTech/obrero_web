@@ -153,7 +153,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                         Text("Description", style: transHeader),
                         Text(project.description!),
                         Container(
-                            height: 100,
+                            height: 30,
                             padding: EdgeInsets.symmetric(vertical: 20),
                             width: MediaQuery.of(context).size.width,
                             child: Image.asset("assets/images/dashLine.png")),

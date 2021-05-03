@@ -1,5 +1,8 @@
+import 'dart:html';
+
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+// import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -89,57 +92,63 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
                       padding:
                           const EdgeInsets.symmetric(vertical: MySpacer.small),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Date de fin",
-                                style: boldText,
-                              ),
-                              MaterialButton(
-                                onPressed: () =>
-                                    projectAddService.selectEndDate(context),
-                                child: Text(
-                                    "${projectAddService.endDate.toLocal()}"
-                                        .split(' ')[0]),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Date de fin",
+                                  style: boldText,
+                                ),
+                                MaterialButton(
+                                  onPressed: () =>
+                                      projectAddService.selectEndDate(context),
+                                  child: Text(
+                                      "${projectAddService.endDate.toLocal()}"
+                                          .split(' ')[0]),
+                                ),
+                              ],
+                            ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Date de début",
-                                style: boldText,
-                              ),
-                              MaterialButton(
-                                onPressed: () =>
-                                    projectAddService.selectStartDate(context),
-                                child: Text(
-                                    "${projectAddService.startDate.toLocal()}"
-                                        .split(' ')[0]),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Coordinates",
-                                style: boldText,
-                              ),
-                              MaterialButton(
-                                onPressed: () =>
-                                    projectAddService.selectStartDate(context),
-                                child: Text(
-                                    "${Provider.of<MapService>(context).coordinates.latitude},${Provider.of<MapService>(context).coordinates.longitude}"),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Date de début",
+                                  style: boldText,
+                                ),
+                                MaterialButton(
+                                  onPressed: () => projectAddService
+                                      .selectStartDate(context),
+                                  child: Text(
+                                      "${projectAddService.startDate.toLocal()}"
+                                          .split(' ')[0]),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
+                    ),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Location",
+                          style: boldText,
+                        ),
+                        MaterialButton(
+                          onPressed: () =>
+                              projectAddService.selectStartDate(context),
+                          child: Text(
+                            "${Provider.of<MapService>(context).coordinates.latitude},${Provider.of<MapService>(context).coordinates.longitude}",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                     //list of users
                     Padding(
