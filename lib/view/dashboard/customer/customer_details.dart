@@ -150,8 +150,44 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                         SizedBox(
                           height: MySpacer.small,
                         ),
-                        Text("Description", style: transHeader),
-                        Text(project.description!),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Description", style: transHeader),
+                                  Text(project.description!),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Total des Heures Travaillées",
+                                      style: transHeader),
+                                  Text(
+                                    "32HRS",
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Status", style: transHeader),
+                                  Text("En cours"),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                         Container(
                             height: 30,
                             padding: EdgeInsets.symmetric(vertical: 20),

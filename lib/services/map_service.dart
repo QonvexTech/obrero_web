@@ -34,15 +34,9 @@ class MapService extends ChangeNotifier {
   }
 
   mapInit(List<ProjectModel> projects) async {
-    _markers.clear();
     try {
       for (ProjectModel project in projects) {
-        print(project.id);
-        print(project.coordinates);
-        print(project.name);
-
         // print(markerIcon);
-
         _markers.add(Marker(
             zIndex: 20,
             infoWindow: InfoWindow(
@@ -63,15 +57,11 @@ class MapService extends ChangeNotifier {
     if (coord != null) {
       coordinates = coord;
     }
-
     if (_markers.isEmpty) {
       _markers.add(Marker(markerId: MarkerId("temp"), position: coord!));
     } else {
       _markers.clear();
     }
-
-    print(coord);
-    print("clear");
     notifyListeners();
   }
 
