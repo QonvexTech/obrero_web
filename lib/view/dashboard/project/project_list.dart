@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
-import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_details.dart';
-import 'package:uitemplate/widgets/emtylist.dart';
+import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
@@ -44,7 +43,7 @@ class _ProjectListState extends State<ProjectList> {
         width: double.infinity,
         height: double.infinity,
         color: Palette.contentBackground,
-        child: EmtyList(
+        child: EmptyContainer(
             showButton: true,
             addingFunc: ProjectAddScreen(),
             title: "Project Empty",

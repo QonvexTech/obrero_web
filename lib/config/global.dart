@@ -1,7 +1,5 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/models/admin_model.dart';
-import 'package:uitemplate/models/message.dart';
 
 const String api = "https://obrero.checkmy.dev/api";
 
@@ -31,6 +29,9 @@ const String user_api = "$api/user/";
 const String user_update = "$api/user/admin-update";
 const String user_delete = "$api/user/delete";
 const String user_register = "$api/register";
+
+//CHANGEPASSWORD
+const String change_password_api = "$api/user/change-password";
 
 //MESSAGING
 const String message_send_api = "$api/messaging/send";

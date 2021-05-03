@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/admin_model.dart';
 
 class ProfileService extends ChangeNotifier {
   Admin? admin;
-
   bool _isLoading = false;
   File? _file;
   Uint8List? _base64Image;
@@ -25,5 +25,33 @@ class ProfileService extends ChangeNotifier {
   set base64Image(value) {
     _base64Image = value;
     notifyListeners();
+  }
+
+  TextEditingController oldPassword = TextEditingController();
+  TextEditingController newPassword = TextEditingController();
+  TextEditingController confirmPassword = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  get formKeyPassword => _formKey;
+
+  Future changePassword(String id) async {
+    var url = Uri.parse("$change_password_api");
+    try {
+      var response = await http.put(url, body: {
+        "id": id,
+        "new_password": newPassword.text
+      }, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print(response.body);
+      } else {
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

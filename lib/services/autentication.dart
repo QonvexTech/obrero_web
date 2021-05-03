@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/caching.dart';

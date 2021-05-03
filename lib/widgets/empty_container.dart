@@ -4,14 +4,14 @@ import 'package:uitemplate/config/pallete.dart';
 
 import 'adding_button.dart';
 
-class EmtyList extends StatelessWidget {
+class EmptyContainer extends StatelessWidget {
   final String? title;
   final String? description;
   final String? buttonText;
   final Widget? addingFunc;
   final bool showButton;
 
-  const EmtyList(
+  const EmptyContainer(
       {Key? key,
       this.showButton = false,
       required this.addingFunc,

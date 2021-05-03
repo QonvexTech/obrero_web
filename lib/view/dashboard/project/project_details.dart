@@ -232,20 +232,16 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                   Column(
                     children: [
                       Text(
-                        "Heures Totales",
+                        "Progres Totales",
                         style: transHeader.copyWith(fontSize: 10),
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "126",
+                            "60%",
                             style: Theme.of(context).textTheme.headline3,
                           ),
-                          Text(
-                            "/hrs",
-                            style: TextStyle(fontSize: 10),
-                          )
                         ],
                       ),
                     ],
@@ -257,18 +253,18 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                   Column(
                     children: [
                       Text(
-                        "Heures Totales",
+                        "Avertissement Total",
                         style: transHeader.copyWith(fontSize: 10),
                       ),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "126",
+                            "80",
                             style: Theme.of(context).textTheme.headline3,
                           ),
                           Text(
-                            "/hrs",
+                            "Warnings",
                             style: TextStyle(fontSize: 10),
                           )
                         ],

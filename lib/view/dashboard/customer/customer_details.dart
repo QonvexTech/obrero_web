@@ -9,7 +9,9 @@ import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
+import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/back_button.dart';
+import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class CustomerDetails extends StatefulWidget {
@@ -33,6 +35,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
+    final scrW = MediaQuery.of(context).size.width;
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -139,6 +142,13 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                   SizedBox(
                     height: MySpacer.small,
                   ),
+                  customerProjects.length == 0
+                      ? EmptyContainer(
+                          addingFunc: ProjectAddScreen(),
+                          title: "No assigned project yet",
+                          description: "Add project Now",
+                          buttonText: "Add Project")
+                      : SizedBox(),
                   for (ProjectModel project in customerProjects)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

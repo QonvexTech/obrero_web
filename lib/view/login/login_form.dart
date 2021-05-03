@@ -72,7 +72,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     _emailController.text = "super@admin.com";
-    _passwordController.text = "super_password";
+    _passwordController.text = "123";
     super.initState();
   }
 

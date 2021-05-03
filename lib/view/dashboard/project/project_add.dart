@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -106,10 +105,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
                                   style: boldText,
                                 ),
                                 MaterialButton(
-                                  onPressed: () =>
-                                      projectAddService.selectEndDate(context),
+                                  onPressed: () => projectAddService
+                                      .selectStartDate(context),
                                   child: Text(
-                                      "${projectAddService.endDate.toLocal()}"
+                                      "${projectAddService.startDate.toLocal()}"
                                           .split(' ')[0]),
                                 ),
                               ],
@@ -124,10 +123,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
                                   style: boldText,
                                 ),
                                 MaterialButton(
-                                  onPressed: () => projectAddService
-                                      .selectStartDate(context),
+                                  onPressed: () =>
+                                      projectAddService.selectEndDate(context),
                                   child: Text(
-                                      "${projectAddService.startDate.toLocal()}"
+                                      "${projectAddService.endDate.toLocal()}"
                                           .split(' ')[0]),
                                 ),
                               ],
