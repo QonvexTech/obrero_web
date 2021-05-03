@@ -27,25 +27,20 @@ class ProfileService extends ChangeNotifier {
     notifyListeners();
   }
 
-  TextEditingController oldPassword = TextEditingController();
-  TextEditingController newPassword = TextEditingController();
-  TextEditingController confirmPassword = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
-  get formKeyPassword => _formKey;
-
-  Future changePassword(String id) async {
+  Future<bool> changePassword(String id, String newPassword) async {
     var url = Uri.parse("$change_password_api");
+    bool success = false;
     try {
       var response = await http.put(url, body: {
         "id": id,
-        "new_password": newPassword.text
+        "new_password": newPassword
       }, headers: {
         "Accept": "application/json",
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
+        success = true;
         print(response.body);
       } else {
         print(response.body);
@@ -53,5 +48,6 @@ class ProfileService extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    return success;
   }
 }

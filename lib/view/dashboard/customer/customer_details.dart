@@ -232,11 +232,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.35,
-                        child: MapScreen(
-                          initialCoord: customerProjects.length > 0
-                              ? customerProjects[0].coordinates
-                              : null,
-                        ),
+                        child: MapScreen(),
                       ),
                       SizedBox(
                         height: MySpacer.large,

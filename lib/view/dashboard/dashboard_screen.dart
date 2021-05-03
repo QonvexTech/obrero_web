@@ -22,9 +22,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   void initState() {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     var mapService = Provider.of<MapService>(context, listen: false);
-    Provider.of<ProjectProvider>(context, listen: false)
-        .fetchProjectsBaseOnDates();
+
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      Provider.of<ProjectProvider>(context, listen: false)
+          .fetchProjectsBaseOnDates()
+          .whenComplete(
+              () => mapService.mapInit(projectProvider.projectDateBased));
+    });
   }
 
   @override

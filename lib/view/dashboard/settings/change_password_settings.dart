@@ -19,27 +19,37 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       getPass();
     });
   }
 
+  TextEditingController oldPassword = TextEditingController();
+  TextEditingController newPassword = TextEditingController();
+  TextEditingController confirmPassword = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    oldPassword.dispose();
+    newPassword.dispose();
+    confirmPassword.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final scrW = MediaQuery.of(context).size.width;
     final scrH = MediaQuery.of(context).size.height;
-
     ProfileService profile = Provider.of<ProfileService>(context);
-
     return Container(
       width: scrW,
       height: scrH,
       constraints: BoxConstraints(maxWidth: 800, maxHeight: scrH / 2.9),
       padding: EdgeInsets.all(10),
       child: Form(
-          key: profile.formKeyPassword,
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -68,7 +78,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       }
                       return null;
                     },
-                    controller: profile.oldPassword,
+                    controller: oldPassword,
                     decoration: InputDecoration(
                         fillColor: Colors.white,
                         hintText: "Old Password",
@@ -85,7 +95,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                       }
                       return null;
                     },
-                    controller: profile.newPassword,
+                    controller: newPassword,
                     decoration: InputDecoration(
                       hintText: "New Passwrod",
                       hintStyle: transHeader,
@@ -100,12 +110,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter the same password to confirm';
                       }
-                      if (value != profile.newPassword.text) {
+                      if (value != newPassword.text) {
                         return 'Incorrect Password';
                       }
                       return null;
                     },
-                    controller: profile.confirmPassword,
+                    controller: confirmPassword,
                     decoration: InputDecoration(
                       hintText: "Confirm Passwrod",
                       hintStyle: transHeader,
@@ -119,11 +129,23 @@ class _ChangePasswordState extends State<ChangePassword> {
                 minWidth: double.infinity,
                 color: Palette.drawerColor,
                 onPressed: () {
-                  if (profile.formKeyPassword.currentState!.validate()) {
+                  if (_formKey.currentState!.validate()) {
                     profile
-                        .changePassword(profileData!.id.toString())
-                        .whenComplete(() {
+                        .changePassword(
+                            profileData!.id.toString(), newPassword.text)
+                        .then((success) {
+                      final snackBar;
+                      if (success) {
+                        snackBar =
+                            SnackBar(content: Text('Successful Changed.'));
+                      } else {
+                        snackBar = SnackBar(
+                            content:
+                                Text('Change password request cant complete!'));
+                      }
                       Navigator.pop(context);
+
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     });
                   }
                 },

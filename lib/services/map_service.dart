@@ -32,7 +32,6 @@ class MapService extends ChangeNotifier {
   mapInit(List<ProjectModel> projects) async {
     try {
       for (ProjectModel project in projects) {
-        // print(markerIcon);
         _markers.add(Marker(
             zIndex: 20,
             infoWindow: InfoWindow(
