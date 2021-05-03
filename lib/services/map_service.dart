@@ -16,12 +16,10 @@ class MapService extends ChangeNotifier {
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
   GoogleMapController? mapController;
-
   CameraPosition cameraPosition = CameraPosition(
       target: LatLng(28.709106207008052, 77.09902385711672), zoom: 15.0);
 
   Set<Marker> _markers = {};
-
   get zoom => _zoom;
   get markers => _markers;
 
@@ -60,11 +58,20 @@ class MapService extends ChangeNotifier {
     print("markers : ${_markers.length}");
   }
 
+  Marker? projectArea;
   void setCoordinates({LatLng? coord}) {
     if (coord != null) {
       coordinates = coord;
     }
 
+    if (_markers.isEmpty) {
+      _markers.add(Marker(markerId: MarkerId("temp"), position: coord!));
+    } else {
+      _markers.clear();
+    }
+
+    print(coord);
+    print("clear");
     notifyListeners();
   }
 

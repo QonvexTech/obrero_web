@@ -1,7 +1,7 @@
 import 'dart:html';
-
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
@@ -27,6 +27,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
     Provider.of<CustomerService>(context, listen: false).fetchCustomers();
+
     super.initState();
   }
 
@@ -37,6 +38,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
     CustomerService customerService = Provider.of<CustomerService>(context);
+
+    double _zoom = 15.0;
+    LatLng coordinates = LatLng(28.709106207008052, 77.09902385711672);
+    Marker? projectArea;
 
     return Container(
         width: MediaQuery.of(context).size.width / 1.5,

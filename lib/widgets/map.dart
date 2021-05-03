@@ -24,7 +24,9 @@ class _MapScreenState extends State<MapScreen> {
         mapType: MapType.none,
         myLocationEnabled: true,
         markers: mapService.markers,
-        onTap: (position) {},
+        onTap: (position) {
+          mapService.setCoordinates(coord: position);
+        },
         initialCameraPosition: CameraPosition(
             target: widget.initialCoord == null
                 ? mapService.coordinates
