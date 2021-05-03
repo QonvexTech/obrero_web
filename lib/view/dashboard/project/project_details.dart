@@ -6,6 +6,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 
@@ -19,7 +20,7 @@ class ProjectDetails extends StatefulWidget {
   _ProjectDetailsState createState() => _ProjectDetailsState();
 }
 
-class _ProjectDetailsState extends State<ProjectDetails> {
+class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
   List<EmployeesModel> assignee = [];
   @override
   void initState() {
@@ -142,6 +143,9 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                             children: [
                               CircleAvatar(
                                 radius: 30,
+                                backgroundColor: Palette.contentBackground,
+                                backgroundImage:
+                                    fetchImage(netWorkImage: x.picture),
                               ),
                               SizedBox(
                                 width: MySpacer.small,

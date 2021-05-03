@@ -26,7 +26,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         .fetchProjectsBaseOnDates()
         .whenComplete(
             () => mapService.mapInit(projectProvider.projectDateBased));
-
     super.initState();
   }
 

@@ -13,6 +13,7 @@ class ProjectModel extends ChangeNotifier {
   DateTime? endDate;
   List<int>? assigneeIds;
   List? assignees;
+  String? picture;
 
   bool isSelected = false; //for table purposes
 
@@ -47,6 +48,7 @@ class ProjectModel extends ChangeNotifier {
         json["end_date"] != null ? DateTime.parse(json["end_date"]) : null;
     this.warnings = json["warnings"];
     this.assignees = json["assignee"];
+    this.picture = json["picture"];
   }
 
   Map<String, dynamic> toJson() {
@@ -63,6 +65,8 @@ class ProjectModel extends ChangeNotifier {
     data["end_date"] = this.endDate!.toString();
     data["assignee_ids"] =
         this.assigneeIds.toString().replaceAll("[", "").replaceAll("]", "");
+
+        
     return data;
   }
 

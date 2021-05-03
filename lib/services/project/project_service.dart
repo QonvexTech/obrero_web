@@ -86,6 +86,7 @@ class ProjectProvider extends ChangeNotifier {
         var projects = ProjectModel.fromJsonListToProject(data);
         _projects = projects;
         _tempProjects = projects;
+        print(data);
       } else {
         print(response.body);
       }
