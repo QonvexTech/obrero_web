@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uitemplate/models/employes_model.dart';
 
 class ProjectModel extends ChangeNotifier {
   int? id;
@@ -12,7 +13,7 @@ class ProjectModel extends ChangeNotifier {
   DateTime? startDate;
   DateTime? endDate;
   List<int>? assigneeIds;
-  List? assignees;
+  List<EmployeesModel>? assignees;
   String? picture;
 
   bool isSelected = false; //for table purposes
@@ -47,7 +48,9 @@ class ProjectModel extends ChangeNotifier {
     this.endDate =
         json["end_date"] != null ? DateTime.parse(json["end_date"]) : null;
     this.warnings = json["warnings"];
-    this.assignees = json["assignee"];
+    this.assignees = json["assignee"] != null
+        ? EmployeesModel.fromJsonListToUsersInProject(json["assignee"])
+        : [];
     this.picture = json["picture"];
   }
 
@@ -66,7 +69,6 @@ class ProjectModel extends ChangeNotifier {
     data["assignee_ids"] =
         this.assigneeIds.toString().replaceAll("[", "").replaceAll("]", "");
 
-        
     return data;
   }
 

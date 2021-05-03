@@ -5,6 +5,7 @@ import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 
@@ -49,6 +50,19 @@ class EmployeeSevice extends ChangeNotifier {
 
   get users => _users;
 
+  List<ProjectModel> usersProjects(id, allProjects) {
+    List<ProjectModel> newProjects = [];
+    for (ProjectModel project in allProjects) {
+      for (EmployeesModel user in project.assignees!) {
+        if (user.id == id) {
+          newProjects.add(project);
+        }
+      }
+    }
+    notifyListeners();
+    return newProjects;
+  }
+
   Future fetchUsers() async {
     var url =
         Uri.parse("$user_api${_pagination.perPage}?page=${_pagination.page}");
@@ -78,6 +92,7 @@ class EmployeeSevice extends ChangeNotifier {
         _users = listOfUsers;
         _tempUsers = listOfUsers;
         searchController.clear();
+        print(data);
       } else {
         print(response.body);
       }

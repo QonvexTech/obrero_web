@@ -27,7 +27,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
     Provider.of<CustomerService>(context, listen: false).fetchCustomers();
-
     super.initState();
   }
 

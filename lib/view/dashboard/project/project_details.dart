@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
@@ -21,15 +20,6 @@ class ProjectDetails extends StatefulWidget {
 }
 
 class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
-  List<EmployeesModel> assignee = [];
-  @override
-  void initState() {
-    assignee = EmployeesModel.fromJsonListToUsersInProject(
-        widget.projectModel!.assignees!);
-    print(assignee.length);
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
@@ -135,7 +125,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      for (var x in assignee)
+                      for (var x in widget.projectModel!.assignees!)
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           height: 80,
