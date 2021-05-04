@@ -58,6 +58,11 @@ class ProjectProvider extends ChangeNotifier {
   get projects => _projects;
   get projectDateBased => _projectsDateBase;
 
+  List<dynamic> splitAllImage(String images) {
+    List<dynamic> splitImages = images.split(".!.");
+    return splitImages;
+  }
+
   Future fetchProjects() async {
     var url = Uri.parse(
         "$project_api${_pagination.perPage}?page=${_pagination.page}");
