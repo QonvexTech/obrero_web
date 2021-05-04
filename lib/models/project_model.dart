@@ -51,6 +51,7 @@ class ProjectModel extends ChangeNotifier {
     this.assignees = json["assignee"] != null
         ? EmployeesModel.fromJsonListToUsersInProject(json["assignee"])
         : [];
+    this.picture = json["images"].toString();
   }
 
   Map<String, dynamic> toJson() {
