@@ -59,10 +59,9 @@ class CustomerModel {
     data["last_name"] = this.lname;
     data["email"] = this.email;
     data["address"] = this.adress;
-    // data["picture"] = this.picture;
+    data["picture"] = "data:image/jpg;base64,${this.picture}";
     // data["status"] = this.status.toString();
     data["contact_number"] = this.contactNumber;
-    // data["projects"] = this.customerProjects.toString();
     return data;
   }
 
@@ -72,7 +71,8 @@ class CustomerModel {
     data["last_name"] = this.lname;
     data["email"] = this.email;
     data["address"] = this.adress;
-    data["picture"] = this.picture;
+    print("PICTURE : ${this.picture}");
+    data["picture"] = "data:image/jpg;base64,${this.picture}";
     // data["status"] = this.status;
     data["contact_number"] = this.contactNumber;
     data["amount"] = this.amount.toString();

@@ -46,6 +46,15 @@ class SettingsHelper {
     }
   }
 
+  ImageProvider fetchImage({required var netWorkImage}) {
+    if (netWorkImage == null || netWorkImage == "") {
+      return AssetImage('icons/admin_icon.png');
+    } else {
+      print(netWorkImage);
+      return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
+    }
+  }
+
   ImageProvider get imageProvider {
     if (profileData!.picture == null) {
       return AssetImage('icons/admin_icon.png');

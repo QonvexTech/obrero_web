@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/customer/customer_service.dart';
 
 class CustomerScreen extends StatelessWidget {
   @override

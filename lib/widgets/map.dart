@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/services/map_service.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+  const MapScreen({
+    Key? key,
+  }) : super(key: key);
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -16,14 +18,13 @@ class _MapScreenState extends State<MapScreen> {
     MapService mapService = Provider.of<MapService>(context);
     return GoogleMap(
         buildingsEnabled: true,
-        onMapCreated: (controller) {
-          mapService.mapController = controller;
-          mapService.setCoordinates();
-        },
         mapType: MapType.none,
         myLocationEnabled: true,
         markers: mapService.markers,
-        onTap: (position) {},
-        initialCameraPosition: mapService.cameraPosition);
+        onTap: (position) {
+          mapService.setCoordinates(coord: position);
+        },
+        initialCameraPosition: CameraPosition(
+            target: mapService.coordinates, zoom: mapService.zoom));
   }
 }

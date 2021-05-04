@@ -64,4 +64,26 @@ class EmployeesModel extends ChangeNotifier {
     // data["prject_id"] = this.id.toString();
     return data;
   }
+
+  static List<EmployeesModel> fromJsonListToUsers(List users) {
+    List<EmployeesModel> newUsers = [];
+    for (var user in users) {
+      EmployeesModel userModel = EmployeesModel.fromJson(user);
+      if (!userModel.isAdmin!) {
+        newUsers.add(userModel);
+      }
+    }
+    return newUsers;
+  }
+
+  static List<EmployeesModel> fromJsonListToUsersInProject(List users) {
+    List<EmployeesModel> newUsers = [];
+    for (var user in users) {
+      EmployeesModel userModel = EmployeesModel.fromJson(user["user_details"]);
+      if (!userModel.isAdmin!) {
+        newUsers.add(userModel);
+      }
+    }
+    return newUsers;
+  }
 }

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/project_model.dart';
@@ -10,12 +13,36 @@ class ProjectAddService extends ChangeNotifier {
   bool _isEdit = false;
   List<int> _assignee = [];
   int _activeOwnerIndex = 0;
+  List<Uint8List>? _projectImages = [];
+  Uint8List? _base64Image;
 
   List<int> get assignee => _assignee;
   get activeOwnerIndex => _activeOwnerIndex;
   get startDate => _startDate;
   get endDate => _endDate;
   get isEdit => _isEdit;
+  get projectImages => _projectImages;
+  get base64Image => _base64Image;
+
+  List<String> splitAllImage(String images) {
+    List<String> splitImages = images.split(".!.");
+    return splitImages;
+  }
+
+  String converteduint8list() {
+    List<String> encodedImages = [];
+    List<String> replaceCommaImage = [];
+    for (var image in _projectImages!) {
+      encodedImages
+          .add("data:image/jpg;base64,${base64.encode(image.toList())}");
+    }
+    String encodedImagetoString = encodedImages.toString();
+
+    return encodedImagetoString
+        .replaceAll(",", ".!.")
+        .replaceAll("4.!.", "4,")
+        .substring(1, encodedImagetoString.length - 1);
+  }
 
   set setOwner(value) {
     _activeOwnerIndex = value;
@@ -25,6 +52,18 @@ class ProjectAddService extends ChangeNotifier {
   set isEdit(value) => _isEdit = value;
   set startDate(value) => _startDate = value;
   set endDate(value) => _endDate = value;
+
+  addPicture(pickedFile) {
+    if (pickedFile != null) {
+      _base64Image = pickedFile.files[0].bytes;
+
+      _projectImages!.add(_base64Image!);
+
+      _base64Image = null;
+    }
+
+    notifyListeners();
+  }
 
   void asignUser(int userId) {
     _assignee.add(userId);
@@ -81,11 +120,12 @@ class ProjectAddService extends ChangeNotifier {
       projectService.updateProject(newProject: projectToEdit);
     } else {
       ProjectModel newProject = ProjectModel(
-          assignee: _assignee,
+          assigneeIds: _assignee,
           customerId: _activeOwnerIndex,
           description: descriptionController.text,
           name: nameController.text,
           coordinates: coordinates,
+          picture: converteduint8list(),
           startDate: startDate,
           endDate: endDate);
 

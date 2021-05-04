@@ -44,6 +44,7 @@ class PaginationService extends ChangeNotifier {
     page.isPrev = false;
     animate(-20);
     page.fetch();
+
     notifyListeners();
   }
 
