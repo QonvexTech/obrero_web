@@ -19,11 +19,20 @@ class Authentication {
   Future<bool> login(String email, String password) async {
     try {
       bool success = false;
-      var fcmToken = await FireBase().fcmToken;
+      String? fcmToken;
+      Map body = {'email': email, 'password': password};
+      try{
+        fcmToken = await FireBase().fcmToken;
+        if(fcmToken != null){
+          body.addAll({"fcm_token" : fcmToken});
+        }
+      }catch(e){
+        print(e);
+      }
       print("LOGGING IN");
       var url = Uri.parse(login_api);
       var response = await http.post(url,
-          body: {'email': email, 'password': password, 'fcm_token': fcmToken});
+          body: body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         profileData = Admin.fromJson(json.decode(response.body)["data"]);
         print("login success");
