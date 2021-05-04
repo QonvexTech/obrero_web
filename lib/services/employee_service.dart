@@ -48,7 +48,7 @@ class EmployeeSevice extends ChangeNotifier {
     notifyListeners();
   }
 
-  get users => _users;
+  List<EmployeesModel>? get users => this._users;
 
   List<ProjectModel> usersProjects(id, allProjects) {
     List<ProjectModel> newProjects = [];

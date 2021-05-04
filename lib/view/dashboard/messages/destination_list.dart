@@ -12,13 +12,13 @@ class DestinationList extends StatelessWidget {
       width: MediaQuery.of(context).size.width / 3,
       height: MediaQuery.of(context).size.height,
       child: ListView.builder(
-          itemCount: employeeSevice.users.length,
+          itemCount: employeeSevice.users!.length,
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
                 if (!messageService.userToMessage
-                    .contains(employeeSevice.users[index])) {
-                  messageService.addUserToMessage(employeeSevice.users[index]);
+                    .contains(employeeSevice.users![index])) {
+                  messageService.addUserToMessage(employeeSevice.users![index]);
                 } else {
                   print("Already Added");
                 }
@@ -26,7 +26,7 @@ class DestinationList extends StatelessWidget {
               child: Card(
                 child: ListTile(
                   // leading: Checkbox(value: value, onChanged: onChanged),
-                  title: Text(employeeSevice.users[index].fname),
+                  title: Text(employeeSevice.users![index].fname!),
                 ),
               ),
             );
