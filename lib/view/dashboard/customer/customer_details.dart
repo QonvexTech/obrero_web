@@ -147,7 +147,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                           addingFunc: ProjectAddScreen(),
                           title: "No assigned project yet",
                           description: "Add project Now",
-                          buttonText: "Add Project")
+                          buttonText: "Add Project",
+                          showButton: true,
+                        )
                       : SizedBox(),
                   for (ProjectModel project in customerProjects)
                     Column(
