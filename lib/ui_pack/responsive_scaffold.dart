@@ -7,7 +7,9 @@ import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/profile_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
+import 'package:uitemplate/view/dashboard/settings/change_password_settings.dart';
 import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
+import 'package:uitemplate/widgets/notifications.dart';
 
 import '../services/caching.dart';
 
@@ -371,7 +373,12 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold>
                                 _selectedContent = GeneralSettings();
                               });
                             } else if (val == 2) {
-                              //change pass
+                              showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                      backgroundColor:
+                                          Palette.contentBackground,
+                                      content: ChangePassword()));
                             } else {
                               await DataCacher().removeCredentials(context);
                             }

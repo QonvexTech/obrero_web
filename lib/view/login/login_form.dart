@@ -70,13 +70,6 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   @override
-  void initState() {
-    _emailController.text = "super@admin.com";
-    _passwordController.text = "super_password";
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final double widthSize = MediaQuery.of(context).size.width;
     final double heightSize = MediaQuery.of(context).size.height;

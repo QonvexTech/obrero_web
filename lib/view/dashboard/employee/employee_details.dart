@@ -4,16 +4,40 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
+import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/map.dart';
 
-class EmployeeDetails extends StatelessWidget {
+class EmployeeDetails extends StatefulWidget {
   final EmployeesModel? employeesModel;
 
   const EmployeeDetails({Key? key, required this.employeesModel})
       : super(key: key);
+
+  @override
+  _EmployeeDetailsState createState() => _EmployeeDetailsState();
+}
+
+class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
+  List<ProjectModel> employeeProjects = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
+      employeeProjects = Provider.of<EmployeeSevice>(context, listen: false)
+          .usersProjects(widget.employeesModel!.id,
+              Provider.of<ProjectProvider>(context, listen: false).projects);
+
+      print(employeeProjects.length);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
@@ -32,18 +56,40 @@ class EmployeeDetails extends StatelessWidget {
                       context, employeeSevice.setPageScreen, EmployeeList()),
                   Row(
                     children: [
-                      CircleAvatar(
-                        radius: 60,
+                      Container(
+                        width: MediaQuery.of(context).size.height * .15,
+                        height: MediaQuery.of(context).size.height * .15,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10000),
+                            color: Colors.grey.shade100,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade400,
+                                offset: Offset(3, 3),
+                                blurRadius: 2,
+                              )
+                            ],
+                            image: DecorationImage(
+                                fit: widget.employeesModel!.picture == null
+                                    ? BoxFit.scaleDown
+                                    : BoxFit.cover,
+                                alignment:
+                                    widget.employeesModel!.picture == null
+                                        ? AlignmentDirectional.bottomCenter
+                                        : AlignmentDirectional.center,
+                                image: fetchImage(
+                                    netWorkImage:
+                                        widget.employeesModel?.picture),
+                                scale: widget.employeesModel!.picture == null
+                                    ? 5
+                                    : 1)),
                       ),
                       SizedBox(
-                        width: MySpacer.small,
+                        width: MySpacer.medium,
                       ),
                       Text(
-                        "${employeesModel!.fname!} ${employeesModel!.lname!}",
+                        "${widget.employeesModel!.fname} ${widget.employeesModel!.lname}",
                         style: Theme.of(context).textTheme.headline5,
-                      ),
-                      SizedBox(
-                        width: MySpacer.large,
                       ),
                     ],
                   ),
@@ -60,7 +106,7 @@ class EmployeeDetails extends StatelessWidget {
                             SizedBox(
                               height: MySpacer.small,
                             ),
-                            Text("${employeesModel!.contactNumber!}",
+                            Text("${widget.employeesModel!.contactNumber!}",
                                 style: boldText)
                           ],
                         ),
@@ -74,7 +120,7 @@ class EmployeeDetails extends StatelessWidget {
                               height: MySpacer.small,
                             ),
                             Text(
-                              "${employeesModel!.email!}",
+                              "${widget.employeesModel!.email!}",
                               style: boldText,
                             )
                           ],
@@ -88,7 +134,8 @@ class EmployeeDetails extends StatelessWidget {
                             SizedBox(
                               height: MySpacer.small,
                             ),
-                            Text("${employeesModel!.address!}", style: boldText)
+                            Text("${widget.employeesModel!.address!}",
+                                style: boldText)
                           ],
                         ),
                       )
@@ -102,82 +149,66 @@ class EmployeeDetails extends StatelessWidget {
                     "Sites Attribués",
                     style: Theme.of(context).textTheme.headline5,
                   ),
-                  SizedBox(
-                    height: MySpacer.small,
-                  ),
-                  Text("Chantier XYZ"),
-                  SizedBox(
-                    height: MySpacer.large,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+
+                  for (ProjectModel project in employeeProjects)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          project.name!,
+                          style: boldText,
+                        ),
+                        SizedBox(
+                          height: MySpacer.small,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Address",
-                              style: transHeader,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Description", style: transHeader),
+                                  Text(project.description!),
+                                ],
+                              ),
                             ),
-                            SizedBox(
-                              height: MySpacer.small,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Total des Heures Travaillées",
+                                      style: transHeader),
+                                  Text(
+                                    "32HRS",
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              "LOREM IPSUM DOLOR",
-                              style: boldText,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Status", style: transHeader),
+                                  Text("En cours"),
+                                ],
+                              ),
                             )
                           ],
                         ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Total des Heures Travaillées",
-                              style: transHeader,
-                            ),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text(
-                              "32HRS",
-                              style: boldText.copyWith(color: Colors.green),
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Status",
-                              style: transHeader,
-                            ),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text(
-                              "En cours",
-                              style: boldText,
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: MySpacer.large,
-                  ),
-                  // Text(
-                  //   "Description",
-                  //   style: transHeader,
-                  // ),
-                  // SizedBox(
-                  //   height: MySpacer.small,
-                  // ),
-                  // Text("${employeesModel!.!}")
+                        Container(
+                            height: 30,
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            width: MediaQuery.of(context).size.width,
+                            child: Image.asset("assets/images/dashLine.png")),
+                        SizedBox(
+                          height: MySpacer.large,
+                        )
+                      ],
+                    ),
                 ],
               ),
             ),

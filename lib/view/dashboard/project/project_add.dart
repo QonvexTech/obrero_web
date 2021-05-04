@@ -1,20 +1,35 @@
 import 'package:adaptive_container/adaptive_container.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
-import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_add_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
 
-class ProjectAddScreen extends StatelessWidget {
+class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
-
   const ProjectAddScreen({Key? key, this.projectToEdit}) : super(key: key);
+
+  @override
+  _ProjectAddScreenState createState() => _ProjectAddScreenState();
+}
+
+class _ProjectAddScreenState extends State<ProjectAddScreen>
+    with SettingsHelper {
+  @override
+  void initState() {
+    Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
+    Provider.of<CustomerService>(context, listen: false).fetchCustomers();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ProjectAddService projectAddService =
@@ -22,9 +37,9 @@ class ProjectAddScreen extends StatelessWidget {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
     CustomerService customerService = Provider.of<CustomerService>(context);
-    employeeSevice.fetchUsers();
-    customerService.fetchCustomers();
 
+    final _scrh = MediaQuery.of(context).size.height;
+    final _scrw = MediaQuery.of(context).size.width;
     return Container(
         width: MediaQuery.of(context).size.width / 1.5,
         height: MediaQuery.of(context).size.height - 300,
@@ -79,57 +94,63 @@ class ProjectAddScreen extends StatelessWidget {
                       padding:
                           const EdgeInsets.symmetric(vertical: MySpacer.small),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Date de fin",
-                                style: boldText,
-                              ),
-                              MaterialButton(
-                                onPressed: () =>
-                                    projectAddService.selectEndDate(context),
-                                child: Text(
-                                    "${projectAddService.endDate.toLocal()}"
-                                        .split(' ')[0]),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Date de fin",
+                                  style: boldText,
+                                ),
+                                MaterialButton(
+                                  onPressed: () => projectAddService
+                                      .selectStartDate(context),
+                                  child: Text(
+                                      "${projectAddService.startDate.toLocal()}"
+                                          .split(' ')[0]),
+                                ),
+                              ],
+                            ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Date de début",
-                                style: boldText,
-                              ),
-                              MaterialButton(
-                                onPressed: () =>
-                                    projectAddService.selectStartDate(context),
-                                child: Text(
-                                    "${projectAddService.startDate.toLocal()}"
-                                        .split(' ')[0]),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Coordinates",
-                                style: boldText,
-                              ),
-                              MaterialButton(
-                                onPressed: () =>
-                                    projectAddService.selectStartDate(context),
-                                child: Text(
-                                    "${Provider.of<MapService>(context).coordinates.latitude},${Provider.of<MapService>(context).coordinates.longitude}"),
-                              ),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Date de début",
+                                  style: boldText,
+                                ),
+                                MaterialButton(
+                                  onPressed: () =>
+                                      projectAddService.selectEndDate(context),
+                                  child: Text(
+                                      "${projectAddService.endDate.toLocal()}"
+                                          .split(' ')[0]),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
+                    ),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Location",
+                          style: boldText,
+                        ),
+                        MaterialButton(
+                          onPressed: () =>
+                              projectAddService.selectStartDate(context),
+                          child: Text(
+                            "${Provider.of<MapService>(context).coordinates.latitude},${Provider.of<MapService>(context).coordinates.longitude}",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                     //list of users
                     Padding(
@@ -141,7 +162,9 @@ class ProjectAddScreen extends StatelessWidget {
                       ),
                     ),
                     customerService.customers == null
-                        ? CircularProgressIndicator()
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
                         : customerService.customers.length == 0
                             ? Text("No client to assign")
                             : Container(
@@ -149,17 +172,16 @@ class ProjectAddScreen extends StatelessWidget {
                                 width: double.infinity,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: customerService
-                                        .customers.customers.length,
+                                    itemCount: customerService.customers.length,
                                     itemBuilder: (context, index) {
                                       return projectAddService
                                                   .activeOwnerIndex ==
                                               customerService
-                                                  .customers.customers[index].id
+                                                  .customers[index].id
                                           ? GestureDetector(
                                               onTap: () {
                                                 projectAddService.setOwner =
-                                                    customerService.customers
+                                                    customerService
                                                         .customers[index].id;
                                               },
                                               child: Container(
@@ -172,7 +194,6 @@ class ProjectAddScreen extends StatelessWidget {
                                                     child: ListTile(
                                                       title: Text(
                                                         customerService
-                                                            .customers
                                                             .customers[index]
                                                             .fname,
                                                         style: TextStyle(
@@ -185,7 +206,7 @@ class ProjectAddScreen extends StatelessWidget {
                                           : GestureDetector(
                                               onTap: () {
                                                 projectAddService.setOwner =
-                                                    customerService.customers
+                                                    customerService
                                                         .customers[index].id;
                                               },
                                               child: Container(
@@ -195,7 +216,6 @@ class ProjectAddScreen extends StatelessWidget {
                                                 child: Card(
                                                   child: ListTile(
                                                     title: Text(customerService
-                                                        .customers
                                                         .customers[index]
                                                         .fname),
                                                   ),
@@ -214,23 +234,23 @@ class ProjectAddScreen extends StatelessWidget {
                     ),
                     employeeSevice.users == null
                         ? CircularProgressIndicator()
-                        : employeeSevice.users.length == 0
+                        : employeeSevice.users!.length == 0
                             ? Text("No employee to assign")
                             : Container(
                                 height: 60,
                                 width: double.infinity,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: employeeSevice.users.length,
+                                    itemCount: employeeSevice.users!.length,
                                     itemBuilder: (context, index) {
                                       return projectAddService.assignee
                                               .contains(employeeSevice
-                                                  .users[index].id)
+                                                  .users![index].id)
                                           ? GestureDetector(
                                               onTap: () {
                                                 projectAddService.removeAssigne(
                                                     employeeSevice
-                                                        .users[index].id);
+                                                        .users![index].id!);
                                               },
                                               child: Container(
                                                   margin: EdgeInsets.all(5),
@@ -242,7 +262,7 @@ class ProjectAddScreen extends StatelessWidget {
                                                     child: ListTile(
                                                       title: Text(
                                                         employeeSevice
-                                                            .users[index].fname,
+                                                            .users![index].fname!,
                                                         style: TextStyle(
                                                             color:
                                                                 Colors.white),
@@ -254,7 +274,7 @@ class ProjectAddScreen extends StatelessWidget {
                                               onTap: () {
                                                 projectAddService.asignUser(
                                                     employeeSevice
-                                                        .users[index].id);
+                                                        .users![index].id!);
                                               },
                                               child: Container(
                                                 margin: EdgeInsets.all(5),
@@ -263,12 +283,92 @@ class ProjectAddScreen extends StatelessWidget {
                                                 child: Card(
                                                   child: ListTile(
                                                     title: Text(employeeSevice
-                                                        .users[index].fname),
+                                                        .users![index].fname!),
                                                   ),
                                                 ),
                                               ));
                                     }),
-                              )
+                              ),
+
+                    //PICTURES
+                    Container(
+                        width: double.infinity,
+                        height: 50,
+                        child: MaterialButton(
+                            onPressed: () async {
+                              await FilePicker.platform.pickFiles(
+                                  allowMultiple: false,
+                                  allowedExtensions: [
+                                    'jpg',
+                                    'jpeg',
+                                    'png'
+                                  ]).then((pickedFile) {
+                                projectAddService.addPicture(pickedFile);
+                              });
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Upload Image",
+                                    style: boldText,
+                                  ),
+                                  Icon(Icons.add_circle)
+                                ],
+                              ),
+                            ))),
+
+                    Container(
+                      width: _scrw,
+                      height: _scrh * .3,
+                      child: GridView.count(
+                        crossAxisCount: 3,
+                        children: [
+                          for (var image in projectAddService.projectImages)
+                            Container(
+                              width: _scrh * .26,
+                              height: _scrh * .26,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.shade400,
+                                      offset: Offset(3, 3),
+                                      blurRadius: 2,
+                                    )
+                                  ],
+                                  image: DecorationImage(
+                                      fit: profileData?.picture == null &&
+                                              image == null
+                                          ? BoxFit.scaleDown
+                                          : BoxFit.cover,
+                                      alignment: profileData?.picture == null &&
+                                              image == null
+                                          ? AlignmentDirectional.bottomCenter
+                                          : AlignmentDirectional.center,
+                                      image: tempImageProvider(
+                                          file: image,
+                                          netWorkImage: profileData?.picture),
+                                      scale: profileData?.picture == null
+                                          ? 5
+                                          : 1)),
+                            ),
+                          if (projectAddService.projectImages.length == 0)
+                            Container(
+                              width: _scrw,
+                              height: _scrh * 0.15,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          "assets/images/emptyImage.jpg"))),
+                            ),
+                        ],
+                      ),
+                    ),
                   ],
                 )),
                 AdaptiveItem(
@@ -290,7 +390,7 @@ class ProjectAddScreen extends StatelessWidget {
               minWidth: double.infinity,
               onPressed: () {
                 projectAddService.submit(
-                    projectToEdit: projectToEdit,
+                    projectToEdit: widget.projectToEdit,
                     projectService: projectProvider,
                     coordinates: Provider.of<MapService>(context, listen: false)
                         .coordinates,

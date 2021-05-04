@@ -8,9 +8,9 @@ import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
-import 'package:uitemplate/widgets/emtylist.dart';
 import 'package:uitemplate/widgets/map.dart';
 import 'package:uitemplate/widgets/project_card.dart';
+import 'package:uitemplate/widgets/empty_container.dart';
 
 class DashBoardScreen extends StatefulWidget {
   @override
@@ -22,12 +22,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   void initState() {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     var mapService = Provider.of<MapService>(context, listen: false);
-    Provider.of<ProjectProvider>(context, listen: false)
-        .fetchProjectsBaseOnDates()
-        .whenComplete(
-            () => mapService.mapInit(projectProvider.projectDateBased));
 
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      Provider.of<ProjectProvider>(context, listen: false)
+          .fetchProjectsBaseOnDates()
+          .whenComplete(
+              () => mapService.mapInit(projectProvider.projectDateBased));
+    });
   }
 
   @override
@@ -157,15 +159,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       width: 200,
                       height: 500,
                       color: Palette.contentBackground,
-                      child: EmtyList(
+                      child: EmptyContainer(
                         addingFunc: ProjectAddScreen(),
                         title: "No projects yet",
                         description:
                             "Its time to create a project \n choose the right client and location for your project",
                         buttonText: "Créer",
                         showButton: true,
-                      ),
-                    )
+                      ))
                   : Container(
                       color: Palette.contentBackground,
                       padding: EdgeInsets.all(20),

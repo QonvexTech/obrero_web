@@ -5,6 +5,7 @@ import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 
@@ -47,20 +48,19 @@ class EmployeeSevice extends ChangeNotifier {
     notifyListeners();
   }
 
-  get users => _users;
+  List<EmployeesModel>? get users => this._users;
 
-  fromJsonListToUsers(List users) {
-    List<EmployeesModel> newUsers = [];
-    for (var user in users) {
-      EmployeesModel userModel = EmployeesModel.fromJson(user);
-      if (!userModel.isAdmin!) {
-        newUsers.add(userModel);
+  List<ProjectModel> usersProjects(id, allProjects) {
+    List<ProjectModel> newProjects = [];
+    for (ProjectModel project in allProjects) {
+      for (EmployeesModel user in project.assignees!) {
+        if (user.id == id) {
+          newProjects.add(project);
+        }
       }
     }
-    _users = newUsers;
-    _tempUsers = newUsers;
-    searchController.clear();
     notifyListeners();
+    return newProjects;
   }
 
   Future fetchUsers() async {
@@ -88,13 +88,18 @@ class EmployeeSevice extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        fromJsonListToUsers(data);
+        var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
+        _users = listOfUsers;
+        _tempUsers = listOfUsers;
+        searchController.clear();
+        print(data);
       } else {
         print(response.body);
       }
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
 
   Future createUser(EmployeesModel newEmployee) async {

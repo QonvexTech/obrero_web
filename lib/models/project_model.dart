@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uitemplate/models/employes_model.dart';
 
 class ProjectModel extends ChangeNotifier {
   int? id;
@@ -11,14 +12,17 @@ class ProjectModel extends ChangeNotifier {
   List? warnings;
   DateTime? startDate;
   DateTime? endDate;
-  List<int>? assignee;
-
+  List<int>? assigneeIds;
+  List<EmployeesModel>? assignees;
+  String? picture;
   bool isSelected = false; //for table purposes
 
   ProjectModel(
       {this.id,
+      this.picture,
       this.areaSize,
-      this.assignee,
+      this.assigneeIds,
+      this.assignees,
       required this.customerId,
       required this.name,
       this.description,
@@ -44,6 +48,9 @@ class ProjectModel extends ChangeNotifier {
     this.endDate =
         json["end_date"] != null ? DateTime.parse(json["end_date"]) : null;
     this.warnings = json["warnings"];
+    this.assignees = json["assignee"] != null
+        ? EmployeesModel.fromJsonListToUsersInProject(json["assignee"])
+        : [];
   }
 
   Map<String, dynamic> toJson() {
@@ -56,14 +63,15 @@ class ProjectModel extends ChangeNotifier {
         this.coordinates!.longitude.toString());
 
     data["description"] = this.description;
+    data["picture"] = this.picture;
     data["start_date"] = this.startDate!.toString();
     data["end_date"] = this.endDate!.toString();
     data["assignee_ids"] =
-        this.assignee.toString().replaceAll("[", "").replaceAll("]", "");
+        this.assigneeIds.toString().replaceAll("[", "").replaceAll("]", "");
     return data;
   }
 
-  static fromJsonListToProject(List projects) {
+  static List<ProjectModel> fromJsonListToProject(List projects) {
     List<ProjectModel> newProjects = [];
 
     for (var project in projects) {
