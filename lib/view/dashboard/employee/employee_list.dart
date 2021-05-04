@@ -57,12 +57,12 @@ class _EmployeeListState extends State<EmployeeList> {
                               datas: employeeService.users,
                               rowWidget: rowWidget(
                                   context,
-                                  employeeService.users,
+                                  employeeService.users!,
                                   employeeService.removeUser,
                                   employeeService.setPageScreen),
                               rowWidgetMobile: rowWidgetMobile(
                                   context,
-                                  employeeService.users,
+                                  employeeService.users!,
                                   employeeService.removeUser,
                                   employeeService.setPageScreen),
                               headersMobile: [

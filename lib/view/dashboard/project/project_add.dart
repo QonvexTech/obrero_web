@@ -235,23 +235,23 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
                     ),
                     employeeSevice.users == null
                         ? CircularProgressIndicator()
-                        : employeeSevice.users.length == 0
+                        : employeeSevice.users!.length == 0
                             ? Text("No employee to assign")
                             : Container(
                                 height: 60,
                                 width: double.infinity,
                                 child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
-                                    itemCount: employeeSevice.users.length,
+                                    itemCount: employeeSevice.users!.length,
                                     itemBuilder: (context, index) {
                                       return projectAddService.assignee
                                               .contains(employeeSevice
-                                                  .users[index].id)
+                                                  .users![index].id)
                                           ? GestureDetector(
                                               onTap: () {
                                                 projectAddService.removeAssigne(
                                                     employeeSevice
-                                                        .users[index].id);
+                                                        .users![index].id!);
                                               },
                                               child: Container(
                                                   margin: EdgeInsets.all(5),
@@ -263,7 +263,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
                                                     child: ListTile(
                                                       title: Text(
                                                         employeeSevice
-                                                            .users[index].fname,
+                                                            .users![index].fname!,
                                                         style: TextStyle(
                                                             color:
                                                                 Colors.white),
@@ -275,7 +275,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
                                               onTap: () {
                                                 projectAddService.asignUser(
                                                     employeeSevice
-                                                        .users[index].id);
+                                                        .users![index].id!);
                                               },
                                               child: Container(
                                                 margin: EdgeInsets.all(5),
@@ -284,7 +284,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
                                                 child: Card(
                                                   child: ListTile(
                                                     title: Text(employeeSevice
-                                                        .users[index].fname),
+                                                        .users![index].fname!),
                                                   ),
                                                 ),
                                               ));
