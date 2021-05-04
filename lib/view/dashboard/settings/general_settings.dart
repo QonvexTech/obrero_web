@@ -80,7 +80,8 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                                   : AlignmentDirectional.center,
                               image: tempImageProvider(
                                   file: profileService.base64Image,
-                                  netWorkImage: profileData?.picture),
+                                  netWorkImage: profileData?.picture,
+                                  defaultImage: 'images/emptyImage.jpg'),
                               scale: profileData?.picture == null ? 5 : 1)),
                     ),
                   )),

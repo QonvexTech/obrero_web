@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/employes_model.dart';
+import 'package:uitemplate/models/project_image_model.dart';
 
 class ProjectModel extends ChangeNotifier {
   int? id;
   int? areaSize;
   int? customerId;
+  CustomerModel? owner;
   String? name;
   String? description;
   LatLng? coordinates;
@@ -15,6 +18,7 @@ class ProjectModel extends ChangeNotifier {
   List<int>? assigneeIds;
   List<EmployeesModel>? assignees;
   String? picture;
+  List<ProjectImageModel>? images;
   bool isSelected = false; //for table purposes
 
   ProjectModel(
@@ -23,6 +27,7 @@ class ProjectModel extends ChangeNotifier {
       this.areaSize,
       this.assigneeIds,
       this.assignees,
+      this.owner,
       required this.customerId,
       required this.name,
       this.description,
@@ -41,6 +46,8 @@ class ProjectModel extends ChangeNotifier {
     this.areaSize = json["area_size"];
     this.name = json["name"];
     this.customerId = json["customer_id"];
+    this.owner =
+        json["owner"] != null ? CustomerModel.fromJson(json["owner"]) : null;
     this.coordinates = convertedCoord(json["coordinates"]);
     this.description = json["description"];
     this.startDate =
@@ -51,7 +58,9 @@ class ProjectModel extends ChangeNotifier {
     this.assignees = json["assignee"] != null
         ? EmployeesModel.fromJsonListToUsersInProject(json["assignee"])
         : [];
-    this.picture = json["images"].toString();
+    this.images = json["images"] != null
+        ? ProjectImageModel.formListtoImageModel(json["images"])
+        : [];
   }
 
   Map<String, dynamic> toJson() {

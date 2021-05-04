@@ -34,10 +34,12 @@ class SettingsHelper {
   }
 
   ImageProvider tempImageProvider(
-      {Uint8List? file, required var netWorkImage}) {
+      {Uint8List? file,
+      required var netWorkImage,
+      required String defaultImage}) {
     if (file == null) {
       if (netWorkImage == null || netWorkImage == "") {
-        return AssetImage('icons/admin_icon.png');
+        return AssetImage(defaultImage);
       } else {
         return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
       }

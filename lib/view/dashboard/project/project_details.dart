@@ -93,7 +93,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         SizedBox(
                           height: MySpacer.small,
                         ),
-                        Text(widget.projectModel!.customerId.toString(),
+                        Text(
+                            "${widget.projectModel!.owner!.fname!} ${widget.projectModel!.owner!.lname!}",
                             style: boldText)
                       ],
                     ),
@@ -160,26 +161,35 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                   height: MySpacer.small,
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.35,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   width: MediaQuery.of(context).size.width,
                   child: GridView.count(
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     shrinkWrap: true,
+                    childAspectRatio: 1.5,
                     crossAxisCount: 3,
                     children: [
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
+                      for (var image in widget.projectModel!.images!)
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
                                 child: Container(
-                              color: Colors.red,
-                              child: Text("${widget.projectModel!.picture!}"),
-                            )),
-                          ],
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: tempImageProvider(
+                                            netWorkImage: image.url,
+                                            defaultImage:
+                                                "images/emptyImage.jpg")),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 )

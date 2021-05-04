@@ -26,7 +26,6 @@ class ProjectAddService extends ChangeNotifier {
 
   String converteduint8list() {
     List<String> encodedImages = [];
-    List<String> replaceCommaImage = [];
     for (var image in _projectImages!) {
       encodedImages
           .add("data:image/jpg;base64,${base64.encode(image.toList())}");

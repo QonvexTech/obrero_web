@@ -262,7 +262,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                     child: ListTile(
                                                       title: Text(
                                                         employeeSevice
-                                                            .users![index].fname!,
+                                                            .users![index]
+                                                            .fname!,
                                                         style: TextStyle(
                                                             color:
                                                                 Colors.white),
@@ -352,7 +353,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           : AlignmentDirectional.center,
                                       image: tempImageProvider(
                                           file: image,
-                                          netWorkImage: profileData?.picture),
+                                          netWorkImage: profileData?.picture,
+                                          defaultImage: 'icons/admin_icon.png'),
                                       scale: profileData?.picture == null
                                           ? 5
                                           : 1)),

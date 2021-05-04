@@ -389,7 +389,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold>
                               backgroundColor: Colors.grey.shade100,
                               backgroundImage: tempImageProvider(
                                   file: profileService.base64Image,
-                                  netWorkImage: profileData?.picture),
+                                  netWorkImage: profileData?.picture,
+                                  defaultImage: 'icons/admin_icon.png'),
                             ),
                           ),
                           itemBuilder: (context) => [
@@ -408,7 +409,9 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold>
                                                 file:
                                                     profileService.base64Image,
                                                 netWorkImage:
-                                                    profileData?.picture),
+                                                    profileData?.picture,
+                                                defaultImage:
+                                                    'icons/admin_icon.png'),
                                           ),
                                           SizedBox(
                                             height: MySpacer.medium,

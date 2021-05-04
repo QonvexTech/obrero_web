@@ -104,7 +104,8 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                             alignment: AlignmentDirectional.center,
                             image: tempImageProvider(
                                 file: customerService.base64Image,
-                                netWorkImage: widget.customerToEdit?.picture),
+                                netWorkImage: widget.customerToEdit?.picture,
+                                defaultImage: 'icons/admin_icon.png'),
                             scale: 1)),
                   ),
                 )),
