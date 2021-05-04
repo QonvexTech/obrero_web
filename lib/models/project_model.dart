@@ -15,11 +15,11 @@ class ProjectModel extends ChangeNotifier {
   List<int>? assigneeIds;
   List<EmployeesModel>? assignees;
   String? picture;
-
   bool isSelected = false; //for table purposes
 
   ProjectModel(
       {this.id,
+      this.picture,
       this.areaSize,
       this.assigneeIds,
       this.assignees,
@@ -51,7 +51,6 @@ class ProjectModel extends ChangeNotifier {
     this.assignees = json["assignee"] != null
         ? EmployeesModel.fromJsonListToUsersInProject(json["assignee"])
         : [];
-    this.picture = json["picture"];
   }
 
   Map<String, dynamic> toJson() {
@@ -64,11 +63,11 @@ class ProjectModel extends ChangeNotifier {
         this.coordinates!.longitude.toString());
 
     data["description"] = this.description;
+    data["picture"] = this.picture;
     data["start_date"] = this.startDate!.toString();
     data["end_date"] = this.endDate!.toString();
     data["assignee_ids"] =
         this.assigneeIds.toString().replaceAll("[", "").replaceAll("]", "");
-
     return data;
   }
 

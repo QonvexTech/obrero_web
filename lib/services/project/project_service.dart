@@ -61,7 +61,6 @@ class ProjectProvider extends ChangeNotifier {
   Future fetchProjects() async {
     var url = Uri.parse(
         "$project_api${_pagination.perPage}?page=${_pagination.page}");
-    // final prefs = await SharedPreferences.getInstance();
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",

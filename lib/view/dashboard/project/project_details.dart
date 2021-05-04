@@ -168,6 +168,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                     shrinkWrap: true,
                     crossAxisCount: 3,
                     children: [
+                      // for (var image in widget.projectModel!.picture!)
                       Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,8 +176,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             Expanded(
                                 child: Container(
                               color: Colors.red,
+                              child: Text(widget.projectModel!.picture!),
                             )),
-                            Text("Title")
                           ],
                         ),
                       ),

@@ -1,7 +1,6 @@
 import 'package:adaptive_container/adaptive_container.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-// import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -11,6 +10,7 @@ import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_add_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class ProjectAddScreen extends StatefulWidget {
@@ -21,7 +21,8 @@ class ProjectAddScreen extends StatefulWidget {
   _ProjectAddScreenState createState() => _ProjectAddScreenState();
 }
 
-class _ProjectAddScreenState extends State<ProjectAddScreen> {
+class _ProjectAddScreenState extends State<ProjectAddScreen>
+    with SettingsHelper {
   @override
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
@@ -37,10 +38,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
     CustomerService customerService = Provider.of<CustomerService>(context);
 
-    double _zoom = 15.0;
-    LatLng coordinates = LatLng(28.709106207008052, 77.09902385711672);
-    Marker? projectArea;
-
+    final _scrh = MediaQuery.of(context).size.height;
+    final _scrw = MediaQuery.of(context).size.width;
     return Container(
         width: MediaQuery.of(context).size.width / 1.5,
         height: MediaQuery.of(context).size.height - 300,
@@ -289,7 +288,87 @@ class _ProjectAddScreenState extends State<ProjectAddScreen> {
                                                 ),
                                               ));
                                     }),
-                              )
+                              ),
+
+                    //PICTURES
+                    Container(
+                        width: double.infinity,
+                        height: 50,
+                        child: MaterialButton(
+                            onPressed: () async {
+                              await FilePicker.platform.pickFiles(
+                                  allowMultiple: false,
+                                  allowedExtensions: [
+                                    'jpg',
+                                    'jpeg',
+                                    'png'
+                                  ]).then((pickedFile) {
+                                projectAddService.addPicture(pickedFile);
+                              });
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Upload Image",
+                                    style: boldText,
+                                  ),
+                                  Icon(Icons.add_circle)
+                                ],
+                              ),
+                            ))),
+
+                    Container(
+                      width: _scrw,
+                      height: _scrh * .3,
+                      child: GridView.count(
+                        crossAxisCount: 3,
+                        children: [
+                          for (var image in projectAddService.projectImages)
+                            Container(
+                              width: _scrh * .26,
+                              height: _scrh * .26,
+                              decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.shade400,
+                                      offset: Offset(3, 3),
+                                      blurRadius: 2,
+                                    )
+                                  ],
+                                  image: DecorationImage(
+                                      fit: profileData?.picture == null &&
+                                              image == null
+                                          ? BoxFit.scaleDown
+                                          : BoxFit.cover,
+                                      alignment: profileData?.picture == null &&
+                                              image == null
+                                          ? AlignmentDirectional.bottomCenter
+                                          : AlignmentDirectional.center,
+                                      image: tempImageProvider(
+                                          file: image,
+                                          netWorkImage: profileData?.picture),
+                                      scale: profileData?.picture == null
+                                          ? 5
+                                          : 1)),
+                            ),
+                          if (projectAddService.projectImages.length == 0)
+                            Container(
+                              width: _scrw,
+                              height: _scrh * 0.15,
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          "assets/images/emptyImage.jpg"))),
+                            ),
+                        ],
+                      ),
+                    ),
                   ],
                 )),
                 AdaptiveItem(
