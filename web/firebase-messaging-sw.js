@@ -14,4 +14,5 @@ firebase.initializeApp({
 
 if (firebase.messaging.isSupported()){
 	const messaging = firebase.messaging();
+	messaging.usePublicVapidKey("BNL0PFNdVX9Io5bSuXde__RrOLib39TqyW-6h_ubUHq7gYFbswQaH_T7ZG3MmmO2P5m18Gw4T9n3cYPHGbS1hSM");
 }
