@@ -24,11 +24,6 @@ class ProjectAddService extends ChangeNotifier {
   get projectImages => _projectImages;
   get base64Image => _base64Image;
 
-  List<String> splitAllImage(String images) {
-    List<String> splitImages = images.split(".!.");
-    return splitImages;
-  }
-
   String converteduint8list() {
     List<String> encodedImages = [];
     List<String> replaceCommaImage = [];
