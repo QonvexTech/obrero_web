@@ -47,12 +47,17 @@ class MapService extends ChangeNotifier {
     print("markers : ${_markers.length}");
   }
 
-  void setCoordinates({LatLng? coord}) {
+  void setCoordinates({LatLng? coord}) async {
     if (coord != null) {
       coordinates = coord;
     }
     if (_markers.isEmpty) {
-      _markers.add(Marker(markerId: MarkerId("temp"), position: coord!));
+      _markers.add(Marker(
+          zIndex: 20,
+          icon: await BitmapDescriptor.fromAssetImage(
+              ImageConfiguration(), "assets/icons/green.png"),
+          markerId: MarkerId("temp"),
+          position: coord!));
     } else {
       _markers.clear();
     }
