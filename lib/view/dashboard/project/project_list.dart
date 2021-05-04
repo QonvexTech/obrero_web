@@ -148,7 +148,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                data.customerId.toString(),
+                "${data.owner!.fname} ${data.owner!.lname}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -238,7 +238,7 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.customerId.toString(),
+                "${data.owner!.fname} ${data.owner!.lname}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),

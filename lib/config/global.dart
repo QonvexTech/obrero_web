@@ -37,9 +37,25 @@ const String change_password_api = "$api/user/change-password";
 const String message_send_api = "$api/messaging/send";
 const String firebase_messaging = "https://fcm.googleapis.com/fcm/send";
 
+//HOURS
+const String projectTotalHours = "$api/project/hours/";
+
 //TEXT STYLE
 const TextStyle transHeader = TextStyle(color: Colors.grey);
 const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);
+
+//GLOBAL
 String? authToken;
 Admin? profileData;
+List<Color> statusColors = [
+  Colors.greenAccent,
+  Colors.yellowAccent,
+  Colors.redAccent,
+  Colors.blueAccent
+];
+List<String> statusTitles = ['En cours', 'En attente', 'Annulé', 'Compléter'];
+List<String> imagesStatus = [
+  "assets/icons/green.png",
+  "assets/icons/green.png"
+];
 // List<NotificationModel> notificationList = [];

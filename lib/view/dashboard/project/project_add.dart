@@ -27,6 +27,14 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
     Provider.of<CustomerService>(context, listen: false).fetchCustomers();
+    if (widget.projectToEdit != null) {
+      var projectService =
+          Provider.of<ProjectAddService>(context, listen: false);
+      projectService.nameController.text = widget.projectToEdit!.name!;
+      projectService.descriptionController.text =
+          widget.projectToEdit!.description!;
+      projectService.startDate = widget.projectToEdit!.startDate!;
+    } else {}
     super.initState();
   }
 

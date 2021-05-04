@@ -5,6 +5,7 @@ import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/notification_services.dart';
+import 'package:uitemplate/view_model/logs/log_api_call.dart';
 import '../config/global.dart';
 
 class Authentication {
@@ -41,6 +42,7 @@ class Authentication {
         authToken = jsonDecode(response.body)['data']['token'];
         print("This is the TOken $authToken");
         rxNotificationService.fetchOld();
+        await logApiCall.fetchServer();
         success = true;
         return success;
       } else {

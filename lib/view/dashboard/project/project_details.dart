@@ -21,6 +21,13 @@ class ProjectDetails extends StatefulWidget {
 
 class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
   @override
+  void initState() {
+    Provider.of<ProjectProvider>(context, listen: false)
+        .init(widget.projectModel!.id!);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     return Container(
@@ -190,6 +197,26 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             ],
                           ),
                         ),
+                      if (widget.projectModel!.images!.length == 0)
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: tempImageProvider(
+                                            netWorkImage: null,
+                                            defaultImage:
+                                                "images/emptyImage.jpg")),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                 )
@@ -224,7 +251,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "126",
+                            projectProvider.hours,
                             style: Theme.of(context).textTheme.headline3,
                           ),
                           Text(

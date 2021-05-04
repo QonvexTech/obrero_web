@@ -9,6 +9,7 @@ class ProjectModel extends ChangeNotifier {
   int? id;
   int? areaSize;
   int? customerId;
+  int? status;
   CustomerModel? owner;
   String? name;
   String? description;
@@ -26,6 +27,7 @@ class ProjectModel extends ChangeNotifier {
       {this.id,
       this.picture,
       this.areaSize,
+      this.status,
       this.assigneeIds,
       this.assignees,
       this.owner,
@@ -47,6 +49,7 @@ class ProjectModel extends ChangeNotifier {
     this.areaSize = json["area_size"];
     this.name = json["name"];
     this.customerId = json["customer_id"];
+    this.status = json["customer_id"];
     this.owner =
         json["owner"] != null ? CustomerModel.fromJson(json["owner"]) : null;
     this.coordinates = convertedCoord(json["coordinates"]);
@@ -74,7 +77,6 @@ class ProjectModel extends ChangeNotifier {
     data["coordinates"] = (this.coordinates!.latitude.toString() +
         "," +
         this.coordinates!.longitude.toString());
-
     data["description"] = this.description;
     data["picture"] = this.picture;
     data["start_date"] = this.startDate!.toString();

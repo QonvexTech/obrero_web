@@ -4,6 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/config/global.dart';
+import 'package:uitemplate/models/log_model.dart';
+import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/notification_services.dart';
 
 class FireBase extends ChangeNotifier {
@@ -33,19 +35,16 @@ class FireBase extends ChangeNotifier {
       sound: true,
     );
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      rxNotificationService
-          .append(json.decode(message.data['notification_data']));
+      // rxNotificationService
+      //     .append(json.decode(message.data['notification_data']));
 
-      // if (message.data['notification_data'] != null) {
-      //   // messages.add(message.data['notification_data']);
-      //   rxNotificationService.append(
-      //       json.decode(message.data['notification_data']), _newMessage);
-      //   print(rxNotificationService.current);
-      //   // print(messages);
-      // } else {
-      //   //chat
-      //   print(message.notification!.body);
-      // }
+      if (message.data['notification_data'] != null) {
+        // messages.add(message.data['notification_data']);
+        logService.append(
+            data: LogModel.fromJson(
+                json.decode(message.data['notification_data'])));
+        // print(messages);
+      }
 
       return;
       // print(messages);

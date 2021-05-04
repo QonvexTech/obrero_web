@@ -14,6 +14,7 @@ class ProjectProvider extends ChangeNotifier {
   List<ProjectModel> _tempProjects = [];
   PaginationService paginationService = PaginationService();
   DateTime selectedDate = DateTime.now();
+  String hours = "0.00";
 
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchProjects);
@@ -31,6 +32,10 @@ class ProjectProvider extends ChangeNotifier {
     print(selectedDate);
     fetchProjectsBaseOnDates();
     notifyListeners();
+  }
+
+  init(int projectId) async {
+    hours = await fetchHours(projectId);
   }
 
   search(String text) {
@@ -57,6 +62,29 @@ class ProjectProvider extends ChangeNotifier {
   get pagination => _pagination;
   get projects => _projects;
   get projectDateBased => _projectsDateBase;
+
+  Future<String> fetchHours(int projectId) async {
+    String? hours;
+    try {
+      var url = Uri.parse("$projectTotalHours$projectId");
+      var response = await http.get(url, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var data = json.decode(response.body);
+        print(data["hours"]);
+        hours = double.parse(data['hours'].toString()).toStringAsFixed(2);
+      } else {
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
+    notifyListeners();
+    return hours!;
+  }
 
   Future fetchProjects() async {
     var url = Uri.parse(
