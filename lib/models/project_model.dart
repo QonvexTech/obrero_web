@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/project_image_model.dart';
+import 'package:uitemplate/models/warning.dart';
 
 class ProjectModel extends ChangeNotifier {
   int? id;
@@ -12,7 +13,7 @@ class ProjectModel extends ChangeNotifier {
   String? name;
   String? description;
   LatLng? coordinates;
-  List? warnings;
+  List<WarningModel>? warnings;
   DateTime? startDate;
   DateTime? endDate;
   List<int>? assigneeIds;
@@ -54,7 +55,9 @@ class ProjectModel extends ChangeNotifier {
         json["start_date"] != null ? DateTime.parse(json["start_date"]) : null;
     this.endDate =
         json["end_date"] != null ? DateTime.parse(json["end_date"]) : null;
-    this.warnings = json["warnings"];
+    this.warnings = json["warnings"] != null
+        ? WarningModel.fromJsonListToWarningsModel(json["warnings"])
+        : [];
     this.assignees = json["assignee"] != null
         ? EmployeesModel.fromJsonListToUsersInProject(json["assignee"])
         : [];

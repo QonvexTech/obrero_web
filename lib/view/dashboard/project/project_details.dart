@@ -212,7 +212,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                 height: MySpacer.small,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Column(
                     children: [
@@ -235,30 +235,30 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       ),
                     ],
                   ),
-                  Divider(
-                    thickness: 3,
-                    color: Colors.grey,
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        "Progres Totales",
-                        style: transHeader.copyWith(fontSize: 10),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            "60%",
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    thickness: 3,
-                    color: Colors.grey,
+
+                  // Column(
+                  //   children: [
+                  //     Text(
+                  //       "Progres Totales",
+                  //       style: transHeader.copyWith(fontSize: 10),
+                  //     ),
+                  //     Row(
+                  //       crossAxisAlignment: CrossAxisAlignment.end,
+                  //       children: [
+                  //         Text(
+                  //           "60%",
+                  //           style: Theme.of(context).textTheme.headline3,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ],
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Divider(
+                      thickness: 4,
+                      color: Colors.grey,
+                    ),
                   ),
                   Column(
                     children: [
@@ -270,11 +270,11 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "80",
+                            "${widget.projectModel!.warnings!.length}",
                             style: Theme.of(context).textTheme.headline3,
                           ),
                           Text(
-                            "Warnings",
+                            "Warning",
                             style: TextStyle(fontSize: 10),
                           )
                         ],
@@ -304,58 +304,25 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                 height: MySpacer.small,
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 child: ListView(
                   children: [
-                    Card(
-                      child: ListTile(
-                        leading: Icon(Icons.notification_important),
-                        title: Row(
-                          children: [
-                            Text("Chantier"),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text("Avril")
-                          ],
+                    for (var warning in widget.projectModel!.warnings!)
+                      Card(
+                        child: ListTile(
+                          leading: Icon(Icons.notification_important),
+                          title: Row(
+                            children: [
+                              Text(warning.title!),
+                              SizedBox(
+                                width: MySpacer.small,
+                              ),
+                            ],
+                          ),
+                          subtitle: Text(warning.description!),
                         ),
-                        subtitle: Text(
-                            "Attention, il nous manque les plaques pour le toit de la terrasse"),
                       ),
-                    ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(Icons.notification_important),
-                        title: Row(
-                          children: [
-                            Text("Chantier"),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text("Avril")
-                          ],
-                        ),
-                        subtitle: Text(
-                            "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                      ),
-                    ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(Icons.notification_important),
-                        title: Row(
-                          children: [
-                            Text("Chantier"),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text("Avril")
-                          ],
-                        ),
-                        subtitle: Text(
-                            "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                      ),
-                    )
                   ],
                 ),
               ),
