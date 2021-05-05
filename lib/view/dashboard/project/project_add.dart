@@ -23,19 +23,35 @@ class ProjectAddScreen extends StatefulWidget {
 
 class _ProjectAddScreenState extends State<ProjectAddScreen>
     with SettingsHelper {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+
   @override
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
     Provider.of<CustomerService>(context, listen: false).fetchCustomers();
+
     if (widget.projectToEdit != null) {
-      var projectService =
+      var projectAddService =
           Provider.of<ProjectAddService>(context, listen: false);
-      projectService.nameController.text = widget.projectToEdit!.name!;
-      projectService.descriptionController.text =
-          widget.projectToEdit!.description!;
-      projectService.startDate = widget.projectToEdit!.startDate!;
+      nameController.text = widget.projectToEdit!.name!;
+      descriptionController.text = widget.projectToEdit!.description!;
+      projectAddService.startDate = widget.projectToEdit!.startDate!;
+      projectAddService.endDate = widget.projectToEdit!.endDate!;
+      projectAddService.userToAssignIds(widget.projectToEdit!.assignees!);
+      projectAddService.activeOwnerIndex = widget.projectToEdit!.owner!.id;
+      Provider.of<MapService>(context, listen: false).coordinates =
+          widget.projectToEdit!.coordinates!;
+      projectAddService.isEdit = true;
     } else {}
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    descriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -45,6 +61,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
     CustomerService customerService = Provider.of<CustomerService>(context);
+    MapService mapService = Provider.of<MapService>(context);
 
     final _scrh = MediaQuery.of(context).size.height;
     final _scrw = MediaQuery.of(context).size.width;
@@ -69,7 +86,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                       ),
                     ),
                     TextField(
-                      controller: projectAddService.nameController,
+                      onChanged: (value) {
+                        projectAddService.addBodyEdit({"name": value});
+                      },
+                      controller: nameController,
                       decoration: InputDecoration(
                         hintText: "Nom du Chantier",
                         border: OutlineInputBorder(
@@ -88,13 +108,16 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                     Container(
                       height: 5 * 24.0,
                       child: TextField(
+                        onChanged: (value) {
+                          projectAddService.addBodyEdit({"description": value});
+                        },
                         maxLines: 5,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5)),
                           hintText: "Description",
                         ),
-                        controller: projectAddService.descriptionController,
+                        controller: descriptionController,
                       ),
                     ),
 
@@ -150,17 +173,14 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                           "Location",
                           style: boldText,
                         ),
-                        MaterialButton(
-                          onPressed: () =>
-                              projectAddService.selectStartDate(context),
-                          child: Text(
-                            "${Provider.of<MapService>(context).coordinates.latitude},${Provider.of<MapService>(context).coordinates.longitude}",
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        Text(
+                          "${Provider.of<MapService>(context).coordinates.latitude},${Provider.of<MapService>(context).coordinates.longitude}",
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                    //list of users
+
+                    //CLIENTS
                     Padding(
                       padding:
                           const EdgeInsets.symmetric(vertical: MySpacer.small),
@@ -169,74 +189,102 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                         style: boldText,
                       ),
                     ),
-                    customerService.customers == null
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : customerService.customers.length == 0
-                            ? Text("No client to assign")
-                            : Container(
-                                height: 60,
-                                width: double.infinity,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: customerService.customers.length,
-                                    itemBuilder: (context, index) {
-                                      return projectAddService
-                                                  .activeOwnerIndex ==
-                                              customerService
-                                                  .customers[index].id
-                                          ? GestureDetector(
-                                              onTap: () {
-                                                projectAddService.setOwner =
-                                                    customerService
-                                                        .customers[index].id;
-                                              },
-                                              child: Container(
-                                                  margin: EdgeInsets.all(5),
-                                                  height: 60,
-                                                  width: 150,
-                                                  child: Card(
-                                                    color: Palette.drawerColor,
-                                                    margin: EdgeInsets.all(0),
-                                                    child: ListTile(
-                                                      title: Text(
-                                                        customerService
-                                                            .customers[index]
-                                                            .fname,
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white),
+                    projectAddService.isEdit
+                        ? Container(
+                            margin: EdgeInsets.all(5),
+                            height: 60,
+                            width: 150,
+                            child: Card(
+                              color: Palette.drawerColor,
+                              margin: EdgeInsets.all(0),
+                              child: ListTile(
+                                title: Text(
+                                  widget.projectToEdit!.owner!.fname!,
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ))
+                        : customerService.customers == null
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : customerService.customers.length == 0
+                                ? Text("No client to assign")
+                                : Container(
+                                    height: 60,
+                                    width: double.infinity,
+                                    child: ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount:
+                                            customerService.customers.length,
+                                        itemBuilder: (context, index) {
+                                          return projectAddService
+                                                      .activeOwnerIndex ==
+                                                  customerService
+                                                      .customers[index].id
+                                              ? GestureDetector(
+                                                  onTap: () {},
+                                                  child: Container(
+                                                      margin: EdgeInsets.all(5),
+                                                      height: 60,
+                                                      width: 150,
+                                                      child: Card(
+                                                        color:
+                                                            Palette.drawerColor,
+                                                        margin:
+                                                            EdgeInsets.all(0),
+                                                        child: ListTile(
+                                                          title: Text(
+                                                            customerService
+                                                                .customers[
+                                                                    index]
+                                                                .fname,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                        ),
+                                                      )),
+                                                )
+                                              : GestureDetector(
+                                                  onTap: () {
+                                                    print(
+                                                        "tapping ${customerService.customers[index].id}");
+                                                    setState(() {
+                                                      projectAddService
+                                                              .setOwner =
+                                                          customerService
+                                                              .customers[index]
+                                                              .id;
+
+                                                      print(customerService
+                                                          .customers[index].id);
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    margin: EdgeInsets.all(5),
+                                                    height: 60,
+                                                    width: 150,
+                                                    child: Card(
+                                                      child: ListTile(
+                                                        title: Text(
+                                                            customerService
+                                                                .customers[
+                                                                    index]
+                                                                .fname),
                                                       ),
                                                     ),
-                                                  )),
-                                            )
-                                          : GestureDetector(
-                                              onTap: () {
-                                                projectAddService.setOwner =
-                                                    customerService
-                                                        .customers[index].id;
-                                              },
-                                              child: Container(
-                                                margin: EdgeInsets.all(5),
-                                                height: 60,
-                                                width: 150,
-                                                child: Card(
-                                                  child: ListTile(
-                                                    title: Text(customerService
-                                                        .customers[index]
-                                                        .fname),
-                                                  ),
-                                                ),
-                                              ));
-                                    }),
-                              ),
-
+                                                  ));
+                                        }),
+                                  ),
+                    //  EMPLOYEES
                     Padding(
                       padding:
                           const EdgeInsets.symmetric(vertical: MySpacer.small),
                       child: Text(
-                        "Employees to assign",
+                        projectAddService.isEdit
+                            ? "Assigned Employees"
+                            : "Employees to assign",
                         style: boldText,
                       ),
                     ),
@@ -251,7 +299,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                     scrollDirection: Axis.horizontal,
                                     itemCount: employeeSevice.users!.length,
                                     itemBuilder: (context, index) {
-                                      return projectAddService.assignee
+                                      return projectAddService.assignIds
                                               .contains(employeeSevice
                                                   .users![index].id)
                                           ? GestureDetector(
@@ -399,15 +447,57 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
               color: Palette.drawerColor,
               minWidth: double.infinity,
               onPressed: () {
-                projectAddService.submit(
-                    projectToEdit: widget.projectToEdit,
-                    projectService: projectProvider,
-                    coordinates: Provider.of<MapService>(context, listen: false)
-                        .coordinates,
-                    context: context);
+                if (projectAddService.isEdit) {
+                  projectAddService.addBodyEdit(
+                      {"project_id": widget.projectToEdit!.id.toString()});
+                  print(projectAddService.bodyToEdit);
+                  if (projectAddService.assignIdsToAdd.length > 0) {
+                    print("ADDING");
+                    projectAddService
+                        .assign(
+                            listAssignIds: projectAddService.assignIdsToAdd
+                                .toString()
+                                .replaceAll("[", "")
+                                .replaceAll("]", ""),
+                            projectId: widget.projectToEdit!.id!)
+                        .whenComplete(() => projectProvider.fetchProjects());
+                    ;
+                  }
+                  if (projectAddService.assignIdsToRemove.length > 0) {
+                    print("REMOVING");
+                    projectAddService
+                        .removeAssign(
+                            listAssignIds: projectAddService.assignIdsToRemove
+                                .toString()
+                                .replaceAll("[", "")
+                                .replaceAll("]", ""),
+                            projectId: widget.projectToEdit!.id!)
+                        .whenComplete(() => projectProvider.fetchProjects());
+                  }
+                  // projectProvider.updateProject(
+                  //     bodyToEdit: projectAddService.bodyToEdit);
+
+                  Navigator.pop(context);
+                } else {
+                  ProjectModel newProject = ProjectModel(
+                      assigneeIds: projectAddService.assignIds,
+                      customerId: projectAddService.activeOwnerIndex,
+                      description: descriptionController.text,
+                      name: nameController.text,
+                      coordinates: mapService.coordinates,
+                      picture: projectAddService.converteduint8list(),
+                      startDate: projectAddService.startDate,
+                      endDate: projectAddService.endDate);
+
+                  projectProvider
+                      .createProjects(
+                        newProject: newProject,
+                      )
+                      .whenComplete(() => Navigator.pop(context));
+                }
               },
               child: Text(
-                "Create Project",
+                projectAddService.isEdit ? "Update Project" : "Create Project",
                 style: TextStyle(color: Colors.white),
               ),
             )

@@ -30,6 +30,10 @@ const String user_update = "$api/user/admin-update";
 const String user_delete = "$api/user/delete";
 const String user_register = "$api/register";
 
+//PROJECT ASSIGN
+const String remove_assign = "$api/project/remove_assign";
+const String assign_user = "$api/project/assign";
+
 //CHANGEPASSWORD
 const String change_password_api = "$api/user/change-password";
 
