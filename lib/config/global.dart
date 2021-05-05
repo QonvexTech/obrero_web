@@ -49,13 +49,15 @@ String? authToken;
 Admin? profileData;
 List<Color> statusColors = [
   Colors.greenAccent,
-  Colors.yellowAccent,
+  Colors.orangeAccent,
   Colors.redAccent,
   Colors.blueAccent
 ];
 List<String> statusTitles = ['En cours', 'En attente', 'Annulé', 'Compléter'];
 List<String> imagesStatus = [
   "assets/icons/green.png",
-  "assets/icons/green.png"
+  "assets/icons/orangeIcon.png",
+  "assets/icons/redIcon.png",
+  "assets/icons/blueIcon.png"
 ];
 // List<NotificationModel> notificationList = [];

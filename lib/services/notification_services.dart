@@ -26,25 +26,25 @@ class NotificationServices {
     _newMessage.add(false);
   }
 
-  Future<void> fetchOld() async {
-    try {
-      var url = Uri.parse('$api/notification/');
-      await http.get(url, headers: {
-        "accept": "application/json",
-        HttpHeaders.authorizationHeader: "Bearer $authToken"
-      }).then((respo) {
-        var data = json.decode(respo.body);
+  // Future<void> fetchOld() async {
+  //   try {
+  //     var url = Uri.parse('$api/notification/');
+  //     await http.get(url, headers: {
+  //       "accept": "application/json",
+  //       HttpHeaders.authorizationHeader: "Bearer $authToken"
+  //     }).then((respo) {
+  //       var data = json.decode(respo.body);
 
-        // fromJsonListToNotification(data);
+  //       // fromJsonListToNotification(data);
 
-        print("OLDDATA");
+  //       print("OLDDATA");
 
-        updateAll(data);
-      });
-    } catch (e) {
-      print("ERROR $e");
-    }
-  }
+  //       updateAll(data);
+  //     });
+  //   } catch (e) {
+  //     print("ERROR $e");
+  //   }
+  // }
 
   // fromJsonListToNotification(List notifications) {
   //   List<NotificationModel> newNotifications = [];

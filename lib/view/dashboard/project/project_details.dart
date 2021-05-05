@@ -23,7 +23,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
   @override
   void initState() {
     Provider.of<ProjectProvider>(context, listen: false)
-        .init(widget.projectModel!.id!);
+        .initHours(widget.projectModel!.id!);
     super.initState();
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
 
 class MapService extends ChangeNotifier {
@@ -30,6 +31,7 @@ class MapService extends ChangeNotifier {
   // }
 
   mapInit(List<ProjectModel> projects) async {
+    _markers.clear();
     try {
       for (ProjectModel project in projects) {
         _markers.add(Marker(
@@ -37,14 +39,16 @@ class MapService extends ChangeNotifier {
             infoWindow: InfoWindow(
                 title: project.name, snippet: project.coordinates.toString()),
             icon: await BitmapDescriptor.fromAssetImage(
-                ImageConfiguration(), "assets/icons/green.png"),
+                ImageConfiguration(), imagesStatus[project.status!]),
             markerId: MarkerId(project.id.toString()),
             position: project.coordinates!));
+        notifyListeners();
       }
     } catch (e) {
       print(e);
     }
     print("markers : ${_markers.length}");
+    notifyListeners();
   }
 
   void setCoordinates({LatLng? coord}) async {

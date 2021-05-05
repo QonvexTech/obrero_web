@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/services/map_service.dart';
 
 class ProjectCard extends StatelessWidget {
@@ -8,12 +9,14 @@ class ProjectCard extends StatelessWidget {
   final DateTime? startDate;
   final String? description;
   final LatLng coordinates;
+  final int? status;
 
   ProjectCard(
       {@required this.name,
       @required this.startDate,
       @required this.description,
-      required this.coordinates});
+      required this.coordinates,
+      required this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,7 @@ class ProjectCard extends StatelessWidget {
             leading: CircleAvatar(),
             title: Text(name!),
             subtitle: Text(description!),
-            trailing: Image.asset("assets/icons/green.png")),
+            trailing: Image.asset("${imagesStatus[status!]}")),
       ),
     );
   }

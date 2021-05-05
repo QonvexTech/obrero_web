@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
@@ -22,19 +24,26 @@ class ProjectProvider extends ChangeNotifier {
   //SEARCH
   TextEditingController searchController = TextEditingController();
 
-  Future<void> selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015),
-        lastDate: DateTime(2025));
-    if (picked != null && picked != selectedDate) selectedDate = picked;
-    print(selectedDate);
-    fetchProjectsBaseOnDates();
-    notifyListeners();
+  // Future<void> selectDate(
+  //     {required BuildContext context, required MapService mapService}) async {
+  //   final DateTime? picked = await showDatePicker(
+  //       context: context,
+  //       initialDate: selectedDate,
+  //       firstDate: DateTime(2015),
+  //       lastDate: DateTime(2025));
+  //   if (picked != null && picked != selectedDate) selectedDate = picked;
+  //   print(selectedDate);
+  //   fetchProjectsBaseOnDates()
+  //       .whenComplete(() => mapService.mapInit(_projectsDateBase!));
+  //   notifyListeners();
+  // }
+  //
+  init(mapService) {
+    fetchProjectsBaseOnDates()
+        .then((x) => mapService.mapInit(_projectsDateBase));
   }
 
-  init(int projectId) async {
+  initHours(int projectId) async {
     hours = await fetchHours(projectId);
   }
 
@@ -61,7 +70,7 @@ class ProjectProvider extends ChangeNotifier {
 
   get pagination => _pagination;
   get projects => _projects;
-  get projectDateBased => _projectsDateBase;
+  get projectsDateBase => _projectsDateBase;
 
   Future<String> fetchHours(int projectId) async {
     String? hours;
@@ -123,7 +132,7 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future fetchProjectsBaseOnDates({DateTime? dateSelected}) async {
+  Future fetchProjectsBaseOnDates({DateTime? dateSelected, context}) async {
     if (dateSelected == null) {
       dateSelected = selectedDate;
     } else {
@@ -141,7 +150,7 @@ class ProjectProvider extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List datas = json.decode(response.body);
-        if (projectDateBased != null) {
+        if (_projectsDateBase != null) {
           _projectsDateBase!.clear();
           for (var data in datas) {
             _projectsDateBase!.add(ProjectModel.fromJson(data));
@@ -149,17 +158,17 @@ class ProjectProvider extends ChangeNotifier {
         } else {
           _projectsDateBase = [];
         }
-
+        print("dataDATABASE $datas");
         print(response.body);
-        notifyListeners();
       } else {
-        _projectsDateBase!.clear();
-
+        projectsDateBase!.clear();
+        print("fail");
         print(response.body);
       }
     } catch (e) {
       print("project fetch error : $e");
     }
+    Provider.of<MapService>(context, listen: false).mapInit(_projectsDateBase!);
   }
 
   Future createProjects({required ProjectModel newProject}) async {
@@ -213,7 +222,7 @@ class ProjectProvider extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         _projects!.removeWhere((element) => element.id == id);
-        _projectsDateBase!.removeWhere((element) => element.id == id);
+        projectsDateBase!.removeWhere((element) => element.id == id);
         notifyListeners();
         if (_projects!.length == 0) {
           if (_pagination.isPrev) {

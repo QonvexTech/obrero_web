@@ -49,7 +49,7 @@ class ProjectModel extends ChangeNotifier {
     this.areaSize = json["area_size"];
     this.name = json["name"];
     this.customerId = json["customer_id"];
-    this.status = json["customer_id"];
+    this.status = json["status"];
     this.owner =
         json["owner"] != null ? CustomerModel.fromJson(json["owner"]) : null;
     this.coordinates = convertedCoord(json["coordinates"]);

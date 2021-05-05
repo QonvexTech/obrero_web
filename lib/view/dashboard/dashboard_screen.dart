@@ -20,23 +20,23 @@ class DashBoardScreen extends StatefulWidget {
 class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   void initState() {
-    var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
-    var mapService = Provider.of<MapService>(context, listen: false);
-
+    Provider.of<ProjectProvider>(context, listen: false)
+        .fetchProjectsBaseOnDates(context: context);
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      Provider.of<ProjectProvider>(context, listen: false)
-          .fetchProjectsBaseOnDates()
-          .whenComplete(
-              () => mapService.mapInit(projectProvider.projectDateBased));
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
-    DashboardService dashboardService = Provider.of<DashboardService>(context);
-    MapService mapService = Provider.of<MapService>(context);
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(
+      context,
+    );
+    DashboardService dashboardService = Provider.of<DashboardService>(
+      context,
+    );
+    MapService mapService = Provider.of<MapService>(
+      context,
+    );
+
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
@@ -101,11 +101,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             controller: dashboardService.dateController,
                             onDateChange: (date) {
                               //New Date
-                              print("selected date");
+
                               projectProvider
                                   .fetchProjectsBaseOnDates(dateSelected: date)
                                   .whenComplete(() => mapService.mapInit(
-                                      projectProvider.projectDateBased));
+                                      projectProvider.projectsDateBase));
                             },
                             width: 75,
                           ),
@@ -150,11 +150,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           height: MediaQuery.of(context).size.width > 900
               ? MediaQuery.of(context).size.height
               : MediaQuery.of(context).size.height * .5,
-          content: projectProvider.projectDateBased == null
+          content: projectProvider.projectsDateBase == null
               ? Center(
                   child: CircularProgressIndicator(),
                 )
-              : projectProvider.projectDateBased.length <= 0
+              : projectProvider.projectsDateBase.length <= 0
                   ? Container(
                       width: 200,
                       height: 500,
@@ -171,27 +171,29 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       color: Palette.contentBackground,
                       padding: EdgeInsets.all(20),
                       child: ListView.builder(
-                          itemCount: projectProvider.projectDateBased.length,
+                          itemCount: projectProvider.projectsDateBase.length,
                           itemBuilder: (context, index) {
                             ProjectModel data =
-                                projectProvider.projectDateBased[index];
+                                projectProvider.projectsDateBase[index];
                             return ProjectCard(
                               startDate: projectProvider
-                                          .projectDateBased[index].startDate ==
+                                          .projectsDateBase[index].startDate ==
                                       null
                                   ? DateTime.now()
                                   : projectProvider
-                                      .projectDateBased[index].startDate!,
+                                      .projectsDateBase[index].startDate!,
                               name:
-                                  projectProvider.projectDateBased[index].name!,
+                                  projectProvider.projectsDateBase[index].name!,
                               description: projectProvider
-                                          .projectDateBased[index]
+                                          .projectsDateBase[index]
                                           .description ==
                                       null
                                   ? ""
                                   : projectProvider
-                                      .projectDateBased[index].description!,
+                                      .projectsDateBase[index].description!,
                               coordinates: data.coordinates!,
+                              status: projectProvider
+                                  .projectsDateBase[index].status,
                             );
                           }),
                     ),
