@@ -141,6 +141,7 @@ class CustomerService extends ChangeNotifier {
         print(data);
         paginationService.addedItem(_pagination);
         fetchCustomers();
+        notifyListeners();
       });
     } catch (e) {
       print(e);

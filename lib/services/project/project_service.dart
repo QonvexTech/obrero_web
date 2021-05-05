@@ -189,6 +189,7 @@ class ProjectProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
 
   Future updateProject({required ProjectModel? newProject}) async {
