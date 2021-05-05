@@ -181,9 +181,10 @@ class CustomerService extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
-        notifyListeners();
+        fetchCustomers();
         print(data);
         print("update success");
+        notifyListeners();
       });
     } catch (e) {
       print(e);
