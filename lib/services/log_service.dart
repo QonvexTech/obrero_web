@@ -1,6 +1,5 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:uitemplate/models/log_model.dart';
-import 'package:uitemplate/services/date_sorter.dart';
 import 'package:uitemplate/view_model/logs/log_api_call.dart';
 
 class LogService {
@@ -10,13 +9,17 @@ class LogService {
   static LogService get instance => _instance;
 
   BehaviorSubject<List<LogModel>> _logs = new BehaviorSubject.seeded([]);
+
   Stream<List<LogModel>> get stream$ => _logs.stream;
+
   List<LogModel>? get current => _logs.value;
 
+  //first fetch
   void populate({required List<LogModel> data}) {
     this._logs.add(data);
   }
 
+  //update from firebase
   void append({required LogModel data}) {
     this.current!.add(data);
     this.current!.sort((a, b) =>

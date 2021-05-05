@@ -19,13 +19,6 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
-  void initState() {
-    Provider.of<ProjectProvider>(context, listen: false)
-        .fetchProjectsBaseOnDates(context: context);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(
       context,

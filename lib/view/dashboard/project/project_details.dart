@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
+import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 
 class ProjectDetails extends StatefulWidget {
@@ -330,27 +333,94 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
+              // Container(
+              //   height: MediaQuery.of(context).size.height,
+              //   width: MediaQuery.of(context).size.width,
+              //   child: ListView(
+              //     children: [
+              //       for (var warning in widget.projectModel!.warnings!)
+              //         Card(
+              //           child: ListTile(
+              //             leading: Icon(Icons.notification_important),
+              //             title: Row(
+              //               children: [
+              //                 Text(warning.title!),
+              //                 SizedBox(
+              //                   width: MySpacer.small,
+              //                 ),
+              //               ],
+              //             ),
+              //             subtitle: Text(warning.description!),
+              //           ),
+              //         ),
+              //     ],
+              //   ),
+              // ),
+
               Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                child: ListView(
-                  children: [
-                    for (var warning in widget.projectModel!.warnings!)
-                      Card(
-                        child: ListTile(
-                          leading: Icon(Icons.notification_important),
-                          title: Row(
-                            children: [
-                              Text(warning.title!),
-                              SizedBox(
-                                width: MySpacer.small,
-                              ),
-                            ],
-                          ),
-                          subtitle: Text(warning.description!),
+                child: StreamBuilder<List<LogModel>>(
+                  builder: (context, result) {
+                    if (result.hasError) {
+                      return Center(
+                        child: Text(
+                          "${result.error}",
                         ),
-                      ),
-                  ],
+                      );
+                    }
+                    if (result.hasData && result.data!.length > 0) {
+                      List<LogModel>? warnings() {
+                        List<LogModel> newWarnings = [];
+                        for (LogModel log in result.data!) {
+                          if (log.type == "project_warning") {
+                            newWarnings.add(log);
+                          }
+                        }
+                        return newWarnings;
+                      }
+
+                      print(warnings());
+                      return Scrollbar(
+                        child: ListView(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          children: List.generate(
+                              warnings()!.length,
+                              (index) => Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons
+                                                .notification_important_rounded,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text(
+                                                  "${warnings()![index].title}"),
+                                              subtitle: Text(
+                                                  "${warnings()![index].body}"),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )),
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        child: LogsLoader.load(),
+                      );
+                    }
+                  },
+                  stream: logService.stream$,
                 ),
               ),
             ],

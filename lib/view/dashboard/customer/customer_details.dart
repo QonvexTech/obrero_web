@@ -233,61 +233,59 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                         height: MySpacer.medium,
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.35,
+                        height: MediaQuery.of(context).size.height * 0.8,
                         child: MapScreen(),
                       ),
-                      SizedBox(
-                        height: MySpacer.large,
-                      ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.35,
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Demande client et mise à jour",
-                                  style: boldText,
-                                ),
-                                IconButton(
-                                    icon: Icon(Icons.add_circle),
-                                    onPressed: () {
-                                      //LOGS
-                                    })
-                              ],
-                            ),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: ListView(
-                                  children: [
-                                    Card(
-                                      child: ListTile(
-                                        leading:
-                                            Icon(Icons.notification_important),
-                                        title: Row(
-                                          children: [
-                                            Text("Chantier"),
-                                            SizedBox(
-                                              width: MySpacer.small,
-                                            ),
-                                            Text("Avril")
-                                          ],
-                                        ),
-                                        subtitle: Text(
-                                            "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
+
+                      // Container(
+                      //   height: MediaQuery.of(context).size.height * 0.35,
+                      //   child: Column(
+                      //     children: [
+                      //       Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Text(
+                      //             "Demande client et mise à jour",
+                      //             style: boldText,
+                      //           ),
+                      //           IconButton(
+                      //               icon: Icon(Icons.add_circle),
+                      //               onPressed: () {
+                      //                 //LOGS
+                      //               })
+                      //         ],
+                      //       ),
+                      //       SizedBox(
+                      //         height: MySpacer.small,
+                      //       ),
+                      //       Expanded(
+                      //         child: Container(
+                      //           child: ListView(
+                      //             children: [
+                      //               Card(
+                      //                 child: ListTile(
+                      //                   leading:
+                      //                       Icon(Icons.notification_important),
+                      //                   title: Row(
+                      //                     children: [
+                      //                       Text("Chantier"),
+                      //                       SizedBox(
+                      //                         width: MySpacer.small,
+                      //                       ),
+                      //                       Text("Avril")
+                      //                     ],
+                      //                   ),
+                      //                   subtitle: Text(
+                      //                       "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                      //                 ),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       )
+                      //     ],
+                      //   ),
+                      // )
                     ],
                   )))
         ]));

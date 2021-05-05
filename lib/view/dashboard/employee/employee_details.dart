@@ -4,11 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
+import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
+import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/map.dart';
 
@@ -260,63 +263,78 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                 ),
                                 Expanded(
                                   child: Container(
-                                    child: ListView(
-                                      children: [
-                                        Card(
-                                          child: ListTile(
-                                            leading: Icon(
-                                                Icons.notification_important),
-                                            title: Row(
-                                              children: [
-                                                Text("Chantier"),
-                                                SizedBox(
-                                                  width: MySpacer.small,
-                                                ),
-                                                Text("Avril")
-                                              ],
+                                    child: StreamBuilder<List<LogModel>>(
+                                      builder: (context, result) {
+                                        if (result.hasError) {
+                                          return Center(
+                                            child: Text(
+                                              "${result.error}",
                                             ),
-                                            subtitle: Text(
-                                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                          ),
-                                        ),
-                                        Card(
-                                          child: ListTile(
-                                            leading: Icon(
-                                                Icons.notification_important),
-                                            title: Row(
-                                              children: [
-                                                Text("Chantier"),
-                                                SizedBox(
-                                                  width: MySpacer.small,
-                                                ),
-                                                Text("Avril")
-                                              ],
+                                          );
+                                        }
+                                        if (result.hasData &&
+                                            result.data!.length > 0) {
+                                          List<LogModel>? warnings() {
+                                            List<LogModel> newWarnings = [];
+                                            for (LogModel log in result.data!) {
+                                              if (log.type ==
+                                                  "user_time_update") {
+                                                newWarnings.add(log);
+                                              }
+                                            }
+                                            return newWarnings;
+                                          }
+
+                                          print(warnings());
+                                          return Scrollbar(
+                                            child: ListView(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                              children: List.generate(
+                                                  warnings()!.length,
+                                                  (index) => Card(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      20),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .notification_important_rounded,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Expanded(
+                                                                child: ListTile(
+                                                                  title: Text(
+                                                                      "${warnings()![index].data_id}"),
+                                                                  subtitle: Text(
+                                                                      "${warnings()![index].body}"),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )),
                                             ),
-                                            subtitle: Text(
-                                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                          ),
-                                        ),
-                                        Card(
-                                          child: ListTile(
-                                            leading: Icon(
-                                                Icons.notification_important),
-                                            title: Row(
-                                              children: [
-                                                Text("Chantier"),
-                                                SizedBox(
-                                                  width: MySpacer.small,
-                                                ),
-                                                Text("Avril")
-                                              ],
-                                            ),
-                                            subtitle: Text(
-                                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                          ),
-                                        )
-                                      ],
+                                          );
+                                        } else {
+                                          return Container(
+                                            child: LogsLoader.load(),
+                                          );
+                                        }
+                                      },
+                                      stream: logService.stream$,
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           )),

@@ -64,12 +64,29 @@ class MyApp extends StatelessWidget {
         '/login': (context) => Login(),
         '/home': (context) => MyHomePage(),
         '/project/add': (context) => ProjectAddScreen(),
+        'dashboard': (context) => DashBoardScreen(),
       },
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
+    projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
+      Provider.of<MapService>(context, listen: false)
+          .mapInit(projectProvider.projectsDateBase);
+    });
+    print("DASHBOARD");
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveScaffold(

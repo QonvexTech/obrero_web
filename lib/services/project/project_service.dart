@@ -132,7 +132,8 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future fetchProjectsBaseOnDates({DateTime? dateSelected, context}) async {
+  Future<List<ProjectModel>> fetchProjectsBaseOnDates(
+      {DateTime? dateSelected, context}) async {
     if (dateSelected == null) {
       dateSelected = selectedDate;
     } else {
@@ -158,7 +159,6 @@ class ProjectProvider extends ChangeNotifier {
         } else {
           _projectsDateBase = [];
         }
-        print("dataDATABASE $datas");
         print(response.body);
       } else {
         projectsDateBase!.clear();
@@ -168,7 +168,8 @@ class ProjectProvider extends ChangeNotifier {
     } catch (e) {
       print("project fetch error : $e");
     }
-    Provider.of<MapService>(context, listen: false).mapInit(_projectsDateBase!);
+
+    return _projectsDateBase!;
   }
 
   Future createProjects({required ProjectModel newProject}) async {

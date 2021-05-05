@@ -1,10 +1,8 @@
-import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
-import 'package:uitemplate/view_model/logs/log_api_call.dart';
 
 class LogScreen extends StatelessWidget {
   @override
@@ -37,6 +35,11 @@ class LogScreen extends StatelessWidget {
                     );
                   }
                   if (result.hasData && result.data!.length > 0) {
+                    List warnings = result.data!
+                        .map((e) => e.type == "project_warning")
+                        .toList();
+
+                    print(warnings);
                     return Scrollbar(
                       child: ListView(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
