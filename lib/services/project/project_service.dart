@@ -132,8 +132,7 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<ProjectModel>> fetchProjectsBaseOnDates(
-      {DateTime? dateSelected, context}) async {
+  Future fetchProjectsBaseOnDates({DateTime? dateSelected, context}) async {
     if (dateSelected == null) {
       dateSelected = selectedDate;
     } else {
@@ -168,8 +167,7 @@ class ProjectProvider extends ChangeNotifier {
     } catch (e) {
       print("project fetch error : $e");
     }
-
-    return _projectsDateBase!;
+    notifyListeners();
   }
 
   Future createProjects({required ProjectModel newProject}) async {

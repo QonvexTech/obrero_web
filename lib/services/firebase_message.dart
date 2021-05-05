@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/services/log_service.dart';
-import 'package:uitemplate/services/notification_services.dart';
 
 class FireBase extends ChangeNotifier {
   final String serverToken =

@@ -78,13 +78,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
+    if (mounted) {
+      var projectProvider =
+          Provider.of<ProjectProvider>(context, listen: false);
+      projectProvider
+          .fetchProjectsBaseOnDates(context: context)
+          .whenComplete(() {
+        Provider.of<MapService>(context, listen: false)
+            .mapInit(projectProvider.projectsDateBase);
+      });
+      print("DASHBOARD");
+    }
     super.initState();
-    var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
-    projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
-      Provider.of<MapService>(context, listen: false)
-          .mapInit(projectProvider.projectsDateBase);
-    });
-    print("DASHBOARD");
   }
 
   @override
