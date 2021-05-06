@@ -29,6 +29,7 @@ const String user_api = "$api/user/";
 const String user_update = "$api/user/admin-update";
 const String user_delete = "$api/user/delete";
 const String user_register = "$api/register";
+const String user_projects = "$api/project/user_projects/";
 
 //PROJECT ASSIGN
 const String remove_assign = "$api/project/remove_assign";

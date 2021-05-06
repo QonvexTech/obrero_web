@@ -333,30 +333,6 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
-              // Container(
-              //   height: MediaQuery.of(context).size.height,
-              //   width: MediaQuery.of(context).size.width,
-              //   child: ListView(
-              //     children: [
-              //       for (var warning in widget.projectModel!.warnings!)
-              //         Card(
-              //           child: ListTile(
-              //             leading: Icon(Icons.notification_important),
-              //             title: Row(
-              //               children: [
-              //                 Text(warning.title!),
-              //                 SizedBox(
-              //                   width: MySpacer.small,
-              //                 ),
-              //               ],
-              //             ),
-              //             subtitle: Text(warning.description!),
-              //           ),
-              //         ),
-              //     ],
-              //   ),
-              // ),
-
               Container(
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
@@ -380,7 +356,6 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         return newWarnings;
                       }
 
-                      print(warnings());
                       return Scrollbar(
                         child: ListView(
                           padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/admin_model.dart';
+import 'package:uitemplate/models/employee_hours_model.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/models/user_project_model.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 
@@ -14,6 +15,7 @@ class EmployeeSevice extends ChangeNotifier {
   List<EmployeesModel>? _users;
   List<EmployeesModel>? _tempUsers;
   PaginationService paginationService = PaginationService();
+  List<UserProjectModel>? employeeProjects;
 
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchUsers);
@@ -50,17 +52,43 @@ class EmployeeSevice extends ChangeNotifier {
 
   List<EmployeesModel>? get users => this._users;
 
-  List<ProjectModel> usersProjects(id, allProjects) {
-    List<ProjectModel> newProjects = [];
-    for (ProjectModel project in allProjects) {
-      for (EmployeesModel user in project.assignees!) {
-        if (user.id == id) {
-          newProjects.add(project);
-        }
+  getTotalHours(List<EmployeeHourModel> employeeHours) {
+    double hours = 0.00;
+
+    for (EmployeeHourModel hour in employeeHours) {
+      List values = hour.recordedTime!.split(":");
+      if (values.length > 3) {
+        hours += double.parse(values[0]) * 24; //days
+        hours += double.parse(values[1]); // hours
+        hours += double.parse(values[2]) * (1 / 60); //minutes
+        hours += double.parse(values[3]) * (1 / 3600); //seconds
+      } else {
+        hours += double.parse(values[1]); // hours
+        hours += double.parse(values[2]) * (1 / 60); //minutes
+        hours += double.parse(values[3]) * (1 / 3600); //seconds
       }
     }
-    notifyListeners();
-    return newProjects;
+    return hours.toStringAsFixed(2);
+  }
+
+  Future workingProjects(int userId) async {
+    try {
+      var url = Uri.parse("$user_projects$userId");
+      var response = await http.get(url, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List data = json.decode(response.body);
+
+        var tempUserProject = UserProjectModel.fromListToUserProjectModel(data);
+        employeeProjects = tempUserProject;
+        notifyListeners();
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future fetchUsers() async {

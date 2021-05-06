@@ -17,6 +17,11 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     MapService mapService = Provider.of<MapService>(context);
     return GoogleMap(
+        onMapCreated: (controller) {
+          setState(() {
+            mapService.mapController = controller;
+          });
+        },
         buildingsEnabled: true,
         mapType: MapType.none,
         myLocationEnabled: true,

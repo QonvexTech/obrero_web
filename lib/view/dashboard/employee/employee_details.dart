@@ -6,6 +6,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/models/user_project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
@@ -28,33 +29,20 @@ class EmployeeDetails extends StatefulWidget {
 }
 
 class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
-  List<ProjectModel> employeeProjects = [];
-  bool loader = true;
+  // List<UserProjectModel> employeeProjects = [];
+
   @override
   void initState() {
-    super.initState();
-    Provider.of<ProjectProvider>(context, listen: false)
-        .fetchProjects()
-        .whenComplete(() {
-      var temp = Provider.of<EmployeeSevice>(context, listen: false)
-          .usersProjects(widget.employeesModel!.id,
-              Provider.of<ProjectProvider>(context, listen: false).projects);
-
-      Provider.of<ProjectProvider>(context, listen: false)
-          .initHoursList(temp)
-          .whenComplete(() {
-        setState(() {
-          loader = false;
-          employeeProjects = temp;
-        });
-      });
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Provider.of<EmployeeSevice>(context, listen: false)
+          .workingProjects(widget.employeesModel!.id!);
     });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
-    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     return Container(
         color: Palette.contentBackground,
         width: MediaQuery.of(context).size.width,
@@ -165,92 +153,115 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                     style: Theme.of(context).textTheme.headline5,
                   ),
 
-                  loader
+                  employeeSevice.employeeProjects == null
                       ? Center(
                           child: CircularProgressIndicator(),
                         )
-                      : Container(),
-
-                  employeeProjects.length == 0 && loader == false
-                      ? EmptyContainer(
-                          addingFunc: ProjectAddScreen(),
-                          title: "No assigned project yet",
-                          description: "Add project Now",
-                          buttonText: "Add Project",
-                          showButton: true,
-                        )
-                      : SizedBox(),
-
-                  for (var x = 0; x < employeeProjects.length - 1; x++)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          employeeProjects[x].name!,
-                          style: boldText,
-                        ),
-                        SizedBox(
-                          height: MySpacer.small,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Description", style: transHeader),
-                                  Text(employeeProjects[x].description!),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Total des Heures Travaillées",
-                                      style: transHeader),
-                                  Text(
-                                    projectProvider.listHours[x],
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Status", style: transHeader),
-                                  Text(
-                                    statusTitles[employeeProjects[x].status!],
-                                    style: TextStyle(
-                                        color: statusColors[
-                                            employeeProjects[x].status!]),
-                                  ),
-                                ],
-                              ),
+                      : employeeSevice.employeeProjects!.length == 0
+                          ? EmptyContainer(
+                              addingFunc: ProjectAddScreen(),
+                              title: "No assigned project yet",
+                              description: "Add project Now",
+                              buttonText: "Add Project",
+                              showButton: true,
                             )
-                          ],
-                        ),
-                        Container(
-                            height: 30,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            width: MediaQuery.of(context).size.width,
-                            child: Image.asset("assets/images/dashLine.png")),
-                        SizedBox(
-                          height: MySpacer.large,
-                        )
-                      ],
-                    ),
+                          : Column(
+                              children: [
+                                for (UserProjectModel project
+                                    in employeeSevice.employeeProjects!)
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        project.userProject!.name!,
+                                        style: boldText,
+                                      ),
+                                      SizedBox(
+                                        height: MySpacer.small,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Description",
+                                                    style: transHeader),
+                                                Text(project
+                                                    .userProject!.description!),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                    "Total des Heures Travaillées",
+                                                    style: transHeader),
+                                                Text(
+                                                  project.employeeHourList!
+                                                              .length >
+                                                          0
+                                                      ? employeeSevice
+                                                          .getTotalHours(project
+                                                              .employeeHourList!)
+                                                      : "0.00",
+                                                  style: TextStyle(
+                                                      color: Colors.green,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Status",
+                                                    style: transHeader),
+                                                Text(
+                                                  statusTitles[project
+                                                      .userProject!.status!],
+                                                  style: TextStyle(
+                                                      color: statusColors[
+                                                          project.userProject!
+                                                              .status!]),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Container(
+                                          height: 30,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Image.asset(
+                                              "assets/images/dashLine.png")),
+                                      SizedBox(
+                                        height: MySpacer.large,
+                                      )
+                                    ],
+                                  ),
+                              ],
+                            )
                 ],
               ),
             ),

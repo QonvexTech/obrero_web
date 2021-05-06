@@ -30,7 +30,8 @@ class ProjectCard extends StatefulWidget {
 class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
   @override
   void initState() {
-    print(widget.picture!.length);
+    // print(widget.picture!.length);
+    print(widget.coordinates);
     super.initState();
   }
 
@@ -39,7 +40,6 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
     MapService mapService = Provider.of<MapService>(context);
     return GestureDetector(
       onTap: () {
-        print("Card");
         mapService.focusMap(coordinates: widget.coordinates);
       },
       child: Card(

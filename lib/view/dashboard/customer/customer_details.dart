@@ -185,14 +185,14 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                 children: [
                                   Text("Total des Heures Travaillées",
                                       style: transHeader),
-                                  Text(
-                                    project.totalHours != null
-                                        ? "${project.totalHours}"
-                                        : "32HRS",
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
-                                  ),
+                                  // Text(
+                                  //   project.totalHours != null
+                                  //       ? "${project.totalHours}"
+                                  //       : "32HRS",
+                                  //   style: TextStyle(
+                                  //       color: Colors.green,
+                                  //       fontWeight: FontWeight.bold),
+                                  // ),
                                 ],
                               ),
                             ),

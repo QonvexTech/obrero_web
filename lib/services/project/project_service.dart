@@ -46,12 +46,6 @@ class ProjectProvider extends ChangeNotifier {
     hours = await fetchHours(projectId);
   }
 
-  Future initHoursList(List<ProjectModel> projects) async {
-    for (ProjectModel project in projects) {
-      listHours.add(await fetchHours(project.id!));
-    }
-  }
-
   search(String text) {
     _projects = _tempProjects;
     _projects = _projects!

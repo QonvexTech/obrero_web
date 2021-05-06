@@ -176,8 +176,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     child: ListView.builder(
                         itemCount: projectProvider.projectsDateBase.length,
                         itemBuilder: (context, index) {
-                          ProjectModel data =
-                              projectProvider.projectsDateBase[index];
                           return ProjectCard(
                               startDate: projectProvider
                                           .projectsDateBase[index].startDate ==
