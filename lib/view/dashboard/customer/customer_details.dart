@@ -201,7 +201,11 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Status", style: transHeader),
-                                  Text("En cours"),
+                                  Text(
+                                    statusTitles[project.status!],
+                                    style: TextStyle(
+                                        color: statusColors[project.status!]),
+                                  ),
                                 ],
                               ),
                             )
