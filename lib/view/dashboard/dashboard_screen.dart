@@ -141,12 +141,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               height: MySpacer.small,
             ),
             Expanded(
-              child: MapScreen(),
+              child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  child: MapScreen()),
             )
           ],
         ),
       )),
       AdaptiveItem(
+        bgColor: Palette.contentBackground,
         height: MediaQuery.of(context).size.width > 900
             ? MediaQuery.of(context).size.height
             : MediaQuery.of(context).size.height * .5,
@@ -173,8 +176,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     child: ListView.builder(
                         itemCount: projectProvider.projectsDateBase.length,
                         itemBuilder: (context, index) {
-                          ProjectModel data =
-                              projectProvider.projectsDateBase[index];
                           return ProjectCard(
                             startDate: projectProvider
                                         .projectsDateBase[index].startDate ==
@@ -189,7 +190,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 ? ""
                                 : projectProvider
                                     .projectsDateBase[index].description!,
-                            coordinates: data.coordinates!,
+                            coordinates: projectProvider
+                                .projectsDateBase[index].coordinates!,
                             status:
                                 projectProvider.projectsDateBase[index].status,
                           );

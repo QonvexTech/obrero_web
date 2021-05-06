@@ -65,7 +65,7 @@ class SettingsHelper {
     }
   }
 
-  HtmlElementView get viewWebImage {
-    return HtmlElementView(viewType: "${profileData!.picture}");
-  }
+  // HtmlElementView get viewWebImage {
+  //   return HtmlElementView(viewType: "${profileData!.picture}");
+  // }
 }

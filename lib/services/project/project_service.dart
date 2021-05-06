@@ -120,6 +120,7 @@ class ProjectProvider extends ChangeNotifier {
         var projects = ProjectModel.fromJsonListToProject(data);
         _projects = projects;
         _tempProjects = projects;
+        notifyListeners();
         print(data);
       } else {
         print(response.body);
@@ -127,7 +128,6 @@ class ProjectProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    notifyListeners();
   }
 
   Future fetchProjectsBaseOnDates({DateTime? dateSelected, context}) async {
@@ -148,17 +148,12 @@ class ProjectProvider extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List datas = json.decode(response.body);
-        if (_projectsDateBase != null) {
-          _projectsDateBase!.clear();
-          for (var data in datas) {
-            _projectsDateBase!.add(ProjectModel.fromJson(data));
-          }
-        } else {
-          _projectsDateBase = [];
-        }
+
+        var projectsdate = ProjectModel.fromJsonListToProject(datas);
+        _projectsDateBase = projectsdate;
+
         print(response.body);
       } else {
-        projectsDateBase!.clear();
         print("fail");
         print(response.body);
       }

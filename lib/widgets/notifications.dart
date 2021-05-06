@@ -17,6 +17,9 @@ class _NotificationCardState extends State<NotificationCard> {
             icon: StreamBuilder<bool>(
                 stream: rxNotificationService.$streamNewMessage,
                 builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Container();
+                  }
                   return Stack(
                     children: [
                       Icon(Icons.notifications),
