@@ -4,18 +4,6 @@ import 'package:flutter/material.dart';
 import '../../config/global.dart';
 
 class SettingsHelper {
-  TextEditingController email = new TextEditingController()
-    ..text = profileData!.email!;
-  TextEditingController first_name = new TextEditingController()
-    ..text = profileData!.firstName!;
-  TextEditingController last_name = new TextEditingController()
-    ..text = profileData!.lastName!;
-  TextEditingController password = new TextEditingController();
-
-  setInit(TextEditingController controller, String string) {
-    controller.text = string;
-  }
-
   Widget customTextField(
       {required TextEditingController controller, required String label}) {
     return Container(

@@ -28,8 +28,11 @@ class _CustomerListState extends State<CustomerList> {
     CustomerService customerService = Provider.of<CustomerService>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
     return customerService.customers == null
-        ? Center(
-            child: CircularProgressIndicator(),
+        ? Container(
+            color: Palette.contentBackground,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
           )
         : customerService.customers.length == 0
             ? Text("No Clients")

@@ -176,25 +176,30 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     child: ListView.builder(
                         itemCount: projectProvider.projectsDateBase.length,
                         itemBuilder: (context, index) {
+                          ProjectModel data =
+                              projectProvider.projectsDateBase[index];
                           return ProjectCard(
-                            startDate: projectProvider
-                                        .projectsDateBase[index].startDate ==
-                                    null
-                                ? DateTime.now()
-                                : projectProvider
-                                    .projectsDateBase[index].startDate!,
-                            name: projectProvider.projectsDateBase[index].name!,
-                            description: projectProvider
-                                        .projectsDateBase[index].description ==
-                                    null
-                                ? ""
-                                : projectProvider
-                                    .projectsDateBase[index].description!,
-                            coordinates: projectProvider
-                                .projectsDateBase[index].coordinates!,
-                            status:
-                                projectProvider.projectsDateBase[index].status,
-                          );
+                              startDate: projectProvider
+                                          .projectsDateBase[index].startDate ==
+                                      null
+                                  ? DateTime.now()
+                                  : projectProvider
+                                      .projectsDateBase[index].startDate!,
+                              name:
+                                  projectProvider.projectsDateBase[index].name!,
+                              description: projectProvider
+                                          .projectsDateBase[index]
+                                          .description ==
+                                      null
+                                  ? ""
+                                  : projectProvider
+                                      .projectsDateBase[index].description!,
+                              coordinates: projectProvider
+                                  .projectsDateBase[index].coordinates!,
+                              status: projectProvider
+                                  .projectsDateBase[index].status,
+                              picture: projectProvider
+                                  .projectsDateBase[index].images);
                         }),
                   ),
       )

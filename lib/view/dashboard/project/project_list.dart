@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/project/project_service.dart';
@@ -268,7 +270,9 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.startDate.toString(),
+                DateFormat('MMM dd, yyyy', 'fr_FR')
+                    .format(data.startDate!)
+                    .inCaps,
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -278,7 +282,9 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.endDate.toString(),
+                DateFormat('MMM dd, yyyy', 'fr_FR')
+                    .format(data.endDate!)
+                    .inCaps,
                 overflow: TextOverflow.ellipsis,
               ),
             ))),

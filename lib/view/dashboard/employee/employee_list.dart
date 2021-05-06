@@ -28,8 +28,11 @@ class _EmployeeListState extends State<EmployeeList> {
     PaginationService pageService = Provider.of<PaginationService>(context);
 
     return employeeService.users == null
-        ? Center(
-            child: CircularProgressIndicator(),
+        ? Container(
+            color: Palette.contentBackground,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
           )
         : Container(
             color: Palette.contentBackground,
@@ -75,7 +78,6 @@ class _EmployeeListState extends State<EmployeeList> {
                                 "EMAIL",
                                 "TÉLÉPHONE",
                                 "ADDRESSE",
-                                "STATUS"
                               ]),
                           SizedBox(
                             height: MySpacer.small,
@@ -240,16 +242,16 @@ List<TableRow> rowWidget(BuildContext context, List<EmployeesModel> datas,
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
-        TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                data.status.toString(),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ))),
+        // TableCell(
+        //     verticalAlignment: TableCellVerticalAlignment.middle,
+        //     child: Center(
+        //         child: Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 8),
+        //       child: Text(
+        //         data.status.toString(),
+        //         overflow: TextOverflow.ellipsis,
+        //       ),
+        //     ))),
         TableCell(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
