@@ -11,8 +11,10 @@ import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
+import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/back_button.dart';
+import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class EmployeeDetails extends StatefulWidget {
@@ -27,23 +29,32 @@ class EmployeeDetails extends StatefulWidget {
 
 class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
   List<ProjectModel> employeeProjects = [];
-
+  bool loader = true;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
-      employeeProjects = Provider.of<EmployeeSevice>(context, listen: false)
+    Provider.of<ProjectProvider>(context, listen: false)
+        .fetchProjects()
+        .whenComplete(() {
+      var temp = Provider.of<EmployeeSevice>(context, listen: false)
           .usersProjects(widget.employeesModel!.id,
               Provider.of<ProjectProvider>(context, listen: false).projects);
 
-      print(employeeProjects.length);
+      Provider.of<ProjectProvider>(context, listen: false)
+          .initHoursList(temp)
+          .whenComplete(() {
+        setState(() {
+          loader = false;
+          employeeProjects = temp;
+        });
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     return Container(
         color: Palette.contentBackground,
         width: MediaQuery.of(context).size.width,
@@ -100,6 +111,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                     height: MySpacer.large,
                   ),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
@@ -153,12 +165,28 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                     style: Theme.of(context).textTheme.headline5,
                   ),
 
-                  for (ProjectModel project in employeeProjects)
+                  loader
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Container(),
+
+                  employeeProjects.length == 0 && loader == false
+                      ? EmptyContainer(
+                          addingFunc: ProjectAddScreen(),
+                          title: "No assigned project yet",
+                          description: "Add project Now",
+                          buttonText: "Add Project",
+                          showButton: true,
+                        )
+                      : SizedBox(),
+
+                  for (var x = 0; x < employeeProjects.length - 1; x++)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          project.name!,
+                          employeeProjects[x].name!,
                           style: boldText,
                         ),
                         SizedBox(
@@ -166,24 +194,30 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
+                              flex: 3,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Description", style: transHeader),
-                                  Text(project.description!),
+                                  Text(employeeProjects[x].description!),
                                 ],
                               ),
                             ),
+                            SizedBox(
+                              width: 10,
+                            ),
                             Expanded(
+                              flex: 2,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Total des Heures Travaillées",
                                       style: transHeader),
                                   Text(
-                                    "32HRS",
+                                    projectProvider.listHours[x],
                                     style: TextStyle(
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold),
@@ -196,7 +230,12 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Status", style: transHeader),
-                                  Text("En cours"),
+                                  Text(
+                                    statusTitles[employeeProjects[x].status!],
+                                    style: TextStyle(
+                                        color: statusColors[
+                                            employeeProjects[x].status!]),
+                                  ),
                                 ],
                               ),
                             )
@@ -218,6 +257,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
           ),
           AdaptiveItem(
               content: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   child: Column(

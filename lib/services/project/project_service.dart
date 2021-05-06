@@ -15,6 +15,7 @@ class ProjectProvider extends ChangeNotifier {
   PaginationService paginationService = PaginationService();
   DateTime selectedDate = DateTime.now();
   String hours = "0.00";
+  List<String> listHours = [];
 
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchProjects);
@@ -43,7 +44,12 @@ class ProjectProvider extends ChangeNotifier {
 
   initHours(int projectId) async {
     hours = await fetchHours(projectId);
-    return hours;
+  }
+
+  Future initHoursList(List<ProjectModel> projects) async {
+    for (ProjectModel project in projects) {
+      listHours.add(await fetchHours(project.id!));
+    }
   }
 
   search(String text) {

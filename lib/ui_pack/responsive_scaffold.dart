@@ -258,6 +258,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   if ((item.subItems != null &&

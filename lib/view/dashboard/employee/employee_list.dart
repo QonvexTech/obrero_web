@@ -71,7 +71,7 @@ class _EmployeeListState extends State<EmployeeList> {
                               headersMobile: [
                                 "NOM",
                                 "EMAIL",
-                                "STATUS"
+                                "ADDRESSE"
                               ],
                               headers: [
                                 "NOM",
@@ -136,9 +136,9 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<EmployeesModel> datas,
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(
                 child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.status.toString(),
+                data.address!,
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
