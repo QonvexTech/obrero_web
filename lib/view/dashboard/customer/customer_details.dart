@@ -28,6 +28,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
   void initState() {
     customerProjects =
         ProjectModel.fromJsonListToProject(widget.customer!.customerProjects!);
+
     Provider.of<MapService>(context, listen: false).mapInit(customerProjects);
     super.initState();
   }
@@ -35,7 +36,6 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
-    final scrW = MediaQuery.of(context).size.width;
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -164,8 +164,10 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Expanded(
+                              flex: 2,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -174,6 +176,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                 ],
                               ),
                             ),
+                            SizedBox(
+                              width: 10,
+                            ),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +186,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                   Text("Total des Heures Travaillées",
                                       style: transHeader),
                                   Text(
-                                    "32HRS",
+                                    project.totalHours != null
+                                        ? "${project.totalHours}"
+                                        : "32HRS",
                                     style: TextStyle(
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold),

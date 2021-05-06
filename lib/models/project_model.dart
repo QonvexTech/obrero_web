@@ -21,10 +21,12 @@ class ProjectModel extends ChangeNotifier {
   List<EmployeesModel>? assignees;
   String? picture;
   List<ProjectImageModel>? images;
-  bool isSelected = false; //for table purposes
+  bool isSelected = false;
+  String? totalHours; //for table purposes
 
   ProjectModel(
       {this.id,
+      this.totalHours,
       this.picture,
       this.areaSize,
       this.status,

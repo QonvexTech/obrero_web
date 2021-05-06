@@ -43,6 +43,7 @@ class ProjectProvider extends ChangeNotifier {
 
   initHours(int projectId) async {
     hours = await fetchHours(projectId);
+    return hours;
   }
 
   search(String text) {
