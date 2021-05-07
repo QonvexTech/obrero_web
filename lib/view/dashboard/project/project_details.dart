@@ -91,7 +91,9 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                           height: MySpacer.small,
                         ),
                         Text(
-                          "${widget.projectModel!.coordinates!.latitude},${widget.projectModel!.coordinates!.longitude}",
+                          widget.projectModel!.address != null
+                              ? "${widget.projectModel!.address}"
+                              : "${widget.projectModel!.coordinates!.latitude},${widget.projectModel!.coordinates!.longitude}",
                           style: boldText,
                         )
                       ],

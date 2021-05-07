@@ -5,11 +5,9 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/log_model.dart';
-import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/models/user_project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/log_service.dart';
-import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
@@ -33,11 +31,11 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
 
   @override
   void initState() {
+    super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       Provider.of<EmployeeSevice>(context, listen: false)
           .workingProjects(widget.employeesModel!.id!);
     });
-    super.initState();
   }
 
   @override
@@ -212,12 +210,15 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                     "Total des Heures Travaillées",
                                                     style: transHeader),
                                                 Text(
-                                                  project.employeeHourList!
-                                                              .length >
-                                                          0
-                                                      ? employeeSevice
-                                                          .getTotalHours(project
-                                                              .employeeHourList!)
+                                                  project.employeeHourList !=
+                                                          null
+                                                      ? project.employeeHourList!
+                                                                  .length >
+                                                              0
+                                                          ? employeeSevice
+                                                              .getTotalHours(project
+                                                                  .employeeHourList!)
+                                                          : "0.00"
                                                       : "0.00",
                                                   style: TextStyle(
                                                       color: Colors.green,
@@ -250,7 +251,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                       Container(
                                           height: 30,
                                           padding: EdgeInsets.symmetric(
-                                              vertical: 20),
+                                              vertical: 30),
                                           width:
                                               MediaQuery.of(context).size.width,
                                           child: Image.asset(
@@ -329,14 +330,16 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                             List<LogModel> newWarnings = [];
                                             for (LogModel log in result.data!) {
                                               if (log.type ==
-                                                  "user_time_update") {
+                                                      "user_time_update" &&
+                                                  log.sender_id ==
+                                                      widget
+                                                          .employeesModel!.id) {
                                                 newWarnings.add(log);
                                               }
                                             }
                                             return newWarnings;
                                           }
 
-                                          print(warnings());
                                           return Scrollbar(
                                             child: ListView(
                                               padding:
@@ -344,36 +347,54 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                       horizontal: 10),
                                               children: List.generate(
                                                   warnings()!.length,
-                                                  (index) => Card(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      20),
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .notification_important_rounded,
-                                                                color:
-                                                                    Colors.grey,
+                                                  (index) =>
+                                                      warnings()!.length == 0
+                                                          ? Container(
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.2,
+                                                              child: Center(
+                                                                child: Text(
+                                                                    "Empty logs"),
                                                               ),
-                                                              const SizedBox(
-                                                                width: 10,
-                                                              ),
-                                                              Expanded(
-                                                                child: ListTile(
-                                                                  title: Text(
-                                                                      "${warnings()![index].data_id}"),
-                                                                  subtitle: Text(
-                                                                      "${warnings()![index].body}"),
+                                                            )
+                                                          : Card(
+                                                              child: Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        20),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .notification_important_rounded,
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    Expanded(
+                                                                      child:
+                                                                          ListTile(
+                                                                        title: Text(
+                                                                            "${warnings()![index].data_id}"),
+                                                                        subtitle:
+                                                                            Text("${warnings()![index].body}"),
+                                                                      ),
+                                                                    )
+                                                                  ],
                                                                 ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )),
+                                                              ),
+                                                            )),
                                             ),
                                           );
                                         } else {

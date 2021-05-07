@@ -22,6 +22,7 @@ class ProjectModel extends ChangeNotifier {
   String? picture;
   List<ProjectImageModel>? images;
   bool isSelected = false;
+  String? address;
 
   ProjectModel(
       {this.id,
@@ -37,7 +38,8 @@ class ProjectModel extends ChangeNotifier {
       required this.coordinates,
       this.warnings,
       required this.startDate,
-      required this.endDate});
+      required this.endDate,
+      required this.address});
 
   LatLng convertedCoord(String value) {
     return LatLng(
@@ -67,6 +69,7 @@ class ProjectModel extends ChangeNotifier {
     this.images = json["images"] != null
         ? ProjectImageModel.formListtoImageModel(json["images"])
         : [];
+    this.address = json["address"];
   }
 
   Map<String, dynamic> toJson() {
@@ -83,6 +86,7 @@ class ProjectModel extends ChangeNotifier {
     data["end_date"] = this.endDate!.toString();
     data["assignee_ids"] =
         this.assigneeIds.toString().replaceAll("[", "").replaceAll("]", "");
+    data["address"] = this.address;
     return data;
   }
 

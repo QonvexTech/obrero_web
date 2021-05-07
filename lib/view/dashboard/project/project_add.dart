@@ -173,9 +173,31 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                           "Location",
                           style: boldText,
                         ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Text(
+                            "${Provider.of<MapService>(context).coordinates.latitude},${Provider.of<MapService>(context).coordinates.longitude}",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: MySpacer.small,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
                         Text(
-                          "${Provider.of<MapService>(context).coordinates.latitude},${Provider.of<MapService>(context).coordinates.longitude}",
-                          overflow: TextOverflow.ellipsis,
+                          "Address",
+                          style: boldText,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 5),
+                          child: Text(
+                            "${Provider.of<MapService>(context).addressGeo}",
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                       ],
                     ),
@@ -487,7 +509,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                       coordinates: mapService.coordinates,
                       picture: projectAddService.converteduint8list(),
                       startDate: projectAddService.startDate,
-                      endDate: projectAddService.endDate);
+                      endDate: projectAddService.endDate,
+                      address: mapService.addressGeo);
 
                   projectProvider
                       .createProjects(

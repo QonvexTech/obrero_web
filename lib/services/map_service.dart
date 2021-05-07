@@ -1,14 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
+import 'package:http/http.dart' as http;
 
 class MapService extends ChangeNotifier {
   double _zoom = 15.0;
   LatLng coordinates = LatLng(28.709106207008052, 77.09902385711672);
   Location _location = Location();
   bool? _serviceEnabled;
+  String _addressGeo = "";
 
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
@@ -19,6 +23,14 @@ class MapService extends ChangeNotifier {
   Set<Marker> _markers = {};
   get zoom => _zoom;
   get markers => _markers;
+  get addressGeo => _addressGeo;
+
+  // Future setAddress(latitude, longitude) async {
+  //   var address =
+  //       await Geocoder.google("AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI")
+  //           .findAddressesFromCoordinates(Coordinates(latitude, longitude));
+  //   _addressGeo = address.first.toString();
+  // }
 
   // static Future<Uint8List> getBytesFromAsset(String path, int width) async {
   //   ByteData data = await rootBundle.load(path);
@@ -31,6 +43,10 @@ class MapService extends ChangeNotifier {
   // }
 
   mapInit(List<ProjectModel> projects) async {
+    if (_markers.length > 0) {
+      coordinates = _markers.first.position;
+      findLocalByCoordinates(coordinates.latitude, coordinates.longitude);
+    }
     _markers.clear();
     try {
       for (ProjectModel project in projects) {
@@ -54,6 +70,7 @@ class MapService extends ChangeNotifier {
   void setCoordinates({LatLng? coord}) async {
     if (coord != null) {
       coordinates = coord;
+      findLocalByCoordinates(coordinates.latitude, coordinates.longitude);
     }
     if (_markers.isEmpty) {
       _markers.add(Marker(
@@ -112,5 +129,30 @@ class MapService extends ChangeNotifier {
       }
     }
     _locationData = await _location.getLocation();
+  }
+
+  Future findLocalByCoordinates(double lat, double lang) async {
+    var url = Uri.parse(
+        "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lang&location_type=ROOFTOP&result_type=street_address&key=AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI");
+    try {
+      var response = await http.post(url, headers: {
+        "Accept": "application/json",
+        // "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var data = json.decode(response.body);
+
+        print(data);
+        _addressGeo = data["plus_code"]["compound_code"];
+        notifyListeners();
+      } else {
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    // return
   }
 }

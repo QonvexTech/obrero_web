@@ -53,22 +53,26 @@ class EmployeeSevice extends ChangeNotifier {
   List<EmployeesModel>? get users => this._users;
 
   getTotalHours(List<EmployeeHourModel> employeeHours) {
-    double hours = 0.00;
+    try {
+      double hours = 0.00;
 
-    for (EmployeeHourModel hour in employeeHours) {
-      List values = hour.recordedTime!.split(":");
-      if (values.length > 3) {
-        hours += double.parse(values[0]) * 24; //days
-        hours += double.parse(values[1]); // hours
-        hours += double.parse(values[2]) * (1 / 60); //minutes
-        hours += double.parse(values[3]) * (1 / 3600); //seconds
-      } else {
-        hours += double.parse(values[1]); // hours
-        hours += double.parse(values[2]) * (1 / 60); //minutes
-        hours += double.parse(values[3]) * (1 / 3600); //seconds
+      for (EmployeeHourModel hour in employeeHours) {
+        List values = hour.recordedTime!.split(":");
+        if (values.length > 3) {
+          hours += double.parse(values[0]) * 24; //days
+          hours += double.parse(values[1]); // hours
+          hours += double.parse(values[2]) * (1 / 60); //minutes
+          hours += double.parse(values[3]) * (1 / 3600); //seconds
+        } else {
+          hours += double.parse(values[1]); // hours
+          hours += double.parse(values[2]) * (1 / 60); //minutes
+          hours += double.parse(values[3]) * (1 / 3600); //seconds
+        }
+        return hours.toStringAsFixed(2);
       }
+    } catch (e) {
+      print("GetHours $e");
     }
-    return hours.toStringAsFixed(2);
   }
 
   Future workingProjects(int userId) async {
