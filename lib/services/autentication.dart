@@ -5,6 +5,7 @@ import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/notification_services.dart';
+import 'package:uitemplate/view_model/logs/log_api_call.dart';
 import '../config/global.dart';
 
 class Authentication {
@@ -21,18 +22,17 @@ class Authentication {
       bool success = false;
       String? fcmToken;
       Map body = {'email': email, 'password': password};
-      try{
+      try {
         fcmToken = await FireBase().fcmToken;
-        if(fcmToken != null){
-          body.addAll({"fcm_token" : fcmToken});
+        if (fcmToken != null) {
+          body.addAll({"fcm_token": fcmToken});
         }
-      }catch(e){
+      } catch (e) {
         print(e);
       }
       print("LOGGING IN");
       var url = Uri.parse(login_api);
-      var response = await http.post(url,
-          body: body);
+      var response = await http.post(url, body: body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         profileData = Admin.fromJson(json.decode(response.body)["data"]);
         print("login success");
@@ -40,7 +40,9 @@ class Authentication {
 
         authToken = jsonDecode(response.body)['data']['token'];
         print("This is the TOken $authToken");
-        rxNotificationService.fetchOld();
+
+        await logApiCall.fetchServer();
+
         success = true;
         return success;
       } else {

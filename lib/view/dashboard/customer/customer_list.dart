@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
@@ -26,10 +27,12 @@ class _CustomerListState extends State<CustomerList> {
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
-
     return customerService.customers == null
-        ? Center(
-            child: CircularProgressIndicator(),
+        ? Container(
+            color: Palette.contentBackground,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
           )
         : customerService.customers.length == 0
             ? Text("No Clients")
@@ -135,7 +138,8 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                data.status.toString(),
+                statusTitles[data.status!.status!],
+                style: TextStyle(color: statusColors[data.status!.status!]),
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -243,7 +247,8 @@ List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.status!.status.toString(),
+                statusTitles[data.status!.status!],
+                style: TextStyle(color: statusColors[data.status!.status!]),
                 overflow: TextOverflow.ellipsis,
               ),
             ))),

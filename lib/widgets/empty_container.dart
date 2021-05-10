@@ -23,6 +23,7 @@ class EmptyContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.all(20),
       margin: EdgeInsets.all(20),
       color: Colors.grey[200],
       child: Column(

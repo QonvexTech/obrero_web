@@ -9,6 +9,7 @@ class DashboardService extends ChangeNotifier {
   DateTime? tempDate;
 
   List months = [
+    "",
     'Janvier',
     'Février',
     'Mars',
@@ -24,6 +25,12 @@ class DashboardService extends ChangeNotifier {
   ];
 
   get startDate => _startDate;
+
+  set startDate(value) {
+    _startDate = value;
+    notifyListeners();
+  }
+
   get projectPage => clientPage;
 
   void nextDate() {

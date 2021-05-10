@@ -4,12 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
-import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/models/log_model.dart';
+import 'package:uitemplate/models/user_project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
-import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
+import 'package:uitemplate/view/dashboard/project/project_add.dart';
+import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/back_button.dart';
+import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class EmployeeDetails extends StatefulWidget {
@@ -23,18 +27,12 @@ class EmployeeDetails extends StatefulWidget {
 }
 
 class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
-  List<ProjectModel> employeeProjects = [];
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
-      employeeProjects = Provider.of<EmployeeSevice>(context, listen: false)
-          .usersProjects(widget.employeesModel!.id,
-              Provider.of<ProjectProvider>(context, listen: false).projects);
-
-      print(employeeProjects.length);
+      Provider.of<EmployeeSevice>(context, listen: false)
+          .workingProjects(widget.employeesModel!.id!);
     });
   }
 
@@ -97,6 +95,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                     height: MySpacer.large,
                   ),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Column(
@@ -150,71 +149,125 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                     style: Theme.of(context).textTheme.headline5,
                   ),
 
-                  for (ProjectModel project in employeeProjects)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          project.name!,
-                          style: boldText,
-                        ),
-                        SizedBox(
-                          height: MySpacer.small,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Description", style: transHeader),
-                                  Text(project.description!),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Total des Heures Travaillées",
-                                      style: transHeader),
-                                  Text(
-                                    "32HRS",
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Status", style: transHeader),
-                                  Text("En cours"),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                        Container(
-                            height: 30,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            width: MediaQuery.of(context).size.width,
-                            child: Image.asset("assets/images/dashLine.png")),
-                        SizedBox(
-                          height: MySpacer.large,
+                  employeeSevice.employeeProjects == null
+                      ? Center(
+                          child: CircularProgressIndicator(),
                         )
-                      ],
-                    ),
+                      : employeeSevice.employeeProjects!.length == 0
+                          ? EmptyContainer(
+                              addingFunc: ProjectAddScreen(),
+                              title: "No assigned project yet",
+                              description: "Add project Now",
+                              buttonText: "Add Project",
+                              showButton: true,
+                            )
+                          : Column(
+                              children: [
+                                for (UserProjectModel project
+                                    in employeeSevice.employeeProjects!)
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        project.userProject!.name!,
+                                        style: boldText,
+                                      ),
+                                      SizedBox(
+                                        height: MySpacer.small,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Description",
+                                                    style: transHeader),
+                                                Text(project
+                                                    .userProject!.description!),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                    "Total des Heures Travaillées",
+                                                    style: transHeader),
+                                                Text(
+                                                  project.employeeHourList !=
+                                                          null
+                                                      ? project.employeeHourList!
+                                                                  .length >
+                                                              0
+                                                          ? employeeSevice
+                                                              .getTotalHours(project
+                                                                  .employeeHourList!)
+                                                          : "0.00"
+                                                      : "0.00",
+                                                  style: TextStyle(
+                                                      color: Colors.green,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Status",
+                                                    style: transHeader),
+                                                Text(
+                                                  statusTitles[project
+                                                      .userProject!.status!],
+                                                  style: TextStyle(
+                                                      color: statusColors[
+                                                          project.userProject!
+                                                              .status!]),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Container(
+                                          height: 30,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 30),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Image.asset(
+                                              "assets/images/dashLine.png")),
+                                      SizedBox(
+                                        height: MySpacer.large,
+                                      )
+                                    ],
+                                  ),
+                              ],
+                            )
                 ],
               ),
             ),
           ),
           AdaptiveItem(
               content: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   child: Column(
@@ -260,63 +313,98 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                 ),
                                 Expanded(
                                   child: Container(
-                                    child: ListView(
-                                      children: [
-                                        Card(
-                                          child: ListTile(
-                                            leading: Icon(
-                                                Icons.notification_important),
-                                            title: Row(
-                                              children: [
-                                                Text("Chantier"),
-                                                SizedBox(
-                                                  width: MySpacer.small,
-                                                ),
-                                                Text("Avril")
-                                              ],
+                                    child: StreamBuilder<List<LogModel>>(
+                                      builder: (context, result) {
+                                        if (result.hasError) {
+                                          return Center(
+                                            child: Text(
+                                              "${result.error}",
                                             ),
-                                            subtitle: Text(
-                                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                          ),
-                                        ),
-                                        Card(
-                                          child: ListTile(
-                                            leading: Icon(
-                                                Icons.notification_important),
-                                            title: Row(
-                                              children: [
-                                                Text("Chantier"),
-                                                SizedBox(
-                                                  width: MySpacer.small,
-                                                ),
-                                                Text("Avril")
-                                              ],
+                                          );
+                                        }
+                                        if (result.hasData &&
+                                            result.data!.length > 0) {
+                                          List<LogModel>? warnings() {
+                                            List<LogModel> newWarnings = [];
+                                            for (LogModel log in result.data!) {
+                                              if (log.type ==
+                                                      "user_time_update" &&
+                                                  log.sender_id ==
+                                                      widget
+                                                          .employeesModel!.id) {
+                                                newWarnings.add(log);
+                                              }
+                                            }
+                                            return newWarnings;
+                                          }
+
+                                          return Scrollbar(
+                                            child: ListView(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                              children: List.generate(
+                                                  warnings()!.length,
+                                                  (index) =>
+                                                      warnings()!.length == 0
+                                                          ? Container(
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                              height: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .height *
+                                                                  0.2,
+                                                              child: Center(
+                                                                child: Text(
+                                                                    "Empty logs"),
+                                                              ),
+                                                            )
+                                                          : Card(
+                                                              child: Padding(
+                                                                padding: const EdgeInsets
+                                                                        .symmetric(
+                                                                    horizontal:
+                                                                        20),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .notification_important_rounded,
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    Expanded(
+                                                                      child:
+                                                                          ListTile(
+                                                                        title: Text(
+                                                                            "${warnings()![index].data_id}"),
+                                                                        subtitle:
+                                                                            Text("${warnings()![index].body}"),
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            )),
                                             ),
-                                            subtitle: Text(
-                                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                          ),
-                                        ),
-                                        Card(
-                                          child: ListTile(
-                                            leading: Icon(
-                                                Icons.notification_important),
-                                            title: Row(
-                                              children: [
-                                                Text("Chantier"),
-                                                SizedBox(
-                                                  width: MySpacer.small,
-                                                ),
-                                                Text("Avril")
-                                              ],
-                                            ),
-                                            subtitle: Text(
-                                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                                          ),
-                                        )
-                                      ],
+                                          );
+                                        } else {
+                                          return Container(
+                                            child: LogsLoader.load(),
+                                          );
+                                        }
+                                      },
+                                      stream: logService.stream$,
                                     ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           )),
