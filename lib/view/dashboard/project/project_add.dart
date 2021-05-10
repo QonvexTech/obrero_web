@@ -395,18 +395,47 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                       "Area Size",
                       style: boldText,
                     ),
-                    Text("${projectAddService.areaSize}"),
-                    Slider(
-                        value: projectAddService.areaSize,
-                        max: 500,
-                        divisions: 5,
-                        onChangeStart: (value) {
-                          projectAddService
-                              .addBodyEdit({"area_size": value.toString()});
-                        },
-                        onChanged: (newValue) {
-                          projectAddService.areaSize = newValue;
-                        }),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text("${projectAddService.areaSize}m"),
+                    Stack(
+                      children: [
+                        Container(
+                          height: 60,
+                          child: Slider(
+                              value: projectAddService.areaSize,
+                              max: 1000,
+                              divisions: 50,
+                              onChangeStart: (value) {
+                                projectAddService.addBodyEdit(
+                                    {"area_size": value.toString()});
+                              },
+                              onChanged: (newValue) {
+                                projectAddService.areaSize = newValue;
+                              }),
+                        ),
+                        Positioned(
+                            bottom: 2,
+                            right: 15,
+                            child: Text(
+                              "1000m",
+                              style: TextStyle(color: Colors.blue[200]),
+                            )),
+                        Positioned(
+                            bottom: 2,
+                            left: 15,
+                            child: Row(
+                              children: [
+                                Text("0m",
+                                    style: TextStyle(color: Colors.blue[200])),
+                              ],
+                            ))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
 
                     //PICTURES
                     Container(
@@ -561,10 +590,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                       .whenComplete(() => Navigator.pop(context));
                 }
               },
-              // child: Text(
-              //   projectAddService.isEdit ? "Update Project" : "Create Project",
-              //   style: TextStyle(color: Colors.white),
-              // ),
+              child: Text(
+                isEdit ? "Mettre à jour" : "Créer",
+                style: TextStyle(color: Colors.white),
+              ),
             )
           ],
         ));
