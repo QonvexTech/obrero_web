@@ -11,6 +11,7 @@ import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/map.dart';
 import 'package:uitemplate/widgets/project_card.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
+import 'package:universal_html/html.dart';
 
 class DashBoardScreen extends StatefulWidget {
   @override
@@ -52,18 +53,47 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            MaterialButton(
-              onPressed: () {
-                projectProvider
-                    .selectDate(context: context, mapService: mapService)
-                    .then((date) {
-                  dashboardService.startDate = date;
-                });
-              },
-              child: Text(
-                "${dashboardService.months[projectProvider.selectedDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} ",
-                style: boldText,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                MaterialButton(
+                  onPressed: () {
+                    projectProvider
+                        .selectDate(
+                            context: context,
+                            mapService: mapService,
+                            isNow: false,
+                            controllerDate: dashboardService.dateController)
+                        .then((date) {
+                      dashboardService.startDate = date;
+                    });
+                  },
+                  child: Text(
+                    "${dashboardService.months[projectProvider.selectedDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} ",
+                    style: boldText,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: MaterialButton(
+                    onPressed: () {
+                      projectProvider
+                          .selectDate(
+                              context: context,
+                              mapService: mapService,
+                              isNow: true,
+                              controllerDate: dashboardService.dateController)
+                          .then((date) {
+                        dashboardService.startDate = date;
+                      });
+                    },
+                    child: Text(
+                      "Aujourd'hui",
+                      style: TextStyle(color: Palette.drawerColor),
+                    ),
+                  ),
+                )
+              ],
             ),
             Container(
               color: Palette.contentBackground,
@@ -106,7 +136,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             //New Date
 
                             projectProvider
-                                .fetchProjectsBaseOnDates(dateSelected: date)
+                                .fetchProjectsBaseOnDates(
+                                    dateSelected: date,
+                                    controller: dashboardService.dateController)
                                 .whenComplete(() => mapService
                                     .mapInit(projectProvider.projectsDateBase));
                           },
@@ -116,23 +148,27 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       SizedBox(
                         width: 5,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Palette.drawerColor,
-                            borderRadius: BorderRadius.circular(100)),
-                        child: IconButton(
-                            padding: EdgeInsets.all(5),
-                            constraints:
-                                BoxConstraints(minWidth: 15, minHeight: 15),
-                            iconSize: 20,
-                            onPressed: () {
-                              dashboardService.nextDate();
-                            },
-                            icon: Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 15,
-                              color: Colors.white,
-                            )),
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                color: Palette.drawerColor,
+                                borderRadius: BorderRadius.circular(100)),
+                            child: IconButton(
+                                padding: EdgeInsets.all(5),
+                                constraints:
+                                    BoxConstraints(minWidth: 15, minHeight: 15),
+                                iconSize: 20,
+                                onPressed: () {
+                                  dashboardService.nextDate();
+                                },
+                                icon: Icon(
+                                  Icons.arrow_forward_ios_rounded,
+                                  size: 15,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        ],
                       ),
                     ],
                   ),

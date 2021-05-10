@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/pagination_model.dart';
@@ -14,6 +15,7 @@ class ProjectProvider extends ChangeNotifier {
   List<ProjectModel>? _projectsDateBase;
   List<ProjectModel> _tempProjects = [];
   PaginationService paginationService = PaginationService();
+//  DatePickerController dateController = DatePickerController();
   DateTime selectedDate = DateTime.now();
   String hours = "0.00";
   List<String> listHours = [];
@@ -25,15 +27,23 @@ class ProjectProvider extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
 
   Future<DateTime> selectDate(
-      {required BuildContext context, required MapService mapService}) async {
-    final DateTime? picked = await showDatePicker(
-        locale: Locale('fr', 'CA'),
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(1999),
-        lastDate: DateTime(3000));
-    if (picked != null && picked != selectedDate) selectedDate = picked;
-    print(selectedDate);
+      {required BuildContext context,
+      required MapService mapService,
+      required bool isNow,
+      required DatePickerController controllerDate}) async {
+    if (isNow) {
+      selectedDate = DateTime.now();
+    } else {
+      final DateTime? picked = await showDatePicker(
+          locale: Locale('fr', 'CA'),
+          context: context,
+          initialDate: selectedDate,
+          firstDate: DateTime(1999),
+          lastDate: DateTime(3000));
+      if (picked != null && picked != selectedDate) {
+        selectedDate = picked;
+      }
+    }
     fetchProjectsBaseOnDates()
         .whenComplete(() => mapService.mapInit(_projectsDateBase!));
     notifyListeners();
@@ -135,11 +145,16 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  Future fetchProjectsBaseOnDates({DateTime? dateSelected, context}) async {
+  Future fetchProjectsBaseOnDates(
+      {DateTime? dateSelected,
+      context,
+      DatePickerController? controller}) async {
     if (dateSelected == null) {
       dateSelected = selectedDate;
+      // controller!.animateToDate(selectedDate);
     } else {
       selectedDate = dateSelected;
+      // controller!.animateToDate(dateSelected);
     }
     var url = Uri.parse("$project_api_date");
     // final prefs = await SharedPreferences.getInstance();
