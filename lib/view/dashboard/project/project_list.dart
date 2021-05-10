@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/project/project_service.dart';
@@ -88,12 +90,12 @@ class _ProjectListState extends State<ProjectList> {
                         headersMobile: [
                           "NOM DU SITE",
                           "OWNER",
-                          "LOCATION"
+                          "ADDRESS"
                         ],
                         headers: [
                           "NOM DU SITE",
                           "OWNER",
-                          "LOCATION",
+                          "ADDRESS",
                           "AREA SIZE",
                           "START DATE",
                           "END DATE"
@@ -148,7 +150,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                data.customerId.toString(),
+                "${data.owner!.fname} ${data.owner!.lname}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -158,7 +160,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                "${data.coordinates!.latitude},${data.coordinates!.longitude}",
+                "${data.address}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -238,7 +240,7 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.customerId.toString(),
+                "${data.owner!.fname} ${data.owner!.lname}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -248,7 +250,7 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                "${data.coordinates!.latitude},${data.coordinates!.longitude}",
+                "${data.address}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -268,7 +270,9 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.startDate.toString(),
+                DateFormat('MMM dd, yyyy', 'fr_FR')
+                    .format(data.startDate!)
+                    .inCaps,
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -278,7 +282,9 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                data.endDate.toString(),
+                DateFormat('MMM dd, yyyy', 'fr_FR')
+                    .format(data.endDate!)
+                    .inCaps,
                 overflow: TextOverflow.ellipsis,
               ),
             ))),

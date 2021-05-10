@@ -6,6 +6,7 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/models/pagination_model.dart';
+import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 
@@ -15,19 +16,12 @@ class CustomerService extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
   List<CustomerModel>? _customers;
   List<CustomerModel>? _tempCustomer;
-  // void loaderOn() {
-  //   loader = true;
-  //   notifyListeners();
-  // }
-
-  // void loaderOff() {
-  //   loader = false;
-  //   notifyListeners();
-  // }
+  List<ProjectModel>? customerProject;
 
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchCustomers);
   Map bodyToUpdate = {};
+
   //SEARCH CUSTOMER
   void search(String text) {
     _customers = _tempCustomer;
@@ -46,10 +40,16 @@ class CustomerService extends ChangeNotifier {
   get customers => _customers;
   get pagination => _pagination;
   setPage({required Widget page}) {
+    if (page is CustomerList) {
+      customerProject = null;
+      print("clear");
+      notifyListeners();
+    }
     activePageScreen = page;
     notifyListeners();
   }
 
+//IMAGES
   Uint8List? _base64Image;
   get base64Image => _base64Image;
   get base64ImageEncoded => base64.encode(base64Image.toList());
@@ -72,6 +72,31 @@ class CustomerService extends ChangeNotifier {
   //     Navigator.pop(context);
   //   });
   // }
+
+  Future workingProjectsCustomer(int customerId) async {
+    try {
+      var url = Uri.parse("$customer_projects$customerId");
+      var response = await http.get(url, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var data = json.decode(response.body);
+        if (data["projects"] != null) {
+          var tempCustomerProject =
+              ProjectModel.fromJsonListToProject(data["projects"]);
+          customerProject = await tempCustomerProject;
+        } else {
+          customerProject = [];
+        }
+
+        notifyListeners();
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   fromJsonListToCustomer(List customers) {
     List<CustomerModel> newCustomers = [];
@@ -141,6 +166,7 @@ class CustomerService extends ChangeNotifier {
         print(data);
         paginationService.addedItem(_pagination);
         fetchCustomers();
+        notifyListeners();
       });
     } catch (e) {
       print(e);
@@ -181,9 +207,10 @@ class CustomerService extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
-        notifyListeners();
+        fetchCustomers();
         print(data);
         print("update success");
+        notifyListeners();
       });
     } catch (e) {
       print(e);

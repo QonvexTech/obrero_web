@@ -19,7 +19,7 @@ class MessageScreen extends StatefulWidget {
 class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
   // String? base64Image;
   // String fileNameAndSize = "";
-  late ImageViewer _viewer = ImageViewer(callback: (value){
+  late ImageViewer _viewer = ImageViewer(callback: (value) {
     setState(() {
       Views.b64Image = null;
     });
@@ -32,11 +32,13 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
   void dispose() {
     super.dispose();
   }
+
   @override
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
     super.initState();
   }
+
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -47,51 +49,59 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
       backgroundColor: Colors.white,
       key: _key,
       body: Container(
-        width: size.width,
-        height: size.height,
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                child: Column(
-                  children: [
-                    AppBar(
-                      centerTitle: false,
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                      title: Text("Messagerie",style: TextStyle(
-                        color: Colors.black
-                      ),),
-                      actions: [
-                        IconButton(
-                            icon: Icon(Icons.attach_file_outlined,color: Palette.drawerColor,),
+          width: size.width,
+          height: size.height,
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  child: Column(
+                    children: [
+                      AppBar(
+                        centerTitle: false,
+                        elevation: 0,
+                        backgroundColor: Colors.transparent,
+                        title: Text(
+                          "Messagerie",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        actions: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.attach_file_outlined,
+                              color: Palette.drawerColor,
+                            ),
                             padding: const EdgeInsets.all(0),
-                            onPressed: (){
+                            onPressed: () {
                               MessagingDataHelper.pickImage((value) {
                                 setState(() {
                                   Views.b64Image = value;
                                 });
                               });
                             },
-                        ),
-                        const SizedBox(
-                          width: 15,
-                        ),
-                        MaterialButton(
-                          padding: const EdgeInsets.all(20),
-                          onPressed: () => setState(() => _showList = !_showList),
-                          minWidth: 60,
-                          height: 60,
-                          color: Theme.of(context).accentColor,
-                          child: Center(
-                            child: Image.asset("assets/icons/icon.png", color: Colors.white,),
                           ),
-                        )
-                      ],
-                      automaticallyImplyLeading: false,
-                    ),
-                    Expanded(
-                      child: Container(
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          MaterialButton(
+                            padding: const EdgeInsets.all(20),
+                            onPressed: () =>
+                                setState(() => _showList = !_showList),
+                            minWidth: 60,
+                            height: 60,
+                            color: Theme.of(context).accentColor,
+                            child: Center(
+                              child: Image.asset(
+                                "assets/icons/icon.png",
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        ],
+                        automaticallyImplyLeading: false,
+                      ),
+                      Expanded(
+                          child: Container(
                         child: Scrollbar(
                           child: ListView(
                             padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -99,51 +109,67 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                               Container(
                                 width: double.infinity,
                                 child: Text(
-                                    "Destinataire(s) :",
+                                  "Destinataire(s) :",
                                   style: TextStyle(
-                                    fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 2
-                                  ),
+                                      fontSize: Theme.of(context)
+                                              .textTheme
+                                              .headline6!
+                                              .fontSize! -
+                                          2),
                                 ),
                               ),
-                              if(_recepients.isNotEmpty)...{
+                              if (_recepients.isNotEmpty) ...{
                                 Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 5),
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5),
                                   width: double.infinity,
-                                  child: Text("Cliquez sur l'élément à supprimer de la liste",style: TextStyle(
-                                    color: Palette.drawerColor.withOpacity(0.5),
-                                    fontSize: Theme.of(context).textTheme.subtitle1!.fontSize
-                                  ),),
+                                  child: Text(
+                                    "Cliquez sur l'élément à supprimer de la liste",
+                                    style: TextStyle(
+                                        color: Palette.drawerColor
+                                            .withOpacity(0.5),
+                                        fontSize: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .fontSize),
+                                  ),
                                 ),
                               },
                               Container(
-                                margin: const EdgeInsets.symmetric(vertical: 10),
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 10),
                                 width: double.infinity,
                                 child: Wrap(
-                                  children: List.generate(_recepients.length, (index) => Container(
-                                    margin: const EdgeInsets.only(right: 15,bottom: 10),
-                                    child: MaterialButton(
-                                      color: Colors.grey.shade300,
-                                      onPressed: (){
-                                        setState(() {
-                                          _recepients.removeAt(index);
-                                        });
-                                      },
-                                      child: Text(
-                                        "${_recepients[index].fname} ${_recepients[index].lname}",
-                                        style: TextStyle(
-                                            fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 4,
-                                            fontWeight: FontWeight.w400
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                  )
-                                ),
+                                    children: List.generate(
+                                        _recepients.length,
+                                        (index) => Container(
+                                              margin: const EdgeInsets.only(
+                                                  right: 15, bottom: 10),
+                                              child: MaterialButton(
+                                                color: Colors.grey.shade300,
+                                                onPressed: () {
+                                                  setState(() {
+                                                    _recepients.removeAt(index);
+                                                  });
+                                                },
+                                                child: Text(
+                                                  "${_recepients[index].fname} ${_recepients[index].lname}",
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          Theme.of(context)
+                                                                  .textTheme
+                                                                  .headline6!
+                                                                  .fontSize! -
+                                                              4,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                              ),
+                                            ))),
                               ),
-                              if(Views.b64Image != null)...{
-                                _viewer
-                              },
-                              Views.textField((size.height/50).ceil(), callback: (text){
+                              if (Views.b64Image != null) ...{_viewer},
+                              Views.textField((size.height / 50).ceil(),
+                                  callback: (text) {
                                 setState(() {
                                   message = text;
                                 });
@@ -151,73 +177,108 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                             ],
                           ),
                         ),
-                      )
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 20,vertical: 15),
-                      child: MaterialButton(
-                        onPressed: (message != "" && _recepients.isNotEmpty) || (Views.b64Image != null && _recepients.isNotEmpty) ? (){
+                      )),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 15),
+                        child: MaterialButton(
+                          onPressed:
+                              (message != "" && _recepients.isNotEmpty) ||
+                                      (Views.b64Image != null &&
+                                          _recepients.isNotEmpty)
+                                  ? () {
+                                      var stringRecepients = "";
+                                      List empIds = [];
+                                      for (EmployeesModel emp in _recepients) {
+                                        empIds.add(emp.id);
+                                      }
 
-                        } : null,
-                        height: 60,
-                        disabledColor: Colors.grey,
-                        color: Palette.drawerColor,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.send_rounded, color: Colors.white,),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text("Envoyer",style: TextStyle(
-                              fontSize: Theme.of(context).textTheme.headline6!.fontSize! - 4,
-                              color: Colors.white
-                            ),)
-                          ],
+                                      stringRecepients = empIds
+                                          .toString()
+                                          .replaceAll("[", "")
+                                          .replaceAll("]", "");
+
+                                      messageService.sendMessage(
+                                          ids: stringRecepients,
+                                          message: message,
+                                          base64File: Views.b64Image);
+                                      print(stringRecepients);
+                                    }
+                                  : null,
+                          height: 60,
+                          disabledColor: Colors.grey,
+                          color: Palette.drawerColor,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.send_rounded,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                "Envoyer",
+                                style: TextStyle(
+                                    fontSize: Theme.of(context)
+                                            .textTheme
+                                            .headline6!
+                                            .fontSize! -
+                                        4,
+                                    color: Colors.white),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            AnimatedContainer(
-              duration: Duration(
-                milliseconds: 500,
-              ),
-              width: _showList ? 300 : 0,
-              height: size.height,
-              color: Colors.white,
-
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 55,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text("Employees",style: TextStyle(
-                      fontSize: Theme.of(context).textTheme.headline6!.fontSize
-                    ),),
-                  ),
-                  Expanded(
-                    child: Container(
-                      child: employeeSevice.users == null ? Views.shimmerLoader() : Views.employeesList(employeeSevice, callback: (employeeData) {
-                        if(!MessagingDataHelper.contains(_recepients, employeeData.id!)) {
-                          print(employeeData);
-                          setState(() {
-                            _recepients.add(employeeData);
-                          });
-                        }
-                      }),
-                    )
-                  )
-                ],
-              ),
-            )
-          ],
-        )
-      ),
+              AnimatedContainer(
+                duration: Duration(
+                  milliseconds: 500,
+                ),
+                width: _showList ? 300 : 0,
+                height: size.height,
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 55,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Text(
+                        "Employees",
+                        style: TextStyle(
+                            fontSize: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .fontSize),
+                      ),
+                    ),
+                    Expanded(
+                        child: Container(
+                      child: employeeSevice.users == null
+                          ? Views.shimmerLoader()
+                          : Views.employeesList(employeeSevice,
+                              callback: (employeeData) {
+                              if (!MessagingDataHelper.contains(
+                                  _recepients, employeeData.id!)) {
+                                print(employeeData);
+                                setState(() {
+                                  _recepients.add(employeeData);
+                                });
+                              }
+                            }),
+                    ))
+                  ],
+                ),
+              )
+            ],
+          )),
     );
     // return Container(
     //   padding: EdgeInsets.all(20),

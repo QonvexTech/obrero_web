@@ -33,6 +33,10 @@ dependencies:
     git:
       url: https://github.com/alnaughty/adaptive_container
 
+  #WEB
+  # hover:
+  universal_html: ^2.0.8
+
   # Internet
   http: ^0.13.1
 
@@ -44,12 +48,17 @@ dependencies:
 
   #validator
   email_validator: ^2.0.1
+ 
 
   #DATE
   date_picker_timeline: ^1.2.3
+  intl: ^0.17.0
 
-  #GEOLOCATOR
-  # geolocator: ^7.0.3
+  flutter_localizations:
+    sdk: flutter
+
+  #GEOCODE
+  google_maps_webservice: ^0.0.19
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

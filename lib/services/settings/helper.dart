@@ -4,18 +4,6 @@ import 'package:flutter/material.dart';
 import '../../config/global.dart';
 
 class SettingsHelper {
-  TextEditingController email = new TextEditingController()
-    ..text = profileData!.email!;
-  TextEditingController first_name = new TextEditingController()
-    ..text = profileData!.firstName!;
-  TextEditingController last_name = new TextEditingController()
-    ..text = profileData!.lastName!;
-  TextEditingController password = new TextEditingController();
-
-  setInit(TextEditingController controller, String string) {
-    controller.text = string;
-  }
-
   Widget customTextField(
       {required TextEditingController controller, required String label}) {
     return Container(
@@ -34,10 +22,12 @@ class SettingsHelper {
   }
 
   ImageProvider tempImageProvider(
-      {Uint8List? file, required var netWorkImage}) {
+      {Uint8List? file,
+      required var netWorkImage,
+      required String defaultImage}) {
     if (file == null) {
       if (netWorkImage == null || netWorkImage == "") {
-        return AssetImage('icons/admin_icon.png');
+        return AssetImage(defaultImage);
       } else {
         return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
       }
@@ -50,7 +40,6 @@ class SettingsHelper {
     if (netWorkImage == null || netWorkImage == "") {
       return AssetImage('icons/admin_icon.png');
     } else {
-      print(netWorkImage);
       return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
     }
   }
@@ -63,7 +52,7 @@ class SettingsHelper {
     }
   }
 
-  HtmlElementView get viewWebImage {
-    return HtmlElementView(viewType: "${profileData!.picture}");
-  }
+  // HtmlElementView get viewWebImage {
+  //   return HtmlElementView(viewType: "${profileData!.picture}");
+  // }
 }

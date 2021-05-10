@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
+import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 
 class ProjectDetails extends StatefulWidget {
@@ -20,6 +23,13 @@ class ProjectDetails extends StatefulWidget {
 }
 
 class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
+  @override
+  void initState() {
+    Provider.of<ProjectProvider>(context, listen: false)
+        .initHours(widget.projectModel!.id!);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
@@ -81,7 +91,9 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                           height: MySpacer.small,
                         ),
                         Text(
-                          "${widget.projectModel!.coordinates!.latitude},${widget.projectModel!.coordinates!.longitude}",
+                          widget.projectModel!.address != null
+                              ? "${widget.projectModel!.address}"
+                              : "${widget.projectModel!.coordinates!.latitude},${widget.projectModel!.coordinates!.longitude}",
                           style: boldText,
                         )
                       ],
@@ -93,7 +105,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         SizedBox(
                           height: MySpacer.small,
                         ),
-                        Text(widget.projectModel!.customerId.toString(),
+                        Text(
+                            "${widget.projectModel!.owner!.fname!} ${widget.projectModel!.owner!.lname!}",
                             style: boldText)
                       ],
                     ),
@@ -160,26 +173,55 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                   height: MySpacer.small,
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.35,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   width: MediaQuery.of(context).size.width,
                   child: GridView.count(
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     shrinkWrap: true,
+                    childAspectRatio: 1.5,
                     crossAxisCount: 3,
                     children: [
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
+                      for (var image in widget.projectModel!.images!)
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
                                 child: Container(
-                              color: Colors.red,
-                              child: Text("${widget.projectModel!.picture!}"),
-                            )),
-                          ],
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: tempImageProvider(
+                                            netWorkImage: image.url,
+                                            defaultImage:
+                                                "images/emptyImage.jpg")),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                      if (widget.projectModel!.images!.length == 0)
+                        Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: tempImageProvider(
+                                            netWorkImage: null,
+                                            defaultImage:
+                                                "images/emptyImage.jpg")),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                 )
@@ -202,7 +244,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                 height: MySpacer.small,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Column(
                     children: [
@@ -214,7 +256,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "126",
+                            projectProvider.hours,
                             style: Theme.of(context).textTheme.headline3,
                           ),
                           Text(
@@ -225,30 +267,30 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       ),
                     ],
                   ),
-                  Divider(
-                    thickness: 3,
-                    color: Colors.grey,
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        "Progres Totales",
-                        style: transHeader.copyWith(fontSize: 10),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            "60%",
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    thickness: 3,
-                    color: Colors.grey,
+
+                  // Column(
+                  //   children: [
+                  //     Text(
+                  //       "Progres Totales",
+                  //       style: transHeader.copyWith(fontSize: 10),
+                  //     ),
+                  //     Row(
+                  //       crossAxisAlignment: CrossAxisAlignment.end,
+                  //       children: [
+                  //         Text(
+                  //           "60%",
+                  //           style: Theme.of(context).textTheme.headline3,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ],
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Divider(
+                      thickness: 4,
+                      color: Colors.grey,
+                    ),
                   ),
                   Column(
                     children: [
@@ -260,11 +302,11 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            "80",
+                            "${widget.projectModel!.warnings!.length}",
                             style: Theme.of(context).textTheme.headline3,
                           ),
                           Text(
-                            "Warnings",
+                            "Warning",
                             style: TextStyle(fontSize: 10),
                           )
                         ],
@@ -294,59 +336,68 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                 height: MySpacer.small,
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
-                child: ListView(
-                  children: [
-                    Card(
-                      child: ListTile(
-                        leading: Icon(Icons.notification_important),
-                        title: Row(
-                          children: [
-                            Text("Chantier"),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text("Avril")
-                          ],
+                child: StreamBuilder<List<LogModel>>(
+                  builder: (context, result) {
+                    if (result.hasError) {
+                      return Center(
+                        child: Text(
+                          "${result.error}",
                         ),
-                        subtitle: Text(
-                            "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                      ),
-                    ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(Icons.notification_important),
-                        title: Row(
-                          children: [
-                            Text("Chantier"),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text("Avril")
-                          ],
+                      );
+                    }
+                    if (result.hasData && result.data!.length > 0) {
+                      List<LogModel>? warnings() {
+                        List<LogModel> newWarnings = [];
+                        for (LogModel log in result.data!) {
+                          if (log.type == "project_warning") {
+                            newWarnings.add(log);
+                          }
+                        }
+                        return newWarnings;
+                      }
+
+                      return Scrollbar(
+                        child: ListView(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          children: List.generate(
+                              warnings()!.length,
+                              (index) => Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons
+                                                .notification_important_rounded,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text(
+                                                  "${warnings()![index].title}"),
+                                              subtitle: Text(
+                                                  "${warnings()![index].body}"),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )),
                         ),
-                        subtitle: Text(
-                            "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                      ),
-                    ),
-                    Card(
-                      child: ListTile(
-                        leading: Icon(Icons.notification_important),
-                        title: Row(
-                          children: [
-                            Text("Chantier"),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text("Avril")
-                          ],
-                        ),
-                        subtitle: Text(
-                            "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                      ),
-                    )
-                  ],
+                      );
+                    } else {
+                      return Container(
+                        child: LogsLoader.load(),
+                      );
+                    }
+                  },
+                  stream: logService.stream$,
                 ),
               ),
             ],

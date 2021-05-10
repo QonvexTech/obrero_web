@@ -4,6 +4,7 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
@@ -14,6 +15,8 @@ class ProjectProvider extends ChangeNotifier {
   List<ProjectModel> _tempProjects = [];
   PaginationService paginationService = PaginationService();
   DateTime selectedDate = DateTime.now();
+  String hours = "0.00";
+  List<String> listHours = [];
 
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchProjects);
@@ -21,16 +24,30 @@ class ProjectProvider extends ChangeNotifier {
   //SEARCH
   TextEditingController searchController = TextEditingController();
 
-  Future<void> selectDate(BuildContext context) async {
+  Future<DateTime> selectDate(
+      {required BuildContext context, required MapService mapService}) async {
     final DateTime? picked = await showDatePicker(
+        locale: Locale('fr', 'CA'),
         context: context,
         initialDate: selectedDate,
-        firstDate: DateTime(2015),
-        lastDate: DateTime(2025));
+        firstDate: DateTime(1999),
+        lastDate: DateTime(3000));
     if (picked != null && picked != selectedDate) selectedDate = picked;
     print(selectedDate);
-    fetchProjectsBaseOnDates();
+    fetchProjectsBaseOnDates()
+        .whenComplete(() => mapService.mapInit(_projectsDateBase!));
     notifyListeners();
+    return selectedDate;
+  }
+
+  init(mapService) {
+    fetchProjectsBaseOnDates()
+        .then((x) => mapService.mapInit(_projectsDateBase));
+  }
+
+  Future initHours(int projectId) async {
+    hours = await fetchHours(projectId);
+    return hours;
   }
 
   search(String text) {
@@ -56,11 +73,29 @@ class ProjectProvider extends ChangeNotifier {
 
   get pagination => _pagination;
   get projects => _projects;
-  get projectDateBased => _projectsDateBase;
+  get projectsDateBase => _projectsDateBase;
 
-  List<dynamic> splitAllImage(String images) {
-    List<dynamic> splitImages = images.split(".!.");
-    return splitImages;
+  Future<String> fetchHours(int projectId) async {
+    String? hours;
+    try {
+      var url = Uri.parse("$projectTotalHours$projectId");
+      var response = await http.get(url, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var data = json.decode(response.body);
+        print(data["hours"]);
+        hours = double.parse(data['hours'].toString()).toStringAsFixed(2);
+      } else {
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
+    notifyListeners();
+    return hours!;
   }
 
   Future fetchProjects() async {
@@ -88,8 +123,9 @@ class ProjectProvider extends ChangeNotifier {
           _pagination.perPage = _pagination.totalEntries;
         }
         var projects = ProjectModel.fromJsonListToProject(data);
-        _projects = projects;
-        _tempProjects = projects;
+        _projects = await projects;
+        _tempProjects = await projects;
+        notifyListeners();
         print(data);
       } else {
         print(response.body);
@@ -97,10 +133,9 @@ class ProjectProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    notifyListeners();
   }
 
-  Future fetchProjectsBaseOnDates({DateTime? dateSelected}) async {
+  Future fetchProjectsBaseOnDates({DateTime? dateSelected, context}) async {
     if (dateSelected == null) {
       dateSelected = selectedDate;
     } else {
@@ -118,25 +153,19 @@ class ProjectProvider extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List datas = json.decode(response.body);
-        if (projectDateBased != null) {
-          _projectsDateBase!.clear();
-          for (var data in datas) {
-            _projectsDateBase!.add(ProjectModel.fromJson(data));
-          }
-        } else {
-          _projectsDateBase = [];
-        }
+
+        var projectsdate = ProjectModel.fromJsonListToProject(datas);
+        _projectsDateBase = await projectsdate;
 
         print(response.body);
-        notifyListeners();
       } else {
-        _projectsDateBase!.clear();
-
+        print("fail");
         print(response.body);
       }
     } catch (e) {
       print("project fetch error : $e");
     }
+    notifyListeners();
   }
 
   Future createProjects({required ProjectModel newProject}) async {
@@ -158,13 +187,13 @@ class ProjectProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
 
-  Future updateProject({required ProjectModel? newProject}) async {
-    var url = Uri.parse("$project_update_api/${newProject!.id}");
-
+  Future updateProject({required Map bodyToEdit}) async {
+    var url = Uri.parse("$project_update_api");
     try {
-      await http.put(url, body: newProject.toJson(), headers: {
+      await http.put(url, body: bodyToEdit, headers: {
         "Accept": "application/json",
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
@@ -173,7 +202,6 @@ class ProjectProvider extends ChangeNotifier {
         print(data);
         fetchProjectsBaseOnDates();
         fetchProjects();
-
         notifyListeners();
       });
     } catch (e) {
@@ -190,7 +218,7 @@ class ProjectProvider extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         _projects!.removeWhere((element) => element.id == id);
-        _projectsDateBase!.removeWhere((element) => element.id == id);
+        projectsDateBase!.removeWhere((element) => element.id == id);
         notifyListeners();
         if (_projects!.length == 0) {
           if (_pagination.isPrev) {

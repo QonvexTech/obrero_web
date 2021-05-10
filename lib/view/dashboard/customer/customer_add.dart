@@ -17,12 +17,12 @@ class CustomerAdd extends StatefulWidget {
 
 class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
   bool isEdit = false;
+  Map bodyToEdit = {};
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
-  TextEditingController amountController = TextEditingController();
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
       emailController.text = widget.customerToEdit!.email!;
       addressController.text = widget.customerToEdit!.adress!;
       contactNumberController.text = widget.customerToEdit!.contactNumber!;
-      amountController.text = widget.customerToEdit!.status!.amount!.toString();
+      // amountController.text = widget.customerToEdit!.status!.amount!.toString();
       isEdit = true;
     }
     super.initState();
@@ -40,8 +40,9 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
 
   @override
   Widget build(BuildContext context) {
-    CustomerService customerService = Provider.of<CustomerService>(context);
     final Size size = MediaQuery.of(context).size;
+    CustomerService customerService = Provider.of<CustomerService>(context);
+
     return Container(
       width: size.width,
       height: size.height,
@@ -104,7 +105,8 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                             alignment: AlignmentDirectional.center,
                             image: tempImageProvider(
                                 file: customerService.base64Image,
-                                netWorkImage: widget.customerToEdit?.picture),
+                                netWorkImage: widget.customerToEdit?.picture,
+                                defaultImage: 'icons/admin_icon.png'),
                             scale: 1)),
                   ),
                 )),
@@ -113,6 +115,9 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                 height: MySpacer.large,
               ),
               TextField(
+                onChanged: (value) {
+                  bodyToEdit.addAll({"first_name": value});
+                },
                 decoration: InputDecoration(
                     fillColor: Colors.white,
                     hintText: "Prénom",
@@ -124,6 +129,9 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                 height: MySpacer.small,
               ),
               TextField(
+                onChanged: (value) {
+                  bodyToEdit.addAll({"last_name": value});
+                },
                 decoration: InputDecoration(
                   hintText: "Nom de famillie",
                   hintStyle: transHeader,
@@ -135,6 +143,9 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                 height: MySpacer.small,
               ),
               TextField(
+                onChanged: (value) {
+                  bodyToEdit.addAll({"email": value});
+                },
                 decoration: InputDecoration(
                   hintText: "Email",
                   border: OutlineInputBorder(),
@@ -145,6 +156,9 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                 height: MySpacer.small,
               ),
               TextField(
+                onChanged: (value) {
+                  bodyToEdit.addAll({"contact_number": value});
+                },
                 decoration: InputDecoration(
                   hintText: "Téléphone",
                   border: OutlineInputBorder(),
@@ -155,6 +169,9 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                 height: MySpacer.small,
               ),
               TextField(
+                onChanged: (value) {
+                  bodyToEdit.addAll({"address": value});
+                },
                 decoration: InputDecoration(
                   hintText: "Address",
                   border: OutlineInputBorder(),
@@ -164,13 +181,16 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Amount",
-                  border: OutlineInputBorder(),
-                ),
-                controller: amountController,
-              ),
+              // TextField(
+              //   onChanged: (value) {
+              //     bodyToEdit.addAll({"address": value});
+              //   },
+              //   decoration: InputDecoration(
+              //     hintText: "Status",
+              //     border: OutlineInputBorder(),
+              //   ),
+              //   controller: amountController,
+              // ),
             ],
           ))),
           MaterialButton(
@@ -179,20 +199,24 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
             color: Palette.drawerColor,
             onPressed: () {
               if (isEdit) {
+                setState(() {
+                  bodyToEdit
+                      .addAll({"id": widget.customerToEdit!.id.toString()});
+                  customerService
+                      .updateCustomer(bodyToEdit: bodyToEdit)
+                      .whenComplete(() => Navigator.pop(context));
+                });
               } else {
-                String picture = "";
-                if (customerService.base64Image != null) {
-                  picture = customerService.base64ImageEncoded;
-                }
-
                 CustomerModel newCustomer = CustomerModel(
-                    fname: fnameController.text,
-                    lname: lnameController.text,
-                    email: emailController.text,
-                    adress: addressController.text,
-                    picture: picture,
-                    contactNumber: contactNumberController.text,
-                    amount: double.parse(amountController.text));
+                  fname: fnameController.text,
+                  lname: lnameController.text,
+                  email: emailController.text,
+                  adress: addressController.text,
+                  picture: customerService.base64Image != null
+                      ? customerService.base64ImageEncoded
+                      : "",
+                  contactNumber: contactNumberController.text,
+                );
 
                 customerService
                     .createCustomer(newCustomer: newCustomer)

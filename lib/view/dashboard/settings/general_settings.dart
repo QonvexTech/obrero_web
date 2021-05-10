@@ -18,6 +18,13 @@ class GeneralSettings extends StatefulWidget {
 
 class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
   EmployeeSevice _service = new EmployeeSevice();
+  TextEditingController email = new TextEditingController()
+    ..text = profileData!.email!;
+  TextEditingController first_name = new TextEditingController()
+    ..text = profileData!.firstName!;
+  TextEditingController last_name = new TextEditingController()
+    ..text = profileData!.lastName!;
+  TextEditingController password = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +87,8 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                                   : AlignmentDirectional.center,
                               image: tempImageProvider(
                                   file: profileService.base64Image,
-                                  netWorkImage: profileData?.picture),
+                                  netWorkImage: profileData?.picture,
+                                  defaultImage: 'images/emptyImage.jpg'),
                               scale: profileData?.picture == null ? 5 : 1)),
                     ),
                   )),

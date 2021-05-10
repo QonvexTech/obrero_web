@@ -4,7 +4,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/config/global.dart';
-import 'package:uitemplate/services/notification_services.dart';
+import 'package:uitemplate/models/log_model.dart';
+import 'package:uitemplate/services/log_service.dart';
 
 class FireBase extends ChangeNotifier {
   final String serverToken =
@@ -18,48 +19,50 @@ class FireBase extends ChangeNotifier {
   // }
 
   Future<void> initialize({required context}) async {
-    await _firebaseMessaging.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-    NotificationSettings settings = await _firebaseMessaging.requestPermission(
-      alert: true,
-      announcement: true,
-      badge: true,
-      carPlay: true,
-      criticalAlert: true,
-      provisional: true,
-      sound: true,
-    );
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      rxNotificationService
-          .append(json.decode(message.data['notification_data']));
+    try {
+      await _firebaseMessaging.setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      NotificationSettings settings =
+          await _firebaseMessaging.requestPermission(
+        alert: true,
+        announcement: true,
+        badge: true,
+        carPlay: true,
+        criticalAlert: true,
+        provisional: true,
+        sound: true,
+      );
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+        // rxNotificationService
+        //     .append(json.decode(message.data['notification_data']));
 
-      // if (message.data['notification_data'] != null) {
-      //   // messages.add(message.data['notification_data']);
-      //   rxNotificationService.append(
-      //       json.decode(message.data['notification_data']), _newMessage);
-      //   print(rxNotificationService.current);
-      //   // print(messages);
-      // } else {
-      //   //chat
-      //   print(message.notification!.body);
-      // }
+        if (message.data['notification_data'] != null) {
+          // messages.add(message.data['notification_data']);
+          logService.append(
+              data: LogModel.fromJson(
+                  json.decode(message.data['notification_data'])));
+          // print(messages);
+        }
 
-      return;
-      // print(messages);
-    });
+        return;
+        // print(messages);
+      });
 
-    // on open
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print("MESSAGE OPENED :${event.notification!.title}");
-    });
+      // on open
+      FirebaseMessaging.onMessageOpenedApp.listen((event) {
+        print("MESSAGE OPENED :${event.notification!.title}");
+      });
 
-    //background
-    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-      print('Handling a background message ${message.messageId}');
-    });
+      //background
+      FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
+        print('Handling a background message ${message.messageId}');
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   init({required context}) async {
