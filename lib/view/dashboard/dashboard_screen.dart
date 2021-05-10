@@ -2,8 +2,8 @@ import 'package:adaptive_container/adaptive_container.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
@@ -52,16 +52,19 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            //TODO: If need to add date at top
-            // MaterialButton(
-            //   onPressed: () {
-            //     projectProvider.selectDate(context);
-            //   },
-            //   child: Text(
-            //     "${dashboardService.months[projectProvider.selectedDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} ",
-            //     style: boldText,
-            //   ),
-            // ),
+            MaterialButton(
+              onPressed: () {
+                projectProvider
+                    .selectDate(context: context, mapService: mapService)
+                    .then((date) {
+                  dashboardService.startDate = date;
+                });
+              },
+              child: Text(
+                "${dashboardService.months[projectProvider.selectedDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} ",
+                style: boldText,
+              ),
+            ),
             Container(
               color: Palette.contentBackground,
               child: Card(
@@ -136,7 +139,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                 ),
               ),
             ),
-
             SizedBox(
               height: MySpacer.small,
             ),

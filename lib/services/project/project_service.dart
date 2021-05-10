@@ -4,6 +4,7 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
@@ -23,20 +24,22 @@ class ProjectProvider extends ChangeNotifier {
   //SEARCH
   TextEditingController searchController = TextEditingController();
 
-  // Future<void> selectDate(
-  //     {required BuildContext context, required MapService mapService}) async {
-  //   final DateTime? picked = await showDatePicker(
-  //       context: context,
-  //       initialDate: selectedDate,
-  //       firstDate: DateTime(2015),
-  //       lastDate: DateTime(2025));
-  //   if (picked != null && picked != selectedDate) selectedDate = picked;
-  //   print(selectedDate);
-  //   fetchProjectsBaseOnDates()
-  //       .whenComplete(() => mapService.mapInit(_projectsDateBase!));
-  //   notifyListeners();
-  // }
-  //
+  Future<DateTime> selectDate(
+      {required BuildContext context, required MapService mapService}) async {
+    final DateTime? picked = await showDatePicker(
+        locale: Locale('fr', 'CA'),
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(1999),
+        lastDate: DateTime(3000));
+    if (picked != null && picked != selectedDate) selectedDate = picked;
+    print(selectedDate);
+    fetchProjectsBaseOnDates()
+        .whenComplete(() => mapService.mapInit(_projectsDateBase!));
+    notifyListeners();
+    return selectedDate;
+  }
+
   init(mapService) {
     fetchProjectsBaseOnDates()
         .then((x) => mapService.mapInit(_projectsDateBase));

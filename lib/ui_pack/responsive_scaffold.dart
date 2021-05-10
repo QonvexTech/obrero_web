@@ -6,7 +6,6 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/profile_service.dart';
-import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
 import 'package:uitemplate/view/dashboard/dashboard_screen.dart';
@@ -379,7 +378,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                     ),
 
                     Spacer(),
-
                     NotificationCard(),
                     profileData == null
                         ? CircleAvatar(

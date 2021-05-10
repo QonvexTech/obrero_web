@@ -48,10 +48,14 @@ dependencies:
 
   #validator
   email_validator: ^2.0.1
+ 
 
   #DATE
   date_picker_timeline: ^1.2.3
   intl: ^0.17.0
+
+  flutter_localizations:
+    sdk: flutter
 
   #GEOCODE
   google_maps_webservice: ^0.0.19

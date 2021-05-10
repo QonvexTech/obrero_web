@@ -42,6 +42,7 @@ class Authentication {
         print("This is the TOken $authToken");
 
         await logApiCall.fetchServer();
+
         success = true;
         return success;
       } else {

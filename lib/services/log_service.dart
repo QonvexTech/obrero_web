@@ -2,6 +2,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/view_model/logs/log_api_call.dart';
 
+import 'notification_services.dart';
+
 class LogService {
   LogApiCall apiCall = LogApiCall.instance;
   LogService._privateConstructor();
@@ -25,7 +27,21 @@ class LogService {
     this.current!.sort((a, b) =>
         DateTime.parse(b.created_at!).compareTo(DateTime.parse(a.created_at!)));
     this._logs.add(this.current!);
+    rxNotificationService.updateMessage();
   }
+
+  // var _newMessage = BehaviorSubject<bool>.seeded(false);
+  // Stream<bool> get $streamNewMessage => _newMessage.stream;
+
+  // bool get newMessage => _newMessage.value!;
+
+  // void openMessage() {
+  //   _newMessage.add(false);
+  // }
+
+  // void upDateMessage() {
+  //   _newMessage.add(true);
+  // }
 }
 
 LogService logService = LogService.instance;

@@ -14,20 +14,21 @@ class LogApiCall {
   static String url = "https://obrero.checkmy.dev/api/notification";
 
   Future<void> fetchServer() async {
-    try{
-      await http.get(Uri.parse(url),headers: {
-        HttpHeaders.authorizationHeader : "Bearer $authToken"
+    try {
+      await http.get(Uri.parse(url), headers: {
+        HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) {
         List data = DateSorter.sort(data: json.decode(response.body));
         List<LogModel> logs = [];
-        for(var item in data) {
+        for (var item in data) {
           logs.add(LogModel.fromJson(item));
         }
         logService.populate(data: logs);
       });
-    }catch(e){
+    } catch (e) {
       print(e.toString());
     }
   }
 }
+
 LogApiCall logApiCall = LogApiCall.instance;

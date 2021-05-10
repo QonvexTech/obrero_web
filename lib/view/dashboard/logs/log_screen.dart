@@ -35,11 +35,6 @@ class LogScreen extends StatelessWidget {
                     );
                   }
                   if (result.hasData && result.data!.length > 0) {
-                    List warnings = result.data!
-                        .map((e) => e.type == "project_warning")
-                        .toList();
-
-                    print(warnings);
                     return Scrollbar(
                       child: ListView(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
