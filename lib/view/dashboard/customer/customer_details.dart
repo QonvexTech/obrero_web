@@ -6,9 +6,11 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
+import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/map.dart';
@@ -25,6 +27,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
   @override
   void initState() {
     // Provider.of<MapService>(context, listen: false).mapInit(customerProjects);
+
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -36,6 +39,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
+    ProjectProvider projectService = Provider.of<ProjectProvider>(context);
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -47,7 +51,14 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  backButton(context, customerService.setPage, CustomerList()),
+                  backButton(
+                      context,
+                      customerService.fromPage == "project"
+                          ? projectService.setPage
+                          : customerService.setPage,
+                      customerService.fromPage == "project"
+                          ? ProjectList()
+                          : CustomerList()),
                   Row(
                     children: [
                       Container(

@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_details.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
@@ -28,6 +30,7 @@ class _ProjectListState extends State<ProjectList> {
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+    CustomerService customerService = Provider.of<CustomerService>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
 
     if (projectProvider.projects == null) {
@@ -81,7 +84,8 @@ class _ProjectListState extends State<ProjectList> {
                             context,
                             projectProvider.projects,
                             projectProvider.removeProject,
-                            projectProvider.setPage),
+                            projectProvider.setPage,
+                            customerService),
                         rowWidgetMobile: rowWidgetMobile(
                             context,
                             projectProvider.projects,
@@ -212,7 +216,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
 }
 
 List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage) {
+    Function remove, Function setPage, CustomerService customerService) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -239,9 +243,15 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                "${data.owner!.fname} ${data.owner!.lname}",
-                overflow: TextOverflow.ellipsis,
+              child: TextButton(
+                onPressed: () {
+                  setPage(page: CustomerDetails(customer: data.owner));
+                  customerService.fromPage = "project";
+                },
+                child: Text(
+                  "${data.owner!.fname} ${data.owner!.lname}",
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ))),
         TableCell(
