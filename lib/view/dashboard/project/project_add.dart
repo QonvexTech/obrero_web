@@ -532,68 +532,94 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
             SizedBox(
               height: MySpacer.medium,
             ),
-            MaterialButton(
-              height: 50,
-              color: Palette.drawerColor,
-              minWidth: double.infinity,
-              onPressed: () {
-                if (isEdit) {
-                  projectAddService.addBodyEdit(
-                      {"project_id": widget.projectToEdit!.id.toString()});
-                  // projectAddService
-                  //     .addBodyEdit({"address": mapService.addressGeo});
+            Row(
+              children: [
+                Expanded(
+                  child: MaterialButton(
+                    height: 50,
+                    color: Colors.grey[200],
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Text("Annuler",
+                        style: TextStyle(color: Colors.black45)),
+                  ),
+                ),
+                SizedBox(
+                  width: MySpacer.medium,
+                ),
+                Expanded(
+                  flex: 3,
+                  child: MaterialButton(
+                    height: 50,
+                    color: Palette.drawerColor,
+                    minWidth: double.infinity,
+                    onPressed: () {
+                      if (isEdit) {
+                        projectAddService.addBodyEdit({
+                          "project_id": widget.projectToEdit!.id.toString()
+                        });
+                        // projectAddService
+                        //     .addBodyEdit({"address": mapService.addressGeo});
 
-                  if (projectAddService.assignIdsToAdd.length > 0) {
-                    print("ADDING");
-                    projectAddService
-                        .assign(
-                            listAssignIds: projectAddService.assignIdsToAdd
-                                .toString()
-                                .replaceAll("[", "")
-                                .replaceAll("]", ""),
-                            projectId: widget.projectToEdit!.id!)
-                        .whenComplete(() => projectProvider.fetchProjects());
-                  }
-                  if (projectAddService.assignIdsToRemove.length > 0) {
-                    print("REMOVING");
-                    projectAddService
-                        .removeAssign(
-                            listAssignIds: projectAddService.assignIdsToRemove
-                                .toString()
-                                .replaceAll("[", "")
-                                .replaceAll("]", ""),
-                            projectId: widget.projectToEdit!.id!)
-                        .whenComplete(() => projectProvider.fetchProjects());
-                  }
+                        if (projectAddService.assignIdsToAdd.length > 0) {
+                          print("ADDING");
+                          projectAddService
+                              .assign(
+                                  listAssignIds: projectAddService
+                                      .assignIdsToAdd
+                                      .toString()
+                                      .replaceAll("[", "")
+                                      .replaceAll("]", ""),
+                                  projectId: widget.projectToEdit!.id!)
+                              .whenComplete(
+                                  () => projectProvider.fetchProjects());
+                        }
+                        if (projectAddService.assignIdsToRemove.length > 0) {
+                          print("REMOVING");
+                          projectAddService
+                              .removeAssign(
+                                  listAssignIds: projectAddService
+                                      .assignIdsToRemove
+                                      .toString()
+                                      .replaceAll("[", "")
+                                      .replaceAll("]", ""),
+                                  projectId: widget.projectToEdit!.id!)
+                              .whenComplete(
+                                  () => projectProvider.fetchProjects());
+                        }
 
-                  projectProvider.updateProject(
-                      bodyToEdit: projectAddService.bodyToEdit);
+                        projectProvider.updateProject(
+                            bodyToEdit: projectAddService.bodyToEdit);
 
-                  Navigator.pop(context);
-                } else {
-                  ProjectModel newProject = ProjectModel(
-                      assigneeIds: projectAddService.assignIds,
-                      customerId: projectAddService.activeOwnerIndex,
-                      description: descriptionController.text,
-                      name: nameController.text,
-                      coordinates: mapService.coordinates,
-                      picture: projectAddService.converteduint8list(),
-                      startDate: projectAddService.startDate,
-                      endDate: projectAddService.endDate,
-                      address: mapService.addressGeo,
-                      areaSize: projectAddService.areaSize);
+                        Navigator.pop(context);
+                      } else {
+                        ProjectModel newProject = ProjectModel(
+                            assigneeIds: projectAddService.assignIds,
+                            customerId: projectAddService.activeOwnerIndex,
+                            description: descriptionController.text,
+                            name: nameController.text,
+                            coordinates: mapService.coordinates,
+                            picture: projectAddService.converteduint8list(),
+                            startDate: projectAddService.startDate,
+                            endDate: projectAddService.endDate,
+                            address: mapService.addressGeo,
+                            areaSize: projectAddService.areaSize);
 
-                  projectProvider
-                      .createProjects(
-                        newProject: newProject,
-                      )
-                      .whenComplete(() => Navigator.pop(context));
-                }
-              },
-              child: Text(
-                isEdit ? "Mettre à jour" : "Créer",
-                style: TextStyle(color: Colors.white),
-              ),
+                        projectProvider
+                            .createProjects(
+                              newProject: newProject,
+                            )
+                            .whenComplete(() => Navigator.pop(context));
+                      }
+                    },
+                    child: Text(
+                      isEdit ? "Mettre à jour" : "Créer",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             )
           ],
         ));
