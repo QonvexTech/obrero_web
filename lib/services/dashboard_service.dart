@@ -1,5 +1,6 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
 
 class DashboardService extends ChangeNotifier {
@@ -7,6 +8,19 @@ class DashboardService extends ChangeNotifier {
   DatePickerController dateController = DatePickerController();
   DateTime _startDate = DateTime.now();
   DateTime? tempDate;
+  int _selectedProject = 0;
+
+  initGetId(List<ProjectModel> projects) {
+    if (projects.length > 0) {
+      _selectedProject = projects[0].id!;
+    }
+  }
+
+  get selectedProject => _selectedProject;
+  set selectedPrject(value) {
+    _selectedProject = value;
+    notifyListeners();
+  }
 
   List months = [
     "",

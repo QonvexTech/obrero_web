@@ -25,7 +25,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
       Provider.of<MapService>(context, listen: false)
           .mapInit(projectProvider.projectsDateBase);
+      Provider.of<DashboardService>(context, listen: false)
+          .initGetId(projectProvider.projectsDateBase);
     });
+
     print("DASHBOARD SCREEN");
     super.initState();
   }
@@ -215,6 +218,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         itemCount: projectProvider.projectsDateBase.length,
                         itemBuilder: (context, index) {
                           return ProjectCard(
+                              projectId:
+                                  projectProvider.projectsDateBase[index].id,
                               startDate: projectProvider
                                           .projectsDateBase[index].startDate ==
                                       null
