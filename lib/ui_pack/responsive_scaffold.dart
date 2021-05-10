@@ -77,8 +77,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
         break;
       }
     }
-
-    print(_selectedContent);
   }
 
   double drawerWidth = 60;
@@ -107,7 +105,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
     if (netWorkImage == null || netWorkImage == "") {
       return AssetImage('icons/admin_icon.png');
     } else {
-      print(netWorkImage);
       return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
     }
   }
@@ -470,7 +467,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                   showDrawerText =
                                       drawerWidth == maximumDrawerWidth;
                                 });
-                                print(showDrawerText);
                               },
                               duration: Duration(milliseconds: 100),
                               width: drawerWidth,

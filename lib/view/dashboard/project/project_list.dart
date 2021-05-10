@@ -90,12 +90,12 @@ class _ProjectListState extends State<ProjectList> {
                         headersMobile: [
                           "NOM DU SITE",
                           "OWNER",
-                          "LOCATION"
+                          "ADDRESS"
                         ],
                         headers: [
                           "NOM DU SITE",
                           "OWNER",
-                          "LOCATION",
+                          "ADDRESS",
                           "AREA SIZE",
                           "START DATE",
                           "END DATE"
@@ -160,7 +160,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                "${data.coordinates!.latitude},${data.coordinates!.longitude}",
+                "${data.address}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -250,7 +250,7 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
-                "${data.coordinates!.latitude},${data.coordinates!.longitude}",
+                "${data.address}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -12,18 +11,22 @@ class MapService extends ChangeNotifier {
   LatLng coordinates = LatLng(28.709106207008052, 77.09902385711672);
   Location _location = Location();
   bool? _serviceEnabled;
-  String _addressGeo = "";
-
+  String addressGeo = "";
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
   GoogleMapController? mapController;
-  CameraPosition cameraPosition = CameraPosition(
-      target: LatLng(28.709106207008052, 77.09902385711672), zoom: 15.0);
+  bool _gesture = true;
+
+  get gesture => _gesture;
+
+  set gesture(value) {
+    _gesture = value;
+    notifyListeners();
+  }
 
   Set<Marker> _markers = {};
   get zoom => _zoom;
   get markers => _markers;
-  get addressGeo => _addressGeo;
 
   // Future setAddress(latitude, longitude) async {
   //   var address =
@@ -45,7 +48,8 @@ class MapService extends ChangeNotifier {
   mapInit(List<ProjectModel> projects) async {
     if (_markers.length > 0) {
       coordinates = _markers.first.position;
-      findLocalByCoordinates(coordinates.latitude, coordinates.longitude);
+      findLocalByCoordinates(
+          coordinates.latitude.toString(), coordinates.longitude.toString());
     }
     _markers.clear();
     try {
@@ -70,7 +74,8 @@ class MapService extends ChangeNotifier {
   void setCoordinates({LatLng? coord}) async {
     if (coord != null) {
       coordinates = coord;
-      findLocalByCoordinates(coordinates.latitude, coordinates.longitude);
+      findLocalByCoordinates(
+          coord.latitude.toString(), coord.longitude.toString());
     }
     if (_markers.isEmpty) {
       _markers.add(Marker(
@@ -131,7 +136,7 @@ class MapService extends ChangeNotifier {
     _locationData = await _location.getLocation();
   }
 
-  Future findLocalByCoordinates(double lat, double lang) async {
+  Future findLocalByCoordinates(String lat, String lang) async {
     var url = Uri.parse(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lang&location_type=ROOFTOP&result_type=street_address&key=AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI");
     try {
@@ -144,7 +149,7 @@ class MapService extends ChangeNotifier {
         var data = json.decode(response.body);
 
         print(data);
-        _addressGeo = data["plus_code"]["compound_code"];
+        addressGeo = data["plus_code"]["compound_code"] ?? "$lat , $lang";
         notifyListeners();
       } else {
         print(response.body);

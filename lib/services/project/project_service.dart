@@ -42,8 +42,9 @@ class ProjectProvider extends ChangeNotifier {
         .then((x) => mapService.mapInit(_projectsDateBase));
   }
 
-  initHours(int projectId) async {
+  Future initHours(int projectId) async {
     hours = await fetchHours(projectId);
+    return hours;
   }
 
   search(String text) {
@@ -119,8 +120,8 @@ class ProjectProvider extends ChangeNotifier {
           _pagination.perPage = _pagination.totalEntries;
         }
         var projects = ProjectModel.fromJsonListToProject(data);
-        _projects = projects;
-        _tempProjects = projects;
+        _projects = await projects;
+        _tempProjects = await projects;
         notifyListeners();
         print(data);
       } else {
@@ -151,7 +152,7 @@ class ProjectProvider extends ChangeNotifier {
         List datas = json.decode(response.body);
 
         var projectsdate = ProjectModel.fromJsonListToProject(datas);
-        _projectsDateBase = projectsdate;
+        _projectsDateBase = await projectsdate;
 
         print(response.body);
       } else {

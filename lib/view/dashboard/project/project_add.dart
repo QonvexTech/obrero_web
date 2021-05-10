@@ -25,6 +25,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     with SettingsHelper {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  bool isEdit = false;
 
   @override
   void initState() {
@@ -34,16 +35,34 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     if (widget.projectToEdit != null) {
       var projectAddService =
           Provider.of<ProjectAddService>(context, listen: false);
-      nameController.text = widget.projectToEdit!.name!;
-      descriptionController.text = widget.projectToEdit!.description!;
-      projectAddService.startDate = widget.projectToEdit!.startDate!;
-      projectAddService.endDate = widget.projectToEdit!.endDate!;
+      nameController.text = widget.projectToEdit!.name ?? "";
+      descriptionController.text = widget.projectToEdit!.description ?? "";
+      projectAddService.startDate = widget.projectToEdit!.startDate ?? "";
+      projectAddService.endDate = widget.projectToEdit!.endDate ?? "";
       projectAddService.userToAssignIds(widget.projectToEdit!.assignees!);
-      projectAddService.activeOwnerIndex = widget.projectToEdit!.owner!.id;
-      Provider.of<MapService>(context, listen: false).coordinates =
-          widget.projectToEdit!.coordinates!;
-      projectAddService.isEdit = true;
-    } else {}
+      if (widget.projectToEdit!.owner!.id != null) {
+        projectAddService.activeOwnerIndex = widget.projectToEdit!.owner!.id;
+      }
+
+      if (widget.projectToEdit!.address != null) {
+        Provider.of<MapService>(context, listen: false).addressGeo =
+            widget.projectToEdit!.address!;
+      }
+
+      if (widget.projectToEdit!.coordinates != null) {
+        Provider.of<MapService>(context, listen: false).coordinates =
+            widget.projectToEdit!.coordinates!;
+      }
+
+      isEdit = true;
+    } else {
+      // Provider.of<MapService>(context, listen: false).findLocalByCoordinates(
+      //     widget.projectToEdit!.coordinates!.latitude.toString(),
+      //     widget.projectToEdit!.coordinates!.longitude.toString());
+    }
+
+    Provider.of<ProjectAddService>(context, listen: false).bodyToEdit = {};
+    print(Provider.of<ProjectAddService>(context, listen: false).bodyToEdit);
     super.initState();
   }
 
@@ -62,9 +81,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
     CustomerService customerService = Provider.of<CustomerService>(context);
     MapService mapService = Provider.of<MapService>(context);
+    var _scrw = MediaQuery.of(context).size.width;
+    var _scrh = MediaQuery.of(context).size.height;
 
-    final _scrh = MediaQuery.of(context).size.height;
-    final _scrw = MediaQuery.of(context).size.width;
     return Container(
         width: MediaQuery.of(context).size.width / 1.5,
         height: MediaQuery.of(context).size.height - 300,
@@ -211,7 +230,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                         style: boldText,
                       ),
                     ),
-                    projectAddService.isEdit
+                    isEdit
                         ? Container(
                             margin: EdgeInsets.all(5),
                             height: 60,
@@ -221,7 +240,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                               margin: EdgeInsets.all(0),
                               child: ListTile(
                                 title: Text(
-                                  widget.projectToEdit!.owner!.fname!,
+                                  widget.projectToEdit!.owner!.fname ??
+                                      "No owner",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
@@ -274,10 +294,12 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                         "tapping ${customerService.customers[index].id}");
                                                     setState(() {
                                                       projectAddService
-                                                              .setOwner =
-                                                          customerService
-                                                              .customers[index]
-                                                              .id;
+                                                          .setOwner(
+                                                              customerService
+                                                                  .customers[
+                                                                      index]
+                                                                  .id,
+                                                              isEdit);
 
                                                       print(customerService
                                                           .customers[index].id);
@@ -304,9 +326,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                       padding:
                           const EdgeInsets.symmetric(vertical: MySpacer.small),
                       child: Text(
-                        projectAddService.isEdit
-                            ? "Assigned Employees"
-                            : "Employees to assign",
+                        isEdit ? "Assigned Employees" : "Employees to assign",
                         style: boldText,
                       ),
                     ),
@@ -368,6 +388,25 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                               ));
                                     }),
                               ),
+                    SizedBox(
+                      height: MySpacer.small,
+                    ),
+                    Text(
+                      "Area Size",
+                      style: boldText,
+                    ),
+                    Text("${projectAddService.areaSize}"),
+                    Slider(
+                        value: projectAddService.areaSize,
+                        max: 500,
+                        divisions: 5,
+                        onChangeStart: (value) {
+                          projectAddService
+                              .addBodyEdit({"area_size": value.toString()});
+                        },
+                        onChanged: (newValue) {
+                          projectAddService.areaSize = newValue;
+                        }),
 
                     //PICTURES
                     Container(
@@ -469,10 +508,12 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
               color: Palette.drawerColor,
               minWidth: double.infinity,
               onPressed: () {
-                if (projectAddService.isEdit) {
+                if (isEdit) {
                   projectAddService.addBodyEdit(
                       {"project_id": widget.projectToEdit!.id.toString()});
-                  print(projectAddService.bodyToEdit);
+                  // projectAddService
+                  //     .addBodyEdit({"address": mapService.addressGeo});
+
                   if (projectAddService.assignIdsToAdd.length > 0) {
                     print("ADDING");
                     projectAddService
@@ -483,7 +524,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                 .replaceAll("]", ""),
                             projectId: widget.projectToEdit!.id!)
                         .whenComplete(() => projectProvider.fetchProjects());
-                    ;
                   }
                   if (projectAddService.assignIdsToRemove.length > 0) {
                     print("REMOVING");
@@ -496,8 +536,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                             projectId: widget.projectToEdit!.id!)
                         .whenComplete(() => projectProvider.fetchProjects());
                   }
-                  // projectProvider.updateProject(
-                  //     bodyToEdit: projectAddService.bodyToEdit);
+
+                  projectProvider.updateProject(
+                      bodyToEdit: projectAddService.bodyToEdit);
 
                   Navigator.pop(context);
                 } else {
@@ -510,7 +551,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                       picture: projectAddService.converteduint8list(),
                       startDate: projectAddService.startDate,
                       endDate: projectAddService.endDate,
-                      address: mapService.addressGeo);
+                      address: mapService.addressGeo,
+                      areaSize: projectAddService.areaSize);
 
                   projectProvider
                       .createProjects(
@@ -519,10 +561,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                       .whenComplete(() => Navigator.pop(context));
                 }
               },
-              child: Text(
-                projectAddService.isEdit ? "Update Project" : "Create Project",
-                style: TextStyle(color: Colors.white),
-              ),
+              // child: Text(
+              //   projectAddService.isEdit ? "Update Project" : "Create Project",
+              //   style: TextStyle(color: Colors.white),
+              // ),
             )
           ],
         ));

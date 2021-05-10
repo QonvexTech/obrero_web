@@ -33,6 +33,10 @@ dependencies:
     git:
       url: https://github.com/alnaughty/adaptive_container
 
+  #WEB
+  # hover:
+  universal_html: ^2.0.8
+
   # Internet
   http: ^0.13.1
 

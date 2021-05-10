@@ -27,8 +27,6 @@ class EmployeeDetails extends StatefulWidget {
 }
 
 class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
-  // List<UserProjectModel> employeeProjects = [];
-
   @override
   void initState() {
     super.initState();

@@ -7,7 +7,7 @@ import 'package:uitemplate/models/warning.dart';
 
 class ProjectModel extends ChangeNotifier {
   int? id;
-  int? areaSize;
+  double? areaSize;
   int? customerId;
   int? status;
   CustomerModel? owner;
@@ -23,6 +23,7 @@ class ProjectModel extends ChangeNotifier {
   List<ProjectImageModel>? images;
   bool isSelected = false;
   String? address;
+  String hours = "0.00";
 
   ProjectModel(
       {this.id,
@@ -55,7 +56,7 @@ class ProjectModel extends ChangeNotifier {
     this.owner =
         json["owner"] != null ? CustomerModel.fromJson(json["owner"]) : null;
     this.coordinates = convertedCoord(json["coordinates"]);
-    this.description = json["description"];
+    this.description = json["description"] ?? "";
     this.startDate =
         json["start_date"] != null ? DateTime.parse(json["start_date"]) : null;
     this.endDate =
@@ -86,15 +87,17 @@ class ProjectModel extends ChangeNotifier {
     data["end_date"] = this.endDate!.toString();
     data["assignee_ids"] =
         this.assigneeIds.toString().replaceAll("[", "").replaceAll("]", "");
-    data["address"] = this.address;
+    data["address"] = this.address ?? "";
+    data["area_size"] = this.areaSize.toString();
     return data;
   }
 
   static List<ProjectModel> fromJsonListToProject(List projects) {
     List<ProjectModel> newProjects = [];
-
     for (var project in projects) {
-      newProjects.add(ProjectModel.fromJson(project));
+      ProjectModel newProject = ProjectModel.fromJson(project);
+
+      newProjects.add(newProject);
     }
     return newProjects;
   }

@@ -18,6 +18,7 @@ const String customer_api = "$api/customer/";
 const String customer_create_api = "$api/customer/create";
 const String customer_update_api = "$api/customer/update/";
 const String customer_delete_api = "$api/customer/remove"; //id
+const String customer_projects = "$api/customer/customer_projects/";
 
 //PAYMENT
 const String customer_create_api_payment = "$api/customer/payment/create";

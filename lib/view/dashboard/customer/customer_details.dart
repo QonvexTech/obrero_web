@@ -6,7 +6,6 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
-import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
@@ -23,14 +22,15 @@ class CustomerDetails extends StatefulWidget {
 }
 
 class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
-  List<ProjectModel> customerProjects = [];
   @override
   void initState() {
-    customerProjects =
-        ProjectModel.fromJsonListToProject(widget.customer!.customerProjects!);
-
-    Provider.of<MapService>(context, listen: false).mapInit(customerProjects);
+    // Provider.of<MapService>(context, listen: false).mapInit(customerProjects);
     super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Provider.of<CustomerService>(context, listen: false)
+          .workingProjectsCustomer(widget.customer!.id!);
+    });
   }
 
   @override
@@ -142,85 +142,107 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                   SizedBox(
                     height: MySpacer.small,
                   ),
-                  customerProjects.length == 0
-                      ? EmptyContainer(
-                          addingFunc: ProjectAddScreen(),
-                          title: "No assigned project yet",
-                          description: "Add project Now",
-                          buttonText: "Add Project",
-                          showButton: true,
+                  customerService.customerProject == null
+                      ? Container(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
                         )
-                      : SizedBox(),
-                  for (ProjectModel project in customerProjects)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          project.name!,
-                          style: boldText,
-                        ),
-                        SizedBox(
-                          height: MySpacer.small,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Description", style: transHeader),
-                                  Text(project.description!),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Total des Heures Travaillées",
-                                      style: transHeader),
-                                  // Text(
-                                  //   project.totalHours != null
-                                  //       ? "${project.totalHours}"
-                                  //       : "32HRS",
-                                  //   style: TextStyle(
-                                  //       color: Colors.green,
-                                  //       fontWeight: FontWeight.bold),
-                                  // ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("Status", style: transHeader),
-                                  Text(
-                                    statusTitles[project.status!],
-                                    style: TextStyle(
-                                        color: statusColors[project.status!]),
-                                  ),
-                                ],
-                              ),
+                      : customerService.customerProject!.length == 0
+                          ? EmptyContainer(
+                              addingFunc: ProjectAddScreen(),
+                              title: "No assigned project yet",
+                              description: "Add project Now",
+                              buttonText: "Add Project",
+                              showButton: true,
                             )
-                          ],
-                        ),
-                        Container(
-                            height: 30,
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            width: MediaQuery.of(context).size.width,
-                            child: Image.asset("assets/images/dashLine.png")),
-                        SizedBox(
-                          height: MySpacer.large,
-                        )
-                      ],
-                    ),
+                          : Column(
+                              children: [
+                                for (ProjectModel project
+                                    in customerService.customerProject!)
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        project.name!,
+                                        style: boldText,
+                                      ),
+                                      SizedBox(
+                                        height: MySpacer.small,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            flex: 2,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Description",
+                                                    style: transHeader),
+                                                Text(project.description!),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Address",
+                                                    style: transHeader),
+                                                Text(
+                                                  project.address ??
+                                                      "${project.coordinates!.latitude},${project.coordinates!.longitude}",
+                                                  style: TextStyle(
+                                                      color: Colors.green,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Status",
+                                                    style: transHeader),
+                                                Text(
+                                                  statusTitles[project.status!],
+                                                  style: TextStyle(
+                                                      color: statusColors[
+                                                          project.status!]),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      Container(
+                                          height: 30,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 20),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Image.asset(
+                                              "assets/images/dashLine.png")),
+                                      SizedBox(
+                                        height: MySpacer.large,
+                                      )
+                                    ],
+                                  ),
+                              ],
+                            ),
                 ],
               ),
             ),

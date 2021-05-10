@@ -9,7 +9,8 @@ import 'package:http/http.dart' as http;
 class ProjectAddService extends ChangeNotifier {
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
-  bool _isEdit = false;
+  double _areaSize = 0.0;
+
   List<int> _assignIds = [];
   List<int> _assignIdsToRemove = [];
   List<int> _assignIdsToAdd = [];
@@ -20,6 +21,12 @@ class ProjectAddService extends ChangeNotifier {
 
   get bodyToEdit => _bodyToEdit;
   set bodyToEdit(value) => _bodyToEdit = value;
+
+  get areaSize => _areaSize;
+  set areaSize(value) {
+    _areaSize = value;
+    notifyListeners();
+  }
 
   //assigns api
   get assignIdsToRemove => _assignIdsToRemove;
@@ -45,7 +52,6 @@ class ProjectAddService extends ChangeNotifier {
   get activeOwnerIndex => _activeOwnerIndex;
   get startDate => _startDate;
   get endDate => _endDate;
-  get isEdit => _isEdit;
   get projectImages => _projectImages;
   get base64Image => _base64Image;
 
@@ -63,7 +69,7 @@ class ProjectAddService extends ChangeNotifier {
         .substring(1, encodedImagetoString.length - 1);
   }
 
-  set setOwner(value) {
+  setOwner(value, isEdit) {
     _activeOwnerIndex = value;
     if (isEdit) {
       _bodyToEdit.addAll({"customer_id": value.toString()});
@@ -72,7 +78,6 @@ class ProjectAddService extends ChangeNotifier {
     notifyListeners();
   }
 
-  set isEdit(value) => _isEdit = value;
   set startDate(value) => _startDate = value;
   set endDate(value) => _endDate = value;
 
@@ -106,8 +111,6 @@ class ProjectAddService extends ChangeNotifier {
   init(projectToEdit, CustomerModel firstCustomer, nameController,
       descriptionController) {
     if (projectToEdit != null) {
-      print("not null");
-      isEdit = true;
       nameController.text = projectToEdit!.name!;
       descriptionController.text = projectToEdit!.description!;
       _startDate = projectToEdit!.startDate!;
