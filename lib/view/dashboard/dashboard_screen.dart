@@ -72,7 +72,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     });
                   },
                   child: Text(
-                    "${dashboardService.months[projectProvider.selectedDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} ",
+                    "${months[projectProvider.selectedDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} ",
                     style: boldText,
                   ),
                 ),
@@ -218,29 +218,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                         itemCount: projectProvider.projectsDateBase.length,
                         itemBuilder: (context, index) {
                           return ProjectCard(
-                              projectId:
-                                  projectProvider.projectsDateBase[index].id,
-                              startDate: projectProvider
-                                          .projectsDateBase[index].startDate ==
-                                      null
-                                  ? DateTime.now()
-                                  : projectProvider
-                                      .projectsDateBase[index].startDate!,
-                              name:
-                                  projectProvider.projectsDateBase[index].name!,
-                              description: projectProvider
-                                          .projectsDateBase[index]
-                                          .description ==
-                                      null
-                                  ? ""
-                                  : projectProvider
-                                      .projectsDateBase[index].description!,
-                              coordinates: projectProvider
-                                  .projectsDateBase[index].coordinates!,
-                              status: projectProvider
-                                  .projectsDateBase[index].status,
-                              picture: projectProvider
-                                  .projectsDateBase[index].images);
+                              project: projectProvider.projectsDateBase[index]);
                         }),
                   ),
       )

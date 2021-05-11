@@ -22,22 +22,6 @@ class DashboardService extends ChangeNotifier {
     notifyListeners();
   }
 
-  List months = [
-    "",
-    'Janvier',
-    'Février',
-    'Mars',
-    'Avril',
-    'Mai',
-    'Juin',
-    'Juillet',
-    'Août',
-    'Septembre',
-    'Octobre',
-    'Novembre',
-    'Décembre'
-  ];
-
   get startDate => _startDate;
 
   set startDate(value) {

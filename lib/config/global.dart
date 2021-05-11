@@ -78,3 +78,20 @@ extension CapExtension on String {
       .map((str) => str.inCaps)
       .join(" ");
 }
+
+//DATES
+List months = [
+  "",
+  'Janvier',
+  'Février',
+  'Mars',
+  'Avril',
+  'Mai',
+  'Juin',
+  'Juillet',
+  'Août',
+  'Septembre',
+  'Octobre',
+  'Novembre',
+  'Décembre'
+];

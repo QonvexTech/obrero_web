@@ -40,378 +40,393 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       color: Palette.contentBackground,
-      child: AdaptiveContainer(children: [
-        AdaptiveItem(
-          content: Container(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                backButton(
-                    context,
-                    projectProvider.setPage,
-                    widget.fromPage == "project"
-                        ? ProjectList()
-                        : CustomerList()),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Stack(
+        children: [
+          AdaptiveContainer(children: [
+            AdaptiveItem(
+              content: Container(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.projectModel!.name!,
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
-                          Text(
-                            "Planifié du ${widget.projectModel!.startDate.toString().split(" ")[0]} au ${widget.projectModel!.endDate.toString().split(" ")[0]} ",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Spacer(),
-                  ],
-                ),
-                SizedBox(
-                  height: MySpacer.large,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    widget.fromPage == "dashboard"
+                        ? Container()
+                        : backButton(
+                            context,
+                            projectProvider.setPage,
+                            widget.fromPage == "project"
+                                ? ProjectList()
+                                : CustomerList()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("AreaSize", style: transHeader),
-                        SizedBox(
-                          height: MySpacer.small,
-                        ),
-                        Text(widget.projectModel!.areaSize.toString(),
-                            style: boldText)
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Location", style: transHeader),
-                        SizedBox(
-                          height: MySpacer.small,
-                        ),
-                        Text(
-                          widget.projectModel!.address != null
-                              ? "${widget.projectModel!.address}"
-                              : "${widget.projectModel!.coordinates!.latitude},${widget.projectModel!.coordinates!.longitude}",
-                          style: boldText,
-                        )
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Owner", style: transHeader),
-                        SizedBox(
-                          height: MySpacer.small,
-                        ),
-                        Text(
-                            "${widget.projectModel!.owner!.fname!} ${widget.projectModel!.owner!.lname!}",
-                            style: boldText)
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: MySpacer.large,
-                ),
-                Text(
-                  "Description",
-                  style: transHeader,
-                ),
-                SizedBox(
-                  height: MySpacer.small,
-                ),
-                Text(widget.projectModel!.description!),
-                SizedBox(
-                  height: MySpacer.large,
-                ),
-                Text(
-                  "Personnes intervenant sur le chantier",
-                  style: transHeader,
-                ),
-                SizedBox(
-                  height: MySpacer.small,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.09,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      for (var x in widget.projectModel!.assignees!)
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          height: 80,
-                          child: Row(
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundColor: Palette.contentBackground,
-                                backgroundImage:
-                                    fetchImage(netWorkImage: x.picture),
-                              ),
-                              SizedBox(
-                                width: MySpacer.small,
+                              Text(
+                                widget.projectModel!.name!,
+                                style: Theme.of(context).textTheme.headline5,
                               ),
                               Text(
-                                "${x.fname!} ${x.lname!}",
-                              ),
-                            ],
-                          ),
-                        )
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: MySpacer.large,
-                ),
-                Text(
-                  "Photo",
-                  style: transHeader,
-                ),
-                SizedBox(
-                  height: MySpacer.small,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.25,
-                  width: MediaQuery.of(context).size.width,
-                  child: GridView.count(
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    shrinkWrap: true,
-                    childAspectRatio: 1.5,
-                    crossAxisCount: 3,
-                    children: [
-                      for (var image in widget.projectModel!.images!)
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: tempImageProvider(
-                                            netWorkImage: image.url,
-                                            defaultImage:
-                                                "images/emptyImage.jpg")),
-                                  ),
-                                ),
+                                "Planifié du ${widget.projectModel!.startDate.toString().split(" ")[0]} au ${widget.projectModel!.endDate.toString().split(" ")[0]} ",
+                                style: Theme.of(context).textTheme.headline6,
                               ),
                             ],
                           ),
                         ),
-                      if (widget.projectModel!.images!.length == 0)
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: tempImageProvider(
-                                            netWorkImage: null,
-                                            defaultImage:
-                                                "images/emptyImage.jpg")),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-        AdaptiveItem(
-            content: Container(
-          color: Palette.contentBackground,
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Statistics",
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              SizedBox(
-                height: MySpacer.small,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      Text(
-                        "Heures Totales",
-                        style: transHeader.copyWith(fontSize: 10),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            projectProvider.hours,
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                          Text(
-                            "/hrs",
-                            style: TextStyle(fontSize: 10),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-
-                  // Column(
-                  //   children: [
-                  //     Text(
-                  //       "Progres Totales",
-                  //       style: transHeader.copyWith(fontSize: 10),
-                  //     ),
-                  //     Row(
-                  //       crossAxisAlignment: CrossAxisAlignment.end,
-                  //       children: [
-                  //         Text(
-                  //           "60%",
-                  //           style: Theme.of(context).textTheme.headline3,
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Divider(
-                      thickness: 4,
-                      color: Colors.grey,
+                        Spacer(),
+                      ],
                     ),
-                  ),
-                  Column(
-                    children: [
-                      Text(
-                        "Avertissement Total",
-                        style: transHeader.copyWith(fontSize: 10),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                    SizedBox(
+                      height: MySpacer.large,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("AreaSize", style: transHeader),
+                            SizedBox(
+                              height: MySpacer.small,
+                            ),
+                            Text(widget.projectModel!.areaSize.toString(),
+                                style: boldText)
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Location", style: transHeader),
+                            SizedBox(
+                              height: MySpacer.small,
+                            ),
+                            Text(
+                              widget.projectModel!.address != null
+                                  ? "${widget.projectModel!.address}"
+                                  : "${widget.projectModel!.coordinates!.latitude},${widget.projectModel!.coordinates!.longitude}",
+                              style: boldText,
+                            )
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Owner", style: transHeader),
+                            SizedBox(
+                              height: MySpacer.small,
+                            ),
+                            Text(
+                                "${widget.projectModel!.owner!.fname!} ${widget.projectModel!.owner!.lname!}",
+                                style: boldText)
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: MySpacer.large,
+                    ),
+                    Text(
+                      "Description",
+                      style: transHeader,
+                    ),
+                    SizedBox(
+                      height: MySpacer.small,
+                    ),
+                    Text(widget.projectModel!.description!),
+                    SizedBox(
+                      height: MySpacer.large,
+                    ),
+                    Text(
+                      "Personnes intervenant sur le chantier",
+                      style: transHeader,
+                    ),
+                    SizedBox(
+                      height: MySpacer.small,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.09,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
                         children: [
-                          Text(
-                            "${widget.projectModel!.warnings!.length}",
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                          Text(
-                            "Warning",
-                            style: TextStyle(fontSize: 10),
-                          )
+                          for (var x in widget.projectModel!.assignees!)
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10),
+                              height: 80,
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: Palette.contentBackground,
+                                    backgroundImage:
+                                        fetchImage(netWorkImage: x.picture),
+                                  ),
+                                  SizedBox(
+                                    width: MySpacer.small,
+                                  ),
+                                  Text(
+                                    "${x.fname!} ${x.lname!}",
+                                  ),
+                                ],
+                              ),
+                            )
                         ],
                       ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: MySpacer.large,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Warnings",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  IconButton(
-                      icon: Icon(Icons.add_circle),
-                      onPressed: () {
-                        //LOGS
-                      })
-                ],
-              ),
-              SizedBox(
-                height: MySpacer.small,
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: StreamBuilder<List<LogModel>>(
-                  builder: (context, result) {
-                    if (result.hasError) {
-                      return Center(
-                        child: Text(
-                          "${result.error}",
-                        ),
-                      );
-                    }
-                    if (result.hasData && result.data!.length > 0) {
-                      List<LogModel>? warnings() {
-                        List<LogModel> newWarnings = [];
-                        for (LogModel log in result.data!) {
-                          if (log.type == "project_warning") {
-                            newWarnings.add(log);
-                          }
-                        }
-                        return newWarnings;
-                      }
-
-                      return Scrollbar(
-                        child: ListView(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          children: List.generate(
-                              warnings()!.length,
-                              (index) => Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons
-                                                .notification_important_rounded,
-                                            color: Colors.grey,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: ListTile(
-                                              title: Text(
-                                                  "${warnings()![index].title}"),
-                                              subtitle: Text(
-                                                  "${warnings()![index].body}"),
-                                            ),
-                                          )
-                                        ],
+                    ),
+                    SizedBox(
+                      height: MySpacer.large,
+                    ),
+                    Text(
+                      "Photo",
+                      style: transHeader,
+                    ),
+                    SizedBox(
+                      height: MySpacer.small,
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.25,
+                      width: MediaQuery.of(context).size.width,
+                      child: GridView.count(
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        shrinkWrap: true,
+                        childAspectRatio: 1.5,
+                        crossAxisCount: 3,
+                        children: [
+                          for (var image in widget.projectModel!.images!)
+                            Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: tempImageProvider(
+                                                netWorkImage: image.url,
+                                                defaultImage:
+                                                    "images/emptyImage.jpg")),
                                       ),
                                     ),
-                                  )),
-                        ),
-                      );
-                    } else {
-                      return Container(
-                        child: LogsLoader.load(),
-                      );
-                    }
-                  },
-                  stream: logService.stream$,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (widget.projectModel!.images!.length == 0)
+                            Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: tempImageProvider(
+                                                netWorkImage: null,
+                                                defaultImage:
+                                                    "images/emptyImage.jpg")),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
-            ],
-          ),
-        ))
-      ]),
+            ),
+            AdaptiveItem(
+                content: Container(
+              color: Palette.contentBackground,
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Statistics",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            "Heures Totales",
+                            style: transHeader.copyWith(fontSize: 10),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                projectProvider.hours,
+                                style: Theme.of(context).textTheme.headline3,
+                              ),
+                              Text(
+                                "/hrs",
+                                style: TextStyle(fontSize: 10),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      // Column(
+                      //   children: [
+                      //     Text(
+                      //       "Progres Totales",
+                      //       style: transHeader.copyWith(fontSize: 10),
+                      //     ),
+                      //     Row(
+                      //       crossAxisAlignment: CrossAxisAlignment.end,
+                      //       children: [
+                      //         Text(
+                      //           "60%",
+                      //           style: Theme.of(context).textTheme.headline3,
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ],
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Divider(
+                          thickness: 4,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            "Avertissement Total",
+                            style: transHeader.copyWith(fontSize: 10),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "${widget.projectModel!.warnings!.length}",
+                                style: Theme.of(context).textTheme.headline3,
+                              ),
+                              Text(
+                                "Warning",
+                                style: TextStyle(fontSize: 10),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: MySpacer.large,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Warnings",
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.add_circle),
+                          onPressed: () {
+                            //LOGS
+                          })
+                    ],
+                  ),
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: StreamBuilder<List<LogModel>>(
+                      builder: (context, result) {
+                        if (result.hasError) {
+                          return Center(
+                            child: Text(
+                              "${result.error}",
+                            ),
+                          );
+                        }
+                        if (result.hasData && result.data!.length > 0) {
+                          List<LogModel>? warnings() {
+                            List<LogModel> newWarnings = [];
+                            for (LogModel log in result.data!) {
+                              if (log.type == "project_warning") {
+                                newWarnings.add(log);
+                              }
+                            }
+                            return newWarnings;
+                          }
+
+                          return Scrollbar(
+                            child: ListView(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              children: List.generate(
+                                  warnings()!.length,
+                                  (index) => Card(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons
+                                                    .notification_important_rounded,
+                                                color: Colors.grey,
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: ListTile(
+                                                  title: Text(
+                                                      "${warnings()![index].title}"),
+                                                  subtitle: Text(
+                                                      "${warnings()![index].body}"),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      )),
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            child: LogsLoader.load(),
+                          );
+                        }
+                      },
+                      stream: logService.stream$,
+                    ),
+                  ),
+                ],
+              ),
+            ))
+          ]),
+          Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.close, color: Colors.red))),
+        ],
+      ),
     );
   }
 }
