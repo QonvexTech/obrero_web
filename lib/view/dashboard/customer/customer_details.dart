@@ -17,7 +17,10 @@ import 'package:uitemplate/widgets/map.dart';
 
 class CustomerDetails extends StatefulWidget {
   final CustomerModel? customer;
-  const CustomerDetails({Key? key, required this.customer}) : super(key: key);
+  final String? fromPage;
+  const CustomerDetails(
+      {Key? key, required this.customer, required this.fromPage})
+      : super(key: key);
 
   @override
   _CustomerDetailsState createState() => _CustomerDetailsState();
@@ -53,10 +56,10 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                 children: [
                   backButton(
                       context,
-                      customerService.fromPage == "project"
+                      widget.fromPage == "project"
                           ? projectService.setPage
                           : customerService.setPage,
-                      customerService.fromPage == "project"
+                      widget.fromPage == "project"
                           ? ProjectList()
                           : CustomerList()),
                   Row(

@@ -81,11 +81,11 @@ class _ProjectListState extends State<ProjectList> {
                     AllTable(
                         datas: projectProvider.projects,
                         rowWidget: rowWidget(
-                            context,
-                            projectProvider.projects,
-                            projectProvider.removeProject,
-                            projectProvider.setPage,
-                            customerService),
+                          context,
+                          projectProvider.projects,
+                          projectProvider.removeProject,
+                          projectProvider.setPage,
+                        ),
                         rowWidgetMobile: rowWidgetMobile(
                             context,
                             projectProvider.projects,
@@ -139,6 +139,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
                     setPage(
                         page: ProjectDetails(
                       projectModel: data,
+                      fromPage: "project",
                     ));
                   },
                   child: Text(
@@ -153,9 +154,17 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                "${data.owner!.fname} ${data.owner!.lname}",
-                overflow: TextOverflow.ellipsis,
+              child: TextButton(
+                onPressed: () {
+                  print("customer details");
+                  setPage(
+                      page: CustomerDetails(
+                          customer: data.owner, fromPage: "customer"));
+                },
+                child: Text(
+                  "${data.owner!.fname} ${data.owner!.lname}",
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ))),
         TableCell(
@@ -216,7 +225,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
 }
 
 List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage, CustomerService customerService) {
+    Function remove, Function setPage) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -230,6 +239,7 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
                   setPage(
                       page: ProjectDetails(
                     projectModel: data,
+                    fromPage: "project",
                   ));
                 },
                 child: Text(
@@ -245,8 +255,11 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextButton(
                 onPressed: () {
-                  setPage(page: CustomerDetails(customer: data.owner));
-                  customerService.fromPage = "project";
+                  setPage(
+                      page: CustomerDetails(
+                    customer: data.owner,
+                    fromPage: "project",
+                  ));
                 },
                 child: Text(
                   "${data.owner!.fname} ${data.owner!.lname}",

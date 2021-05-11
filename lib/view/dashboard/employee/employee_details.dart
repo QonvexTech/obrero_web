@@ -208,15 +208,12 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                     "Total des Heures Travaillées",
                                                     style: transHeader),
                                                 Text(
-                                                  project.employeeHourList !=
-                                                          null
-                                                      ? project.employeeHourList!
-                                                                  .length >
-                                                              0
-                                                          ? employeeSevice
-                                                              .getTotalHours(project
-                                                                  .employeeHourList!)
-                                                          : "0.00"
+                                                  project.employeeHourList!
+                                                              .length >
+                                                          0
+                                                      ? employeeSevice
+                                                          .getTotalHours(project
+                                                              .employeeHourList!)
                                                       : "0.00",
                                                   style: TextStyle(
                                                       color: Colors.green,

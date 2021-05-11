@@ -6,6 +6,7 @@ import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_add.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_details.dart';
+import 'package:uitemplate/view/dashboard/employee/employee_projects.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
@@ -256,6 +257,22 @@ List<TableRow> rowWidget(BuildContext context, List<EmployeesModel> datas,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              MaterialButton(
+                color: Palette.drawerColor,
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                          backgroundColor: Palette.contentBackground,
+                          content: EmployeeProjectsDetails(
+                            emplyoyee: data,
+                          )));
+                },
+                child: Text(
+                  "Voir les projets",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
               IconButton(
                 onPressed: () {
                   showDialog(

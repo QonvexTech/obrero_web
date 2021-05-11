@@ -64,13 +64,14 @@ class _CustomerListState extends State<CustomerList> {
                                       context,
                                       customerService.customers,
                                       customerService.removeCustomer,
-                                      customerService.setPage),
+                                      customerService.setPage,
+                                      customerService),
                                   rowWidgetMobile: rowWidgetMobile(
-                                    context,
-                                    customerService.customers,
-                                    customerService.removeCustomer,
-                                    customerService.setPage,
-                                  ),
+                                      context,
+                                      customerService.customers,
+                                      customerService.removeCustomer,
+                                      customerService.setPage,
+                                      customerService),
                                   headersMobile: [
                                     "NOM",
                                     "EMAIL",
@@ -103,7 +104,7 @@ class _CustomerListState extends State<CustomerList> {
 }
 
 List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
-    Function remove, Function setPage) {
+    Function remove, Function setPage, CustomerService customerService) {
   return [
     for (CustomerModel data in datas)
       TableRow(children: [
@@ -114,7 +115,11 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextButton(
                 onPressed: () {
-                  setPage(page: CustomerDetails(customer: data));
+                  setPage(
+                      page: CustomerDetails(
+                    customer: data,
+                    fromPage: "customer",
+                  ));
                 },
                 child: Text(
                   "${data.fname!} ${data.lname!}",
@@ -192,7 +197,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
 }
 
 List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
-    Function remove, Function setPage) {
+    Function remove, Function setPage, CustomerService customerService) {
   return [
     for (CustomerModel data in datas)
       TableRow(children: [
@@ -203,7 +208,11 @@ List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextButton(
                 onPressed: () {
-                  setPage(page: CustomerDetails(customer: data));
+                  setPage(
+                      page: CustomerDetails(
+                    customer: data,
+                    fromPage: "customer",
+                  ));
                 },
                 child: Text(
                   "${data.fname!} ${data.lname!}",

@@ -8,14 +8,17 @@ import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 
 class ProjectDetails extends StatefulWidget {
   final ProjectModel? projectModel;
+  final String fromPage;
 
-  const ProjectDetails({Key? key, required this.projectModel})
+  const ProjectDetails(
+      {Key? key, required this.projectModel, required this.fromPage})
       : super(key: key);
 
   @override
@@ -44,7 +47,12 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                backButton(context, projectProvider.setPage, ProjectList()),
+                backButton(
+                    context,
+                    projectProvider.setPage,
+                    widget.fromPage == "project"
+                        ? ProjectList()
+                        : CustomerList()),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

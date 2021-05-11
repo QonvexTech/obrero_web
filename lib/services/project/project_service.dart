@@ -78,6 +78,7 @@ class ProjectProvider extends ChangeNotifier {
 
   void setPage({required Widget page}) {
     activePageScreen = page;
+
     notifyListeners();
   }
 
@@ -132,9 +133,11 @@ class ProjectProvider extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        var projects = ProjectModel.fromJsonListToProject(data);
-        _projects = await projects;
-        _tempProjects = await projects;
+        var projects =
+            ProjectModel.fromJsonListToProject(data).reversed.toList();
+
+        _projects = projects;
+        _tempProjects = projects;
         notifyListeners();
         print(data);
       } else {

@@ -13,7 +13,6 @@ import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
 class CustomerService extends ChangeNotifier {
   Widget activePageScreen = CustomerList();
-  String _fromPage = "customer"; //change to list adfter
   // BuildContext? fromContext;
   PaginationService paginationService = PaginationService();
   TextEditingController searchController = TextEditingController();
@@ -40,22 +39,18 @@ class CustomerService extends ChangeNotifier {
     notifyListeners();
   }
 
-  get fromPage => _fromPage;
-  set fromPage(value) {
-    _fromPage = value;
-    notifyListeners();
-  }
+  // get fromPage => _fromPage;
+  // set fromPage(value) {
+  //   _fromPage = value;
+  //   notifyListeners();
+  // }
 
   get customers => _customers;
   get pagination => _pagination;
 
   setPage({required Widget page}) {
-    if (page is CustomerList) {
-      customerProject = null;
-      print("clear");
-    }
+    print("object");
     activePageScreen = page;
-
     notifyListeners();
   }
 

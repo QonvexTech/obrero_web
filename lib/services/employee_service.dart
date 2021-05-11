@@ -55,18 +55,18 @@ class EmployeeSevice extends ChangeNotifier {
   getTotalHours(List<EmployeeHourModel> employeeHours) {
     try {
       double hours = 0.00;
-
       for (EmployeeHourModel hour in employeeHours) {
         List values = hour.recordedTime!.split(":");
-        if (values.length > 3) {
+
+        if (values.length >= 4) {
           hours += double.parse(values[0]) * 24; //days
           hours += double.parse(values[1]); // hours
           hours += double.parse(values[2]) * (1 / 60); //minutes
           hours += double.parse(values[3]) * (1 / 3600); //seconds
         } else {
-          hours += double.parse(values[1]); // hours
-          hours += double.parse(values[2]) * (1 / 60); //minutes
-          hours += double.parse(values[3]) * (1 / 3600); //seconds
+          hours += double.parse(values[0]); // hours
+          hours += double.parse(values[1]) * (1 / 60); //minutes
+          hours += double.parse(values[2]) * (1 / 3600); //seconds
         }
         return hours.toStringAsFixed(2);
       }
