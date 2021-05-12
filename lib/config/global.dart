@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uitemplate/models/admin_model.dart';
 
 const String api = "https://obrero.checkmy.dev/api";
@@ -78,6 +79,9 @@ extension CapExtension on String {
       .map((str) => str.inCaps)
       .join(" ");
 }
+
+//Location
+LatLng? initialPositon;
 
 //DATES
 List months = [

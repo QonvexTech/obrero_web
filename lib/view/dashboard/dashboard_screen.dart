@@ -24,7 +24,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
       Provider.of<MapService>(context, listen: false)
-          .mapInit(projectProvider.projectsDateBase);
+          .mapInit(projectProvider.projectsDateBase, context);
       Provider.of<DashboardService>(context, listen: false)
           .initGetId(projectProvider.projectsDateBase);
     });
@@ -142,8 +142,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 .fetchProjectsBaseOnDates(
                                     dateSelected: date,
                                     controller: dashboardService.dateController)
-                                .whenComplete(() => mapService
-                                    .mapInit(projectProvider.projectsDateBase));
+                                .whenComplete(() => mapService.mapInit(
+                                    projectProvider.projectsDateBase, context));
                           },
                           width: 75,
                         ),

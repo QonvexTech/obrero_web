@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -7,6 +8,7 @@ import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
 
 class MapService extends ChangeNotifier {
+  final containerKey = GlobalKey();
   double _zoom = 15.0;
   LatLng coordinates = LatLng(28.709106207008052, 77.09902385711672);
   Location _location = Location();
@@ -16,6 +18,68 @@ class MapService extends ChangeNotifier {
   LocationData? _locationData;
   GoogleMapController? mapController;
   bool _gesture = true;
+
+  //---------------------------- CUSTOM INFO  WINDOW
+  ProjectModel? _project;
+  bool _showInfoWindow = false;
+  bool _tempHidden = false;
+
+  double? _leftMargin;
+  double? _topMargin;
+
+  final double _infoWindowWidth = 250;
+  final double _markerOffset = 170;
+
+  void rebuildInfoWindow() {
+    notifyListeners();
+  }
+
+  void updateProject(ProjectModel project) {
+    _project = project;
+  }
+
+  void updateVisibility(bool visibility) {
+    _showInfoWindow = visibility;
+  }
+
+  void updateInfoWindow(
+    BuildContext context,
+    GoogleMapController controller,
+    LatLng location,
+    double infoWindowWidth,
+    double markerOffset,
+  ) async {
+    try {
+      var screenCoordinate = await controller.getVisibleRegion();
+      double devicePixelRatio =
+          Platform.isAndroid ? MediaQuery.of(context).devicePixelRatio : 1.0;
+      double left = (double.parse(screenCoordinate.northeast.toString())) -
+          (infoWindowWidth / 2);
+      double top = (double.parse(screenCoordinate.southwest.toString()) /
+              devicePixelRatio) -
+          markerOffset;
+      if (left < 0 || top < 0) {
+        _tempHidden = true;
+      } else {
+        _tempHidden = false;
+        _leftMargin = left;
+        _topMargin = top;
+      }
+    } catch (e) {
+      print("custom error $e");
+    }
+  }
+
+  bool get showInfoWindow =>
+      (_showInfoWindow == true && _tempHidden == false) ? true : false;
+
+  double get leftMargin => _leftMargin!;
+
+  double get topMargin => _topMargin!;
+
+  ProjectModel get project => project;
+
+  //-------------------------
 
   get gesture => _gesture;
 
@@ -45,7 +109,7 @@ class MapService extends ChangeNotifier {
   //       .asUint8List();
   // }
 
-  mapInit(List<ProjectModel> projects) async {
+  mapInit(List<ProjectModel> projects, context) async {
     if (_markers.length > 0) {
       coordinates = _markers.first.position;
       findLocalByCoordinates(
@@ -55,9 +119,17 @@ class MapService extends ChangeNotifier {
     try {
       for (ProjectModel project in projects) {
         _markers.add(Marker(
+            onTap: () {
+              mapController!
+                  .showMarkerInfoWindow(MarkerId(project.id.toString()));
+            },
             zIndex: 20,
             infoWindow: InfoWindow(
-                title: project.name, snippet: project.coordinates.toString()),
+                onTap: () {
+                  print("x");
+                },
+                title: project.name,
+                snippet: project.address.toString()),
             icon: await BitmapDescriptor.fromAssetImage(
                 ImageConfiguration(), imagesStatus[project.status!]),
             markerId: MarkerId(project.id.toString()),
@@ -71,7 +143,7 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCoordinates({LatLng? coord}) async {
+  void setCoordinates({LatLng? coord, BuildContext? context}) async {
     if (coord != null) {
       coordinates = coord;
       findLocalByCoordinates(
@@ -79,6 +151,18 @@ class MapService extends ChangeNotifier {
     }
     if (_markers.isEmpty) {
       _markers.add(Marker(
+          onTap: () {
+            // updateInfoWindow(
+            //   context!,
+            //   mapController!,
+            //   project.coordinates!,
+            //   _infoWindowWidth,
+            //   _markerOffset,
+            // );
+            // updateProject(project);
+            // updateVisibility(true);
+            // rebuildInfoWindow();
+          },
           zIndex: 20,
           icon: await BitmapDescriptor.fromAssetImage(
               ImageConfiguration(), "assets/icons/green.png"),
@@ -113,8 +197,12 @@ class MapService extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void focusMap({required LatLng coordinates}) {
-    mapController!.animateCamera(CameraUpdate.newLatLng(coordinates));
+  void focusMap({required LatLng coordinates, required markerId}) {
+    mapController!
+        .animateCamera(CameraUpdate.newLatLng(coordinates))
+        .whenComplete(() {
+      mapController!.showMarkerInfoWindow(MarkerId(markerId));
+    });
     notifyListeners();
   }
 

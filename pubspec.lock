@@ -10,6 +10,13 @@ packages:
       url: "https://github.com/alnaughty/adaptive_container"
     source: git
     version: "0.0.1"
+  address_search_field:
+    dependency: "direct main"
+    description:
+      name: address_search_field
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0-nullsafety.0"
   async:
     dependency: transitive
     description:
@@ -38,6 +45,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  clippy_flutter:
+    dependency: "direct main"
+    description:
+      name: clippy_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0-nullsafety.1"
   clock:
     dependency: transitive
     description:

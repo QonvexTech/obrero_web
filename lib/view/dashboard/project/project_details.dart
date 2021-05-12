@@ -363,7 +363,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                           List<LogModel>? warnings() {
                             List<LogModel> newWarnings = [];
                             for (LogModel log in result.data!) {
-                              if (log.type == "project_warning") {
+                              if (log.type == "project_warning" &&
+                                  log.data_id == widget.projectModel!.id) {
                                 newWarnings.add(log);
                               }
                             }

@@ -224,7 +224,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
               }
             },
             child: Text(
-              isEdit ? "Save Edit" : "Caréer",
+              isEdit ? "Save Edit" : "Créer",
               style: TextStyle(color: Colors.white),
             ),
           )

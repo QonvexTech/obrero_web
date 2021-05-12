@@ -45,7 +45,7 @@ class ProjectProvider extends ChangeNotifier {
       }
     }
     fetchProjectsBaseOnDates()
-        .whenComplete(() => mapService.mapInit(_projectsDateBase!));
+        .whenComplete(() => mapService.mapInit(_projectsDateBase!, context));
     notifyListeners();
     return selectedDate;
   }

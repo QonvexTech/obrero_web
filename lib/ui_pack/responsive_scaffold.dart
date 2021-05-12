@@ -166,7 +166,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
       _showDrawer = false;
 //          drawerWidth = maximumDrawerWidth;
     }
-    ProfileService profileService = Provider.of<ProfileService>(context);
+
     return Scaffold(
       key: _key,
       drawer: MediaQuery.of(context).size.width > 900
