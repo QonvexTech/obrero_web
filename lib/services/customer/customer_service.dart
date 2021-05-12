@@ -9,10 +9,11 @@ import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
-import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
 class CustomerService extends ChangeNotifier {
   Widget activePageScreen = CustomerList();
+
+  bool _loader = false;
   // BuildContext? fromContext;
   PaginationService paginationService = PaginationService();
   TextEditingController searchController = TextEditingController();
@@ -23,6 +24,12 @@ class CustomerService extends ChangeNotifier {
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchCustomers);
   Map bodyToUpdate = {};
+
+  get loader => _loader;
+  set loader(value) {
+    _loader = value;
+    notifyListeners();
+  }
 
   //SEARCH CUSTOMER
   void search(String text) {
@@ -120,10 +127,12 @@ class CustomerService extends ChangeNotifier {
         }
       }
     }
+
     searchController.clear();
   }
 
   Future fetchCustomers() async {
+    loader = true;
     var url = Uri.parse(
         "$customer_api${_pagination.perPage}?page=${_pagination.page}");
     // final prefs = await SharedPreferences.getInstance();
@@ -156,6 +165,7 @@ class CustomerService extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    loader = false;
     notifyListeners();
   }
 

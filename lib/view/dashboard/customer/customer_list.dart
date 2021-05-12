@@ -30,7 +30,7 @@ class _CustomerListState extends State<CustomerList> {
     try {
       CustomerService customerService = Provider.of<CustomerService>(context);
       PaginationService pageService = Provider.of<PaginationService>(context);
-      return customerService.customers == null
+      return customerService.customers == null && customerService.loader
           ? Container(
               color: Palette.contentBackground,
               child: Center(
