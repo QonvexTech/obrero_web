@@ -23,6 +23,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
+  Map<dynamic, dynamic>? countryValue;
 
   @override
   void initState() {
@@ -148,6 +149,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                 },
                 decoration: InputDecoration(
                   hintText: "Email",
+                  hintStyle: transHeader,
                   border: OutlineInputBorder(),
                 ),
                 controller: emailController,
@@ -160,6 +162,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                   bodyToEdit.addAll({"contact_number": value});
                 },
                 decoration: InputDecoration(
+                  hintStyle: transHeader,
                   hintText: "Téléphone",
                   border: OutlineInputBorder(),
                 ),
@@ -168,23 +171,60 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
-              TextField(
-                onChanged: (value) {
-                  bodyToEdit.addAll({"address": value});
-                },
-                decoration: InputDecoration(
-                  hintText: "Address",
-                  border: OutlineInputBorder(),
-                ),
-                controller: addressController,
-              ),
-              SizedBox(
-                height: MySpacer.small,
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: DropdownButton<Map<dynamic, dynamic>>(
+                      underline: null,
+                      hint: Text("Select Your Country"),
+                      value: countryValue,
+                      icon: Icon(Icons.arrow_drop_down),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(color: Palette.drawerColor),
+                      onChanged: (Map<dynamic, dynamic>? newValue) {
+                        setState(() {
+                          countryValue = newValue!;
+                        });
+                      },
+                      items: countries
+                          .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                              (value) {
+                        return DropdownMenuItem<Map<dynamic, dynamic>>(
+                          value: value,
+                          child: Text(
+                            value["name"],
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  SizedBox(
+                    width: MySpacer.small,
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: TextField(
+                      onChanged: (value) {
+                        bodyToEdit.addAll({"address": value});
+                      },
+                      decoration: InputDecoration(
+                        hintStyle: transHeader,
+                        hintText: "Address",
+                        border: OutlineInputBorder(),
+                      ),
+                      controller: addressController,
+                    ),
+                  ),
+                ],
               ),
               // TextField(
               //   onChanged: (value) {
               //     bodyToEdit.addAll({"address": value});
-              //   },
+              //   },R
               //   decoration: InputDecoration(
               //     hintText: "Status",
               //     border: OutlineInputBorder(),
