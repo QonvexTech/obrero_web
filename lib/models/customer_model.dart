@@ -25,6 +25,18 @@ class CustomerModel {
       this.amount,
       this.status});
 
+  String userAsString() {
+    return '#${this.id} ${this.fname}';
+  }
+
+  ///custom comparing function to check if two users are equal
+  bool isEqual(CustomerModel? model) {
+    return this.id == model?.id;
+  }
+
+  @override
+  String toString() => fname!;
+
   CustomerModel.fromJson(Map<String, dynamic> json) {
     this.id = json["id"];
     this.fname = json["first_name"];

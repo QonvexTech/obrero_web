@@ -19,6 +19,8 @@ class ProjectAddService extends ChangeNotifier {
   Uint8List? _base64Image;
   Map _bodyToEdit = {};
 
+  bool justScroll = true;
+
   get bodyToEdit => _bodyToEdit;
   set bodyToEdit(value) => _bodyToEdit = value;
 

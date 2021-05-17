@@ -334,6 +334,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
           height: MediaQuery.of(context).size.height,
           color: Palette.contentBackground,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -346,6 +347,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                       offset: Offset(0, 3))
                 ]),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     //leading
                     if (widget.drawerItems != null) ...{
@@ -389,9 +391,9 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                         : PopupMenuButton(
                             onSelected: (val) async {
                               if (val == 1) {
-                                // setState(() {
-                                //   _selectedContent = GeneralSettings();
-                                // });
+                                setState(() {
+                                  _selectedContent = GeneralSettings();
+                                });
                               } else if (val == 2) {
                                 showDialog(
                                     context: context,
@@ -418,6 +420,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
                                             CircleAvatar(
                                               backgroundColor:
@@ -439,13 +443,21 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                   ),
                                   PopupMenuItem(
                                     value: 2,
-                                    child: Text("Changer le mot de passe"),
+                                    child: Center(
+                                      child: Text("Changer le mot de passe",
+                                          textAlign: TextAlign.center),
+                                    ),
                                   ),
                                   PopupMenuItem(
                                     value: 3,
-                                    child: Text(
-                                      "Logout",
-                                      style: TextStyle(color: Colors.red),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          "Logout",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ])

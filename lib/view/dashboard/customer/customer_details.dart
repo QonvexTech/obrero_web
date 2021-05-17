@@ -30,9 +30,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
   @override
   void initState() {
     // Provider.of<MapService>(context, listen: false).mapInit(customerProjects);
-
     super.initState();
-
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       Provider.of<CustomerService>(context, listen: false)
           .workingProjectsCustomer(widget.customer!.id!);

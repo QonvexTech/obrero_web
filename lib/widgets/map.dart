@@ -18,30 +18,36 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     MapService mapService = Provider.of<MapService>(context);
+
     return Stack(
       children: [
         initialPositon == null
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : GoogleMap(
-                scrollGesturesEnabled: mapService.gesture,
-                onMapCreated: (controller) {
-                  setState(() {
-                    mapService.mapController = controller;
-                  });
+            : InkWell(
+                onHover: (value) {
+                  print(value);
                 },
-                compassEnabled: true,
-                myLocationButtonEnabled: true,
-                rotateGesturesEnabled: true,
-                initialCameraPosition: CameraPosition(
-                  target: initialPositon!,
-                  zoom: mapService.zoom,
+                child: GoogleMap(
+                  scrollGesturesEnabled: mapService.gesture,
+                  onMapCreated: (controller) {
+                    setState(() {
+                      mapService.mapController = controller;
+                    });
+                  },
+                  compassEnabled: true,
+                  myLocationButtonEnabled: true,
+                  rotateGesturesEnabled: true,
+                  initialCameraPosition: CameraPosition(
+                    target: initialPositon!,
+                    zoom: mapService.zoom,
+                  ),
+                  buildingsEnabled: true,
+                  mapType: MapType.none,
+                  myLocationEnabled: true,
+                  markers: mapService.markers,
                 ),
-                buildingsEnabled: true,
-                mapType: MapType.none,
-                myLocationEnabled: true,
-                markers: mapService.markers,
               ),
       ],
     );

@@ -57,48 +57,51 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                 child: Container(
                   child: Column(
                     children: [
-                      AppBar(
-                        centerTitle: false,
-                        elevation: 0,
-                        backgroundColor: Colors.transparent,
-                        title: Text(
-                          "Messagerie",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        actions: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.attach_file_outlined,
-                              color: Palette.drawerColor,
-                            ),
-                            padding: const EdgeInsets.all(0),
-                            onPressed: () {
-                              MessagingDataHelper.pickImage((value) {
-                                setState(() {
-                                  Views.b64Image = value;
-                                });
-                              });
-                            },
+                      Padding(
+                        padding: const EdgeInsets.only(right: 25),
+                        child: AppBar(
+                          centerTitle: false,
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          title: Text(
+                            "Messagerie",
+                            style: TextStyle(color: Colors.black),
                           ),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          MaterialButton(
-                            padding: const EdgeInsets.all(20),
-                            onPressed: () =>
-                                setState(() => _showList = !_showList),
-                            minWidth: 60,
-                            height: 60,
-                            color: Theme.of(context).accentColor,
-                            child: Center(
-                              child: Image.asset(
-                                "assets/icons/icon.png",
-                                color: Colors.white,
+                          actions: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.attach_file_outlined,
+                                color: Palette.drawerColor,
                               ),
+                              padding: const EdgeInsets.all(0),
+                              onPressed: () {
+                                MessagingDataHelper.pickImage((value) {
+                                  setState(() {
+                                    Views.b64Image = value;
+                                  });
+                                });
+                              },
                             ),
-                          )
-                        ],
-                        automaticallyImplyLeading: false,
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            MaterialButton(
+                              padding: const EdgeInsets.all(20),
+                              onPressed: () =>
+                                  setState(() => _showList = !_showList),
+                              minWidth: 60,
+                              height: 60,
+                              color: Theme.of(context).accentColor,
+                              child: Center(
+                                child: Image.asset(
+                                  "assets/icons/icon.png",
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          ],
+                          automaticallyImplyLeading: false,
+                        ),
                       ),
                       Expanded(
                           child: Container(

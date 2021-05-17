@@ -18,11 +18,17 @@ class CustomerService extends ChangeNotifier {
   PaginationService paginationService = PaginationService();
   TextEditingController searchController = TextEditingController();
   List<CustomerModel>? _customers;
+  List<CustomerModel> _customersLoad = [];
+  List<CustomerModel> _tempCustomersLoad = [];
   List<CustomerModel>? _tempCustomer;
   List<ProjectModel>? customerProject;
 
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchCustomers);
+
+  late PaginationModel _paginationLoad =
+      PaginationModel(lastPage: 1, fetch: loadMore);
+
   Map bodyToUpdate = {};
 
   get loader => _loader;
@@ -32,7 +38,7 @@ class CustomerService extends ChangeNotifier {
   }
 
   //SEARCH CUSTOMER
-  void search(String text) {
+  Future<List<CustomerModel>> search(String text) async {
     _customers = _tempCustomer;
     _customers = _customers!
         .where((element) =>
@@ -44,6 +50,55 @@ class CustomerService extends ChangeNotifier {
             element.email!.toLowerCase().contains(text.toLowerCase()))
         .toList();
     notifyListeners();
+    return _customers!;
+  }
+
+  Future<List<CustomerModel>> searchLoad(String text) async {
+    if (text.isEmpty) {
+      _customersLoad = _tempCustomersLoad;
+    } else {
+      print("empty");
+      _customersLoad = _customersLoad
+          .where((element) =>
+              "${element.fname!} ${element.lname!}"
+                  .toLowerCase()
+                  .contains(text.toLowerCase()) ||
+              element.lname!.toLowerCase().contains(text.toLowerCase()) ||
+              element.adress!.toLowerCase().contains(text.toLowerCase()) ||
+              element.email!.toLowerCase().contains(text.toLowerCase()))
+          .toList();
+
+      while (_paginationLoad.isNext) {
+        _paginationLoad.page += 1;
+        _paginationLoad.isNext = false;
+        load();
+        _customersLoad = _customersLoad
+            .where((element) =>
+                "${element.fname!} ${element.lname!}"
+                    .toLowerCase()
+                    .contains(text.toLowerCase()) ||
+                element.lname!.toLowerCase().contains(text.toLowerCase()) ||
+                element.adress!.toLowerCase().contains(text.toLowerCase()) ||
+                element.email!.toLowerCase().contains(text.toLowerCase()))
+            .toList();
+      }
+    }
+    print("OnSEARCH :$text");
+    notifyListeners();
+    return _customersLoad;
+
+    // if (_customersLoad.isEmpty && _pagination.isNext) {
+    //   loadMore();
+    //   _customersLoad = _customersLoad
+    //       .where((element) =>
+    //           "${element.fname!} ${element.lname!}"
+    //               .toLowerCase()
+    //               .contains(text.toLowerCase()) ||
+    //           // element.lname!.toLowerCase().contains(text.toLowerCase()) ||
+    //           element.adress!.toLowerCase().contains(text.toLowerCase()) ||
+    //           element.email!.toLowerCase().contains(text.toLowerCase()))
+    //       .toList();
+    // }
   }
 
   // get fromPage => _fromPage;
@@ -53,7 +108,18 @@ class CustomerService extends ChangeNotifier {
   // }
 
   get customers => _customers;
+  get customersLoad => _customersLoad;
+
   get pagination => _pagination;
+  get paginationLoad => _paginationLoad;
+
+  void loadMore() {
+    if (_paginationLoad.isNext) {
+      _paginationLoad.page += 1;
+      _paginationLoad.isNext = false;
+    }
+    load();
+  }
 
   setPage({required Widget page}) {
     print("object");
@@ -69,21 +135,6 @@ class CustomerService extends ChangeNotifier {
     _base64Image = value;
     notifyListeners();
   }
-
-  // void edit(EmployeesModel userToEdit) {
-  //   bodyToUpdate.addAll({"user_id": userToEdit.id.toString()});
-  //   print(bodyToUpdate);
-  //   employeeService.updateUser(body: bodyToUpdate).whenComplete(() {
-  //     setState(() {
-  //       widget.userToEdit!.fname = fnameController.text;
-  //       widget.userToEdit!.lname = lnameController.text;
-  //       widget.userToEdit!.email = emailController.text;
-  //       widget.userToEdit!.address = addressController.text;
-  //       widget.userToEdit!.contactNumber = contactNumberController.text;
-  //     });
-  //     Navigator.pop(context);
-  //   });
-  // }
 
   Future workingProjectsCustomer(int customerId) async {
     try {
@@ -115,24 +166,22 @@ class CustomerService extends ChangeNotifier {
     for (var customer in customers) {
       newCustomers.add(CustomerModel.fromJson(customer));
     }
-    _customers = newCustomers;
-    _tempCustomer = newCustomers;
 
-    if (_customers!.length == 0) {
+    if (newCustomers.length == 0) {
       if (_pagination.isPrev) {
-        if (_customers!.length == 0) {
+        if (newCustomers.length == 0) {
           if (_pagination.isPrev) {
             paginationService.prevPage(_pagination);
           }
         }
       }
     }
-
-    searchController.clear();
+    return newCustomers;
   }
 
   Future fetchCustomers() async {
-    loader = true;
+    _loader = true;
+    print("Fetching...");
     var url = Uri.parse(
         "$customer_api${_pagination.perPage}?page=${_pagination.page}");
     // final prefs = await SharedPreferences.getInstance();
@@ -145,8 +194,10 @@ class CustomerService extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         // print(response.body);
         List data = json.decode(response.body)["data"];
+        print(response.body);
         if (json.decode(response.body)["next_page_url"] != null) {
           _pagination.isNext = true;
+          print("NEXT is ${_pagination.isNext}");
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
           _pagination.isPrev = true;
@@ -158,14 +209,18 @@ class CustomerService extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        fromJsonListToCustomer(data);
+        var newCustomers = fromJsonListToCustomer(data);
+        _customers = newCustomers;
+        _tempCustomer = newCustomers;
+
+        searchController.clear();
       } else {
         print(response.body);
       }
     } catch (e) {
       print(e);
     }
-    loader = false;
+    _loader = false;
     notifyListeners();
   }
 
@@ -230,5 +285,41 @@ class CustomerService extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future load() async {
+    var url = Uri.parse(
+        "$customer_api${_paginationLoad.perPage}?page=${_paginationLoad.page}");
+    try {
+      var response = await http.get(url, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List data = json.decode(response.body)["data"];
+        if (json.decode(response.body)["next_page_url"] != null) {
+          _paginationLoad.isNext = true;
+        }
+        if (json.decode(response.body)["prev_page_url"] != null) {
+          _paginationLoad.isPrev = true;
+        }
+        if (json.decode(response.body)["last_page"] != null) {
+          _paginationLoad.lastPage = json.decode(response.body)["last_page"];
+        }
+        _paginationLoad.totalEntries = json.decode(response.body)["total"];
+        if (_paginationLoad.totalEntries < _paginationLoad.perPage) {
+          _paginationLoad.perPage = _paginationLoad.totalEntries;
+        }
+        var newCustomers = fromJsonListToCustomer(data);
+        _customersLoad.addAll(newCustomers);
+        _tempCustomersLoad.addAll(newCustomers);
+      } else {
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
+    notifyListeners();
   }
 }

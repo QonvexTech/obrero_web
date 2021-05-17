@@ -20,9 +20,7 @@ class _CustomerListState extends State<CustomerList> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      Provider.of<CustomerService>(context, listen: false).fetchCustomers();
-    });
+    Provider.of<CustomerService>(context, listen: false).fetchCustomers();
   }
 
   @override

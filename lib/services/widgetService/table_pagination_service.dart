@@ -15,14 +15,12 @@ class PaginationService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // void customPerPage(PaginationModel page, int newPerPage) {
-  //   page.perPage = newPerPage;
-  //   page.isNext = false;
-  //   page.isPrev = false;
-
-  //   page.fetch();
-  //   notifyListeners();
-  // }
+  void animate(double offset) {
+    if (scrollController.positions.isNotEmpty) {
+      scrollController.animateTo(offset,
+          duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+    }
+  }
 
   void nextPage(PaginationModel page) {
     page.page += 1;
@@ -30,13 +28,6 @@ class PaginationService extends ChangeNotifier {
     animate(20 * double.parse(page.page.toString()));
     page.fetch();
     notifyListeners();
-  }
-
-  void animate(double offset) {
-    if (scrollController.positions.isNotEmpty) {
-      scrollController.animateTo(offset,
-          duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-    }
   }
 
   void prevPage(PaginationModel page) {
