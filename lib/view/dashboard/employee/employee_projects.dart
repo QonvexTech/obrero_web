@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/user_project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 
 class EmployeeProjectsDetails extends StatefulWidget {
@@ -45,6 +45,7 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
               child: Row(
                 children: [
                   CircleAvatar(
+                    backgroundColor: Palette.contentBackground,
                     backgroundImage:
                         fetchImage(netWorkImage: widget.emplyoyee!.picture),
                   ),
@@ -60,7 +61,9 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
                 ? Expanded(
                     child: ListView(
                       children: [
-                        Text("Projets Actuels"),
+                        employeeService.employeeProjects!.length > 0
+                            ? Text("Projets Actuels")
+                            : SizedBox(),
                         for (UserProjectModel project
                             in employeeService.employeeProjects!)
                           Expanded(
@@ -69,11 +72,15 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(
-                                    Icons.circle,
-                                    color: statusColors[
-                                        project.userProject!.status!],
-                                    size: 15,
+                                  Consumer<ColorChangeService>(
+                                    builder: (context, data, child) {
+                                      return Icon(
+                                        Icons.circle,
+                                        color: data.statusColors[
+                                            project.userProject!.status!],
+                                        size: 15,
+                                      );
+                                    },
                                   ),
                                   SizedBox(
                                     width: MySpacer.small,
@@ -91,7 +98,7 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
                         SizedBox(
                           height: MySpacer.medium,
                         ),
-                        Text("Projet précédent"),
+                        // Text("Projet précédent"),
                       ],
                     ),
                   )

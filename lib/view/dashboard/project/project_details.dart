@@ -1,4 +1,5 @@
 import 'package:adaptive_container/adaptive_container.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
@@ -7,8 +8,10 @@ import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/scaffold_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
+import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/back_button.dart';
@@ -36,6 +39,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+    var scaff = Provider.of<ScaffoldService>(context);
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -138,9 +142,23 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                     SizedBox(
                       height: MySpacer.large,
                     ),
-                    Text(
-                      "Personnes intervenant sur le chantier",
-                      style: transHeader,
+                    Row(
+                      children: [
+                        Text(
+                          "Personnes intervenant sur le chantier",
+                          style: transHeader,
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              scaff.selectedContent = MessageScreen(
+                                  recepients: widget.projectModel!.assignees!);
+                              print("press");
+                            },
+                            icon: Icon(
+                              Icons.message_rounded,
+                              color: Palette.drawerColor,
+                            ))
+                      ],
                     ),
                     SizedBox(
                       height: MySpacer.small,
@@ -174,69 +192,85 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
-                    Text(
-                      "Photo",
-                      style: transHeader,
-                    ),
-                    SizedBox(
-                      height: MySpacer.small,
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.25,
-                      width: MediaQuery.of(context).size.width,
-                      child: GridView.count(
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        shrinkWrap: true,
-                        childAspectRatio: 1.5,
-                        crossAxisCount: 3,
-                        children: [
-                          for (var image in widget.projectModel!.images!)
-                            Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: tempImageProvider(
-                                                netWorkImage: image.url,
-                                                defaultImage:
-                                                    "images/emptyImage.jpg")),
-                                      ),
+                    widget.projectModel!.images!.length == 0
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Photos",
+                                style: transHeader,
+                              ),
+                              SizedBox(height: MySpacer.small),
+                              DottedBorder(
+                                color: Colors.black12,
+                                strokeWidth: 2,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.2,
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(
+                                            Icons.upload_rounded,
+                                            color: Palette.drawerColor,
+                                          ),
+                                        ),
+                                        Text("Upload Image")
+                                      ],
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          if (widget.projectModel!.images!.length == 0)
-                            Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            fit: BoxFit.fill,
-                                            image: tempImageProvider(
-                                                netWorkImage: null,
-                                                defaultImage:
-                                                    "images/emptyImage.jpg")),
-                                      ),
+                            ],
+                          )
+                        : Container(
+                            height: MediaQuery.of(context).size.height * 0.25,
+                            width: MediaQuery.of(context).size.width,
+                            child: GridView.count(
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              shrinkWrap: true,
+                              childAspectRatio: 1.5,
+                              crossAxisCount: 3,
+                              children: [
+                                for (var image in widget.projectModel!.images!)
+                                  Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Photos",
+                                          style: transHeader,
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                  fit: BoxFit.fill,
+                                                  image: tempImageProvider(
+                                                      netWorkImage: image.url,
+                                                      defaultImage:
+                                                          "images/emptyImage.jpg")),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
+                              ],
                             ),
-                        ],
-                      ),
-                    )
+                          )
                   ],
                 ),
               ),
@@ -337,18 +371,18 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         "Warnings",
                         style: Theme.of(context).textTheme.headline6,
                       ),
-                      IconButton(
-                          icon: Icon(Icons.add_circle),
-                          onPressed: () {
-                            //LOGS
-                          })
+                      // IconButton(
+                      //     icon: Icon(Icons.add_circle),
+                      //     onPressed: () {
+                      //       //LOGS
+                      //     })
                     ],
                   ),
                   SizedBox(
                     height: MySpacer.small,
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height,
+                    height: MediaQuery.of(context).size.height * 0.7,
                     width: MediaQuery.of(context).size.width,
                     child: StreamBuilder<List<LogModel>>(
                       builder: (context, result) {
@@ -359,6 +393,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             ),
                           );
                         }
+
                         if (result.hasData && result.data!.length > 0) {
                           List<LogModel>? warnings() {
                             List<LogModel> newWarnings = [];
@@ -371,38 +406,73 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             return newWarnings;
                           }
 
+                          if (warnings()!.length <= 0) {
+                            return Container(
+                              height: 50,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Card(
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 150,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                  Icons
+                                                      .notifications_none_sharp,
+                                                  size: 50,
+                                                  color: Colors.grey),
+                                              Text(
+                                                  "Pas encore d'avertissements!")
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
                           return Scrollbar(
                             child: ListView(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10),
-                              children: List.generate(
-                                  warnings()!.length,
-                                  (index) => Card(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons
-                                                    .notification_important_rounded,
-                                                color: Colors.grey,
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: ListTile(
-                                                  title: Text(
-                                                      "${warnings()![index].title}"),
-                                                  subtitle: Text(
-                                                      "${warnings()![index].body}"),
-                                                ),
-                                              )
-                                            ],
-                                          ),
+                              children:
+                                  List.generate(warnings()!.length, (index) {
+                                return Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.notification_important_rounded,
+                                          color: Colors.grey,
                                         ),
-                                      )),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: ListTile(
+                                            title: Text(
+                                                "${warnings()![index].title}"),
+                                            subtitle: Text(
+                                                "${warnings()![index].body}"),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
                             ),
                           );
                         } else {
@@ -418,14 +488,16 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
               ),
             ))
           ]),
-          Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(Icons.close, color: Colors.red))),
+          widget.fromPage == "dashboard"
+              ? Positioned(
+                  top: 0,
+                  right: 0,
+                  child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.close, color: Colors.red)))
+              : SizedBox(),
         ],
       ),
     );

@@ -7,7 +7,7 @@ import 'package:uitemplate/services/map_service.dart';
 class MapScreen extends StatefulWidget {
   final bool? setCoord;
   const MapScreen({
-    this.setCoord,
+    required this.setCoord,
     Key? key,
   }) : super(key: key);
   @override
@@ -47,6 +47,11 @@ class _MapScreenState extends State<MapScreen> {
                   mapType: MapType.none,
                   myLocationEnabled: true,
                   markers: mapService.markers,
+                  onTap: (LatLng coord) {
+                    if (widget.setCoord!) {
+                      mapService.setCoordinates(coord: coord, context: context);
+                    }
+                  },
                 ),
               ),
       ],

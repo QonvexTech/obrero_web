@@ -7,6 +7,7 @@ import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
@@ -229,11 +230,18 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                               children: [
                                                 Text("Status",
                                                     style: transHeader),
-                                                Text(
-                                                  statusTitles[project.status!],
-                                                  style: TextStyle(
-                                                      color: statusColors[
-                                                          project.status!]),
+                                                Consumer<ColorChangeService>(
+                                                  builder:
+                                                      (context, data, child) {
+                                                    return Text(
+                                                      statusTitles[
+                                                          project.status!],
+                                                      style: TextStyle(
+                                                          color: data
+                                                                  .statusColors[
+                                                              project.status!]),
+                                                    );
+                                                  },
                                                 ),
                                               ],
                                             ),
@@ -279,7 +287,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: MapScreen(),
+                        child: MapScreen(
+                          setCoord: false,
+                        ),
                       ),
 
                       // Container(

@@ -3,8 +3,8 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 
-Widget pageControll(
-    PaginationService pageService, PaginationModel paginationModel, context) {
+Widget pageControll(PaginationService pageService,
+    PaginationModel paginationModel, context, int viewingEntries) {
   return Container(
     width: MediaQuery.of(context).size.width,
     height: 50,
@@ -23,14 +23,14 @@ Widget pageControll(
                   offset: Offset(0, 40),
                   child: Row(
                     children: [
-                      Text(paginationModel.perPage.toString()),
+                      Text(viewingEntries.toString()),
                       Icon(Icons.arrow_drop_down_sharp)
                     ],
                   ),
                   itemBuilder: (context) => [
-                        for (var x = 1;
+                        for (var x = 10;
                             x < paginationModel.totalEntries + 1;
-                            x++)
+                            x += 10)
                           PopupMenuItem(
                             child: GestureDetector(
                                 onTap: () {

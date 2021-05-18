@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/services/map_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
@@ -44,8 +46,10 @@ class ProjectProvider extends ChangeNotifier {
         selectedDate = picked;
       }
     }
-    fetchProjectsBaseOnDates()
-        .whenComplete(() => mapService.mapInit(_projectsDateBase!, context));
+    fetchProjectsBaseOnDates().whenComplete(() => mapService.mapInit(
+        _projectsDateBase!,
+        context,
+        Provider.of<ColorChangeService>(context, listen: false).imagesStatus));
     notifyListeners();
     return selectedDate;
   }

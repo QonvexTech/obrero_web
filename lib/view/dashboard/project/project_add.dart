@@ -1,4 +1,5 @@
 import 'package:adaptive_container/adaptive_container.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,7 +58,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   @override
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
-    Provider.of<CustomerService>(context, listen: false).load();
+    Provider.of<CustomerService>(context, listen: false).initLoad();
 
     if (widget.projectToEdit != null) {
       var projectAddService =
@@ -66,6 +67,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       descriptionController.text = widget.projectToEdit!.description ?? "";
       projectAddService.startDate = widget.projectToEdit!.startDate ?? "";
       projectAddService.endDate = widget.projectToEdit!.endDate ?? "";
+
       projectAddService.userToAssignIds(widget.projectToEdit!.assignees!);
       if (widget.projectToEdit!.owner!.id != null) {
         projectAddService.activeOwnerIndex = widget.projectToEdit!.owner!.id;
@@ -130,7 +132,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                   height:
                                       MediaQuery.of(context).size.height * 0.2,
                                   width: double.infinity,
-                                  child: MapScreen())
+                                  child: MapScreen(
+                                    setCoord: true,
+                                  ))
                               : SizedBox(),
                           Expanded(
                             child: ListView(
@@ -240,13 +244,11 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       style: boldText,
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5),
-                                      child: Text(
-                                        "${mapService.coordinates.latitude},${mapService.coordinates.longitude}",
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5),
+                                        child: TextField(
+                                          controller: mapService.location,
+                                        )),
                                   ],
                                 ),
                                 SizedBox(
@@ -260,13 +262,11 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       style: boldText,
                                     ),
                                     Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 5),
-                                      child: Text(
-                                        "${Provider.of<MapService>(context).addressGeo}",
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 5),
+                                        child: TextField(
+                                          controller: mapService.address,
+                                        )),
                                   ],
                                 ),
 
@@ -307,223 +307,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             onChanged: (data) {
                                               print(data);
                                             },
-                                            popupSafeArea: PopupSafeArea(
-                                                top: true, bottom: true),
                                           ),
                                         ),
-
-                                        // PopupMenuButton(
-                                        //     onSelected: (val) {},
-                                        //     offset: Offset(0, 50),
-                                        //     icon: Icon(Icons.add_circle),
-                                        //     itemBuilder: (context) => [
-                                        //           PopupMenuItem(
-                                        //             child: Padding(
-                                        //                 padding: EdgeInsets.symmetric(
-                                        //                     vertical: 5),
-                                        //                 child: SearchBox(
-                                        //                   controller: searchController,
-                                        //                   onChange:
-                                        //                       customerService.searchLoad,
-                                        //                 )),
-                                        //           ),
-                                        //           PopupMenuItem(
-                                        //             value: 1,
-                                        //             child: Consumer<CustomerService>(
-                                        //                 builder: (context, data, child) {
-                                        //               try {
-                                        //                 return Container(
-                                        //                   width: 650,
-                                        //                   height: 500,
-                                        //                   child: customerService
-                                        //                               .customersLoad
-                                        //                               .length >=
-                                        //                           10
-                                        //                       ? SmartRefresher(
-                                        //                           enablePullDown: false,
-                                        //                           enablePullUp:
-                                        //                               customerService
-                                        //                                   .paginationLoad
-                                        //                                   .isNext,
-                                        //                           header: WaterDropHeader(),
-                                        //                           footer: CustomFooter(
-                                        //                             builder:
-                                        //                                 (context, mode) {
-                                        //                               Widget body;
-                                        //                               if (mode ==
-                                        //                                   LoadStatus.idle) {
-                                        //                                 body = Text(
-                                        //                                     "Load More...");
-                                        //                               } else if (mode ==
-                                        //                                   LoadStatus
-                                        //                                       .loading) {
-                                        //                                 body =
-                                        //                                     CupertinoActivityIndicator();
-                                        //                               } else if (mode ==
-                                        //                                   LoadStatus
-                                        //                                       .failed) {
-                                        //                                 body = Text(
-                                        //                                     "Load Failed!Click retry!");
-                                        //                               } else if (mode ==
-                                        //                                   LoadStatus
-                                        //                                       .canLoading) {
-                                        //                                 body = Center(
-                                        //                                   child:
-                                        //                                       CircularProgressIndicator(),
-                                        //                                 );
-                                        //                               } else {
-                                        //                                 body = Text(
-                                        //                                     "No more Data");
-                                        //                               }
-                                        //                               return Container(
-                                        //                                 height: 55.0,
-                                        //                                 width: 100,
-                                        //                                 child: Center(
-                                        //                                     child: body),
-                                        //                               );
-                                        //                             },
-                                        //                           ),
-                                        //                           controller:
-                                        //                               _refreshController,
-                                        //                           // onRefresh: _onRefresh,
-                                        //                           onLoading: _onLoading,
-                                        //                           child: ListView.builder(
-                                        //                             itemCount:
-                                        //                                 customerService
-                                        //                                     .customersLoad!
-                                        //                                     .length,
-                                        //                             itemBuilder: (c, i) {
-                                        //                               return Container(
-                                        //                                   child: Card(
-                                        //                                       child:
-                                        //                                           ListTile(
-                                        //                                 leading: CircleAvatar(
-                                        //                                     foregroundImage: fetchImage(
-                                        //                                         netWorkImage: customerService
-                                        //                                             .customersLoad![
-                                        //                                                 i]
-                                        //                                             .picture)),
-                                        //                                 title: Text(
-                                        //                                     "${customerService.customersLoad![i].fname} ${customerService.customersLoad![i].lname}"),
-                                        //                               )));
-                                        //                             },
-                                        //                           ))
-                                        //                       : ListView.builder(
-                                        //                           itemCount: customerService
-                                        //                               .customersLoad!
-                                        //                               .length,
-                                        //                           itemBuilder: (c, i) {
-                                        //                             return Container(
-                                        //                                 child: Row(
-                                        //                               children: [
-                                        //                                 Text(
-                                        //                                     "${customerService.customersLoad![i].fname} ${customerService.customersLoad![i].lname}")
-                                        //                               ],
-                                        //                             ));
-                                        //                           },
-                                        //                         ),
-                                        //                 );
-                                        //               } catch (e) {
-                                        //                 return Text("$e");
-                                        //               }
-                                        //             }),
-                                        //           ),
-                                        //         ]),
                                       ],
                                     )),
-
-                                // isEdit
-                                //     ? Container(
-                                //         margin: EdgeInsets.all(5),
-                                //         height: 60,
-                                //         width: 150,
-                                //         child: Card(
-                                //           color: Palette.drawerColor,
-                                //           margin: EdgeInsets.all(0),
-                                //           child: ListTile(
-                                //             title: Text(
-                                //               widget.projectToEdit!.owner!.fname ??
-                                //                   "No owner",
-                                //               style: TextStyle(color: Colors.white),
-                                //             ),
-                                //           ),
-                                //         ))
-                                //     : customerService.customers == null
-                                //         ? Center(
-                                //             child: CircularProgressIndicator(),
-                                //           )
-                                //         : customerService.customers.length == 0
-                                //             ? Text("No client to assign")
-                                //             : Container(
-                                //                 height: 60,
-                                //                 width: double.infinity,
-                                //                 child: ListView.builder(
-                                //                     scrollDirection: Axis.horizontal,
-                                //                     itemCount:
-                                //                         customerService.customers.length,
-                                //                     itemBuilder: (context, index) {
-                                //                       return projectAddService
-                                //                                   .activeOwnerIndex ==
-                                //                               customerService
-                                //                                   .customers[index].id
-                                //                           ? GestureDetector(
-                                //                               onTap: () {},
-                                //                               child: Container(
-                                //                                   margin: EdgeInsets.all(5),
-                                //                                   height: 60,
-                                //                                   width: 150,
-                                //                                   child: Card(
-                                //                                     color:
-                                //                                         Palette.drawerColor,
-                                //                                     margin:
-                                //                                         EdgeInsets.all(0),
-                                //                                     child: ListTile(
-                                //                                       title: Text(
-                                //                                         customerService
-                                //                                             .customers[
-                                //                                                 index]
-                                //                                             .fname,
-                                //                                         style: TextStyle(
-                                //                                             color: Colors
-                                //                                                 .white),
-                                //                                       ),
-                                //                                     ),
-                                //                                   )),
-                                //                             )
-                                //                           : GestureDetector(
-                                //                               onTap: () {
-                                //                                 print(
-                                //                                     "tapping ${customerService.customers[index].id}");
-                                //                                 setState(() {
-                                //                                   projectAddService
-                                //                                       .setOwner(
-                                //                                           customerService
-                                //                                               .customers[
-                                //                                                   index]
-                                //                                               .id,
-                                //                                           isEdit);
-
-                                //                                   print(customerService
-                                //                                       .customers[index].id);
-                                //                                 });
-                                //                               },
-                                //                               child: Container(
-                                //                                 margin: EdgeInsets.all(5),
-                                //                                 height: 60,
-                                //                                 width: 150,
-                                //                                 child: Card(
-                                //                                   child: ListTile(
-                                //                                     title: Text(
-                                //                                         customerService
-                                //                                             .customers[
-                                //                                                 index]
-                                //                                             .fname),
-                                //                                   ),
-                                //                                 ),
-                                //                               ));
-                                //                     }),
-                                //               ),
-                                //  EMPLOYEES
 
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -718,99 +505,186 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                 ),
 
                                 //PICTURES
-                                Container(
-                                    width: double.infinity,
-                                    height: 50,
-                                    child: MaterialButton(
-                                        onPressed: () async {
-                                          await FilePicker.platform.pickFiles(
-                                              allowMultiple: false,
-                                              allowedExtensions: [
-                                                'jpg',
-                                                'jpeg',
-                                                'png'
-                                              ]).then((pickedFile) {
-                                            projectAddService
-                                                .addPicture(pickedFile);
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "Upload Image",
-                                                style: boldText,
-                                              ),
-                                              Icon(Icons.add_circle)
-                                            ],
+                                projectAddService.projectImages.length <= 0
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Photos",
+                                            style: boldText,
                                           ),
-                                        ))),
-
-                                Container(
-                                  width: _scrw,
-                                  height: _scrh * .3,
-                                  child: GridView.count(
-                                    crossAxisCount: 3,
-                                    children: [
-                                      for (var image
-                                          in projectAddService.projectImages)
-                                        Container(
-                                          width: _scrh * .26,
-                                          height: _scrh * .26,
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey.shade100,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey.shade400,
-                                                  offset: Offset(3, 3),
-                                                  blurRadius: 2,
-                                                )
+                                          SizedBox(height: MySpacer.small),
+                                          MaterialButton(
+                                            onPressed: () async {
+                                              await FilePicker.platform
+                                                  .pickFiles(
+                                                      allowMultiple: false,
+                                                      allowedExtensions: [
+                                                    'jpg',
+                                                    'jpeg',
+                                                    'png'
+                                                  ]).then((pickedFile) {
+                                                projectAddService
+                                                    .addPicture(pickedFile);
+                                              });
+                                            },
+                                            child: DottedBorder(
+                                              color: Colors.black12,
+                                              strokeWidth: 2,
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.2,
+                                                child: Center(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      IconButton(
+                                                        onPressed: () async {
+                                                          await FilePicker
+                                                              .platform
+                                                              .pickFiles(
+                                                                  allowMultiple:
+                                                                      false,
+                                                                  allowedExtensions: [
+                                                                'jpg',
+                                                                'jpeg',
+                                                                'png'
+                                                              ]).then(
+                                                                  (pickedFile) {
+                                                            projectAddService
+                                                                .addPicture(
+                                                                    pickedFile);
+                                                          });
+                                                        },
+                                                        icon: Icon(
+                                                          Icons.upload_rounded,
+                                                          color: Palette
+                                                              .drawerColor,
+                                                        ),
+                                                      ),
+                                                      Text("Upload Image")
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          MaterialButton(
+                                              onPressed: () async {
+                                                await FilePicker.platform
+                                                    .pickFiles(
+                                                        allowMultiple: false,
+                                                        allowedExtensions: [
+                                                      'jpg',
+                                                      'jpeg',
+                                                      'png'
+                                                    ]).then((pickedFile) {
+                                                  projectAddService
+                                                      .addPicture(pickedFile);
+                                                });
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text("Add More"),
+                                                  SizedBox(
+                                                    width: MySpacer.small,
+                                                  ),
+                                                  Icon(Icons.add_circle),
+                                                ],
+                                              )),
+                                          Container(
+                                            width: _scrw,
+                                            height: _scrh * .3,
+                                            child: GridView.count(
+                                              crossAxisCount: 3,
+                                              mainAxisSpacing: 5,
+                                              crossAxisSpacing: 5,
+                                              children: [
+                                                for (var image
+                                                    in projectAddService
+                                                        .projectImages)
+                                                  Container(
+                                                    width: _scrh * .26,
+                                                    height: _scrh * .26,
+                                                    decoration: BoxDecoration(
+                                                        color: Colors
+                                                            .grey.shade100,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors
+                                                                .grey.shade400,
+                                                            offset:
+                                                                Offset(3, 3),
+                                                            blurRadius: 2,
+                                                          )
+                                                        ],
+                                                        image: DecorationImage(
+                                                            fit: profileData?.picture ==
+                                                                        null &&
+                                                                    image ==
+                                                                        null
+                                                                ? BoxFit
+                                                                    .scaleDown
+                                                                : BoxFit.cover,
+                                                            alignment: profileData
+                                                                            ?.picture ==
+                                                                        null &&
+                                                                    image ==
+                                                                        null
+                                                                ? AlignmentDirectional
+                                                                    .bottomCenter
+                                                                : AlignmentDirectional
+                                                                    .center,
+                                                            image: tempImageProvider(
+                                                                file: image,
+                                                                netWorkImage:
+                                                                    profileData
+                                                                        ?.picture,
+                                                                defaultImage:
+                                                                    'icons/admin_icon.png'),
+                                                            scale: profileData
+                                                                        ?.picture ==
+                                                                    null
+                                                                ? 5
+                                                                : 1)),
+                                                  ),
+                                                if (projectAddService
+                                                        .projectImages.length ==
+                                                    0)
+                                                  Container(
+                                                    width: _scrw,
+                                                    height: _scrh * 0.15,
+                                                    decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                            image: AssetImage(
+                                                                "assets/images/emptyImage.jpg"))),
+                                                  ),
                                               ],
-                                              image: DecorationImage(
-                                                  fit: profileData?.picture ==
-                                                              null &&
-                                                          image == null
-                                                      ? BoxFit.scaleDown
-                                                      : BoxFit.cover,
-                                                  alignment:
-                                                      profileData?.picture ==
-                                                                  null &&
-                                                              image == null
-                                                          ? AlignmentDirectional
-                                                              .bottomCenter
-                                                          : AlignmentDirectional
-                                                              .center,
-                                                  image: tempImageProvider(
-                                                      file: image,
-                                                      netWorkImage:
-                                                          profileData?.picture,
-                                                      defaultImage:
-                                                          'icons/admin_icon.png'),
-                                                  scale: profileData?.picture ==
-                                                          null
-                                                      ? 5
-                                                      : 1)),
-                                        ),
-                                      if (projectAddService
-                                              .projectImages.length ==
-                                          0)
-                                        Container(
-                                          width: _scrw,
-                                          height: _scrh * 0.15,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                                      "assets/images/emptyImage.jpg"))),
-                                        ),
-                                    ],
-                                  ),
-                                ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                 SizedBox(
-                                  height: 300,
+                                  height: 500,
                                 )
                               ],
                             ),
@@ -825,7 +699,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                 ? MediaQuery.of(context).size.height
                                 : MediaQuery.of(context).size.width,
                             width: double.infinity,
-                            child: MapScreen())),
+                            child: MapScreen(
+                              setCoord: true,
+                            ))),
                   ]),
             ),
             SizedBox(
@@ -902,7 +778,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                             picture: projectAddService.converteduint8list(),
                             startDate: projectAddService.startDate,
                             endDate: projectAddService.endDate,
-                            address: mapService.addressGeo,
+                            address: mapService.address.text,
                             areaSize: projectAddService.areaSize);
 
                         projectProvider

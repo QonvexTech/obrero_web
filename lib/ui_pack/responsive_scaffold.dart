@@ -5,7 +5,7 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
-import 'package:uitemplate/services/profile_service.dart';
+import 'package:uitemplate/services/scaffold_service.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
 import 'package:uitemplate/view/dashboard/dashboard_screen.dart';
@@ -15,7 +15,7 @@ import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
 import 'package:uitemplate/view/dashboard/project/project_screen.dart';
 import 'package:uitemplate/view/dashboard/settings/change_password_settings.dart';
 import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
-import 'package:uitemplate/view/dashboard/settings/warning_settings.dart';
+import 'package:uitemplate/view/dashboard/settings/warnings/warning_settings.dart';
 import 'package:uitemplate/widgets/notifications.dart';
 import 'children/sub_drawer_item.dart';
 
@@ -34,7 +34,12 @@ class ResponsiveScaffold extends StatefulWidget {
         text: "Employee",
         content: EmployeeScreen()),
     DrawerItem(icon: Icons.list, text: "Logs", content: LogScreen()),
-    DrawerItem(icon: Icons.message, text: "Pushs", content: MessageScreen()),
+    DrawerItem(
+        icon: Icons.message,
+        text: "Pushs",
+        content: MessageScreen(
+          recepients: [],
+        )),
     DrawerItem(
         icon: Icons.settings,
         text: "Préférences",
@@ -72,7 +77,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
 
     for (var item in widget.drawerItems) {
       if (item.content != null && item.subItems == null) {
-        _selectedContent = item.content;
+        Provider.of<ScaffoldService>(context, listen: false).init(item.content);
         break;
       }
     }
@@ -87,7 +92,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   bool showDrawerText = true;
   bool _showDrawer = false;
   DrawerItem? _selectedDrawerItem;
-  dynamic _selectedContent;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
 
   void onUpdate(DragUpdateDetails details) {
@@ -143,6 +147,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    ScaffoldService scaff = Provider.of<ScaffoldService>(context);
     if (MediaQuery.of(context).size.width > 900 &&
         MediaQuery.of(context).size.width < 1600) {
       minimumDrawerWidth = 60;
@@ -233,7 +238,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                       ? () {
                                           Navigator.of(context).pop(null);
                                           setState(() {
-                                            _selectedContent = item.content;
+                                            scaff.selectedContent =
+                                                item.content;
                                           });
                                         }
                                       : null,
@@ -283,7 +289,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                         ? () {
                                             Navigator.of(context).pop(null);
                                             setState(() {
-                                              _selectedContent =
+                                              scaff.selectedContent =
                                                   sub_items.content;
                                             });
                                           }
@@ -350,22 +356,21 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     //leading
-                    if (widget.drawerItems != null) ...{
-                      IconButton(
-                        icon: Icon(Icons.menu),
-                        onPressed: () {
-                          if (MediaQuery.of(context).size.width > 900) {
-                            setState(() {
-                              drawerWidth = drawerWidth == minimumDrawerWidth
-                                  ? maximumDrawerWidth
-                                  : minimumDrawerWidth;
-                            });
-                          } else {
-                            _key.currentState!.openDrawer();
-                          }
-                        },
-                      ),
-                    },
+
+                    IconButton(
+                      icon: Icon(Icons.menu),
+                      onPressed: () {
+                        if (MediaQuery.of(context).size.width > 900) {
+                          setState(() {
+                            drawerWidth = drawerWidth == minimumDrawerWidth
+                                ? maximumDrawerWidth
+                                : minimumDrawerWidth;
+                          });
+                        } else {
+                          _key.currentState!.openDrawer();
+                        }
+                      },
+                    ),
 
                     Container(
                       margin: const EdgeInsets.only(left: 15),
@@ -392,7 +397,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                             onSelected: (val) async {
                               if (val == 1) {
                                 setState(() {
-                                  _selectedContent = GeneralSettings();
+                                  scaff.selectedContent = GeneralSettings();
                                 });
                               } else if (val == 2) {
                                 showDialog(
@@ -487,7 +492,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                   for (DrawerItem item
                                       in widget.drawerItems) ...{
                                     Container(
-                                      color: _selectedContent == item.content
+                                      color: scaff.selectedContent.toString() ==
+                                              item.content.toString()
                                           ? Colors.white
                                           : Palette.drawerColor,
                                       width: double.infinity,
@@ -498,14 +504,15 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                           ? PopupMenuButton(
                                               icon: Icon(
                                                 item.icon,
-                                                color: _selectedContent ==
-                                                        item.content
+                                                color: scaff.selectedContent
+                                                            .toString() ==
+                                                        item.content.toString()
                                                     ? Palette.drawerColor
                                                     : Colors.white,
                                               ),
                                               onSelected: (value) {
                                                 setState(() {
-                                                  _selectedContent = value;
+                                                  scaff.selectedContent = value;
                                                 });
                                               },
                                               offset: Offset(60, 0),
@@ -558,7 +565,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                   : item.content != null
                                                       ? () {
                                                           setState(() {
-                                                            _selectedContent =
+                                                            scaff.selectedContent =
                                                                 item.content;
                                                           });
                                                         }
@@ -570,8 +577,10 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                     CrossAxisAlignment.center,
                                                 children: [
                                                   Icon(item.icon,
-                                                      color: _selectedContent ==
+                                                      color: scaff.selectedContent
+                                                                  .toString() ==
                                                               item.content
+                                                                  .toString()
                                                           ? Palette.drawerColor
                                                           : Colors.white),
                                                   if (showDrawerText) ...{
@@ -582,8 +591,10 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                       child: Text(
                                                         "${item.text}",
                                                         style: TextStyle(
-                                                            color: _selectedContent ==
+                                                            color: scaff.selectedContent
+                                                                        .toString() ==
                                                                     item.content
+                                                                        .toString()
                                                                 ? Palette
                                                                     .drawerColor
                                                                 : Colors.white),
@@ -596,12 +607,15 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                                   .length >
                                                               0) &&
                                                       showDrawerText) ...{
-                                                    Icon(_selectedDrawerItem ==
-                                                            item
-                                                        ? Icons
-                                                            .keyboard_arrow_up
-                                                        : Icons
-                                                            .keyboard_arrow_down)
+                                                    Icon(
+                                                      _selectedDrawerItem ==
+                                                              item
+                                                          ? Icons
+                                                              .keyboard_arrow_up
+                                                          : Icons
+                                                              .keyboard_arrow_down,
+                                                      color: Colors.white,
+                                                    )
                                                   }
                                                 ],
                                               ),
@@ -613,9 +627,10 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                       for (var sub_items in item.subItems!) ...{
                                         AnimatedContainer(
                                             width: double.infinity,
-                                            color: _selectedContent ==
-                                                    sub_items.content
-                                                ? Colors.grey[200]
+                                            color: scaff.selectedContent
+                                                        .toString() ==
+                                                    sub_items.content.toString()
+                                                ? Colors.white
                                                 : Colors.transparent,
                                             height: _selectedDrawerItem == item
                                                 ? 60
@@ -630,7 +645,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                       null
                                                   ? () {
                                                       setState(() {
-                                                        _selectedContent =
+                                                        scaff.selectedContent =
                                                             sub_items.content;
                                                       });
                                                     }
@@ -644,7 +659,12 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                       item) ...{
                                                     Icon(
                                                       sub_items.icon,
-                                                      color: Colors.white,
+                                                      color: scaff.selectedContent
+                                                                  .toString() ==
+                                                              sub_items.content
+                                                                  .toString()
+                                                          ? Palette.drawerColor
+                                                          : Colors.white,
                                                     ),
                                                   },
                                                   if (sub_items.title !=
@@ -656,8 +676,14 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                       child: Text(
                                                         sub_items.title!,
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.white),
+                                                            color: scaff.selectedContent
+                                                                        .toString() ==
+                                                                    sub_items
+                                                                        .content
+                                                                        .toString()
+                                                                ? Palette
+                                                                    .drawerColor
+                                                                : Colors.white),
                                                       ),
                                                     )
                                                   }
@@ -672,7 +698,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                             ),
                           )
                         },
-                        Expanded(child: _selectedContent)
+                        Expanded(child: scaff.selectedContent)
                       ],
                     ),
                   ],

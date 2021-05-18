@@ -30,8 +30,12 @@ dependencies:
   location_web: ^3.0.0
   address_search_field: 3.1.0-nullsafety.0
 
+  #COLOR
+  flutter_colorpicker: ^0.4.0
+
   #DESIGN
   clippy_flutter: 2.0.0-nullsafety.1
+  dotted_border: ^2.0.0
 
   #PULL REFRESH
   pull_to_refresh: ^2.0.0
@@ -57,6 +61,9 @@ dependencies:
 
   #validator
   email_validator: ^2.0.1
+
+  #TOAST
+  fluttertoast: ^8.0.6
  
 
   #DATE

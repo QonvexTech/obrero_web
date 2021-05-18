@@ -7,6 +7,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/map.dart';
 import 'package:uitemplate/widgets/project_card.dart';
@@ -23,8 +24,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   void initState() {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
-      Provider.of<MapService>(context, listen: false)
-          .mapInit(projectProvider.projectsDateBase, context);
+      Provider.of<MapService>(context, listen: false).mapInit(
+          projectProvider.projectsDateBase,
+          context,
+          Provider.of<ColorChangeService>(context, listen: false).imagesStatus);
       Provider.of<DashboardService>(context, listen: false)
           .initGetId(projectProvider.projectsDateBase);
     });
@@ -143,7 +146,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                     dateSelected: date,
                                     controller: dashboardService.dateController)
                                 .whenComplete(() => mapService.mapInit(
-                                    projectProvider.projectsDateBase, context));
+                                    projectProvider.projectsDateBase,
+                                    context,
+                                    Provider.of<ColorChangeService>(context)
+                                        .imagesStatus));
                           },
                           width: 75,
                         ),
@@ -184,7 +190,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             Expanded(
               child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: MapScreen()),
+                  child: MapScreen(
+                    setCoord: false,
+                  )),
             )
           ],
         ),

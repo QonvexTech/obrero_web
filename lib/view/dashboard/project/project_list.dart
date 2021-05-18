@@ -43,19 +43,7 @@ class _ProjectListState extends State<ProjectList> {
         ),
       );
     }
-    if (projectProvider.projects.length <= 0) {
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Palette.contentBackground,
-        child: EmptyContainer(
-            showButton: true,
-            addingFunc: ProjectAddScreen(),
-            title: "Project Empty",
-            description: "Start creating Project",
-            buttonText: "Créer"),
-      );
-    }
+
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -72,48 +60,69 @@ class _ProjectListState extends State<ProjectList> {
           SizedBox(
             height: MySpacer.large,
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  children: [
-                    AllTable(
-                        datas: projectProvider.projects,
-                        rowWidget: rowWidget(
-                          context,
-                          projectProvider.projects,
-                          projectProvider.removeProject,
-                          projectProvider.setPage,
-                        ),
-                        rowWidgetMobile: rowWidgetMobile(
-                            context,
-                            projectProvider.projects,
-                            projectProvider.removeProject,
-                            projectProvider.setPage),
-                        headersMobile: [
-                          "NOM DU SITE",
-                          "OWNER",
-                          "ADDRESS"
+          projectProvider.projects.length == 0
+              ? Expanded(
+                  child: Container(
+                  color: Palette.contentBackground,
+                  child: Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Stack(
+                        children: [
+                          Icon(
+                            Icons.search,
+                            size: MediaQuery.of(context).size.width * 0.1,
+                            color: Colors.grey,
+                          )
                         ],
-                        headers: [
-                          "NOM DU SITE",
-                          "OWNER",
-                          "ADDRESS",
-                          "AREA SIZE",
-                          "START DATE",
-                          "END DATE"
-                        ]),
-                    SizedBox(
-                      height: MySpacer.small,
+                      ),
+                      Text("Projet introuvable")
+                    ],
+                  )),
+                ))
+              : Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        children: [
+                          AllTable(
+                              datas: projectProvider.projects,
+                              rowWidget: rowWidget(
+                                context,
+                                projectProvider.projects,
+                                projectProvider.removeProject,
+                                projectProvider.setPage,
+                              ),
+                              rowWidgetMobile: rowWidgetMobile(
+                                  context,
+                                  projectProvider.projects,
+                                  projectProvider.removeProject,
+                                  projectProvider.setPage),
+                              headersMobile: [
+                                "NOM DU SITE",
+                                "OWNER",
+                                "ADDRESS"
+                              ],
+                              headers: [
+                                "NOM DU SITE",
+                                "OWNER",
+                                "ADDRESS",
+                                "AREA SIZE",
+                                "START DATE",
+                                "END DATE"
+                              ]),
+                          SizedBox(
+                            height: MySpacer.small,
+                          ),
+                          pageControll(pageService, projectProvider.pagination,
+                              context, projectProvider.projects.length)
+                        ],
+                      ),
                     ),
-                    pageControll(
-                        pageService, projectProvider.pagination, context)
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
           SizedBox(
             height: MySpacer.large,
           )

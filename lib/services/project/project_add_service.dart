@@ -18,7 +18,6 @@ class ProjectAddService extends ChangeNotifier {
   List<Uint8List>? _projectImages = [];
   Uint8List? _base64Image;
   Map _bodyToEdit = {};
-
   bool justScroll = true;
 
   get bodyToEdit => _bodyToEdit;

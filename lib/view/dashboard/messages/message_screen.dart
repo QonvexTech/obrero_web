@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
@@ -12,19 +11,22 @@ import 'package:uitemplate/view_model/messaging/image_viewer.dart';
 import 'package:uitemplate/view_model/messaging/view.dart';
 
 class MessageScreen extends StatefulWidget {
+  final List<EmployeesModel> recepients;
+
+  const MessageScreen({Key? key, required this.recepients}) : super(key: key);
   @override
   _MessageScreenState createState() => _MessageScreenState();
 }
 
 class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
-  // String? base64Image;
-  // String fileNameAndSize = "";
+  bool messageSending = false;
+
   late ImageViewer _viewer = ImageViewer(callback: (value) {
     setState(() {
       Views.b64Image = null;
     });
   });
-  List<EmployeesModel> _recepients = [];
+
   String message = "";
   bool _showList = true;
 
@@ -48,151 +50,173 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
     return Scaffold(
       backgroundColor: Colors.white,
       key: _key,
-      body: Container(
-          width: size.width,
-          height: size.height,
-          child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 25),
-                        child: AppBar(
-                          centerTitle: false,
-                          elevation: 0,
-                          backgroundColor: Colors.transparent,
-                          title: Text(
-                            "Messagerie",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          actions: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.attach_file_outlined,
-                                color: Palette.drawerColor,
+      body: messageSending
+          ? Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text("Envoi en cours...")
+                ],
+              ),
+            )
+          : Container(
+              width: size.width,
+              height: size.height,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 25),
+                            child: AppBar(
+                              centerTitle: false,
+                              elevation: 0,
+                              backgroundColor: Colors.transparent,
+                              title: Text(
+                                "Messagerie",
+                                style: TextStyle(color: Colors.black),
                               ),
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {
-                                MessagingDataHelper.pickImage((value) {
-                                  setState(() {
-                                    Views.b64Image = value;
-                                  });
-                                });
-                              },
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            MaterialButton(
-                              padding: const EdgeInsets.all(20),
-                              onPressed: () =>
-                                  setState(() => _showList = !_showList),
-                              minWidth: 60,
-                              height: 60,
-                              color: Theme.of(context).accentColor,
-                              child: Center(
-                                child: Image.asset(
-                                  "assets/icons/icon.png",
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ],
-                          automaticallyImplyLeading: false,
-                        ),
-                      ),
-                      Expanded(
-                          child: Container(
-                        child: Scrollbar(
-                          child: ListView(
-                            padding: const EdgeInsets.symmetric(horizontal: 25),
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                child: Text(
-                                  "Destinataire(s) :",
-                                  style: TextStyle(
-                                      fontSize: Theme.of(context)
-                                              .textTheme
-                                              .headline6!
-                                              .fontSize! -
-                                          2),
-                                ),
-                              ),
-                              if (_recepients.isNotEmpty) ...{
-                                Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  width: double.infinity,
-                                  child: Text(
-                                    "Cliquez sur l'élément à supprimer de la liste",
-                                    style: TextStyle(
-                                        color: Palette.drawerColor
-                                            .withOpacity(0.5),
-                                        fontSize: Theme.of(context)
-                                            .textTheme
-                                            .subtitle1!
-                                            .fontSize),
+                              actions: [
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.attach_file_outlined,
+                                    color: Palette.drawerColor,
                                   ),
+                                  padding: const EdgeInsets.all(0),
+                                  onPressed: () {
+                                    MessagingDataHelper.pickImage((value) {
+                                      setState(() {
+                                        Views.b64Image = value;
+                                      });
+                                    });
+                                  },
                                 ),
-                              },
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                width: double.infinity,
-                                child: Wrap(
-                                    children: List.generate(
-                                        _recepients.length,
-                                        (index) => Container(
-                                              margin: const EdgeInsets.only(
-                                                  right: 15, bottom: 10),
-                                              child: MaterialButton(
-                                                color: Colors.grey.shade300,
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _recepients.removeAt(index);
-                                                  });
-                                                },
-                                                child: Text(
-                                                  "${_recepients[index].fname} ${_recepients[index].lname}",
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          Theme.of(context)
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                MaterialButton(
+                                  padding: const EdgeInsets.all(20),
+                                  onPressed: () =>
+                                      setState(() => _showList = !_showList),
+                                  minWidth: 60,
+                                  height: 60,
+                                  color: Theme.of(context).accentColor,
+                                  child: Center(
+                                    child: Image.asset(
+                                      "assets/icons/icon.png",
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              ],
+                              automaticallyImplyLeading: false,
+                            ),
+                          ),
+                          Expanded(
+                              child: Container(
+                            child: Scrollbar(
+                              child: ListView(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 25),
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                      "Destinataire(s) :",
+                                      style: TextStyle(
+                                          fontSize: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6!
+                                                  .fontSize! -
+                                              2),
+                                    ),
+                                  ),
+                                  if (widget.recepients.isNotEmpty) ...{
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      width: double.infinity,
+                                      child: Text(
+                                        "Cliquez sur l'élément à supprimer de la liste",
+                                        style: TextStyle(
+                                            color: Palette.drawerColor
+                                                .withOpacity(0.5),
+                                            fontSize: Theme.of(context)
+                                                .textTheme
+                                                .subtitle1!
+                                                .fontSize),
+                                      ),
+                                    ),
+                                  },
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    width: double.infinity,
+                                    child: Wrap(
+                                        children: List.generate(
+                                            widget.recepients.length,
+                                            (index) => Container(
+                                                  margin: const EdgeInsets.only(
+                                                      right: 15, bottom: 10),
+                                                  child: MaterialButton(
+                                                    color: Colors.grey.shade300,
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        widget.recepients
+                                                            .removeAt(index);
+                                                      });
+                                                    },
+                                                    child: Text(
+                                                      "${widget.recepients[index].fname} ${widget.recepients[index].lname}",
+                                                      style: TextStyle(
+                                                          fontSize: Theme.of(
+                                                                      context)
                                                                   .textTheme
                                                                   .headline6!
                                                                   .fontSize! -
                                                               4,
-                                                      fontWeight:
-                                                          FontWeight.w400),
-                                                ),
-                                              ),
-                                            ))),
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    ),
+                                                  ),
+                                                ))),
+                                  ),
+                                  if (Views.b64Image != null) ...{_viewer},
+                                  Views.textField((size.height / 50).ceil(),
+                                      callback: (text) {
+                                    setState(() {
+                                      message = text;
+                                    });
+                                  })
+                                ],
                               ),
-                              if (Views.b64Image != null) ...{_viewer},
-                              Views.textField((size.height / 50).ceil(),
-                                  callback: (text) {
-                                setState(() {
-                                  message = text;
-                                });
-                              })
-                            ],
-                          ),
-                        ),
-                      )),
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 15),
-                        child: MaterialButton(
-                          onPressed:
-                              (message != "" && _recepients.isNotEmpty) ||
+                            ),
+                          )),
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            child: MaterialButton(
+                              onPressed: (message != "" &&
+                                          widget.recepients.isNotEmpty) ||
                                       (Views.b64Image != null &&
-                                          _recepients.isNotEmpty)
+                                          widget.recepients.isNotEmpty)
                                   ? () {
+                                      setState(() {
+                                        messageSending = true;
+                                      });
                                       var stringRecepients = "";
                                       List empIds = [];
-                                      for (EmployeesModel emp in _recepients) {
+                                      for (EmployeesModel emp
+                                          in widget.recepients) {
                                         empIds.add(emp.id);
                                       }
 
@@ -201,87 +225,105 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                                           .replaceAll("[", "")
                                           .replaceAll("]", "");
 
-                                      messageService.sendMessage(
-                                          ids: stringRecepients,
-                                          message: message,
-                                          base64File: Views.b64Image);
+                                      messageService
+                                          .sendMessage(
+                                              ids: stringRecepients,
+                                              message: message,
+                                              base64File: Views.b64Image)
+                                          .then((value) {
+                                        if (value) {
+                                          Fluttertoast.showToast(
+                                              webBgColor:
+                                                  "linear-gradient(to right, #5585E5, #5585E5)",
+                                              msg: "Message envoyé avec succès",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.CENTER,
+                                              timeInSecForIosWeb: 2,
+                                              fontSize: 16.0);
+                                        }
+                                        setState(() {
+                                          messageSending = false;
+                                          Views.message.clear();
+                                        });
+                                      });
                                       print(stringRecepients);
                                     }
                                   : null,
-                          height: 60,
-                          disabledColor: Colors.grey,
-                          color: Palette.drawerColor,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.send_rounded,
-                                color: Colors.white,
+                              height: 60,
+                              disabledColor: Colors.grey,
+                              color: Palette.drawerColor,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.send_rounded,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    "Envoyer",
+                                    style: TextStyle(
+                                        fontSize: Theme.of(context)
+                                                .textTheme
+                                                .headline6!
+                                                .fontSize! -
+                                            4,
+                                        color: Colors.white),
+                                  )
+                                ],
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "Envoyer",
-                                style: TextStyle(
-                                    fontSize: Theme.of(context)
-                                            .textTheme
-                                            .headline6!
-                                            .fontSize! -
-                                        4,
-                                    color: Colors.white),
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              AnimatedContainer(
-                duration: Duration(
-                  milliseconds: 500,
-                ),
-                width: _showList ? 300 : 0,
-                height: size.height,
-                color: Colors.white,
-                child: Column(
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      height: 55,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      alignment: AlignmentDirectional.centerStart,
-                      child: Text(
-                        "Employees",
-                        style: TextStyle(
-                            fontSize: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .fontSize),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                    Expanded(
-                        child: Container(
-                      child: employeeSevice.users == null
-                          ? Views.shimmerLoader()
-                          : Views.employeesList(employeeSevice,
-                              callback: (employeeData) {
-                              if (!MessagingDataHelper.contains(
-                                  _recepients, employeeData.id!)) {
-                                print(employeeData);
-                                setState(() {
-                                  _recepients.add(employeeData);
-                                });
-                              }
-                            }),
-                    ))
-                  ],
-                ),
-              )
-            ],
-          )),
+                  ),
+                  AnimatedContainer(
+                    duration: Duration(
+                      milliseconds: 500,
+                    ),
+                    width: _showList ? 300 : 0,
+                    height: size.height,
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: 55,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          alignment: AlignmentDirectional.centerStart,
+                          child: Text(
+                            "Employees",
+                            style: TextStyle(
+                                fontSize: Theme.of(context)
+                                    .textTheme
+                                    .headline6!
+                                    .fontSize),
+                          ),
+                        ),
+                        Expanded(
+                            child: Container(
+                          child: employeeSevice.users == null
+                              ? Views.shimmerLoader()
+                              : Views.employeesList(employeeSevice,
+                                  callback: (employeeData) {
+                                  if (!MessagingDataHelper.contains(
+                                      widget.recepients, employeeData.id!)) {
+                                    print(employeeData);
+                                    setState(() {
+                                      widget.recepients.add(employeeData);
+                                      // messageSending = false;
+                                    });
+                                  }
+                                }),
+                        ))
+                      ],
+                    ),
+                  )
+                ],
+              )),
     );
     // return Container(
     //   padding: EdgeInsets.all(20),

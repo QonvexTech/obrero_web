@@ -8,6 +8,7 @@ import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/models/user_project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/log_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
@@ -230,13 +231,21 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                               children: [
                                                 Text("Status",
                                                     style: transHeader),
-                                                Text(
-                                                  statusTitles[project
-                                                      .userProject!.status!],
-                                                  style: TextStyle(
-                                                      color: statusColors[
-                                                          project.userProject!
-                                                              .status!]),
+                                                Consumer<ColorChangeService>(
+                                                  builder:
+                                                      (context, data, child) {
+                                                    return Text(
+                                                      statusTitles[project
+                                                          .userProject!
+                                                          .status!],
+                                                      style: TextStyle(
+                                                          color: data
+                                                                  .statusColors[
+                                                              project
+                                                                  .userProject!
+                                                                  .status!]),
+                                                    );
+                                                  },
                                                 ),
                                               ],
                                             ),
@@ -280,7 +289,9 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                       Expanded(
                           flex: 2,
                           child: Container(
-                            child: MapScreen(),
+                            child: MapScreen(
+                              setCoord: false,
+                            ),
                           )),
                       SizedBox(
                         height: MySpacer.large,

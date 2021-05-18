@@ -5,6 +5,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/map_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/project/project_details.dart';
 import 'package:universal_html/html.dart';
@@ -23,6 +24,7 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     MapService mapService = Provider.of<MapService>(context);
+    var colorService = Provider.of<ColorChangeService>(context);
     DashboardService dashboardService = Provider.of<DashboardService>(context);
     return GestureDetector(
         onTap: () {
@@ -162,10 +164,17 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                                                     right: 20),
                                                 child: Row(
                                                   children: [
-                                                    Icon(
-                                                      Icons.circle,
-                                                      size: 15,
-                                                      color: statusColors[0],
+                                                    Consumer<
+                                                        ColorChangeService>(
+                                                      builder: (context, data,
+                                                          child) {
+                                                        return Icon(
+                                                          Icons.circle,
+                                                          size: 15,
+                                                          color: data
+                                                              .statusColors[0],
+                                                        );
+                                                      },
                                                     ),
                                                     SizedBox(
                                                       width: 5,
@@ -204,13 +213,18 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                           : Container()
                     ],
                   ),
-                  Positioned(
-                      top: 5,
-                      left: 5,
-                      child: Image.asset(
-                        imagesStatus[0],
-                        width: 20,
-                      ))
+                  Consumer<ColorChangeService>(
+                    builder: (context, data, child) {
+                      return Positioned(
+                        top: 5,
+                        left: 5,
+                        child: Image.asset(
+                          data.imagesStatus[0],
+                          width: 20,
+                        ),
+                      );
+                    },
+                  )
                 ],
               )),
         ));

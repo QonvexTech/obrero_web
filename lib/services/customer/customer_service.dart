@@ -121,6 +121,13 @@ class CustomerService extends ChangeNotifier {
     load();
   }
 
+  void initLoad() {
+    _customersLoad = [];
+    _tempCustomersLoad = [];
+    _paginationLoad.page = 1;
+    load();
+  }
+
   setPage({required Widget page}) {
     print("object");
     activePageScreen = page;

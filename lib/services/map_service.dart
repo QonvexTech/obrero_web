@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 class MapService extends ChangeNotifier {
   final containerKey = GlobalKey();
   double _zoom = 15.0;
-  LatLng coordinates = LatLng(28.709106207008052, 77.09902385711672);
+  LatLng coordinates = LatLng(48.864716, 2.349014);
   Location _location = Location();
   bool? _serviceEnabled;
   String addressGeo = "";
@@ -18,6 +18,15 @@ class MapService extends ChangeNotifier {
   LocationData? _locationData;
   GoogleMapController? mapController;
   bool _gesture = true;
+  TextEditingController location = TextEditingController();
+  TextEditingController address = TextEditingController();
+  void setLocation(value) {
+    location.text = value;
+  }
+
+  void setAddress(value) {
+    address.text = value;
+  }
 
   //---------------------------- CUSTOM INFO  WINDOW
   ProjectModel? _project;
@@ -92,6 +101,11 @@ class MapService extends ChangeNotifier {
   get zoom => _zoom;
   get markers => _markers;
 
+  void removeDefaultMarker() {
+    _markers.removeWhere((element) => element.markerId.value == "temp");
+    notifyListeners();
+  }
+
   // Future setAddress(latitude, longitude) async {
   //   var address =
   //       await Geocoder.google("AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI")
@@ -109,9 +123,11 @@ class MapService extends ChangeNotifier {
   //       .asUint8List();
   // }
 
-  mapInit(List<ProjectModel> projects, context) async {
+  mapInit(List<ProjectModel> projects, context, List imagesStatus) async {
     if (_markers.length > 0) {
       coordinates = _markers.first.position;
+      location.text =
+          "${coordinates.latitude.toString()}, ${coordinates.longitude.toString()}";
       findLocalByCoordinates(
           coordinates.latitude.toString(), coordinates.longitude.toString());
     }
@@ -144,33 +160,31 @@ class MapService extends ChangeNotifier {
   }
 
   void setCoordinates({LatLng? coord, BuildContext? context}) async {
-    if (coord != null) {
-      coordinates = coord;
-      findLocalByCoordinates(
-          coord.latitude.toString(), coord.longitude.toString());
-    }
-    if (_markers.isEmpty) {
-      _markers.add(Marker(
-          onTap: () {
-            // updateInfoWindow(
-            //   context!,
-            //   mapController!,
-            //   project.coordinates!,
-            //   _infoWindowWidth,
-            //   _markerOffset,
-            // );
-            // updateProject(project);
-            // updateVisibility(true);
-            // rebuildInfoWindow();
-          },
+    Marker toRemove = _markers.firstWhere(
+        (element) => element.mapsId.value == "temp",
+        orElse: () => Marker(markerId: MarkerId("temp")));
+
+    if (_markers.contains(toRemove)) {
+      _markers.remove(toRemove);
+    } else {
+      if (coord != null) {
+        coordinates = coord;
+        location.text =
+            "${coord.latitude.toString()}, ${coord.longitude.toString()}";
+        findLocalByCoordinates(
+            coord.latitude.toString(), coord.longitude.toString());
+      }
+      Marker defMarker = Marker(
+          onTap: () {},
           zIndex: 20,
           icon: await BitmapDescriptor.fromAssetImage(
               ImageConfiguration(), "assets/icons/green.png"),
           markerId: MarkerId("temp"),
-          position: coord!));
-    } else {
-      _markers.clear();
+          position: coord!);
+
+      _markers.add(defMarker);
     }
+
     notifyListeners();
   }
 
@@ -235,9 +249,9 @@ class MapService extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = json.decode(response.body);
-
-        print(data);
         addressGeo = data["plus_code"]["compound_code"] ?? "$lat , $lang";
+        address.text = addressGeo;
+
         notifyListeners();
       } else {
         print(response.body);

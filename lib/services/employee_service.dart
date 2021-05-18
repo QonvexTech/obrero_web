@@ -20,7 +20,6 @@ class EmployeeSevice extends ChangeNotifier {
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchUsers);
 
-  //TODO saerch un finish
   TextEditingController searchController = TextEditingController();
   search(String text) {
     _users = _tempUsers;
@@ -35,6 +34,7 @@ class EmployeeSevice extends ChangeNotifier {
     if (text.isEmpty) {
       _users = _tempUsers;
     }
+    _pagination.perPage = _users!.length - 1;
     notifyListeners();
   }
 
@@ -116,10 +116,12 @@ class EmployeeSevice extends ChangeNotifier {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
 
-        _pagination.totalEntries = json.decode(response.body)["total"];
-        if (_pagination.totalEntries < _pagination.perPage) {
-          _pagination.perPage = _pagination.totalEntries;
-        }
+        _pagination.totalEntries = json.decode(response.body)["total"] - 1;
+
+        notifyListeners();
+
+        print("TOTAL USER : ${_pagination.totalEntries}");
+
         var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
         _users = listOfUsers;
         _tempUsers = listOfUsers;

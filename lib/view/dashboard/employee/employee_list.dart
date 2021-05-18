@@ -51,45 +51,69 @@ class _EmployeeListState extends State<EmployeeList> {
                 SizedBox(
                   height: MySpacer.large,
                 ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        children: [
-                          AllTable(
-                              datas: employeeService.users,
-                              rowWidget: rowWidget(
-                                  context,
-                                  employeeService.users!,
-                                  employeeService.removeUser,
-                                  employeeService.setPageScreen),
-                              rowWidgetMobile: rowWidgetMobile(
-                                  context,
-                                  employeeService.users!,
-                                  employeeService.removeUser,
-                                  employeeService.setPageScreen),
-                              headersMobile: [
-                                "NOM",
-                                "EMAIL",
-                                "ADDRESSE"
+                employeeService.users!.length == 0
+                    ? Expanded(
+                        child: Container(
+                        color: Palette.contentBackground,
+                        child: Center(
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Stack(
+                              children: [
+                                Icon(
+                                  Icons.search,
+                                  size: MediaQuery.of(context).size.width * 0.1,
+                                  color: Colors.grey,
+                                )
                               ],
-                              headers: [
-                                "NOM",
-                                "EMAIL",
-                                "TÉLÉPHONE",
-                                "ADDRESSE",
-                              ]),
-                          SizedBox(
-                            height: MySpacer.small,
+                            ),
+                            Text("Employé introuvable")
+                          ],
+                        )),
+                      ))
+                    : Expanded(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              children: [
+                                AllTable(
+                                    datas: employeeService.users,
+                                    rowWidget: rowWidget(
+                                        context,
+                                        employeeService.users!,
+                                        employeeService.removeUser,
+                                        employeeService.setPageScreen),
+                                    rowWidgetMobile: rowWidgetMobile(
+                                        context,
+                                        employeeService.users!,
+                                        employeeService.removeUser,
+                                        employeeService.setPageScreen),
+                                    headersMobile: [
+                                      "NOM",
+                                      "EMAIL",
+                                      "ADDRESSE"
+                                    ],
+                                    headers: [
+                                      "NOM",
+                                      "EMAIL",
+                                      "TÉLÉPHONE",
+                                      "ADDRESSE",
+                                    ]),
+                                SizedBox(
+                                  height: MySpacer.small,
+                                ),
+                                pageControll(
+                                    pageService,
+                                    employeeService.pagination,
+                                    context,
+                                    employeeService.users!.length)
+                              ],
+                            ),
                           ),
-                          pageControll(
-                              pageService, employeeService.pagination, context)
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
                 //ROW PAGEr
                 SizedBox(
                   height: MySpacer.large,

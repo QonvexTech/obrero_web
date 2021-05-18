@@ -54,18 +54,53 @@ const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);
 //GLOBAL
 String? authToken;
 Admin? profileData;
-List<Color> statusColors = [
-  Colors.greenAccent,
-  Colors.orangeAccent,
-  Colors.redAccent,
-  Colors.blueAccent
-];
+
 List<String> statusTitles = ['En cours', 'En attente', 'Annulé', 'Compléter'];
-List<String> imagesStatus = [
+
+List<String> defaultImageTag = [
+  "assets/icons/red.png",
+  "assets/icons/pink.png",
+  "assets/icons/purple.png",
+  "assets/icons/deepPurple.png",
+  "assets/icons/indigo.png",
+  "assets/icons/blue.png",
+  "assets/icons/lightBlue.png",
+  "assets/icons/cyan.png",
+  "assets/icons/teal.png",
   "assets/icons/green.png",
-  "assets/icons/orangeIcon.png",
-  "assets/icons/redIcon.png",
-  "assets/icons/blueIcon.png"
+  "assets/icons/lighGreen.png",
+  "assets/icons/lime.png",
+  "assets/icons/yellow.png",
+  "assets/icons/amber.png",
+  "assets/icons/orange.png",
+  "assets/icons/deepOrange.png",
+  "assets/icons/brown.png",
+  "assets/icons/grey.png",
+  "assets/icons/blueGrey.png",
+  "assets/icons/black.png"
+];
+
+List<Color> defaultColors = [
+  Colors.red,
+  Colors.pink,
+  Colors.purple,
+  Colors.deepPurple,
+  Colors.indigo,
+  Colors.blue,
+  Colors.lightBlue,
+  Colors.cyan,
+  Colors.teal,
+  Colors.green,
+  Colors.lightGreen,
+  Colors.lime,
+  Colors.yellow,
+  Colors.amber,
+  Colors.orange,
+  Colors.deepOrange,
+  Colors.brown,
+  Colors.grey,
+  Colors.blueGrey,
+  Colors.black,
 ];
 
 List countries = [
