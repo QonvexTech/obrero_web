@@ -54,14 +54,12 @@ class EmployeesModel extends ChangeNotifier {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["id"] = this.id.toString();
     data["first_name"] = this.fname;
     data["last_name"] = this.lname;
     data["email"] = this.email;
-    // data["password"] = this.password;
+    data["password"] = this.password;
     data["address"] = this.address;
     data["contact_number"] = this.contactNumber;
-    // data["prject_id"] = this.id.toString();
     return data;
   }
 

@@ -173,15 +173,17 @@ class EmployeeSevice extends ChangeNotifier {
   Future createUser(EmployeesModel newEmployee) async {
     var url = Uri.parse("$user_register");
     try {
-      var response = await http.post(url, body: {
-        newEmployee.toJson()
-      }, headers: {
+      var response = await http.post(url, body: newEmployee.toJson(), headers: {
         "Accept": "application/json",
-        "Authorization": "Bearer $authToken",
+        // "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         print(response.body);
+
+        paginationService.addedItem(_pagination);
+        fetchUsers();
+        notifyListeners();
       } else {
         print(response.body);
       }

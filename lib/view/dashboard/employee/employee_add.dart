@@ -282,6 +282,9 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                   email: emailController.text,
                   password: passwordController.text,
                   address: addressController.text,
+                  picture: employeeService.base64Image != null
+                      ? employeeService.base64ImageEncoded
+                      : "",
                   contactNumber: contactNumberController.text,
                 );
 
