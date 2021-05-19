@@ -55,6 +55,16 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               child: Scrollbar(
                   child: ListView(
             children: [
+              Text(
+                "Ajouter un Employee",
+                style: Theme.of(context)
+                    .textTheme
+                    .headline5!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: MySpacer.large,
+              ),
               Container(
                 child: Center(
                     child: MaterialButton(
@@ -103,16 +113,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.large,
               ),
-              Text(
-                "Ajouter un Employee",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: MySpacer.large,
-              ),
+
               TextField(
                 decoration: InputDecoration(
                     fillColor: Colors.white,

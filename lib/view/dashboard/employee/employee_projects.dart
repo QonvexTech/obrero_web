@@ -34,7 +34,7 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
     var size = MediaQuery.of(context).size;
     return Container(
       width: size.width / 5,
-      height: size.height,
+      height: size.height * 0.3,
       constraints: BoxConstraints(maxWidth: 800, maxHeight: size.height / 1.8),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
