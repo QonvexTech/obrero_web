@@ -116,9 +116,8 @@ class CustomerService extends ChangeNotifier {
   void loadMore() {
     if (_paginationLoad.isNext) {
       _paginationLoad.page += 1;
-      _paginationLoad.isNext = false;
+      load();
     }
-    load();
   }
 
   void initLoad() {
@@ -307,9 +306,13 @@ class CustomerService extends ChangeNotifier {
         List data = json.decode(response.body)["data"];
         if (json.decode(response.body)["next_page_url"] != null) {
           _paginationLoad.isNext = true;
+        } else {
+          _paginationLoad.isNext = false;
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
           _paginationLoad.isPrev = true;
+        } else {
+          _paginationLoad.isPrev = false;
         }
         if (json.decode(response.body)["last_page"] != null) {
           _paginationLoad.lastPage = json.decode(response.body)["last_page"];
@@ -321,6 +324,7 @@ class CustomerService extends ChangeNotifier {
         var newCustomers = fromJsonListToCustomer(data);
         _customersLoad.addAll(newCustomers);
         _tempCustomersLoad.addAll(newCustomers);
+        print(response.body);
       } else {
         print(response.body);
       }

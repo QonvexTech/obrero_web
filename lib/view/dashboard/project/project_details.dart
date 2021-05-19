@@ -12,6 +12,7 @@ import 'package:uitemplate/services/scaffold_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
+import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/back_button.dart';
@@ -160,37 +161,74 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             ))
                       ],
                     ),
-                    SizedBox(
-                      height: MySpacer.small,
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.09,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          for (var x in widget.projectModel!.assignees!)
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10),
-                              height: 80,
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 30,
-                                    backgroundColor: Palette.contentBackground,
-                                    backgroundImage:
-                                        fetchImage(netWorkImage: x.picture),
-                                  ),
-                                  SizedBox(
-                                    width: MySpacer.small,
-                                  ),
-                                  Text(
-                                    "${x.fname!} ${x.lname!}",
-                                  ),
-                                ],
+                    widget.projectModel!.assignees!.length <= 0
+                        ? DottedBorder(
+                            color: Colors.black12,
+                            strokeWidth: 2,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height * 0.1,
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                                backgroundColor:
+                                                    Palette.contentBackground,
+                                                content: ProjectAddScreen(
+                                                  projectToEdit:
+                                                      widget.projectModel,
+                                                )));
+                                      },
+                                      icon: Icon(
+                                        Icons.add_circle,
+                                        color: Palette.drawerColor,
+                                      ),
+                                    ),
+                                    Text("Assign Employees"),
+                                  ],
+                                ),
                               ),
-                            )
-                        ],
-                      ),
+                            ),
+                          )
+                        : Container(
+                            height: MediaQuery.of(context).size.height * 0.09,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                for (var x in widget.projectModel!.assignees!)
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    height: 80,
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 30,
+                                          backgroundColor:
+                                              Palette.contentBackground,
+                                          backgroundImage: fetchImage(
+                                              netWorkImage: x.picture),
+                                        ),
+                                        SizedBox(
+                                          width: MySpacer.small,
+                                        ),
+                                        Text(
+                                          "${x.fname!} ${x.lname!}",
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              ],
+                            ),
+                          ),
+                    SizedBox(
+                      height: MySpacer.medium,
                     ),
                     widget.projectModel!.images!.length == 0
                         ? Column(
@@ -230,46 +268,54 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                               ),
                             ],
                           )
-                        : Container(
-                            height: MediaQuery.of(context).size.height * 0.25,
-                            width: MediaQuery.of(context).size.width,
-                            child: GridView.count(
-                              crossAxisSpacing: 10,
-                              mainAxisSpacing: 10,
-                              shrinkWrap: true,
-                              childAspectRatio: 1.5,
-                              crossAxisCount: 3,
-                              children: [
-                                for (var image in widget.projectModel!.images!)
-                                  Container(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Photos",
-                                          style: transHeader,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  fit: BoxFit.fill,
-                                                  image: tempImageProvider(
-                                                      netWorkImage: image.url,
-                                                      defaultImage:
-                                                          "images/emptyImage.jpg")),
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Photos",
+                                style: transHeader,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.25,
+                                width: MediaQuery.of(context).size.width,
+                                child: GridView.count(
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  shrinkWrap: true,
+                                  childAspectRatio: 1.5,
+                                  crossAxisCount: 3,
+                                  children: [
+                                    for (var image
+                                        in widget.projectModel!.images!)
+                                      Container(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                      fit: BoxFit.fill,
+                                                      image: tempImageProvider(
+                                                          netWorkImage:
+                                                              image.url,
+                                                          defaultImage:
+                                                              "images/emptyImage.jpg")),
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           )
                   ],
                 ),
@@ -282,6 +328,9 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
                   Text(
                     "Statistics",
                     style: Theme.of(context).textTheme.headline6,

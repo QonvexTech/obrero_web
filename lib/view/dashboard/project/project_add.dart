@@ -1,11 +1,10 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
@@ -17,7 +16,6 @@ import 'package:uitemplate/services/project/project_add_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
-import 'package:uitemplate/widgets/searchBox.dart';
 
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
@@ -39,25 +37,12 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   bool isEdit = false;
   bool checked = false;
   CustomerModel? customerSelected;
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+
   bool hovering = false;
-
-  // void _onRefresh() async{
-  //   _refreshController.refreshCompleted();
-  // }
-
-  void _onLoading() async {
-    //loader
-    Provider.of<CustomerService>(context, listen: false).loadMore();
-
-    if (mounted) setState(() {});
-    _refreshController.loadComplete();
-  }
 
   @override
   void initState() {
-    Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
+    Provider.of<EmployeeSevice>(context, listen: false).initLoad();
     Provider.of<CustomerService>(context, listen: false).initLoad();
 
     if (widget.projectToEdit != null) {
@@ -126,6 +111,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                     AdaptiveItem(
                       height: MediaQuery.of(context).size.height,
                       content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           MediaQuery.of(context).size.width < 1200
                               ? Container(
@@ -270,192 +256,245 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                   ],
                                 ),
 
-                                //CLIENTS
-                                Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: MySpacer.small),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 200,
-                                          height: 60,
-                                          child: DropdownSearch<CustomerModel>(
-                                            popupItemBuilder:
-                                                _customPopupItemBuilderExample,
-                                            mode: Mode.MENU,
-                                            maxHeight: 700,
-                                            isFilteredOnline: true,
-                                            showClearButton: true,
-                                            showSearchBox: true,
-                                            hint: "Select client",
-                                            dropdownSearchDecoration:
-                                                InputDecoration(
-                                              filled: true,
-                                              fillColor: Theme.of(context)
-                                                  .inputDecorationTheme
-                                                  .fillColor,
-                                            ),
-                                            autoValidateMode: AutovalidateMode
-                                                .onUserInteraction,
-                                            validator: (u) => u == null
-                                                ? "user field is required "
-                                                : null,
-                                            onFind: (String filter) =>
-                                                customerService
-                                                    .searchLoad(filter),
-                                            // items: customerService.customersLoad,
-                                            onChanged: (data) {
-                                              print(data);
-                                            },
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Text(
+                                        "Cliente",
+                                        style: boldText,
+                                      ),
+                                    ),
+                                    customerSelected != null
+                                        ? Row(
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.all(5),
+                                                height: 60,
+                                                width: 200,
+                                                child: Card(
+                                                  color: Palette.drawerColor,
+                                                  child: Center(
+                                                      child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      children: [
+                                                        CircleAvatar(
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .transparent,
+                                                          maxRadius: 15,
+                                                          backgroundImage: fetchImage(
+                                                              netWorkImage:
+                                                                  customerSelected!
+                                                                      .picture),
+                                                        ),
+                                                        SizedBox(
+                                                          width: MySpacer.small,
+                                                        ),
+                                                        Text(
+                                                          "${customerSelected!.fname!} ${customerSelected!.lname!}",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.white),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )),
+                                                ),
+                                              ),
+                                              _customPopupItemBuilderExample(
+                                                  context,
+                                                  Icon(Icons.loop),
+                                                  customerService),
+                                            ],
+                                          )
+                                        : Row(
+                                            children: [
+                                              Container(
+                                                  width: 200,
+                                                  height: 60,
+                                                  child:
+                                                      _customPopupItemBuilderExample(
+                                                          context,
+                                                          DottedBorder(
+                                                              child: Container(
+                                                            height: 60,
+                                                            child: Center(
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Text(
+                                                                    "Attribuer un client",
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: MySpacer
+                                                                        .small,
+                                                                  ),
+                                                                  Icon(Icons
+                                                                      .add_circle)
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          )),
+                                                          customerService)),
+                                            ],
                                           ),
-                                        ),
-                                      ],
-                                    )),
+                                  ],
+                                ),
 
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                       vertical: MySpacer.small),
                                   child: Text(
                                     isEdit
-                                        ? "Assigned Employees"
-                                        : "Employees to assign",
+                                        ? "Employés affectés"
+                                        : "Affecter des employés",
                                     style: boldText,
                                   ),
                                 ),
-                                employeeSevice.users == null
+                                employeeSevice.userload == null
                                     ? Center(child: CircularProgressIndicator())
-                                    : employeeSevice.users!.length == 0
+                                    : employeeSevice.userload!.length == 0
                                         ? Text("No employee to assign")
                                         : Container(
                                             height: 60,
                                             width: double.infinity,
-                                            child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                itemCount: employeeSevice
-                                                    .users!.length,
-                                                itemBuilder: (context, index) {
-                                                  return projectAddService
-                                                          .assignIds
-                                                          .contains(
-                                                              employeeSevice
-                                                                  .users![index]
-                                                                  .id)
-                                                      ? GestureDetector(
-                                                          onTap: () {
-                                                            projectAddService
-                                                                .removeAssigne(
-                                                                    employeeSevice
-                                                                        .users![
-                                                                            index]
-                                                                        .id!);
-                                                          },
-                                                          child: Container(
-                                                            margin:
-                                                                EdgeInsets.all(
-                                                                    5),
-                                                            height: 60,
-                                                            width: 200,
-                                                            child: Card(
-                                                              color: Palette
-                                                                  .drawerColor,
-                                                              child: Center(
-                                                                  child:
-                                                                      Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child: Row(
-                                                                  children: [
-                                                                    CircleAvatar(
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .transparent,
-                                                                      maxRadius:
-                                                                          15,
-                                                                      backgroundImage: fetchImage(
-                                                                          netWorkImage: employeeSevice
-                                                                              .users![index]
-                                                                              .picture),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: MySpacer
-                                                                          .small,
-                                                                    ),
-                                                                    Text(
-                                                                      "${employeeSevice.users![index].fname!} ${employeeSevice.users![index].lname!}",
-                                                                      style: TextStyle(
-                                                                          color:
-                                                                              Colors.white),
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              )),
+                                            child: LazyLoadScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              onEndOfPage: () {
+                                                employeeSevice.loadMore();
+                                              },
+                                              child: ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemCount: employeeSevice
+                                                      .userload!.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return projectAddService
+                                                            .assignIds
+                                                            .contains(
+                                                                employeeSevice
+                                                                    .userload![
+                                                                        index]
+                                                                    .id)
+                                                        ? GestureDetector(
+                                                            onTap: () {
+                                                              projectAddService
+                                                                  .removeAssigne(
+                                                                      employeeSevice
+                                                                          .userload![
+                                                                              index]
+                                                                          .id!);
+                                                            },
+                                                            child: Container(
+                                                              margin: EdgeInsets
+                                                                  .all(5),
+                                                              height: 60,
+                                                              width: 200,
+                                                              child: Card(
+                                                                color: Palette
+                                                                    .drawerColor,
+                                                                child: Center(
+                                                                    child:
+                                                                        Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          8.0),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      CircleAvatar(
+                                                                        backgroundColor:
+                                                                            Colors.transparent,
+                                                                        maxRadius:
+                                                                            15,
+                                                                        backgroundImage:
+                                                                            fetchImage(netWorkImage: employeeSevice.userload![index].picture),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: MySpacer
+                                                                            .small,
+                                                                      ),
+                                                                      Text(
+                                                                        "${employeeSevice.userload![index].fname!} ${employeeSevice.userload![index].lname!}",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white),
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                )),
+                                                              ),
                                                             ),
-                                                          ),
-                                                        )
-                                                      : GestureDetector(
-                                                          onTap: () {
-                                                            projectAddService
-                                                                .asignUser(
-                                                                    employeeSevice
-                                                                        .users![
-                                                                            index]
-                                                                        .id!);
-                                                          },
-                                                          child: Container(
-                                                            margin:
-                                                                EdgeInsets.all(
-                                                                    5),
-                                                            height: 60,
-                                                            width: 200,
-                                                            child: Card(
-                                                              child: Center(
-                                                                  child:
-                                                                      Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child: Row(
-                                                                  children: [
-                                                                    CircleAvatar(
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .transparent,
-                                                                      maxRadius:
-                                                                          15,
-                                                                      backgroundImage: fetchImage(
-                                                                          netWorkImage: employeeSevice
-                                                                              .users![index]
-                                                                              .picture),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: MySpacer
-                                                                          .small,
-                                                                    ),
-                                                                    Text(
-                                                                      "${employeeSevice.users![index].fname!} ${employeeSevice.users![index].lname!}",
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              )),
-                                                            ),
-                                                          ));
-                                                }),
+                                                          )
+                                                        : GestureDetector(
+                                                            onTap: () {
+                                                              projectAddService.asignUser(
+                                                                  employeeSevice
+                                                                      .userload![
+                                                                          index]
+                                                                      .id!);
+                                                            },
+                                                            child: Container(
+                                                              margin: EdgeInsets
+                                                                  .all(5),
+                                                              height: 60,
+                                                              width: 200,
+                                                              child: Card(
+                                                                child: Center(
+                                                                    child:
+                                                                        Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          8.0),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      CircleAvatar(
+                                                                        backgroundColor:
+                                                                            Colors.transparent,
+                                                                        maxRadius:
+                                                                            15,
+                                                                        backgroundImage:
+                                                                            fetchImage(netWorkImage: employeeSevice.userload![index].picture),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: MySpacer
+                                                                            .small,
+                                                                      ),
+                                                                      Text(
+                                                                        "${employeeSevice.userload![index].fname!} ${employeeSevice.userload![index].lname!}",
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                )),
+                                                              ),
+                                                            ));
+                                                  }),
+                                            ),
                                           ),
                                 SizedBox(
                                   height: MySpacer.small,
                                 ),
                                 Text(
-                                  "Area Size",
+                                  "Taille de la zone",
                                   style: boldText,
                                 ),
                                 SizedBox(
@@ -799,27 +838,112 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
           ],
         ));
   }
-}
 
-Widget _customPopupItemBuilderExample(
-    BuildContext context, CustomerModel item, bool isSelected) {
-  return Container(
-    margin: EdgeInsets.symmetric(horizontal: 8),
-    decoration: !isSelected
-        ? null
-        : BoxDecoration(
-            border: Border.all(color: Theme.of(context).primaryColor),
-            borderRadius: BorderRadius.circular(5),
-            color: Colors.white,
-          ),
-    child: ListTile(
-      selected: isSelected,
-      title: Text(item.fname!),
-      subtitle: Text(item.id.toString()),
-      leading: CircleAvatar(
-          // this does not work - throws 404 error
-          // backgroundImage: NetworkImage(item.avatar ?? ''),
-          ),
-    ),
-  );
+  Widget _customPopupItemBuilderExample(
+      BuildContext context, child, CustomerService customerService) {
+    ScrollController? controller;
+
+    return PopupMenuButton(
+        tooltip: "Montrer aux clients",
+        offset: Offset(0, 0),
+        icon: child,
+        itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 1,
+                child: Consumer<CustomerService>(
+                  builder: (context, data, child) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      child: Center(
+                        child: LazyLoadScrollView(
+                          onEndOfPage: () {
+                            customerService.loadMore();
+                          },
+                          child: Column(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 60,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderRadius: const BorderRadius.all(
+                                          const Radius.circular(10.0),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      hintStyle:
+                                          TextStyle(color: Colors.grey[800]),
+                                      hintText: "Rechercher",
+                                      fillColor: Colors.white70),
+                                  onChanged: (text) {
+                                    customerService.searchLoad(text);
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: ListView.builder(
+                                  controller: controller,
+                                  itemCount:
+                                      customerService.customersLoad.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          customerSelected = customerService
+                                              .customersLoad[index];
+                                          customerService.searchLoad("");
+                                          Navigator.pop(context);
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 60,
+                                        width: 200,
+                                        child: Card(
+                                          child: Center(
+                                              child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundColor:
+                                                      Palette.contentBackground,
+                                                  maxRadius: 15,
+                                                  backgroundImage: fetchImage(
+                                                      netWorkImage:
+                                                          customerService
+                                                              .customersLoad[
+                                                                  index]
+                                                              .picture),
+                                                ),
+                                                SizedBox(
+                                                  width: MySpacer.small,
+                                                ),
+                                                Text(
+                                                  "${customerService.customersLoad[index].fname!} ${customerService.customersLoad[index].lname!}",
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
+                                          )),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ]);
+  }
 }

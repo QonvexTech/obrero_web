@@ -1,9 +1,11 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/services/settings/helper.dart';
 
 class EmployeeAdd extends StatefulWidget {
   final EmployeesModel? userToEdit;
@@ -12,18 +14,13 @@ class EmployeeAdd extends StatefulWidget {
   _CustomerAddState createState() => _CustomerAddState();
 }
 
-class _CustomerAddState extends State<EmployeeAdd> {
+class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
   bool isEdit = false;
   Map<String, dynamic> bodyToUpdate = {};
-  //TODO: complete the fields
-  // String? picture;
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  // TextEditingController countryController = TextEditingController();
-  // TextEditingController stateController = TextEditingController();
-  // TextEditingController cityController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -42,8 +39,6 @@ class _CustomerAddState extends State<EmployeeAdd> {
 
   @override
   Widget build(BuildContext context) {
-    // Admin admin = Provider.of<Authentication>(context, listen: false).data;s
-
     EmployeeSevice employeeService =
         Provider.of<EmployeeSevice>(context, listen: false);
     final Size size = MediaQuery.of(context).size;
@@ -60,6 +55,54 @@ class _CustomerAddState extends State<EmployeeAdd> {
               child: Scrollbar(
                   child: ListView(
             children: [
+              Container(
+                child: Center(
+                    child: MaterialButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () async {
+                    await FilePicker.platform.pickFiles(
+                        allowMultiple: false,
+                        allowedExtensions: [
+                          'jpg',
+                          'jpeg',
+                          'png'
+                        ]).then((pickedFile) {
+                      if (pickedFile != null) {
+                        employeeService.base64Image = pickedFile.files[0].bytes;
+                      }
+                    });
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10000)),
+                  minWidth: MediaQuery.of(context).size.height * .15,
+                  height: MediaQuery.of(context).size.height * .15,
+                  child: Container(
+                    width: MediaQuery.of(context).size.height * .15,
+                    height: MediaQuery.of(context).size.height * .15,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10000),
+                        color: Colors.grey.shade100,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.shade400,
+                            offset: Offset(3, 3),
+                            blurRadius: 2,
+                          )
+                        ],
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            alignment: AlignmentDirectional.center,
+                            image: tempImageProvider(
+                                file: employeeService.base64Image,
+                                netWorkImage: widget.userToEdit?.picture,
+                                defaultImage: 'icons/admin_icon.png'),
+                            scale: 1)),
+                  ),
+                )),
+              ),
+              SizedBox(
+                height: MySpacer.large,
+              ),
               Text(
                 "Ajouter un Employee",
                 style: Theme.of(context)
