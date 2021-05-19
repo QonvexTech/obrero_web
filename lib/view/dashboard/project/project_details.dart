@@ -50,7 +50,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
           AdaptiveContainer(children: [
             AdaptiveItem(
               content: Container(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -153,7 +153,9 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             onPressed: () {
                               scaff.selectedContent = MessageScreen(
                                   recepients: widget.projectModel!.assignees!);
-                              print("press");
+                              if (widget.fromPage == "dashboard") {
+                                Navigator.pop(context);
+                              }
                             },
                             icon: Icon(
                               Icons.message_rounded,
@@ -279,8 +281,11 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                 height: 10,
                               ),
                               Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.25,
+                                height: widget.projectModel!.images!.length >= 3
+                                    ? widget.projectModel!.images!.length /
+                                        3 *
+                                        200
+                                    : 200,
                                 width: MediaQuery.of(context).size.width,
                                 child: GridView.count(
                                   crossAxisSpacing: 10,
@@ -289,27 +294,16 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                   childAspectRatio: 1.5,
                                   crossAxisCount: 3,
                                   children: [
-                                    for (var image
-                                        in widget.projectModel!.images!)
+                                    for (var image in widget
+                                        .projectModel!.images!.reversed)
                                       Container(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                      fit: BoxFit.fill,
-                                                      image: tempImageProvider(
-                                                          netWorkImage:
-                                                              image.url,
-                                                          defaultImage:
-                                                              "images/emptyImage.jpg")),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: tempImageProvider(
+                                                  netWorkImage: image.url,
+                                                  defaultImage:
+                                                      "images/emptyImage.jpg")),
                                         ),
                                       ),
                                   ],
@@ -542,6 +536,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                   top: 0,
                   right: 0,
                   child: IconButton(
+                      splashRadius: 5,
                       onPressed: () {
                         Navigator.pop(context);
                       },

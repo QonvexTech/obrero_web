@@ -28,68 +28,6 @@ class MapService extends ChangeNotifier {
     address.text = value;
   }
 
-  //---------------------------- CUSTOM INFO  WINDOW
-  ProjectModel? _project;
-  bool _showInfoWindow = false;
-  bool _tempHidden = false;
-
-  double? _leftMargin;
-  double? _topMargin;
-
-  final double _infoWindowWidth = 250;
-  final double _markerOffset = 170;
-
-  void rebuildInfoWindow() {
-    notifyListeners();
-  }
-
-  void updateProject(ProjectModel project) {
-    _project = project;
-  }
-
-  void updateVisibility(bool visibility) {
-    _showInfoWindow = visibility;
-  }
-
-  void updateInfoWindow(
-    BuildContext context,
-    GoogleMapController controller,
-    LatLng location,
-    double infoWindowWidth,
-    double markerOffset,
-  ) async {
-    try {
-      var screenCoordinate = await controller.getVisibleRegion();
-      double devicePixelRatio =
-          Platform.isAndroid ? MediaQuery.of(context).devicePixelRatio : 1.0;
-      double left = (double.parse(screenCoordinate.northeast.toString())) -
-          (infoWindowWidth / 2);
-      double top = (double.parse(screenCoordinate.southwest.toString()) /
-              devicePixelRatio) -
-          markerOffset;
-      if (left < 0 || top < 0) {
-        _tempHidden = true;
-      } else {
-        _tempHidden = false;
-        _leftMargin = left;
-        _topMargin = top;
-      }
-    } catch (e) {
-      print("custom error $e");
-    }
-  }
-
-  bool get showInfoWindow =>
-      (_showInfoWindow == true && _tempHidden == false) ? true : false;
-
-  double get leftMargin => _leftMargin!;
-
-  double get topMargin => _topMargin!;
-
-  ProjectModel get project => project;
-
-  //-------------------------
-
   get gesture => _gesture;
 
   set gesture(value) {
@@ -139,13 +77,8 @@ class MapService extends ChangeNotifier {
               mapController!
                   .showMarkerInfoWindow(MarkerId(project.id.toString()));
             },
-            zIndex: 20,
             infoWindow: InfoWindow(
-                onTap: () {
-                  print("x");
-                },
-                title: project.name,
-                snippet: project.address.toString()),
+                title: project.name, snippet: project.address.toString()),
             icon: await BitmapDescriptor.fromAssetImage(
                 ImageConfiguration(), imagesStatus[project.status!]),
             markerId: MarkerId(project.id.toString()),
@@ -184,7 +117,6 @@ class MapService extends ChangeNotifier {
 
       _markers.add(defMarker);
     }
-
     notifyListeners();
   }
 
@@ -212,12 +144,12 @@ class MapService extends ChangeNotifier {
   // }
 
   void focusMap({required LatLng coordinates, required markerId}) {
+    mapController!.showMarkerInfoWindow(MarkerId(markerId));
     mapController!
-        .animateCamera(CameraUpdate.newLatLng(coordinates))
-        .whenComplete(() {
-      mapController!.showMarkerInfoWindow(MarkerId(markerId));
-    });
-    notifyListeners();
+        .moveCamera(CameraUpdate.newLatLng(coordinates))
+        .whenComplete(() {});
+
+    // notifyListeners();
   }
 
   checkLocationPermission() async {

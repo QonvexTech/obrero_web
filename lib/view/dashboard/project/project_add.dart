@@ -312,7 +312,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                               _customPopupItemBuilderExample(
                                                   context,
                                                   Icon(Icons.loop),
-                                                  customerService),
+                                                  customerService,
+                                                  projectAddService),
                                             ],
                                           )
                                         : Row(
@@ -348,7 +349,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                               ),
                                                             ),
                                                           )),
-                                                          customerService)),
+                                                          customerService,
+                                                          projectAddService)),
                                             ],
                                           ),
                                   ],
@@ -594,13 +596,14 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                               .platform
                                                               .pickFiles(
                                                                   allowMultiple:
-                                                                      false,
+                                                                      true,
                                                                   allowedExtensions: [
                                                                 'jpg',
                                                                 'jpeg',
                                                                 'png'
                                                               ]).then(
                                                                   (pickedFile) {
+                                                            print(pickedFile);
                                                             projectAddService
                                                                 .addPicture(
                                                                     pickedFile);
@@ -839,8 +842,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         ));
   }
 
-  Widget _customPopupItemBuilderExample(
-      BuildContext context, child, CustomerService customerService) {
+  Widget _customPopupItemBuilderExample(BuildContext context, child,
+      CustomerService customerService, ProjectAddService projectAddService) {
     ScrollController? controller;
 
     return PopupMenuButton(
@@ -893,6 +896,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                         setState(() {
                                           customerSelected = customerService
                                               .customersLoad[index];
+                                          projectAddService.activeOwnerIndex =
+                                              customerService
+                                                  .customersLoad[index].id;
                                           customerService.searchLoad("");
                                           Navigator.pop(context);
                                         });

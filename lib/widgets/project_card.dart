@@ -54,14 +54,26 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                               : AssetImage('images/emptyImage.jpg'),
                         ),
                         title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(widget.project!.name!),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: Text(
-                                "Du ${months[widget.project!.startDate!.month]} ${widget.project!.startDate!.day}, ${widget.project!.startDate!.year} Au ${months[widget.project!.endDate!.month]} ${widget.project!.endDate!.day}, ${widget.project!.endDate!.year}",
-                                style: TextStyle(color: Colors.black12),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Text(widget.project!.name!),
+                                  Flexible(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      child: Text(
+                                        "Du ${months[widget.project!.startDate!.month]} ${widget.project!.startDate!.day}, ${widget.project!.startDate!.year} Au ${months[widget.project!.endDate!.month]} ${widget.project!.endDate!.day}, ${widget.project!.endDate!.year}",
+                                        style: TextStyle(
+                                          color: Colors.black12,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Expanded(child: Container()),
@@ -123,71 +135,73 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                                   SizedBox(
                                     width: 59,
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Address : ",
-                                          ),
-                                          Text(
-                                            "${widget.project!.address}",
-                                            style: boldText,
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: MySpacer.small,
-                                      ),
-                                      Text(
-                                        "Équipe sur place",
-                                      ),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.4,
-                                        height: 40,
-                                        child: ListView(
-                                          scrollDirection: Axis.horizontal,
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
                                           children: [
-                                            for (var x = 0;
-                                                x <=
-                                                    widget.project!.assignees!
-                                                            .length -
-                                                        1;
-                                                x++)
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 20),
-                                                child: Row(
-                                                  children: [
-                                                    Consumer<
-                                                        ColorChangeService>(
-                                                      builder: (context, data,
-                                                          child) {
-                                                        return Icon(
-                                                          Icons.circle,
-                                                          size: 15,
-                                                          color: data
-                                                              .statusColors[0],
-                                                        );
-                                                      },
-                                                    ),
-                                                    SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    Text(
-                                                        "${widget.project!.assignees![x].fname}")
-                                                  ],
-                                                ),
-                                              ),
+                                            Text(
+                                              "Address : ",
+                                            ),
+                                            Text(
+                                              "${widget.project!.address}",
+                                              style: boldText,
+                                            )
                                           ],
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(
+                                          height: MySpacer.small,
+                                        ),
+                                        Text(
+                                          "Équipe sur place",
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.only(right: 20),
+                                          height: 40,
+                                          child: ListView(
+                                            scrollDirection: Axis.horizontal,
+                                            children: [
+                                              for (var x = 0;
+                                                  x <=
+                                                      widget.project!.assignees!
+                                                              .length -
+                                                          1;
+                                                  x++)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 20),
+                                                  child: Row(
+                                                    children: [
+                                                      Consumer<
+                                                          ColorChangeService>(
+                                                        builder: (context, data,
+                                                            child) {
+                                                          return Icon(
+                                                            Icons.circle,
+                                                            size: 15,
+                                                            color: data
+                                                                .statusColors[0],
+                                                          );
+                                                        },
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      Text(
+                                                          "${widget.project!.assignees![x].fname}")
+                                                    ],
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),

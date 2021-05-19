@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/services/map_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 
 class MapScreen extends StatefulWidget {
   final bool? setCoord;
@@ -18,6 +19,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     MapService mapService = Provider.of<MapService>(context);
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
 
     return Stack(
       children: [
@@ -34,9 +36,12 @@ class _MapScreenState extends State<MapScreen> {
                   onMapCreated: (controller) {
                     setState(() {
                       mapService.mapController = controller;
+                      if (projectProvider.projectsDateBase.length > 0) {
+                        mapService.mapController!.showMarkerInfoWindow(MarkerId(
+                            projectProvider.projectsDateBase[0].id.toString()));
+                      }
                     });
                   },
-                  compassEnabled: true,
                   myLocationButtonEnabled: true,
                   rotateGesturesEnabled: true,
                   initialCameraPosition: CameraPosition(
