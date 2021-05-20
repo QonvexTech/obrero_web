@@ -68,6 +68,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
             widget.projectToEdit!.coordinates!;
       }
 
+      if (widget.projectToEdit!.owner != null) {
+        customerSelected = widget.projectToEdit!.owner;
+      }
+
       isEdit = true;
     } else {
       // Provider.of<MapService>(context, listen: false).findLocalByCoordinates(
