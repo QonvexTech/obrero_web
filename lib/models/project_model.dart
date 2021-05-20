@@ -75,7 +75,6 @@ class ProjectModel extends ChangeNotifier {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data["area_size"] = this.areaSize.toString();
     data["name"] = this.name;
     data["customer_id"] = this.customerId.toString();
     data["coordinates"] = (this.coordinates!.latitude.toString() +

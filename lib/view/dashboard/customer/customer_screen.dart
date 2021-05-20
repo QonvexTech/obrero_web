@@ -7,8 +7,7 @@ class CustomerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     try {
-      CustomerService customerService = Provider.of<CustomerService>(context);
-      return customerService.activePageScreen;
+      return Provider.of<CustomerService>(context).activePageScreen;
     } catch (e) {
       return Center(
         child: CircularProgressIndicator(

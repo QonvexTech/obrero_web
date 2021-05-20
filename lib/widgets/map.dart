@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/services/map_service.dart';
-import 'package:uitemplate/utils/hand_cursor.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 
 class MapScreen extends StatefulWidget {
+  final bool? setCoord;
   const MapScreen({
+    required this.setCoord,
     Key? key,
   }) : super(key: key);
   @override
@@ -14,53 +16,49 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  bool firsTap = false;
-
   @override
   Widget build(BuildContext context) {
     MapService mapService = Provider.of<MapService>(context);
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+
     return Stack(
       children: [
-        GoogleMap(
-            scrollGesturesEnabled: mapService.gesture,
-            onMapCreated: (controller) {
-              setState(() {
-                mapService.mapController = controller;
-              });
-            },
-            buildingsEnabled: true,
-            mapType: MapType.none,
-            myLocationEnabled: true,
-            markers: mapService.markers,
-            onTap: mapService.gesture
-                ? (position) {
-                    mapService.setCoordinates(coord: position);
-                  }
-                : null,
-            initialCameraPosition: CameraPosition(
-                target: mapService.coordinates, zoom: mapService.zoom)),
-        // Positioned(
-        //   bottom: 110,
-        //   right: 10,
-        //   child: HandCursor(
-        //     onHoverFunc: () {
-        //       mapService.gesture = false;
-        //     },
-        //     onExitFun: () {
-        //       mapService.gesture = true;
-        //     },
-        //     child: MaterialButton(
-        //       onPressed: () {
-        //         print("focus");
-        //       },
-        //       child: Icon(
-        //         Icons.center_focus_strong,
-        //         color: Colors.red,
-        //         size: 50,
-        //       ),
-        //     ),
-        //   ),
-        // )
+        initialPositon == null
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : InkWell(
+                onHover: (value) {
+                  print(value);
+                },
+                child: GoogleMap(
+                  scrollGesturesEnabled: mapService.gesture,
+                  onMapCreated: (controller) {
+                    setState(() {
+                      mapService.mapController = controller;
+                      if (projectProvider.projectsDateBase.length > 0) {
+                        mapService.mapController!.showMarkerInfoWindow(MarkerId(
+                            projectProvider.projectsDateBase[0].id.toString()));
+                      }
+                    });
+                  },
+                  myLocationButtonEnabled: true,
+                  rotateGesturesEnabled: true,
+                  initialCameraPosition: CameraPosition(
+                    target: initialPositon!,
+                    zoom: mapService.zoom,
+                  ),
+                  buildingsEnabled: true,
+                  mapType: MapType.none,
+                  myLocationEnabled: true,
+                  markers: mapService.markers,
+                  onTap: (LatLng coord) {
+                    if (widget.setCoord!) {
+                      mapService.setCoordinates(coord: coord, context: context);
+                    }
+                  },
+                ),
+              ),
       ],
     );
   }

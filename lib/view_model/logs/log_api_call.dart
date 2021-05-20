@@ -19,6 +19,7 @@ class LogApiCall {
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) {
         List data = DateSorter.sort(data: json.decode(response.body));
+        print("LOGS $data");
         List<LogModel> logs = [];
         for (var item in data) {
           logs.add(LogModel.fromJson(item));

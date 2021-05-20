@@ -6,16 +6,22 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
+import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 class CustomerDetails extends StatefulWidget {
   final CustomerModel? customer;
-  const CustomerDetails({Key? key, required this.customer}) : super(key: key);
+  final String? fromPage;
+  const CustomerDetails(
+      {Key? key, required this.customer, required this.fromPage})
+      : super(key: key);
 
   @override
   _CustomerDetailsState createState() => _CustomerDetailsState();
@@ -26,7 +32,6 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
   void initState() {
     // Provider.of<MapService>(context, listen: false).mapInit(customerProjects);
     super.initState();
-
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       Provider.of<CustomerService>(context, listen: false)
           .workingProjectsCustomer(widget.customer!.id!);
@@ -36,6 +41,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     CustomerService customerService = Provider.of<CustomerService>(context);
+    ProjectProvider projectService = Provider.of<ProjectProvider>(context);
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -47,7 +53,14 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  backButton(context, customerService.setPage, CustomerList()),
+                  backButton(
+                      context,
+                      widget.fromPage == "project"
+                          ? projectService.setPage
+                          : customerService.setPage,
+                      widget.fromPage == "project"
+                          ? ProjectList()
+                          : CustomerList()),
                   Row(
                     children: [
                       Container(
@@ -217,11 +230,18 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                               children: [
                                                 Text("Status",
                                                     style: transHeader),
-                                                Text(
-                                                  statusTitles[project.status!],
-                                                  style: TextStyle(
-                                                      color: statusColors[
-                                                          project.status!]),
+                                                Consumer<ColorChangeService>(
+                                                  builder:
+                                                      (context, data, child) {
+                                                    return Text(
+                                                      statusTitles[
+                                                          project.status!],
+                                                      style: TextStyle(
+                                                          color: data
+                                                                  .statusColors[
+                                                              project.status!]),
+                                                    );
+                                                  },
                                                 ),
                                               ],
                                             ),
@@ -267,7 +287,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                       ),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.8,
-                        child: MapScreen(),
+                        child: MapScreen(
+                          setCoord: false,
+                        ),
                       ),
 
                       // Container(

@@ -6,6 +6,7 @@ import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_add.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_details.dart';
+import 'package:uitemplate/view/dashboard/employee/employee_projects.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
@@ -50,45 +51,69 @@ class _EmployeeListState extends State<EmployeeList> {
                 SizedBox(
                   height: MySpacer.large,
                 ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Column(
-                        children: [
-                          AllTable(
-                              datas: employeeService.users,
-                              rowWidget: rowWidget(
-                                  context,
-                                  employeeService.users!,
-                                  employeeService.removeUser,
-                                  employeeService.setPageScreen),
-                              rowWidgetMobile: rowWidgetMobile(
-                                  context,
-                                  employeeService.users!,
-                                  employeeService.removeUser,
-                                  employeeService.setPageScreen),
-                              headersMobile: [
-                                "NOM",
-                                "EMAIL",
-                                "ADDRESSE"
+                employeeService.users!.length == 0
+                    ? Expanded(
+                        child: Container(
+                        color: Palette.contentBackground,
+                        child: Center(
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Stack(
+                              children: [
+                                Icon(
+                                  Icons.search,
+                                  size: MediaQuery.of(context).size.width * 0.1,
+                                  color: Colors.grey,
+                                )
                               ],
-                              headers: [
-                                "NOM",
-                                "EMAIL",
-                                "TÉLÉPHONE",
-                                "ADDRESSE",
-                              ]),
-                          SizedBox(
-                            height: MySpacer.small,
+                            ),
+                            Text("Employé introuvable")
+                          ],
+                        )),
+                      ))
+                    : Expanded(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              children: [
+                                AllTable(
+                                    datas: employeeService.users,
+                                    rowWidget: rowWidget(
+                                        context,
+                                        employeeService.users!,
+                                        employeeService.removeUser,
+                                        employeeService.setPageScreen),
+                                    rowWidgetMobile: rowWidgetMobile(
+                                        context,
+                                        employeeService.users!,
+                                        employeeService.removeUser,
+                                        employeeService.setPageScreen),
+                                    headersMobile: [
+                                      "NOM",
+                                      "EMAIL",
+                                      "ADDRESSE"
+                                    ],
+                                    headers: [
+                                      "NOM",
+                                      "EMAIL",
+                                      "TÉLÉPHONE",
+                                      "ADDRESSE",
+                                    ]),
+                                SizedBox(
+                                  height: MySpacer.small,
+                                ),
+                                pageControll(
+                                    pageService,
+                                    employeeService.pagination,
+                                    context,
+                                    employeeService.users!.length)
+                              ],
+                            ),
                           ),
-                          pageControll(
-                              pageService, employeeService.pagination, context)
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
                 //ROW PAGEr
                 SizedBox(
                   height: MySpacer.large,
@@ -256,6 +281,22 @@ List<TableRow> rowWidget(BuildContext context, List<EmployeesModel> datas,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              MaterialButton(
+                color: Palette.drawerColor,
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                          backgroundColor: Palette.contentBackground,
+                          content: EmployeeProjectsDetails(
+                            emplyoyee: data,
+                          )));
+                },
+                child: Text(
+                  "Voir les projets",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
               IconButton(
                 onPressed: () {
                   showDialog(
