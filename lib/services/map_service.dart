@@ -68,8 +68,9 @@ class MapService extends ChangeNotifier {
           "${coordinates.latitude.toString()}, ${coordinates.longitude.toString()}";
       findLocalByCoordinates(
           coordinates.latitude.toString(), coordinates.longitude.toString());
+      _markers.clear();
     }
-    _markers.clear();
+
     try {
       for (ProjectModel project in projects) {
         _markers.add(Marker(
@@ -83,7 +84,6 @@ class MapService extends ChangeNotifier {
                 ImageConfiguration(), imagesStatus[project.status!]),
             markerId: MarkerId(project.id.toString()),
             position: project.coordinates!));
-        notifyListeners();
       }
     } catch (e) {
       print(e);
