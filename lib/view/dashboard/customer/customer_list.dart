@@ -4,12 +4,16 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_add.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
+import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
+import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
+import 'package:universal_html/html.dart';
 
 class CustomerList extends StatefulWidget {
   @override
@@ -19,86 +23,116 @@ class CustomerList extends StatefulWidget {
 class _CustomerListState extends State<CustomerList> {
   @override
   void initState() {
-    Provider.of<CustomerService>(context, listen: false).fetchCustomers();
     super.initState();
+    Provider.of<CustomerService>(context, listen: false).fetchCustomers();
   }
 
   @override
   Widget build(BuildContext context) {
-    CustomerService customerService = Provider.of<CustomerService>(context);
-    PaginationService pageService = Provider.of<PaginationService>(context);
-    return customerService.customers == null
-        ? Container(
-            color: Palette.contentBackground,
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          )
-        : customerService.customers.length == 0
-            ? Text("No Clients")
-            : Container(
-                color: Palette.contentBackground,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: MySpacer.medium,
-                    ),
-                    HeaderList(
-                      toPage: CustomerAdd(),
-                      title: "Customer",
-                      search: customerService.search,
-                      searchController: customerService.searchController,
-                    ),
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Column(
+    try {
+      CustomerService customerService = Provider.of<CustomerService>(context);
+      PaginationService pageService = Provider.of<PaginationService>(context);
+      return customerService.customers == null && customerService.loader
+          ? Container(
+              color: Palette.contentBackground,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : Container(
+              color: Palette.contentBackground,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MySpacer.medium,
+                  ),
+                  HeaderList(
+                    toPage: CustomerAdd(),
+                    title: "Customer",
+                    search: customerService.search,
+                    searchController: customerService.searchController,
+                  ),
+                  SizedBox(
+                    height: MySpacer.large,
+                  ),
+                  customerService.customers.length == 0
+                      ? Expanded(
+                          child: Container(
+                          color: Palette.contentBackground,
+                          child: Center(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              AllTable(
-                                  datas: customerService.customers,
-                                  rowWidget: rowWidget(
-                                      context,
-                                      customerService.customers,
-                                      customerService.removeCustomer,
-                                      customerService.setPage),
-                                  rowWidgetMobile: rowWidgetMobile(
-                                    context,
-                                    customerService.customers,
-                                    customerService.removeCustomer,
-                                    customerService.setPage,
-                                  ),
-                                  headersMobile: [
-                                    "NOM",
-                                    "EMAIL",
-                                    "STATUS"
-                                  ],
-                                  headers: [
-                                    "NOM",
-                                    "EMAIL",
-                                    "TÉLÉPHONE",
-                                    "ADDRESSE",
-                                    "STATUS"
-                                  ]),
-                              SizedBox(
-                                height: MySpacer.small,
+                              Stack(
+                                children: [
+                                  Icon(
+                                    Icons.search,
+                                    size:
+                                        MediaQuery.of(context).size.width * 0.1,
+                                    color: Colors.grey,
+                                  )
+                                ],
                               ),
-                              pageControll(pageService,
-                                  customerService.pagination, context)
+                              Text("client introuvable")
                             ],
+                          )),
+                        ))
+                      : Expanded(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              child: Column(
+                                children: [
+                                  AllTable(
+                                      datas: customerService.customers,
+                                      rowWidget: rowWidget(
+                                          context,
+                                          customerService.customers,
+                                          customerService.removeCustomer,
+                                          customerService.setPage),
+                                      rowWidgetMobile: rowWidgetMobile(
+                                        context,
+                                        customerService.customers,
+                                        customerService.removeCustomer,
+                                        customerService.setPage,
+                                      ),
+                                      headersMobile: [
+                                        "NOM",
+                                        "EMAIL",
+                                        "STATUS"
+                                      ],
+                                      headers: [
+                                        "NOM",
+                                        "EMAIL",
+                                        "TÉLÉPHONE",
+                                        "ADDRESSE",
+                                        "STATUS"
+                                      ]),
+                                  SizedBox(
+                                    height: MySpacer.small,
+                                  ),
+                                  pageControll(
+                                      pageService,
+                                      customerService.pagination,
+                                      context,
+                                      customerService.customers.length)
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: MySpacer.large,
-                    )
-                  ],
-                ),
-              );
+                  SizedBox(
+                    height: MySpacer.large,
+                  )
+                ],
+              ),
+            );
+    } catch (e) {
+      return Container(
+        child: Text("Error Occurd $e"),
+      );
+    }
   }
 }
 
@@ -114,7 +148,11 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextButton(
                 onPressed: () {
-                  setPage(page: CustomerDetails(customer: data));
+                  setPage(
+                      page: CustomerDetails(
+                    customer: data,
+                    fromPage: "customer",
+                  ));
                 },
                 child: Text(
                   "${data.fname!} ${data.lname!}",
@@ -136,11 +174,19 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(
                 child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                statusTitles[data.status!.status!],
-                style: TextStyle(color: statusColors[data.status!.status!]),
-                overflow: TextOverflow.ellipsis,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Consumer<ColorChangeService>(
+                builder: (context, color, child) {
+                  return Text(
+                    statusTitles[
+                        data.status!.status == null ? 0 : data.status!.status!],
+                    style: TextStyle(
+                        color: color.statusColors[data.status!.status == null
+                            ? 0
+                            : data.status!.status!]),
+                    overflow: TextOverflow.ellipsis,
+                  );
+                },
               ),
             ))),
         TableCell(
@@ -191,8 +237,12 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
   ];
 }
 
-List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
-    Function remove, Function setPage) {
+List<TableRow> rowWidget(
+  BuildContext context,
+  List<CustomerModel> datas,
+  Function remove,
+  Function setPage,
+) {
   return [
     for (CustomerModel data in datas)
       TableRow(children: [
@@ -203,7 +253,11 @@ List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextButton(
                 onPressed: () {
-                  setPage(page: CustomerDetails(customer: data));
+                  setPage(
+                      page: CustomerDetails(
+                    customer: data,
+                    fromPage: "customer",
+                  ));
                 },
                 child: Text(
                   "${data.fname!} ${data.lname!}",
@@ -246,10 +300,18 @@ List<TableRow> rowWidget(BuildContext context, List<CustomerModel> datas,
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                statusTitles[data.status!.status!],
-                style: TextStyle(color: statusColors[data.status!.status!]),
-                overflow: TextOverflow.ellipsis,
+              child: Consumer<ColorChangeService>(
+                builder: (context, color, child) {
+                  return Text(
+                    statusTitles[
+                        data.status!.status == null ? 0 : data.status!.status!],
+                    style: TextStyle(
+                        color: color.statusColors[data.status!.status == null
+                            ? 0
+                            : data.status!.status!]),
+                    overflow: TextOverflow.ellipsis,
+                  );
+                },
               ),
             ))),
         TableCell(

@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/services/map_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
@@ -14,6 +17,8 @@ class ProjectProvider extends ChangeNotifier {
   List<ProjectModel>? _projectsDateBase;
   List<ProjectModel> _tempProjects = [];
   PaginationService paginationService = PaginationService();
+  ProjectModel? _projectOnDetails;
+//  DatePickerController dateController = DatePickerController();
   DateTime selectedDate = DateTime.now();
   String hours = "0.00";
   List<String> listHours = [];
@@ -25,17 +30,27 @@ class ProjectProvider extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
 
   Future<DateTime> selectDate(
-      {required BuildContext context, required MapService mapService}) async {
-    final DateTime? picked = await showDatePicker(
-        locale: Locale('fr', 'CA'),
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(1999),
-        lastDate: DateTime(3000));
-    if (picked != null && picked != selectedDate) selectedDate = picked;
-    print(selectedDate);
-    fetchProjectsBaseOnDates()
-        .whenComplete(() => mapService.mapInit(_projectsDateBase!));
+      {required BuildContext context,
+      required MapService mapService,
+      required bool isNow,
+      required DatePickerController controllerDate}) async {
+    if (isNow) {
+      selectedDate = DateTime.now();
+    } else {
+      final DateTime? picked = await showDatePicker(
+          locale: Locale('fr', 'CA'),
+          context: context,
+          initialDate: selectedDate,
+          firstDate: DateTime(1999),
+          lastDate: DateTime(3000));
+      if (picked != null && picked != selectedDate) {
+        selectedDate = picked;
+      }
+    }
+    fetchProjectsBaseOnDates().whenComplete(() => mapService.mapInit(
+        _projectsDateBase!,
+        context,
+        Provider.of<ColorChangeService>(context, listen: false).imagesStatus));
     notifyListeners();
     return selectedDate;
   }
@@ -68,9 +83,16 @@ class ProjectProvider extends ChangeNotifier {
 
   void setPage({required Widget page}) {
     activePageScreen = page;
+
     notifyListeners();
   }
 
+  set projectOnDetails(value) {
+    _projectOnDetails = value;
+    notifyListeners();
+  }
+
+  get projectOnDetails => _projectOnDetails;
   get pagination => _pagination;
   get projects => _projects;
   get projectsDateBase => _projectsDateBase;
@@ -122,9 +144,11 @@ class ProjectProvider extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        var projects = ProjectModel.fromJsonListToProject(data);
-        _projects = await projects;
-        _tempProjects = await projects;
+        var projects =
+            ProjectModel.fromJsonListToProject(data).reversed.toList();
+
+        _projects = projects;
+        _tempProjects = projects;
         notifyListeners();
         print(data);
       } else {
@@ -135,11 +159,16 @@ class ProjectProvider extends ChangeNotifier {
     }
   }
 
-  Future fetchProjectsBaseOnDates({DateTime? dateSelected, context}) async {
+  Future fetchProjectsBaseOnDates(
+      {DateTime? dateSelected,
+      context,
+      DatePickerController? controller}) async {
     if (dateSelected == null) {
       dateSelected = selectedDate;
+      // controller!.animateToDate(selectedDate);
     } else {
       selectedDate = dateSelected;
+      // controller!.animateToDate(dateSelected);
     }
     var url = Uri.parse("$project_api_date");
     // final prefs = await SharedPreferences.getInstance();
@@ -199,9 +228,11 @@ class ProjectProvider extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
-        print(data);
+        projectOnDetails = ProjectModel.fromJson(data["data"]);
+        // print("THIS PROJECT : $data");
         fetchProjectsBaseOnDates();
         fetchProjects();
+
         notifyListeners();
       });
     } catch (e) {

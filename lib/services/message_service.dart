@@ -27,8 +27,9 @@ class MessageService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendMessage(
+  Future<bool> sendMessage(
       {required String ids, String? message, String? base64File}) async {
+    bool successSend = false;
     try {
       Map body = {
         "to": ids,
@@ -50,7 +51,7 @@ class MessageService extends ChangeNotifier {
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) async {
         var data = json.decode(response.body);
-        print(data);
+
         if (data['data'] is List) {
           for (var item in data['data']) {
             Map<String, dynamic> nBody = Map<String, dynamic>();
@@ -67,7 +68,11 @@ class MessageService extends ChangeNotifier {
           await FireBase().sendNotification(
               data['data']['fcm_tokens'], nBody, data['data']);
         }
+        print(data);
       });
-    } catch (e) {}
+      return true;
+    } catch (e) {
+      return successSend;
+    }
   }
 }

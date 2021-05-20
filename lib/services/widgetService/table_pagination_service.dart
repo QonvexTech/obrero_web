@@ -15,23 +15,6 @@ class PaginationService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void customPerPage(PaginationModel page, int newPerPage) {
-    page.perPage = newPerPage;
-    page.isNext = false;
-    page.isPrev = false;
-
-    page.fetch();
-    notifyListeners();
-  }
-
-  void nextPage(PaginationModel page) {
-    page.page += 1;
-    page.isNext = false;
-    animate(20);
-    page.fetch();
-    notifyListeners();
-  }
-
   void animate(double offset) {
     if (scrollController.positions.isNotEmpty) {
       scrollController.animateTo(offset,
@@ -39,10 +22,18 @@ class PaginationService extends ChangeNotifier {
     }
   }
 
+  void nextPage(PaginationModel page) {
+    page.page += 1;
+    page.isNext = false;
+    animate(20 * double.parse(page.page.toString()));
+    page.fetch();
+    notifyListeners();
+  }
+
   void prevPage(PaginationModel page) {
     page.page -= 1;
     page.isPrev = false;
-    animate(-20);
+    animate(-20 * double.parse(page.page.toString()));
     page.fetch();
 
     notifyListeners();

@@ -4,11 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_details.dart';
-import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
@@ -28,6 +29,7 @@ class _ProjectListState extends State<ProjectList> {
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+    CustomerService customerService = Provider.of<CustomerService>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
 
     if (projectProvider.projects == null) {
@@ -40,19 +42,7 @@ class _ProjectListState extends State<ProjectList> {
         ),
       );
     }
-    if (projectProvider.projects.length <= 0) {
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        color: Palette.contentBackground,
-        child: EmptyContainer(
-            showButton: true,
-            addingFunc: ProjectAddScreen(),
-            title: "Project Empty",
-            description: "Start creating Project",
-            buttonText: "Créer"),
-      );
-    }
+
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -69,47 +59,70 @@ class _ProjectListState extends State<ProjectList> {
           SizedBox(
             height: MySpacer.large,
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  children: [
-                    AllTable(
-                        datas: projectProvider.projects,
-                        rowWidget: rowWidget(
-                            context,
-                            projectProvider.projects,
-                            projectProvider.removeProject,
-                            projectProvider.setPage),
-                        rowWidgetMobile: rowWidgetMobile(
-                            context,
-                            projectProvider.projects,
-                            projectProvider.removeProject,
-                            projectProvider.setPage),
-                        headersMobile: [
-                          "NOM DU SITE",
-                          "OWNER",
-                          "ADDRESS"
+          projectProvider.projects.length == 0
+              ? Expanded(
+                  child: Container(
+                  color: Palette.contentBackground,
+                  child: Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Stack(
+                        children: [
+                          Icon(
+                            Icons.search,
+                            size: MediaQuery.of(context).size.width * 0.1,
+                            color: Colors.grey,
+                          )
                         ],
-                        headers: [
-                          "NOM DU SITE",
-                          "OWNER",
-                          "ADDRESS",
-                          "AREA SIZE",
-                          "START DATE",
-                          "END DATE"
-                        ]),
-                    SizedBox(
-                      height: MySpacer.small,
+                      ),
+                      Text("Projet introuvable")
+                    ],
+                  )),
+                ))
+              : Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        children: [
+                          AllTable(
+                              datas: projectProvider.projects,
+                              rowWidget: rowWidget(
+                                  context,
+                                  projectProvider.projects,
+                                  projectProvider.removeProject,
+                                  projectProvider.setPage,
+                                  projectProvider),
+                              rowWidgetMobile: rowWidgetMobile(
+                                  context,
+                                  projectProvider.projects,
+                                  projectProvider.removeProject,
+                                  projectProvider.setPage,
+                                  projectProvider),
+                              headersMobile: [
+                                "NOM DU SITE",
+                                "OWNER",
+                                "ADDRESS"
+                              ],
+                              headers: [
+                                "NOM DU SITE",
+                                "OWNER",
+                                "ADDRESS",
+                                "AREA SIZE",
+                                "START DATE",
+                                "END DATE"
+                              ]),
+                          SizedBox(
+                            height: MySpacer.small,
+                          ),
+                          pageControll(pageService, projectProvider.pagination,
+                              context, projectProvider.projects.length)
+                        ],
+                      ),
                     ),
-                    pageControll(
-                        pageService, projectProvider.pagination, context)
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
           SizedBox(
             height: MySpacer.large,
           )
@@ -120,7 +133,7 @@ class _ProjectListState extends State<ProjectList> {
 }
 
 List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage) {
+    Function remove, Function setPage, ProjectProvider projectProvider) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -132,9 +145,10 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: TextButton(
                   onPressed: () {
+                    projectProvider.projectOnDetails = data;
                     setPage(
                         page: ProjectDetails(
-                      projectModel: data,
+                      fromPage: "project",
                     ));
                   },
                   child: Text(
@@ -149,9 +163,17 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                "${data.owner!.fname} ${data.owner!.lname}",
-                overflow: TextOverflow.ellipsis,
+              child: TextButton(
+                onPressed: () {
+                  print("customer details");
+                  setPage(
+                      page: CustomerDetails(
+                          customer: data.owner, fromPage: "customer"));
+                },
+                child: Text(
+                  "${data.owner!.fname} ${data.owner!.lname}",
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ))),
         TableCell(
@@ -212,7 +234,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
 }
 
 List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage) {
+    Function remove, Function setPage, ProjectProvider projectProvider) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -223,9 +245,10 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextButton(
                 onPressed: () {
+                  projectProvider.projectOnDetails = data;
                   setPage(
                       page: ProjectDetails(
-                    projectModel: data,
+                    fromPage: "project",
                   ));
                 },
                 child: Text(
@@ -239,9 +262,18 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
             child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Text(
-                "${data.owner!.fname} ${data.owner!.lname}",
-                overflow: TextOverflow.ellipsis,
+              child: TextButton(
+                onPressed: () {
+                  setPage(
+                      page: CustomerDetails(
+                    customer: data.owner,
+                    fromPage: "project",
+                  ));
+                },
+                child: Text(
+                  "${data.owner!.fname} ${data.owner!.lname}",
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ))),
         TableCell(

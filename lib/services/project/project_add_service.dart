@@ -18,6 +18,7 @@ class ProjectAddService extends ChangeNotifier {
   List<Uint8List>? _projectImages = [];
   Uint8List? _base64Image;
   Map _bodyToEdit = {};
+  bool justScroll = true;
 
   get bodyToEdit => _bodyToEdit;
   set bodyToEdit(value) => _bodyToEdit = value;
@@ -48,7 +49,11 @@ class ProjectAddService extends ChangeNotifier {
   List<int> get assignIds => _assignIds;
 
   set assignee(value) => _assignIds = value;
-  set activeOwnerIndex(value) => _activeOwnerIndex = value;
+  set activeOwnerIndex(value) {
+    _activeOwnerIndex = value;
+    notifyListeners();
+  }
+
   get activeOwnerIndex => _activeOwnerIndex;
   get startDate => _startDate;
   get endDate => _endDate;
@@ -84,7 +89,6 @@ class ProjectAddService extends ChangeNotifier {
   addPicture(pickedFile) {
     if (pickedFile != null) {
       _base64Image = pickedFile.files[0].bytes;
-
       _projectImages!.add(_base64Image!);
 
       _base64Image = null;
