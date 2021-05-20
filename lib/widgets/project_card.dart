@@ -12,8 +12,10 @@ import 'package:universal_html/html.dart';
 
 class ProjectCard extends StatefulWidget {
   final ProjectModel? project;
+  final bool? lastIndex;
 
-  const ProjectCard({Key? key, this.project}) : super(key: key);
+  const ProjectCard({Key? key, this.project, required this.lastIndex})
+      : super(key: key);
 
   @override
   _ProjectCardState createState() => _ProjectCardState();
@@ -35,6 +37,9 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
         },
         child: AnimatedContainer(
           width: 200,
+          margin: widget.lastIndex!
+              ? EdgeInsets.only(bottom: 100)
+              : EdgeInsets.only(bottom: 0.0),
           duration: Duration(milliseconds: 200),
           child: Card(
               elevation: dashboardService.selectedProject == widget.project!.id
@@ -110,7 +115,20 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                         subtitle: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(widget.project!.description!),
+                            Flexible(
+                              child: Container(
+                                padding: EdgeInsets.only(right: 50),
+                                width: viewMore
+                                    ? MediaQuery.of(context).size.width
+                                    : MediaQuery.of(context).size.width * 0.2,
+                                child: Text(
+                                  widget.project!.description!,
+                                  overflow: viewMore
+                                      ? TextOverflow.fade
+                                      : TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ),
                             viewMore
                                 ? Container()
                                 : Padding(

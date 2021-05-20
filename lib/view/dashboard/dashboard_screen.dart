@@ -213,9 +213,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               bgColor: Palette.contentBackground,
               height: MediaQuery.of(context).size.width > 900
                   ? MediaQuery.of(context).size.height
-                  : MediaQuery.of(context).size.height * .5,
+                  : MediaQuery.of(context).size.height * .7,
               content: Padding(
-                padding: const EdgeInsets.only(top: 50, right: 20),
+                padding: const EdgeInsets.only(top: 50, right: 20, bottom: 100),
                 child: listProjects(projectProvider),
               ))
         ]);
@@ -247,7 +247,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                       itemCount: projectProvider.projectsDateBase.length,
                       itemBuilder: (context, index) {
                         return ProjectCard(
-                            project: projectProvider.projectsDateBase[index]);
+                          project: projectProvider.projectsDateBase[index],
+                          lastIndex: index ==
+                              projectProvider.projectsDateBase.length - 1,
+                        );
                       }),
                 ),
     );
