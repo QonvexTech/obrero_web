@@ -236,9 +236,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   color: Palette.contentBackground,
                   child: EmptyContainer(
                     addingFunc: ProjectAddScreen(),
-                    title: "No projects yet",
+                    title: "Aucun projet cette fois",
                     description:
-                        "Its time to create a project \n choose the right client and location for your project",
+                        "Il est temps de créer un projet\n choisissez le bon client et le bon emplacement pour votre projet.",
                     buttonText: "Créer",
                     showButton: true,
                   ))
