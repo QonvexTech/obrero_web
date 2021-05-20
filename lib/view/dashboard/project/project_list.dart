@@ -10,7 +10,6 @@ import 'package:uitemplate/services/widgetService/table_pagination_service.dart'
 import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_details.dart';
-import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
@@ -90,16 +89,17 @@ class _ProjectListState extends State<ProjectList> {
                           AllTable(
                               datas: projectProvider.projects,
                               rowWidget: rowWidget(
-                                context,
-                                projectProvider.projects,
-                                projectProvider.removeProject,
-                                projectProvider.setPage,
-                              ),
+                                  context,
+                                  projectProvider.projects,
+                                  projectProvider.removeProject,
+                                  projectProvider.setPage,
+                                  projectProvider),
                               rowWidgetMobile: rowWidgetMobile(
                                   context,
                                   projectProvider.projects,
                                   projectProvider.removeProject,
-                                  projectProvider.setPage),
+                                  projectProvider.setPage,
+                                  projectProvider),
                               headersMobile: [
                                 "NOM DU SITE",
                                 "OWNER",
@@ -133,7 +133,7 @@ class _ProjectListState extends State<ProjectList> {
 }
 
 List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage) {
+    Function remove, Function setPage, ProjectProvider projectProvider) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -145,9 +145,9 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: TextButton(
                   onPressed: () {
+                    projectProvider.projectOnDetails = data;
                     setPage(
                         page: ProjectDetails(
-                      projectModel: data,
                       fromPage: "project",
                     ));
                   },
@@ -234,7 +234,7 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
 }
 
 List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage) {
+    Function remove, Function setPage, ProjectProvider projectProvider) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -245,9 +245,9 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextButton(
                 onPressed: () {
+                  projectProvider.projectOnDetails = data;
                   setPage(
                       page: ProjectDetails(
-                    projectModel: data,
                     fromPage: "project",
                   ));
                 },

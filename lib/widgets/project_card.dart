@@ -5,6 +5,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/map_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/project/project_details.dart';
@@ -26,7 +27,8 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     MapService mapService = Provider.of<MapService>(context);
-    var colorService = Provider.of<ColorChangeService>(context);
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+
     DashboardService dashboardService = Provider.of<DashboardService>(context);
     return GestureDetector(
         onTap: () {
@@ -90,6 +92,8 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                                 dashboardService.selectedPrject =
                                     widget.project!.id;
                                 print("icon");
+                                projectProvider.projectOnDetails =
+                                    widget.project;
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
@@ -101,7 +105,6 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                                                   .width *
                                               0.35,
                                           child: ProjectDetails(
-                                              projectModel: widget.project,
                                               fromPage: "dashboard"),
                                         )));
                               },

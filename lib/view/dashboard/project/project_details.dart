@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
-import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
@@ -18,12 +17,9 @@ import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 
 class ProjectDetails extends StatefulWidget {
-  final ProjectModel? projectModel;
   final String fromPage;
 
-  const ProjectDetails(
-      {Key? key, required this.projectModel, required this.fromPage})
-      : super(key: key);
+  const ProjectDetails({Key? key, required this.fromPage}) : super(key: key);
 
   @override
   _ProjectDetailsState createState() => _ProjectDetailsState();
@@ -32,8 +28,10 @@ class ProjectDetails extends StatefulWidget {
 class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
   @override
   void initState() {
-    Provider.of<ProjectProvider>(context, listen: false)
-        .initHours(widget.projectModel!.id!);
+    Provider.of<ProjectProvider>(context, listen: false).initHours(
+        Provider.of<ProjectProvider>(context, listen: false)
+            .projectOnDetails
+            .id!);
     super.initState();
   }
 
@@ -70,11 +68,11 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.projectModel!.name!,
+                                projectProvider.projectOnDetails!.name!,
                                 style: Theme.of(context).textTheme.headline5,
                               ),
                               Text(
-                                "Planifié du ${widget.projectModel!.startDate.toString().split(" ")[0]} au ${widget.projectModel!.endDate.toString().split(" ")[0]} ",
+                                "Planifié du ${projectProvider.projectOnDetails!.startDate.toString().split(" ")[0]} au ${projectProvider.projectOnDetails!.endDate.toString().split(" ")[0]} ",
                                 style: Theme.of(context).textTheme.headline6,
                               ),
                             ],
@@ -96,7 +94,9 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             SizedBox(
                               height: MySpacer.small,
                             ),
-                            Text(widget.projectModel!.areaSize.toString(),
+                            Text(
+                                projectProvider.projectOnDetails!.areaSize
+                                    .toString(),
                                 style: boldText)
                           ],
                         ),
@@ -108,9 +108,9 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                               height: MySpacer.small,
                             ),
                             Text(
-                              widget.projectModel!.address != null
-                                  ? "${widget.projectModel!.address}"
-                                  : "${widget.projectModel!.coordinates!.latitude},${widget.projectModel!.coordinates!.longitude}",
+                              projectProvider.projectOnDetails!.address != null
+                                  ? "${projectProvider.projectOnDetails!.address}"
+                                  : "${projectProvider.projectOnDetails!.coordinates!.latitude},${projectProvider.projectOnDetails!.coordinates!.longitude}",
                               style: boldText,
                             )
                           ],
@@ -123,7 +123,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                               height: MySpacer.small,
                             ),
                             Text(
-                                "${widget.projectModel!.owner!.fname!} ${widget.projectModel!.owner!.lname!}",
+                                "${projectProvider.projectOnDetails!.owner!.fname!} ${projectProvider.projectOnDetails!.owner!.lname!}",
                                 style: boldText)
                           ],
                         ),
@@ -139,7 +139,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                     SizedBox(
                       height: MySpacer.small,
                     ),
-                    Text(widget.projectModel!.description!),
+                    Text(projectProvider.projectOnDetails!.description!),
                     SizedBox(
                       height: MySpacer.large,
                     ),
@@ -152,7 +152,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         IconButton(
                             onPressed: () {
                               scaff.selectedContent = MessageScreen(
-                                  recepients: widget.projectModel!.assignees!);
+                                  recepients: projectProvider
+                                      .projectOnDetails!.assignees!);
                               if (widget.fromPage == "dashboard") {
                                 Navigator.pop(context);
                               }
@@ -163,7 +164,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             ))
                       ],
                     ),
-                    widget.projectModel!.assignees!.length <= 0
+                    projectProvider.projectOnDetails!.assignees!.length <= 0
                         ? DottedBorder(
                             color: Colors.black12,
                             strokeWidth: 2,
@@ -183,8 +184,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                                 backgroundColor:
                                                     Palette.contentBackground,
                                                 content: ProjectAddScreen(
-                                                  projectToEdit:
-                                                      widget.projectModel,
+                                                  projectToEdit: projectProvider
+                                                      .projectOnDetails,
                                                 )));
                                       },
                                       icon: Icon(
@@ -203,7 +204,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             child: ListView(
                               scrollDirection: Axis.horizontal,
                               children: [
-                                for (var x in widget.projectModel!.assignees!)
+                                for (var x in projectProvider
+                                    .projectOnDetails!.assignees!)
                                   Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 10),
@@ -232,7 +234,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                     SizedBox(
                       height: MySpacer.medium,
                     ),
-                    widget.projectModel!.images!.length == 0
+                    projectProvider.projectOnDetails!.images!.length == 0
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -256,7 +258,18 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                           MainAxisAlignment.center,
                                       children: [
                                         IconButton(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                    backgroundColor: Palette
+                                                        .contentBackground,
+                                                    content: ProjectAddScreen(
+                                                      projectToEdit:
+                                                          projectProvider
+                                                              .projectOnDetails,
+                                                    )));
+                                          },
                                           icon: Icon(
                                             Icons.upload_rounded,
                                             color: Palette.drawerColor,
@@ -281,8 +294,11 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                 height: 10,
                               ),
                               Container(
-                                height: widget.projectModel!.images!.length >= 3
-                                    ? widget.projectModel!.images!.length /
+                                height: projectProvider
+                                            .projectOnDetails!.images!.length >=
+                                        3
+                                    ? projectProvider
+                                            .projectOnDetails!.images!.length /
                                         3 *
                                         200
                                     : 200,
@@ -294,8 +310,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                   childAspectRatio: 1.5,
                                   crossAxisCount: 3,
                                   children: [
-                                    for (var image in widget
-                                        .projectModel!.images!.reversed)
+                                    for (var image in projectProvider
+                                        .projectOnDetails!.images!.reversed)
                                       Container(
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
@@ -391,7 +407,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                "${widget.projectModel!.warnings!.length}",
+                                "${projectProvider.projectOnDetails!.warnings!.length}",
                                 style: Theme.of(context).textTheme.headline3,
                               ),
                               Text(
@@ -442,7 +458,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             List<LogModel> newWarnings = [];
                             for (LogModel log in result.data!) {
                               if (log.type == "project_warning" &&
-                                  log.data_id == widget.projectModel!.id) {
+                                  log.data_id ==
+                                      projectProvider.projectOnDetails!.id) {
                                 newWarnings.add(log);
                               }
                             }

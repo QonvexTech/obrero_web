@@ -17,6 +17,7 @@ class ProjectProvider extends ChangeNotifier {
   List<ProjectModel>? _projectsDateBase;
   List<ProjectModel> _tempProjects = [];
   PaginationService paginationService = PaginationService();
+  ProjectModel? _projectOnDetails;
 //  DatePickerController dateController = DatePickerController();
   DateTime selectedDate = DateTime.now();
   String hours = "0.00";
@@ -86,6 +87,12 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set projectOnDetails(value) {
+    _projectOnDetails = value;
+    notifyListeners();
+  }
+
+  get projectOnDetails => _projectOnDetails;
   get pagination => _pagination;
   get projects => _projects;
   get projectsDateBase => _projectsDateBase;
@@ -221,9 +228,11 @@ class ProjectProvider extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
         var data = json.decode(response.body);
-        print(data);
+        projectOnDetails = ProjectModel.fromJson(data["data"]);
+        // print("THIS PROJECT : $data");
         fetchProjectsBaseOnDates();
         fetchProjects();
+
         notifyListeners();
       });
     } catch (e) {
