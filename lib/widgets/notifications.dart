@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/notification_services.dart';
@@ -48,7 +49,7 @@ class _NotificationCardState extends State<NotificationCard> {
           PopupMenuItem(
             child: Container(
               width: 650,
-              height: MediaQuery.of(context).size.height - 100,
+              // height: MediaQuery.of(context).size.height - 100,
               child: StreamBuilder<List<LogModel>>(
                   stream: logService.stream$,
                   builder: (context, result) {
@@ -62,6 +63,8 @@ class _NotificationCardState extends State<NotificationCard> {
 
                     if (result.hasData && result.data!.length > 0) {
                       return Container(
+                        width: 650,
+                        height: MediaQuery.of(context).size.height - 100,
                         child: ListView(
                           children: List.generate(
                               result.data!.length,
@@ -99,7 +102,22 @@ class _NotificationCardState extends State<NotificationCard> {
                       return Container(
                         width: 650,
                         child: Center(
-                          child: Text("NO NOTIFICATION"),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: MySpacer.small,
+                              ),
+                              Image.asset(
+                                "assets/images/emptynotification.png",
+                                width: 50,
+                              ),
+                              SizedBox(
+                                height: MySpacer.small,
+                              ),
+                              Text("Pas encore de notification")
+                            ],
+                          ),
                         ),
                       );
                     }
