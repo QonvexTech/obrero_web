@@ -155,7 +155,7 @@ class CustomerService extends ChangeNotifier {
         if (data["projects"] != null) {
           var tempCustomerProject =
               ProjectModel.fromJsonListToProject(data["projects"]);
-          customerProject = await tempCustomerProject;
+          customerProject = tempCustomerProject;
         } else {
           customerProject = [];
         }
