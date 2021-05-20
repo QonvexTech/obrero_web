@@ -38,10 +38,13 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
           dashboardService.selectedPrject = widget.project!.id;
         },
         child: AnimatedContainer(
-          width: 200,
           margin: widget.lastIndex!
               ? EdgeInsets.only(bottom: 100)
               : EdgeInsets.only(bottom: 0.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: dashboardService.selectedProject == widget.project!.id
+                  ? 0
+                  : 10),
           duration: Duration(milliseconds: 200),
           child: Card(
               elevation: dashboardService.selectedProject == widget.project!.id
