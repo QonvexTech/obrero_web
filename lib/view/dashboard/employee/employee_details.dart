@@ -53,94 +53,94 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                 children: [
                   backButton(
                       context, employeeSevice.setPageScreen, EmployeeList()),
-                  Row(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.height * .15,
-                        height: MediaQuery.of(context).size.height * .15,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10000),
-                            color: Colors.grey.shade100,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade400,
-                                offset: Offset(3, 3),
-                                blurRadius: 2,
-                              )
-                            ],
-                            image: DecorationImage(
-                                fit: widget.employeesModel!.picture == null
-                                    ? BoxFit.scaleDown
-                                    : BoxFit.cover,
-                                alignment:
-                                    widget.employeesModel!.picture == null
-                                        ? AlignmentDirectional.bottomCenter
-                                        : AlignmentDirectional.center,
-                                image: fetchImage(
-                                    netWorkImage:
-                                        widget.employeesModel?.picture),
-                                scale: widget.employeesModel!.picture == null
-                                    ? 5
-                                    : 1)),
-                      ),
-                      SizedBox(
-                        width: MySpacer.medium,
-                      ),
-                      Text(
-                        "${widget.employeesModel!.fname} ${widget.employeesModel!.lname}",
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     Container(
+                  //       width: MediaQuery.of(context).size.height * .15,
+                  //       height: MediaQuery.of(context).size.height * .15,
+                  //       decoration: BoxDecoration(
+                  //           borderRadius: BorderRadius.circular(10000),
+                  //           color: Colors.grey.shade100,
+                  //           boxShadow: [
+                  //             BoxShadow(
+                  //               color: Colors.grey.shade400,
+                  //               offset: Offset(3, 3),
+                  //               blurRadius: 2,
+                  //             )
+                  //           ],
+                  //           image: DecorationImage(
+                  //               fit: widget.employeesModel!.picture == null
+                  //                   ? BoxFit.scaleDown
+                  //                   : BoxFit.cover,
+                  //               alignment:
+                  //                   widget.employeesModel!.picture == null
+                  //                       ? AlignmentDirectional.bottomCenter
+                  //                       : AlignmentDirectional.center,
+                  //               image: fetchImage(
+                  //                   netWorkImage:
+                  //                       widget.employeesModel?.picture),
+                  //               scale: widget.employeesModel!.picture == null
+                  //                   ? 5
+                  //                   : 1)),
+                  //     ),
+                  //     SizedBox(
+                  //       width: MySpacer.medium,
+                  //     ),
+                  //     Text(
+                  //       "${widget.employeesModel!.fname} ${widget.employeesModel!.lname}",
+                  //       style: Theme.of(context).textTheme.headline5,
+                  //     ),
+                  //   ],
+                  // ),
                   SizedBox(
                     height: MySpacer.large,
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Téléphone", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text("${widget.employeesModel!.contactNumber!}",
-                                style: boldText)
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Email", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text(
-                              "${widget.employeesModel!.email!}",
-                              style: boldText,
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Adresse", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text("${widget.employeesModel!.address!}",
-                                style: boldText)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                  // Row(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Expanded(
+                  //       child: Column(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: [
+                  //           Text("Téléphone", style: transHeader),
+                  //           SizedBox(
+                  //             height: MySpacer.small,
+                  //           ),
+                  //           Text("${widget.employeesModel!.contactNumber!}",
+                  //               style: boldText)
+                  //         ],
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: Column(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: [
+                  //           Text("Email", style: transHeader),
+                  //           SizedBox(
+                  //             height: MySpacer.small,
+                  //           ),
+                  //           Text(
+                  //             "${widget.employeesModel!.email!}",
+                  //             style: boldText,
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: Column(
+                  //         crossAxisAlignment: CrossAxisAlignment.start,
+                  //         children: [
+                  //           Text("Adresse", style: transHeader),
+                  //           SizedBox(
+                  //             height: MySpacer.small,
+                  //           ),
+                  //           Text("${widget.employeesModel!.address!}",
+                  //               style: boldText)
+                  //         ],
+                  //       ),
+                  //     )
+                  //   ],
+                  // ),
                   SizedBox(
                     height: MySpacer.large,
                   ),
@@ -210,11 +210,14 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                     style: transHeader),
                                                 Text(
                                                   project.employeeHourList!
-                                                              .length >
-                                                          0
-                                                      ? employeeSevice
-                                                          .getTotalHours(project
-                                                              .employeeHourList!)
+                                                                  .length >
+                                                              0 &&
+                                                          employeeSevice
+                                                                  .getTotalHours(
+                                                                      project
+                                                                          .employeeHourList!) !=
+                                                              null
+                                                      ? "${employeeSevice.getTotalHours(project.employeeHourList!)}"
                                                       : "0.00",
                                                   style: TextStyle(
                                                       color: Colors.green,
@@ -309,11 +312,6 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                       "Avertissements récents et mise à jour",
                                       style: boldText,
                                     ),
-                                    IconButton(
-                                        icon: Icon(Icons.add_circle),
-                                        onPressed: () {
-                                          //LOGS
-                                        })
                                   ],
                                 ),
                                 SizedBox(
@@ -344,6 +342,46 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                               }
                                             }
                                             return newWarnings;
+                                          }
+
+                                          if (warnings()!.length <= 0) {
+                                            return Container(
+                                              height: 50,
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Card(
+                                                      child: Container(
+                                                        width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width,
+                                                        height: 150,
+                                                        child: Center(
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Icon(
+                                                                  Icons
+                                                                      .notifications_none_sharp,
+                                                                  size: 50,
+                                                                  color: Colors
+                                                                      .grey),
+                                                              Text(
+                                                                  "Pas encore d'avertissements!")
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
                                           }
 
                                           return Scrollbar(
