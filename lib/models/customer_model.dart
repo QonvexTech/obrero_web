@@ -12,6 +12,7 @@ class CustomerModel {
   List? customerProjects;
   double? amount;
   bool isSelected = false;
+  String? createdAt;
 
   CustomerModel(
       {this.id,
@@ -23,7 +24,8 @@ class CustomerModel {
       this.contactNumber,
       this.customerProjects,
       this.amount,
-      this.status});
+      this.status,
+      this.createdAt});
 
   String userAsString() {
     return '#${this.id} ${this.fname}';
@@ -49,6 +51,7 @@ class CustomerModel {
         : PaymentModel();
     this.contactNumber = json["contact_number"];
     this.customerProjects = json["projects"];
+    this.createdAt = json["created_at"];
   }
 
   Map<String, dynamic> toJson() {

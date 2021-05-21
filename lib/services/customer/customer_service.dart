@@ -182,6 +182,7 @@ class CustomerService extends ChangeNotifier {
         }
       }
     }
+    newCustomers.reversed;
     return newCustomers;
   }
 
@@ -218,6 +219,8 @@ class CustomerService extends ChangeNotifier {
         var newCustomers = fromJsonListToCustomer(data);
         _customers = newCustomers;
         _tempCustomer = newCustomers;
+
+        print(data);
 
         searchController.clear();
       } else {

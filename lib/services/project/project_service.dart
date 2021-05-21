@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
@@ -179,8 +177,7 @@ class ProjectProvider extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        var projects =
-            ProjectModel.fromJsonListToProject(data).reversed.toList();
+        var projects = ProjectModel.fromJsonListToProject(data);
 
         _projects = projects;
         _tempProjects = projects;

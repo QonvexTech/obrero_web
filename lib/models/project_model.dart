@@ -98,6 +98,7 @@ class ProjectModel extends ChangeNotifier {
 
       newProjects.add(newProject);
     }
+    newProjects.reversed;
     return newProjects;
   }
 }

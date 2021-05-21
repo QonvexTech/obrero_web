@@ -21,7 +21,7 @@ class _EmployeeListState extends State<EmployeeList> {
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
     super.initState();
-  }
+}
 
   @override
   Widget build(BuildContext context) {
