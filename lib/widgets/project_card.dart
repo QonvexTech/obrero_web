@@ -56,37 +56,45 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Palette.contentBackground,
-                          backgroundImage: widget.project!.images!.length > 0
-                              ? fetchImage(
-                                  netWorkImage: widget.project!.images![0].url)
-                              : AssetImage('images/emptyImage.jpg'),
+                        leading: Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: CircleAvatar(
+                            backgroundColor: Palette.contentBackground,
+                            backgroundImage: widget.project!.images!.length > 0
+                                ? fetchImage(
+                                    netWorkImage:
+                                        widget.project!.images![0].url)
+                                : AssetImage('images/emptyImage.jpg'),
+                          ),
                         ),
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                               child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(widget.project!.name!),
                                   Flexible(
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
-                                      child: Text(
-                                        "Du ${months[widget.project!.startDate!.month]} ${widget.project!.startDate!.day}, ${widget.project!.startDate!.year} Au ${months[widget.project!.endDate!.month]} ${widget.project!.endDate!.day}, ${widget.project!.endDate!.year}",
-                                        style: TextStyle(
-                                          color: Colors.black12,
+                                      child: Opacity(
+                                        opacity: 0.6,
+                                        child: Text(
+                                          "Du ${months[widget.project!.startDate!.month]} ${widget.project!.startDate!.day}, ${widget.project!.startDate!.year} Au ${months[widget.project!.endDate!.month]} ${widget.project!.endDate!.day}, ${widget.project!.endDate!.year}",
+                                          style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 13),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            Expanded(child: Container()),
                             IconButton(
                               onPressed: () {
                                 mapService.focusMap(
@@ -254,8 +262,8 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                   Consumer<ColorChangeService>(
                     builder: (context, data, child) {
                       return Positioned(
-                        top: 5,
-                        left: 5,
+                        top: 10,
+                        left: 20,
                         child: Image.asset(
                           data.imagesStatus[0],
                           width: 20,

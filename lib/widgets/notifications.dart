@@ -50,6 +50,7 @@ class _NotificationCardState extends State<NotificationCard> {
             child: Container(
               width: 650,
               // height: MediaQuery.of(context).size.height - 100,
+
               child: StreamBuilder<List<LogModel>>(
                   stream: logService.stream$,
                   builder: (context, result) {
@@ -70,29 +71,36 @@ class _NotificationCardState extends State<NotificationCard> {
                               result.data!.length,
                               (index) => Card(
                                     margin: EdgeInsets.symmetric(
-                                        horizontal: 0, vertical: 5),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons
-                                                .notification_important_rounded,
-                                            color: Colors.grey,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: ListTile(
-                                              title: Text(
-                                                  "${result.data![index].title}"),
-                                              subtitle: Text(
-                                                  "${result.data![index].body}"),
+                                        horizontal: 0, vertical: 3),
+                                    child: Container(
+                                      constraints:
+                                          BoxConstraints(maxHeight: 90),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons
+                                                  .notification_important_rounded,
+                                              color: Colors.grey,
                                             ),
-                                          )
-                                        ],
+                                            Expanded(
+                                              child: ListTile(
+                                                title: Text(
+                                                  "${result.data![index].title}",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                subtitle: Text(
+                                                  "${result.data![index].body}",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   )),

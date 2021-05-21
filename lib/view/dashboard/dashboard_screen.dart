@@ -1,5 +1,4 @@
 import 'package:adaptive_container/adaptive_container.dart';
-import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
