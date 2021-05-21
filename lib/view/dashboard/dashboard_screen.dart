@@ -1,5 +1,6 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -8,7 +9,6 @@ import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
-import 'package:uitemplate/widgets/map.dart';
 import 'package:uitemplate/widgets/mypicker.dart';
 import 'package:uitemplate/widgets/project_card.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
@@ -25,9 +25,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
       Provider.of<MapService>(context, listen: false).mapInit(
-          projectProvider.projectsDateBase,
-          context,
-          Provider.of<ColorChangeService>(context, listen: false).imagesStatus);
+        projectProvider.projectsDateBase,
+        context,
+        Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
+      );
       Provider.of<DashboardService>(context, listen: false)
           .initGetId(projectProvider.projectsDateBase);
     });
@@ -193,8 +194,49 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   height: MediaQuery.of(context).size.width > 800
                       ? MediaQuery.of(context).size.height * 0.7
                       : MediaQuery.of(context).size.height * 0.4,
-                  child: MapScreen(
-                    setCoord: false,
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  child: Stack(
+                    children: [
+                      initialPositon == null
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : InkWell(
+                              onHover: (value) {
+                                print(value);
+                              },
+                              child: GoogleMap(
+                                onTap: (x) {
+                                  mapService.gesture = true;
+                                },
+                                scrollGesturesEnabled: mapService.gesture,
+                                onMapCreated: (controller) {
+                                  setState(() {
+                                    dashboardService.mapController = controller;
+                                    if (projectProvider
+                                            .projectsDateBase.length >
+                                        0) {
+                                      dashboardService.mapController!
+                                          .showMarkerInfoWindow(MarkerId(
+                                              projectProvider
+                                                  .projectsDateBase[0].id
+                                                  .toString()));
+                                    }
+                                  });
+                                },
+                                myLocationButtonEnabled: true,
+                                rotateGesturesEnabled: true,
+                                initialCameraPosition: CameraPosition(
+                                  target: initialPositon!,
+                                  zoom: mapService.zoom,
+                                ),
+                                buildingsEnabled: true,
+                                mapType: MapType.none,
+                                myLocationEnabled: true,
+                                markers: mapService.markers,
+                              ),
+                            ),
+                    ],
                   ),
                 ),
                 SizedBox(

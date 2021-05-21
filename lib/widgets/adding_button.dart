@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/services/map_service.dart';
 
 class AddingButton extends StatelessWidget {
   final Widget? addingPage;
@@ -10,10 +12,13 @@ class AddingButton extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
+    var mapService = Provider.of<MapService>(context);
     return MaterialButton(
       color: Palette.drawerColor,
       onPressed: () {
+        mapService.gesture = false;
         showDialog(
+            barrierColor: Colors.black54,
             context: context,
             builder: (_) => AlertDialog(
                 backgroundColor: Palette.contentBackground,

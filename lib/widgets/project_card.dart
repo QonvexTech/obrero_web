@@ -4,7 +4,6 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
-import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
@@ -26,13 +25,11 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
   bool viewMore = false;
   @override
   Widget build(BuildContext context) {
-    MapService mapService = Provider.of<MapService>(context);
-    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
-
     DashboardService dashboardService = Provider.of<DashboardService>(context);
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     return GestureDetector(
         onTap: () {
-          mapService.focusMap(
+          dashboardService.focusMap(
               coordinates: widget.project!.coordinates!,
               markerId: widget.project!.id.toString());
           dashboardService.selectedPrject = widget.project!.id;
@@ -97,7 +94,7 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                             ),
                             IconButton(
                               onPressed: () {
-                                mapService.focusMap(
+                                dashboardService.focusMap(
                                     coordinates: widget.project!.coordinates!,
                                     markerId: widget.project!.id.toString());
                                 dashboardService.selectedPrject =

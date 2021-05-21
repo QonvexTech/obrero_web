@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:uitemplate/services/dashboard_service.dart';
 
 class MapService extends ChangeNotifier {
   final containerKey = GlobalKey();
@@ -73,8 +75,12 @@ class MapService extends ChangeNotifier {
       for (ProjectModel project in projects) {
         _markers.add(Marker(
             onTap: () {
-              mapController!
-                  .showMarkerInfoWindow(MarkerId(project.id.toString()));
+              try {
+                mapController!
+                    .showMarkerInfoWindow(MarkerId(project.id.toString()));
+              } catch (e) {
+                print(e);
+              }
             },
             infoWindow: InfoWindow(
                 title: project.name, snippet: project.address.toString()),
@@ -140,15 +146,6 @@ class MapService extends ChangeNotifier {
   //   );
   //   notifyListeners();
   // }
-
-  void focusMap({required LatLng coordinates, required markerId}) {
-    mapController!.showMarkerInfoWindow(MarkerId(markerId));
-    mapController!
-        .moveCamera(CameraUpdate.newLatLng(coordinates))
-        .whenComplete(() {});
-
-    // notifyListeners();
-  }
 
   checkLocationPermission() async {
     _serviceEnabled = await _location.serviceEnabled();
