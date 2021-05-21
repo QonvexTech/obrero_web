@@ -43,6 +43,20 @@ Widget pageControll(PaginationService pageService,
                                     height: 40,
                                     child: Center(child: Text("$x")))),
                           ),
+                        PopupMenuItem(
+                          child: GestureDetector(
+                              onTap: () {
+                                pageService.updatePerPage(
+                                    paginationModel.totalEntries,
+                                    paginationModel);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                  color: Colors.transparent,
+                                  width: double.infinity,
+                                  height: 40,
+                                  child: Center(child: Text("All")))),
+                        ),
                       ]),
               Text("of ${paginationModel.totalEntries} entries")
             ],
