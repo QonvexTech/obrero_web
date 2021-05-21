@@ -21,7 +21,7 @@ class EmployeeSevice extends ChangeNotifier {
   List<UserProjectModel>? employeeProjects;
 
   late PaginationModel _pagination =
-      PaginationModel(lastPage: 1, fetch: fetchUsers);
+      PaginationModel(lastPage: 1, fetch: fetchUsers, perPage: 11);
 
   late PaginationModel _paginationload =
       PaginationModel(lastPage: 1, fetch: fetchUsers, page: 1);
