@@ -40,7 +40,7 @@ class EmployeeSevice extends ChangeNotifier {
     if (text.isEmpty) {
       _users = _tempUsers;
     }
-    _pagination.perPage = _users!.length - 1;
+    _pagination.perPage = _users!.length;
     notifyListeners();
   }
 
@@ -129,6 +129,7 @@ class EmployeeSevice extends ChangeNotifier {
   Future pastProjects(int userId) async {}
 
   Future fetchUsers() async {
+    print("fetching...");
     var url =
         Uri.parse("$user_api${_pagination.perPage}?page=${_pagination.page}");
     try {

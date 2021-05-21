@@ -18,8 +18,8 @@ class ProjectProvider extends ChangeNotifier {
   List<ProjectModel> _tempProjects = [];
   PaginationService paginationService = PaginationService();
   ProjectModel? _projectOnDetails;
-//  DatePickerController dateController = DatePickerController();
-  DateTime selectedDate = DateTime.now();
+  DatePickerController dateController = DatePickerController();
+  DateTime _selectedDate = DateTime.now();
   String hours = "0.00";
   List<String> listHours = [];
 
@@ -29,22 +29,30 @@ class ProjectProvider extends ChangeNotifier {
   //SEARCH
   TextEditingController searchController = TextEditingController();
 
+  get selectedDate => _selectedDate;
+
+  Future setSelectedDate(value) async {
+    _selectedDate = value;
+    dateController.jumpToSelection();
+    notifyListeners();
+  }
+
   Future<DateTime> selectDate(
       {required BuildContext context,
       required MapService mapService,
       required bool isNow,
       required DatePickerController controllerDate}) async {
     if (isNow) {
-      selectedDate = DateTime.now();
+      _selectedDate = DateTime.now();
     } else {
       final DateTime? picked = await showDatePicker(
           locale: Locale('fr', 'CA'),
           context: context,
-          initialDate: selectedDate,
+          initialDate: _selectedDate,
           firstDate: DateTime(1999),
           lastDate: DateTime(3000));
-      if (picked != null && picked != selectedDate) {
-        selectedDate = picked;
+      if (picked != null && picked != _selectedDate) {
+        _selectedDate = picked;
       }
     }
     fetchProjectsBaseOnDates().whenComplete(() => mapService.mapInit(
@@ -52,7 +60,7 @@ class ProjectProvider extends ChangeNotifier {
         context,
         Provider.of<ColorChangeService>(context, listen: false).imagesStatus));
     notifyListeners();
-    return selectedDate;
+    return _selectedDate;
   }
 
   init(mapService) {
@@ -164,10 +172,10 @@ class ProjectProvider extends ChangeNotifier {
       context,
       DatePickerController? controller}) async {
     if (dateSelected == null) {
-      dateSelected = selectedDate;
+      dateSelected = _selectedDate;
       // controller!.animateToDate(selectedDate);
     } else {
-      selectedDate = dateSelected;
+      _selectedDate = dateSelected;
       // controller!.animateToDate(dateSelected);
     }
     var url = Uri.parse("$project_api_date");

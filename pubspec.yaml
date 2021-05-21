@@ -71,6 +71,7 @@ dependencies:
 
   #DATE
   date_picker_timeline: ^1.2.3
+  # flutter_date_picker_timeline: ^0.3.1
   intl: ^0.17.0
 
   flutter_localizations:

@@ -69,7 +69,7 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
                     ),
                     Spacer(),
                     Text(
-                      "Total Projets : ${employeeService.employeeProjects != null && employeeService.employeeProjects!.length > 0 ? employeeService.employeeProjects!.length : 0} ",
+                      "Projets totaux: ${employeeService.employeeProjects != null && employeeService.employeeProjects!.length > 0 ? employeeService.employeeProjects!.length : 0} ",
                       style: TextStyle(color: Colors.white, fontSize: 10),
                     )
                   ],
@@ -88,7 +88,7 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
                                 "assets/images/empty.png",
                                 width: 100,
                               ),
-                              Text("No projects yet!"),
+                              Text("Pas encore de projets!"),
                             ],
                           ),
                         ),
