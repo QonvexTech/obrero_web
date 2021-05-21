@@ -10,6 +10,7 @@ import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/map.dart';
+import 'package:uitemplate/widgets/mypicker.dart';
 import 'package:uitemplate/widgets/project_card.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:universal_html/html.dart';
@@ -30,6 +31,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           Provider.of<ColorChangeService>(context, listen: false).imagesStatus);
       Provider.of<DashboardService>(context, listen: false)
           .initGetId(projectProvider.projectsDateBase);
+      projectProvider.setSelectedDate(DateTime.now());
     });
 
     print("DASHBOARD SCREEN");
@@ -71,9 +73,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 context: context,
                                 mapService: mapService,
                                 isNow: false,
-                                controllerDate: dashboardService.dateController)
+                                controllerDate: projectProvider.dateController)
                             .then((date) {
-                          dashboardService.startDate = date;
+                          projectProvider.setSelectedDate(date);
                         });
                       },
                       child: Text(
@@ -91,9 +93,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   mapService: mapService,
                                   isNow: true,
                                   controllerDate:
-                                      dashboardService.dateController)
+                                      projectProvider.dateController)
                               .then((date) {
-                            dashboardService.startDate = date;
+                            projectProvider.setSelectedDate(date);
                           });
                         },
                         child: Text(
@@ -121,7 +123,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                     BoxConstraints(minWidth: 15, minHeight: 15),
                                 iconSize: 20,
                                 onPressed: () {
-                                  dashboardService.prevDate();
+                                  projectProvider.prevDate(context, mapService);
                                 },
                                 icon: Icon(
                                   Icons.arrow_back_ios_rounded,
@@ -133,28 +135,19 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             width: 5,
                           ),
                           Expanded(
-                            child: DatePicker(
-                              dashboardService.startDate,
-                              initialSelectedDate: projectProvider.selectedDate,
+                            child: DatePicker2(
+                              DateTime(2021, 1, 1),
+                              // initialSelectedDate: projectProvider.selectedDate,
                               selectionColor: Palette.drawerColor,
                               selectedTextColor: Colors.white,
                               deactivatedColor: Palette.contentBackground,
                               locale: "fr_FR",
-                              controller: dashboardService.dateController,
+                              controller: projectProvider.dateController,
                               onDateChange: (date) {
                                 //New Date
 
-                                projectProvider
-                                    .fetchProjectsBaseOnDates(
-                                        dateSelected: date,
-                                        controller:
-                                            dashboardService.dateController)
-                                    .whenComplete(() => mapService.mapInit(
-                                        projectProvider.projectsDateBase,
-                                        context,
-                                        Provider.of<ColorChangeService>(context,
-                                                listen: false)
-                                            .imagesStatus));
+                                projectProvider.fetchOnDates(
+                                    context: context, mapService: mapService);
                               },
                               width: 75,
                             ),
@@ -174,7 +167,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                         minWidth: 15, minHeight: 15),
                                     iconSize: 20,
                                     onPressed: () {
-                                      dashboardService.nextDate();
+                                      projectProvider.nextDate(
+                                          context, mapService);
                                     },
                                     icon: Icon(
                                       Icons.arrow_forward_ios_rounded,

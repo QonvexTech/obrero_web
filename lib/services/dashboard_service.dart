@@ -8,8 +8,7 @@ import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
 
 class DashboardService extends ChangeNotifier {
   Widget clientPage = CustomerScreen();
-  DatePickerController dateController = DatePickerController();
-  DateTime _startDate = DateTime.now();
+
   DateTime? tempDate;
   int _selectedProject = 0;
 
@@ -41,24 +40,7 @@ class DashboardService extends ChangeNotifier {
     notifyListeners();
   }
 
-  get startDate => _startDate;
-
-  set startDate(value) {
-    _startDate = value;
-    notifyListeners();
-  }
-
   get projectPage => clientPage;
-
-  void nextDate() {
-    _startDate = startDate.add(Duration(days: 5));
-    notifyListeners();
-  }
-
-  void prevDate() {
-    _startDate = startDate.subtract(Duration(days: 5));
-    notifyListeners();
-  }
 
   set projectPage(value) {
     clientPage = value;

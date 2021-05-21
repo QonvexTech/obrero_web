@@ -10,6 +10,7 @@ import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
+import 'package:uitemplate/widgets/mypicker.dart';
 
 class ProjectProvider extends ChangeNotifier {
   Widget activePageScreen = ProjectList();
@@ -18,7 +19,7 @@ class ProjectProvider extends ChangeNotifier {
   List<ProjectModel> _tempProjects = [];
   PaginationService paginationService = PaginationService();
   ProjectModel? _projectOnDetails;
-  DatePickerController dateController = DatePickerController();
+  DatePickerController2 dateController = DatePickerController2();
   DateTime _selectedDate = DateTime.now();
   String hours = "0.00";
   List<String> listHours = [];
@@ -33,7 +34,26 @@ class ProjectProvider extends ChangeNotifier {
 
   Future setSelectedDate(value) async {
     _selectedDate = value;
-    dateController.jumpToSelection();
+    dateController.jumpToSelection(_selectedDate);
+    notifyListeners();
+  }
+
+  // set startDate(value) {
+  //   _selectedDate = value;
+  //   notifyListeners();
+  // }
+
+  void nextDate(BuildContext context, MapService mapService) {
+    _selectedDate = _selectedDate.add(Duration(days: 5));
+    dateController.animateToDate(_selectedDate);
+    fetchOnDates(context: context, mapService: mapService);
+    notifyListeners();
+  }
+
+  void prevDate(BuildContext context, MapService mapService) {
+    _selectedDate = _selectedDate.subtract(Duration(days: 5));
+    dateController.animateToDate(_selectedDate);
+    fetchOnDates(context: context, mapService: mapService);
     notifyListeners();
   }
 
@@ -41,7 +61,7 @@ class ProjectProvider extends ChangeNotifier {
       {required BuildContext context,
       required MapService mapService,
       required bool isNow,
-      required DatePickerController controllerDate}) async {
+      required DatePickerController2 controllerDate}) async {
     if (isNow) {
       _selectedDate = DateTime.now();
     } else {
@@ -55,12 +75,18 @@ class ProjectProvider extends ChangeNotifier {
         _selectedDate = picked;
       }
     }
+    fetchOnDates(context: context, mapService: mapService);
+    notifyListeners();
+
+    return _selectedDate;
+  }
+
+  void fetchOnDates(
+      {required BuildContext context, required MapService mapService}) {
     fetchProjectsBaseOnDates().whenComplete(() => mapService.mapInit(
         _projectsDateBase!,
         context,
         Provider.of<ColorChangeService>(context, listen: false).imagesStatus));
-    notifyListeners();
-    return _selectedDate;
   }
 
   init(mapService) {
@@ -91,7 +117,6 @@ class ProjectProvider extends ChangeNotifier {
 
   void setPage({required Widget page}) {
     activePageScreen = page;
-
     notifyListeners();
   }
 
@@ -170,7 +195,7 @@ class ProjectProvider extends ChangeNotifier {
   Future fetchProjectsBaseOnDates(
       {DateTime? dateSelected,
       context,
-      DatePickerController? controller}) async {
+      DatePickerController2? controller}) async {
     if (dateSelected == null) {
       dateSelected = _selectedDate;
       // controller!.animateToDate(selectedDate);
