@@ -31,7 +31,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
           Provider.of<ColorChangeService>(context, listen: false).imagesStatus);
       Provider.of<DashboardService>(context, listen: false)
           .initGetId(projectProvider.projectsDateBase);
-      projectProvider.setSelectedDate(DateTime.now());
+    });
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      projectProvider.dateController.jumpToSelection(DateTime.now());
     });
 
     print("DASHBOARD SCREEN");
