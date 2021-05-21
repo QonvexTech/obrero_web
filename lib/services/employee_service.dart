@@ -196,6 +196,7 @@ class EmployeeSevice extends ChangeNotifier {
   Future updateUser(
       {required Map<String, dynamic> body, bool isAdmin = false}) async {
     var url = Uri.parse("$user_update");
+    bool updateSuccess = false;
     try {
       await http.post(url, body: body, headers: {
         "Accept": "application/json",
@@ -208,9 +209,11 @@ class EmployeeSevice extends ChangeNotifier {
         }
         print(data);
       });
+      updateSuccess = true;
     } catch (e) {
       print("UPDATE ERROR:$e");
     }
+    return updateSuccess;
   }
 
   //TODO:fix delete user

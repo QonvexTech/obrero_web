@@ -39,6 +39,7 @@ class Admin {
         : null;
   }
   Admin.fromJsonUpdate(Map<String, dynamic> json) {
+    this.id = json["id"];
     this.firstName = json["first_name"];
     this.lastName = json["last_name"];
     this.contacNumber = json["contact_number"];

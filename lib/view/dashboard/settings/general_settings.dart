@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -152,8 +153,19 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                               });
                               await _service
                                   .updateUser(body: body, isAdmin: true)
-                                  .whenComplete(() => setState(
-                                      () => profileService.isLoading = false));
+                                  .then((success) {
+                                profileService.isLoading = false;
+                                if (success) {
+                                  Fluttertoast.showToast(
+                                      webBgColor:
+                                          "linear-gradient(to right, #5585E5, #5585E5)",
+                                      msg: "Mise à jour réussie",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 2,
+                                      fontSize: 16.0);
+                                }
+                              });
                             } else {
                               print("CANT UPDATE");
                             }
