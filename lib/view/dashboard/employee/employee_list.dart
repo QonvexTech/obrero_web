@@ -21,7 +21,7 @@ class _EmployeeListState extends State<EmployeeList> {
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
     super.initState();
-}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,28 +79,26 @@ class _EmployeeListState extends State<EmployeeList> {
                             child: Column(
                               children: [
                                 AllTable(
-                                    datas: employeeService.users,
-                                    rowWidget: rowWidget(
-                                        context,
-                                        employeeService.users!,
-                                        employeeService.removeUser,
-                                        employeeService.setPageScreen),
-                                    rowWidgetMobile: rowWidgetMobile(
-                                        context,
-                                        employeeService.users!,
-                                        employeeService.removeUser,
-                                        employeeService.setPageScreen),
-                                    headersMobile: [
-                                      "NOM",
-                                      "EMAIL",
-                                      "ADDRESSE"
-                                    ],
-                                    headers: [
-                                      "NOM",
-                                      "EMAIL",
-                                      "TÉLÉPHONE",
-                                      "ADDRESSE",
-                                    ]),
+                                  datas: employeeService.users,
+                                  rowWidget: rowWidget(
+                                      context,
+                                      employeeService.users!,
+                                      employeeService.removeUser,
+                                      employeeService.setPageScreen),
+                                  rowWidgetMobile: rowWidgetMobile(
+                                      context,
+                                      employeeService.users!,
+                                      employeeService.removeUser,
+                                      employeeService.setPageScreen),
+                                  headersMobile: ["NOM", "EMAIL", "ADDRESSE"],
+                                  headers: [
+                                    "NOM",
+                                    "EMAIL",
+                                    "TÉLÉPHONE",
+                                    "ADDRESSE",
+                                  ],
+                                  assignUser: false,
+                                ),
                                 SizedBox(
                                   height: MySpacer.small,
                                 ),

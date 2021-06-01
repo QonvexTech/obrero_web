@@ -12,7 +12,9 @@ import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/widgets/mypicker.dart';
 
 class ProjectProvider extends ChangeNotifier {
-  Widget activePageScreen = ProjectList();
+  Widget activePageScreen = ProjectList(
+    assignUser: false,
+  );
   List<ProjectModel>? _projects;
   List<ProjectModel>? _projectsDateBase;
   List<ProjectModel> _tempProjects = [];

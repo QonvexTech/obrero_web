@@ -59,7 +59,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                           ? projectService.setPage
                           : customerService.setPage,
                       widget.fromPage == "project"
-                          ? ProjectList()
+                          ? ProjectList(
+                              assignUser: false,
+                            )
                           : CustomerList()),
                   Row(
                     children: [

@@ -85,30 +85,28 @@ class _CustomerListState extends State<CustomerList> {
                               child: Column(
                                 children: [
                                   AllTable(
-                                      datas: customerService.customers,
-                                      rowWidget: rowWidget(
-                                          context,
-                                          customerService.customers,
-                                          customerService.removeCustomer,
-                                          customerService.setPage),
-                                      rowWidgetMobile: rowWidgetMobile(
+                                    datas: customerService.customers,
+                                    rowWidget: rowWidget(
                                         context,
                                         customerService.customers,
                                         customerService.removeCustomer,
-                                        customerService.setPage,
-                                      ),
-                                      headersMobile: [
-                                        "NOM",
-                                        "EMAIL",
-                                        "STATUS"
-                                      ],
-                                      headers: [
-                                        "NOM",
-                                        "EMAIL",
-                                        "TÉLÉPHONE",
-                                        "ADDRESSE",
-                                        "STATUS"
-                                      ]),
+                                        customerService.setPage),
+                                    rowWidgetMobile: rowWidgetMobile(
+                                      context,
+                                      customerService.customers,
+                                      customerService.removeCustomer,
+                                      customerService.setPage,
+                                    ),
+                                    headersMobile: ["NOM", "EMAIL", "STATUS"],
+                                    headers: [
+                                      "NOM",
+                                      "EMAIL",
+                                      "TÉLÉPHONE",
+                                      "ADDRESSE",
+                                      "STATUS"
+                                    ],
+                                    assignUser: false,
+                                  ),
                                   SizedBox(
                                     height: MySpacer.small,
                                   ),

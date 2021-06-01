@@ -58,7 +58,9 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             context,
                             projectProvider.setPage,
                             widget.fromPage == "project"
-                                ? ProjectList()
+                                ? ProjectList(
+                                    assignUser: false,
+                                  )
                                 : CustomerList()),
                     Text(
                       projectProvider.projectOnDetails!.name!,

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
@@ -14,6 +15,11 @@ import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
 
 class ProjectList extends StatefulWidget {
+  final bool? assignUser;
+  final EmployeesModel? userToAssign;
+
+  const ProjectList({Key? key, required this.assignUser, this.userToAssign})
+      : super(key: key);
   @override
   _ProjectListState createState() => _ProjectListState();
 }
@@ -21,6 +27,8 @@ class ProjectList extends StatefulWidget {
 class _ProjectListState extends State<ProjectList> {
   @override
   void initState() {
+    print("user to assign ${widget.userToAssign}");
+
     Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
     super.initState();
   }
@@ -85,32 +93,33 @@ class _ProjectListState extends State<ProjectList> {
                       child: Column(
                         children: [
                           AllTable(
-                              datas: projectProvider.projects,
-                              rowWidget: rowWidget(
-                                  context,
-                                  projectProvider.projects,
-                                  projectProvider.removeProject,
-                                  projectProvider.setPage,
-                                  projectProvider),
-                              rowWidgetMobile: rowWidgetMobile(
-                                  context,
-                                  projectProvider.projects,
-                                  projectProvider.removeProject,
-                                  projectProvider.setPage,
-                                  projectProvider),
-                              headersMobile: [
-                                "NOM DU SITE",
-                                "OWNER",
-                                "ADDRESS"
-                              ],
-                              headers: [
-                                "NOM DU SITE",
-                                "OWNER",
-                                "ADDRESS",
-                                "AREA SIZE",
-                                "START DATE",
-                                "END DATE"
-                              ]),
+                            datas: projectProvider.projects,
+                            rowWidget: rowWidget(
+                                context,
+                                projectProvider.projects,
+                                projectProvider.removeProject,
+                                projectProvider.setPage,
+                                projectProvider,
+                                widget.assignUser!),
+                            rowWidgetMobile: rowWidgetMobile(
+                                context,
+                                projectProvider.projects,
+                                projectProvider.removeProject,
+                                projectProvider.setPage,
+                                projectProvider,
+                                widget.assignUser!,
+                                widget.userToAssign!),
+                            headersMobile: ["NOM DU SITE", "OWNER", "ADDRESS"],
+                            headers: [
+                              "NOM DU SITE",
+                              "OWNER",
+                              "ADDRESS",
+                              "AREA SIZE",
+                              "START DATE",
+                              "END DATE"
+                            ],
+                            assignUser: widget.assignUser,
+                          ),
                           SizedBox(
                             height: MySpacer.small,
                           ),
@@ -130,8 +139,14 @@ class _ProjectListState extends State<ProjectList> {
   }
 }
 
-List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage, ProjectProvider projectProvider) {
+List<TableRow> rowWidgetMobile(
+    BuildContext context,
+    List<ProjectModel> datas,
+    Function remove,
+    Function setPage,
+    ProjectProvider projectProvider,
+    bool assignUser,
+    EmployeesModel userModel) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -186,54 +201,110 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
               ),
             ))),
         TableCell(
-          child: PopupMenuButton(
-              padding: EdgeInsets.all(0),
-              offset: Offset(0, 40),
-              icon: Icon(
-                Icons.more_horiz_rounded,
-                color: Palette.drawerColor,
-              ),
-              itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.edit,
-                              color: Palette.drawerColor,
-                            ),
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                      backgroundColor:
-                                          Palette.contentBackground,
-                                      content: ProjectAddScreen(
-                                        projectToEdit: data,
-                                      )));
-                            },
+          verticalAlignment: TableCellVerticalAlignment.middle,
+          child: assignUser
+              ? Center(
+                  child: data.assigneeIds != null
+                      ? Container(
+                          child: data.assignees!.contains(userModel)
+                              ? MaterialButton(
+                                  child: Center(
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(child: Container()),
+                                        Icon(Icons.minimize_rounded),
+                                        SizedBox(width: MySpacer.small),
+                                        Text("Resign"),
+                                        Expanded(child: Container()),
+                                      ],
+                                    ),
+                                  ),
+                                  onPressed: () {})
+                              : MaterialButton(
+                                  child: Center(
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(child: Container()),
+                                        Icon(Icons.add_circle_outlined),
+                                        SizedBox(width: MySpacer.small),
+                                        Text("Assign"),
+                                        Expanded(child: Container()),
+                                      ],
+                                    ),
+                                  ),
+                                  onPressed: () {}))
+                      : Container(
+                          child: MaterialButton(
+                              child: Center(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(child: Container()),
+                                    Icon(Icons.add_circle_outlined),
+                                    SizedBox(width: MySpacer.small),
+                                    Text("Assign"),
+                                    Expanded(child: Container()),
+                                  ],
+                                ),
+                              ),
+                              onPressed: () {})))
+              : PopupMenuButton(
+                  padding: EdgeInsets.all(0),
+                  offset: Offset(0, 40),
+                  icon: Icon(
+                    Icons.more_horiz_rounded,
+                    color: Palette.drawerColor,
+                  ),
+                  itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Palette.drawerColor,
+                                ),
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                          backgroundColor:
+                                              Palette.contentBackground,
+                                          content: ProjectAddScreen(
+                                            projectToEdit: data,
+                                          )));
+                                },
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  remove(id: data.id);
+                                },
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Palette.drawerColor,
+                                ),
+                              )
+                            ],
                           ),
-                          IconButton(
-                            onPressed: () {
-                              remove(id: data.id);
-                            },
-                            icon: Icon(
-                              Icons.delete,
-                              color: Palette.drawerColor,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ]),
+                        ),
+                      ]),
         ),
       ])
   ];
 }
 
-List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage, ProjectProvider projectProvider) {
+List<TableRow> rowWidget(
+    BuildContext context,
+    List<ProjectModel> datas,
+    Function remove,
+    Function setPage,
+    ProjectProvider projectProvider,
+    bool assignUser) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -323,6 +394,17 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              assignUser
+                  ? IconButton(
+                      onPressed: () {
+                        print("Assign");
+                      },
+                      icon: Icon(
+                        Icons.add_circle_outlined,
+                        color: Palette.drawerColor,
+                      ),
+                    )
+                  : SizedBox(),
               IconButton(
                 onPressed: () {
                   showDialog(
