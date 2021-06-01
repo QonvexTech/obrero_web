@@ -46,7 +46,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
       width: size.width,
       height: size.height,
       constraints: BoxConstraints(maxWidth: 800, maxHeight: size.height / 1.8),
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(10),
       child: Form(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,9 +190,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                   bodyToUpdate.addAll({"address": value});
                 },
               ),
-              SizedBox(
-                height: MySpacer.small,
-              ),
 
               // Row(
               //   children: [
@@ -252,51 +249,81 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               // ),
             ],
           ))),
-          // const SizedBox(
-          //   height: MySpacer.small,
-          // ),
+          const SizedBox(
+            height: MySpacer.small,
+          ),
 
-          MaterialButton(
+          Container(
+            width: MediaQuery.of(context).size.width,
             height: 60,
-            minWidth: double.infinity,
-            color: Palette.drawerColor,
-            onPressed: () {
-              if (isEdit) {
-                bodyToUpdate
-                    .addAll({"user_id": widget.userToEdit!.id.toString()});
-                print(bodyToUpdate);
-                employeeService.updateUser(body: bodyToUpdate).whenComplete(() {
-                  setState(() {
-                    widget.userToEdit!.fname = fnameController.text;
-                    widget.userToEdit!.lname = lnameController.text;
-                    widget.userToEdit!.email = emailController.text;
-                    widget.userToEdit!.address = addressController.text;
-                    widget.userToEdit!.contactNumber =
-                        contactNumberController.text;
-                  });
-                  Navigator.pop(context);
-                });
-              } else {
-                EmployeesModel newEmployee = EmployeesModel(
-                  fname: fnameController.text,
-                  lname: lnameController.text,
-                  email: emailController.text,
-                  password: passwordController.text,
-                  address: addressController.text,
-                  picture: employeeService.base64Image != null
-                      ? employeeService.base64ImageEncoded
-                      : "",
-                  contactNumber: contactNumberController.text,
-                );
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black26)),
+                    child: MaterialButton(
+                      height: 60,
+                      minWidth: double.infinity,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Annuler",
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: MySpacer.medium),
+                Expanded(
+                    flex: 2,
+                    child: MaterialButton(
+                      height: 60,
+                      minWidth: double.infinity,
+                      color: Palette.drawerColor,
+                      onPressed: () {
+                        if (isEdit) {
+                          bodyToUpdate.addAll(
+                              {"user_id": widget.userToEdit!.id.toString()});
+                          print(bodyToUpdate);
+                          employeeService
+                              .updateUser(body: bodyToUpdate)
+                              .whenComplete(() {
+                            setState(() {
+                              widget.userToEdit!.fname = fnameController.text;
+                              widget.userToEdit!.lname = lnameController.text;
+                              widget.userToEdit!.email = emailController.text;
+                              widget.userToEdit!.address =
+                                  addressController.text;
+                              widget.userToEdit!.contactNumber =
+                                  contactNumberController.text;
+                            });
+                            Navigator.pop(context);
+                          });
+                        } else {
+                          EmployeesModel newEmployee = EmployeesModel(
+                            fname: fnameController.text,
+                            lname: lnameController.text,
+                            email: emailController.text,
+                            password: passwordController.text,
+                            address: addressController.text,
+                            picture: employeeService.base64Image != null
+                                ? employeeService.base64ImageEncoded
+                                : "",
+                            contactNumber: contactNumberController.text,
+                          );
 
-                employeeService
-                    .createUser(newEmployee)
-                    .whenComplete(() => Navigator.pop(context));
-              }
-            },
-            child: Text(
-              isEdit ? "Save Edit" : "Caréer",
-              style: TextStyle(color: Colors.white),
+                          employeeService
+                              .createUser(newEmployee)
+                              .whenComplete(() => Navigator.pop(context));
+                        }
+                      },
+                      child: Text(
+                        isEdit ? "Save Edit" : "Caréer",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )),
+              ],
             ),
           )
 

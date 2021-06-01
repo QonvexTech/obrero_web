@@ -233,39 +233,67 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
               // ),
             ],
           ))),
-          MaterialButton(
-            height: 60,
-            minWidth: double.infinity,
-            color: Palette.drawerColor,
-            onPressed: () {
-              if (isEdit) {
-                setState(() {
-                  bodyToEdit
-                      .addAll({"id": widget.customerToEdit!.id.toString()});
-                  customerService
-                      .updateCustomer(bodyToEdit: bodyToEdit)
-                      .whenComplete(() => Navigator.pop(context));
-                });
-              } else {
-                CustomerModel newCustomer = CustomerModel(
-                  fname: fnameController.text,
-                  lname: lnameController.text,
-                  email: emailController.text,
-                  adress: addressController.text,
-                  picture: customerService.base64Image != null
-                      ? customerService.base64ImageEncoded
-                      : "",
-                  contactNumber: contactNumberController.text,
-                );
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 70,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black26)),
+                    child: MaterialButton(
+                      height: 60,
+                      minWidth: double.infinity,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Annuler",
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: MySpacer.medium),
+                Expanded(
+                  flex: 2,
+                  child: MaterialButton(
+                    height: 60,
+                    minWidth: double.infinity,
+                    color: Palette.drawerColor,
+                    onPressed: () {
+                      if (isEdit) {
+                        setState(() {
+                          bodyToEdit.addAll(
+                              {"id": widget.customerToEdit!.id.toString()});
+                          customerService
+                              .updateCustomer(bodyToEdit: bodyToEdit)
+                              .whenComplete(() => Navigator.pop(context));
+                        });
+                      } else {
+                        CustomerModel newCustomer = CustomerModel(
+                          fname: fnameController.text,
+                          lname: lnameController.text,
+                          email: emailController.text,
+                          adress: addressController.text,
+                          picture: customerService.base64Image != null
+                              ? customerService.base64ImageEncoded
+                              : "",
+                          contactNumber: contactNumberController.text,
+                        );
 
-                customerService
-                    .createCustomer(newCustomer: newCustomer)
-                    .whenComplete(() => Navigator.pop(context));
-              }
-            },
-            child: Text(
-              isEdit ? "Save Edit" : "Créer",
-              style: TextStyle(color: Colors.white),
+                        customerService
+                            .createCustomer(newCustomer: newCustomer)
+                            .whenComplete(() => Navigator.pop(context));
+                      }
+                    },
+                    child: Text(
+                      isEdit ? "Save Edit" : "Créer",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             ),
           )
         ],
