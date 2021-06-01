@@ -29,8 +29,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         context,
         Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
       );
-      Provider.of<DashboardService>(context, listen: false)
-          .initGetId(projectProvider.projectsDateBase);
     });
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -227,7 +225,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 myLocationButtonEnabled: true,
                                 rotateGesturesEnabled: true,
                                 initialCameraPosition: CameraPosition(
-                                  target: initialPositon!,
+                                  target: initialPositon,
                                   zoom: mapService.zoom,
                                 ),
                                 buildingsEnabled: true,

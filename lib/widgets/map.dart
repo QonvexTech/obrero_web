@@ -45,7 +45,7 @@ class _MapScreenState extends State<MapScreen> {
                   myLocationButtonEnabled: true,
                   rotateGesturesEnabled: true,
                   initialCameraPosition: CameraPosition(
-                    target: initialPositon!,
+                    target: initialPositon,
                     zoom: mapService.zoom,
                   ),
                   buildingsEnabled: true,

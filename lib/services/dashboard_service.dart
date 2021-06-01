@@ -30,7 +30,7 @@ class DashboardService extends ChangeNotifier {
   initGetId(List<ProjectModel> projects) async {
     if (projects.length > 0) {
       _selectedProject = projects[0].id!;
-      initialPositon = projects[0].coordinates;
+      initialPositon = projects[0].coordinates!;
     } else {
       initialPositon = await _getPosition();
     }

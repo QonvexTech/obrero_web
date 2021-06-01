@@ -324,7 +324,7 @@ extension CapExtension on String {
 }
 
 //Location
-LatLng? initialPositon;
+LatLng initialPositon = LatLng(48.864716, 2.349014);
 
 //DATES
 List months = [
