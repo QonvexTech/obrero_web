@@ -60,26 +60,14 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             widget.fromPage == "project"
                                 ? ProjectList()
                                 : CustomerList()),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                projectProvider.projectOnDetails!.name!,
-                                style: Theme.of(context).textTheme.headline5,
-                              ),
-                              Text(
-                                "Planifié du ${projectProvider.projectOnDetails!.startDate.toString().split(" ")[0]} au ${projectProvider.projectOnDetails!.endDate.toString().split(" ")[0]} ",
-                                style: Theme.of(context).textTheme.headline6,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                      ],
+                    Text(
+                      projectProvider.projectOnDetails!.name!,
+                      style: Theme.of(context).textTheme.headline5,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      "Planifié du ${projectProvider.projectOnDetails!.startDate.toString().split(" ")[0]} au ${projectProvider.projectOnDetails!.endDate.toString().split(" ")[0]} ",
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(
                       height: MySpacer.large,

@@ -268,18 +268,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               child: CircularProgressIndicator(),
             )
           : projectProvider.projectsDateBase.length <= 0
-              ? Container(
-                  width: 200,
-                  height: 500,
-                  color: Palette.contentBackground,
+              ? Expanded(
+                  // color: Palette.contentBackground,
                   child: EmptyContainer(
-                    addingFunc: ProjectAddScreen(),
-                    title: "Aucun projet cette fois",
-                    description:
-                        "Il est temps de créer un projet\n choisissez le bon client et le bon emplacement pour votre projet.",
-                    buttonText: "Créer",
-                    showButton: true,
-                  ))
+                  addingFunc: ProjectAddScreen(),
+                  title: "Aucun projet cette fois",
+                  description:
+                      "Il est temps de créer un projet\n choisissez le bon client et le bon emplacement pour votre projet.",
+                  buttonText: "Créer",
+                  showButton: true,
+                ))
               : Container(
                   color: Palette.contentBackground,
                   child: ListView.builder(

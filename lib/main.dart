@@ -5,7 +5,6 @@ import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/firebase_message.dart';
-import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/message_service.dart';
 import 'package:uitemplate/services/profile_service.dart';
 import 'package:uitemplate/services/project/project_add_service.dart';

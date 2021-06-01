@@ -4,7 +4,6 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
-import 'package:uitemplate/services/notification_services.dart';
 import 'package:uitemplate/view_model/logs/log_api_call.dart';
 import '../config/global.dart';
 

@@ -163,10 +163,11 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextButton(
                 onPressed: () {
-                  print("customer details");
                   setPage(
                       page: CustomerDetails(
-                          customer: data.owner, fromPage: "customer"));
+                    customer: data.owner,
+                    fromPage: "project",
+                  ));
                 },
                 child: Text(
                   "${data.owner!.fname} ${data.owner!.lname}",
