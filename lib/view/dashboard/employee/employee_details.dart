@@ -1,6 +1,7 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
@@ -11,7 +12,6 @@ import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
-import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/adding_button.dart';
 import 'package:uitemplate/widgets/back_button.dart';
@@ -170,6 +170,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                             ),
                             //TODO: Assign projext
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   "Sites Attribués",
@@ -208,9 +209,15 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                               in employeeSevice
                                                   .employeeProjects!)
                                             Container(
+                                              padding: EdgeInsets.all(8),
+                                              margin: EdgeInsets.symmetric(
+                                                  vertical: 5),
+                                              color: Colors.white,
                                               width: MediaQuery.of(context)
                                                   .size
                                                   .width,
+                                              constraints: BoxConstraints(
+                                                  minHeight: 150),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -218,9 +225,6 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                   Text(
                                                     project.userProject!.name!,
                                                     style: boldText,
-                                                  ),
-                                                  SizedBox(
-                                                    height: MySpacer.small,
                                                   ),
                                                   Row(
                                                     mainAxisAlignment:
@@ -239,11 +243,36 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                             Text("Description",
                                                                 style:
                                                                     transHeader),
-                                                            Text(
+                                                            ReadMoreText(
                                                               project
                                                                   .userProject!
                                                                   .description!,
-                                                            ),
+                                                              trimLines: 2,
+                                                              trimLength: 290,
+                                                              trimMode: TrimMode
+                                                                  .Length,
+                                                              trimCollapsedText:
+                                                                  'Montre plus',
+                                                              trimExpandedText:
+                                                                  'Montrer moins',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                              moreStyle: TextStyle(
+                                                                  color: Palette
+                                                                      .drawerColor,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                              lessStyle: TextStyle(
+                                                                  color: Palette
+                                                                      .drawerColor,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            )
                                                           ],
                                                         ),
                                                       ),
@@ -315,26 +344,14 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                       ),
                                                     ],
                                                   ),
-                                                  Container(
-                                                      height: 30,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 30),
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                      child: Image.asset(
-                                                        "assets/images/dashLine.png",
-                                                      )),
-                                                  SizedBox(
-                                                    height: MySpacer.large,
-                                                  )
                                                 ],
                                               ),
                                             ),
                                         ],
                                       ),
+                            SizedBox(
+                              height: 150,
+                            )
                           ],
                         ),
                       ),

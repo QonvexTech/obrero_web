@@ -18,7 +18,8 @@ class ProjectList extends StatefulWidget {
   final bool? assignUser;
   final EmployeesModel? userToAssign;
 
-  const ProjectList({Key? key, required this.assignUser, this.userToAssign})
+  const ProjectList(
+      {Key? key, required this.assignUser, required this.userToAssign})
       : super(key: key);
   @override
   _ProjectListState createState() => _ProjectListState();

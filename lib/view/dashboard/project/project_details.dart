@@ -60,6 +60,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             widget.fromPage == "project"
                                 ? ProjectList(
                                     assignUser: false,
+                                    userToAssign: null,
                                   )
                                 : CustomerList()),
                     Text(
