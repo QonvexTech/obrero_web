@@ -51,15 +51,15 @@ class FireBase extends ChangeNotifier {
         // print(messages);
       });
 
-      // on open
-      FirebaseMessaging.onMessageOpenedApp.listen((event) {
-        print("MESSAGE OPENED :${event.notification!.title}");
-      });
+      // // on open
+      // FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      //   print("MESSAGE OPENED :${event.notification!.title}");
+      // });
 
-      //background
-      FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-        print('Handling a background message ${message.messageId}');
-      });
+      // //background
+      // FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
+      //   print('Handling a background message ${message.messageId}');
+      // });
     } catch (e) {
       print(e);
     }

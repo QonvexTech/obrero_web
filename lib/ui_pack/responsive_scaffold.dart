@@ -51,9 +51,7 @@ class ResponsiveScaffold extends StatefulWidget {
           SubDrawerItems(
               icon: Icons.all_out, title: "General", content: GeneralSettings())
         ],
-        content: Container(
-          color: Colors.red,
-        )),
+        content: Container()),
   ];
 
   @override
@@ -91,6 +89,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   double dragStartAt = 0.0;
   bool showDrawerText = true;
   bool _showDrawer = false;
+  bool activeSettings = false;
   DrawerItem? _selectedDrawerItem;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
 
@@ -177,6 +176,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
       drawer: MediaQuery.of(context).size.width > 900
           ? null
           : Drawer(
+              // MOBILE
               child: Container(
                 color: Palette.drawerColor,
                 width: 500,
@@ -225,10 +225,11 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                               onPressed: item.subItems != null &&
                                       item.subItems!.length > 0
                                   ? () {
-                                      Navigator.of(context).pop(null);
+                                      print("clicl");
                                       setState(() {
                                         if (_selectedDrawerItem == item) {
                                           _selectedDrawerItem = null;
+                                          activeSettings = true;
                                         } else {
                                           _selectedDrawerItem = item;
                                         }
@@ -236,6 +237,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                     }
                                   : item.content != null
                                       ? () {
+                                          print("clicl");
+                                          activeSettings = false;
                                           Navigator.of(context).pop(null);
                                           setState(() {
                                             scaff.selectedContent =
@@ -265,9 +268,11 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                   ),
                                   if ((item.subItems != null &&
                                       item.subItems!.length > 0)) ...{
-                                    Icon(_selectedDrawerItem == item
-                                        ? Icons.keyboard_arrow_up
-                                        : Icons.keyboard_arrow_down)
+                                    Icon(
+                                        _selectedDrawerItem == item
+                                            ? Icons.keyboard_arrow_up
+                                            : Icons.keyboard_arrow_down,
+                                        color: Colors.white),
                                   }
                                 ],
                               ),
@@ -278,7 +283,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                             for (var sub_items in item.subItems!) ...{
                               AnimatedContainer(
                                   width: double.infinity,
-                                  color: Palette.contentBackground,
+                                  color: Palette.drawerColor,
                                   height: _selectedDrawerItem == item ? 60 : 0,
                                   duration: Duration(
                                       milliseconds: 100 *
@@ -291,6 +296,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                             setState(() {
                                               scaff.selectedContent =
                                                   sub_items.content;
+                                              _selectedDrawerItem = item;
+                                              activeSettings = true;
                                             });
                                           }
                                         : null,
@@ -299,14 +306,17 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                     child: Row(
                                       children: [
                                         if (_selectedDrawerItem == item) ...{
-                                          Icon(sub_items.icon),
+                                          Icon(sub_items.icon,
+                                              color: Colors.white)
                                         },
                                         if (sub_items.title != null) ...{
                                           const SizedBox(
                                             width: 10,
                                           ),
                                           Expanded(
-                                            child: Text(sub_items.title!),
+                                            child: Text(sub_items.title!,
+                                                style: TextStyle(
+                                                    color: Colors.white)),
                                           )
                                         }
                                       ],
@@ -395,6 +405,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                             ))
                         : PopupMenuButton(
                             onSelected: (val) async {
+                              activeSettings = true;
                               if (val == 1) {
                                 setState(() {
                                   scaff.selectedContent = GeneralSettings();
@@ -495,7 +506,11 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                       color: scaff.selectedContent.toString() ==
                                               item.content.toString()
                                           ? Colors.white
-                                          : Palette.drawerColor,
+                                          : item.content.toString() ==
+                                                      "Container" &&
+                                                  activeSettings
+                                              ? Colors.white38
+                                              : Palette.drawerColor,
                                       width: double.infinity,
                                       height: 60,
                                       child: item.subItems != null &&
@@ -505,13 +520,19 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                               icon: Icon(
                                                 item.icon,
                                                 color: scaff.selectedContent
-                                                            .toString() ==
-                                                        item.content.toString()
+                                                                .toString() ==
+                                                            item.content
+                                                                .toString() ||
+                                                        (item.content
+                                                                    .toString() ==
+                                                                "Container" &&
+                                                            activeSettings)
                                                     ? Palette.drawerColor
                                                     : Colors.white,
                                               ),
                                               onSelected: (value) {
                                                 setState(() {
+                                                  activeSettings = true;
                                                   scaff.selectedContent = value;
                                                 });
                                               },
@@ -567,6 +588,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                           setState(() {
                                                             scaff.selectedContent =
                                                                 item.content;
+                                                            activeSettings =
+                                                                false;
                                                           });
                                                         }
                                                       : null,
@@ -647,6 +670,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                       setState(() {
                                                         scaff.selectedContent =
                                                             sub_items.content;
+                                                        activeSettings = true;
                                                       });
                                                     }
                                                   : null,

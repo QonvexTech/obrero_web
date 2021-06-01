@@ -22,12 +22,13 @@ class LogService {
   }
 
   //update from firebase
-  void append({required LogModel data}) {
+  void append({required LogModel data}) async {
     this.current!.add(data);
     this.current!.sort((a, b) =>
         DateTime.parse(b.created_at!).compareTo(DateTime.parse(a.created_at!)));
     this._logs.add(this.current!);
     rxNotificationService.updateMessage();
+    await logApiCall.fetchServer(); // fast fixed
   }
 
   // var _newMessage = BehaviorSubject<bool>.seeded(false);
