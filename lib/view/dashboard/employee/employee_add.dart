@@ -35,7 +35,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
       contactNumberController.text = widget.userToEdit!.contactNumber!;
       isEdit = true;
     }
-
     super.initState();
   }
 

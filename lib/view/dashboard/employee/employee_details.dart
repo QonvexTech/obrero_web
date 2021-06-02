@@ -247,7 +247,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                               project
                                                                   .userProject!
                                                                   .description!,
-                                                              trimLines: 2,
+                                                              trimLines: 1,
                                                               trimLength: 290,
                                                               trimMode: TrimMode
                                                                   .Length,

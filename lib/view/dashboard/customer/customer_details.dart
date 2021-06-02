@@ -1,6 +1,7 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
@@ -175,93 +176,124 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                               children: [
                                 for (ProjectModel project
                                     in customerService.customerProject!)
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        project.name!,
-                                        style: boldText,
-                                      ),
-                                      SizedBox(
-                                        height: MySpacer.small,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            flex: 2,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Description",
-                                                    style: transHeader),
-                                                Text(project.description!),
-                                              ],
+                                  Container(
+                                    padding: EdgeInsets.all(8),
+                                    margin: EdgeInsets.symmetric(vertical: 5),
+                                    color: Colors.white,
+                                    width: MediaQuery.of(context).size.width,
+                                    constraints: BoxConstraints(minHeight: 100),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          project.name!,
+                                          style: boldText,
+                                        ),
+                                        SizedBox(
+                                          height: MySpacer.small,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text("Description",
+                                                      style: transHeader),
+                                                  ReadMoreText(
+                                                    project.description!,
+                                                    trimLines: 2,
+                                                    trimLength: 290,
+                                                    trimMode: TrimMode.Length,
+                                                    trimCollapsedText:
+                                                        'Montre plus',
+                                                    trimExpandedText:
+                                                        'Montrer moins',
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                    moreStyle: TextStyle(
+                                                        color:
+                                                            Palette.drawerColor,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                    lessStyle: TextStyle(
+                                                        color:
+                                                            Palette.drawerColor,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Address",
-                                                    style: transHeader),
-                                                Text(
-                                                  project.address ??
-                                                      "${project.coordinates!.latitude},${project.coordinates!.longitude}",
-                                                  style: TextStyle(
-                                                      color: Colors.green,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
+                                            SizedBox(
+                                              width: MySpacer.medium,
                                             ),
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text("Status",
-                                                    style: transHeader),
-                                                Consumer<ColorChangeService>(
-                                                  builder:
-                                                      (context, data, child) {
-                                                    return Text(
-                                                      statusTitles[
-                                                          project.status!],
-                                                      style: TextStyle(
-                                                          color: data
-                                                                  .statusColors[
-                                                              project.status!]),
-                                                    );
-                                                  },
-                                                ),
-                                              ],
+                                            Container(
+                                              width: 300,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text("Address",
+                                                          style: transHeader),
+                                                      Text(
+                                                        project.address ??
+                                                            "${project.coordinates!.latitude},${project.coordinates!.longitude}",
+                                                        style: TextStyle(
+                                                            color: Colors.green,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height: MySpacer.medium,
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text("Status",
+                                                          style: transHeader),
+                                                      Consumer<
+                                                          ColorChangeService>(
+                                                        builder: (context, data,
+                                                            child) {
+                                                          return Text(
+                                                            statusTitles[project
+                                                                .status!],
+                                                            style: TextStyle(
+                                                                color: data
+                                                                        .statusColors[
+                                                                    project
+                                                                        .status!]),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                      Container(
-                                          height: 30,
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 20),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Image.asset(
-                                              "assets/images/dashLine.png")),
-                                      SizedBox(
-                                        height: MySpacer.large,
-                                      )
-                                    ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                               ],
                             ),
