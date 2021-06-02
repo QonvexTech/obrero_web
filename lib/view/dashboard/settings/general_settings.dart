@@ -33,6 +33,7 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
     final double _scrh = MediaQuery.of(context).size.height;
     ProfileService profileService = Provider.of<ProfileService>(context);
     return Container(
+      padding: EdgeInsets.all(20),
       color: Palette.contentBackground,
       child: Stack(
         children: [
@@ -45,33 +46,11 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        width: _scrw * 0.5,
-                        height: _scrh * .3,
-                        child: Center(
-                            child: MaterialButton(
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () async {
-                            await FilePicker.platform.pickFiles(
-                                allowMultiple: false,
-                                allowedExtensions: [
-                                  'jpg',
-                                  'jpeg',
-                                  'png'
-                                ]).then((pickedFile) {
-                              if (pickedFile != null) {
-                                profileService.base64Image =
-                                    pickedFile.files[0].bytes;
-                              }
-                            });
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10000)),
-                          minWidth: _scrh * .26,
-                          height: _scrh * .26,
-                          child: Container(
-                            width: _scrh * .26,
-                            height: _scrh * .26,
+                      Stack(
+                        children: [
+                          Container(
+                            width: _scrh * .15,
+                            height: _scrh * .15,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10000),
                                 color: Colors.grey.shade100,
@@ -98,7 +77,37 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                                     scale:
                                         profileData?.picture == null ? 5 : 1)),
                           ),
-                        )),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: MaterialButton(
+                                color: Palette.drawerColor,
+                                padding: const EdgeInsets.all(0),
+                                onPressed: () async {
+                                  await FilePicker.platform.pickFiles(
+                                      allowMultiple: false,
+                                      allowedExtensions: [
+                                        'jpg',
+                                        'jpeg',
+                                        'png'
+                                      ]).then((pickedFile) {
+                                    if (pickedFile != null) {
+                                      profileService.base64Image =
+                                          pickedFile.files[0].bytes;
+                                    }
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10000)),
+                                minWidth: 50,
+                                height: 50,
+                                child: Icon(Icons.camera_alt,
+                                    color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: MySpacer.medium,
                       ),
                       Expanded(
                           child: Column(

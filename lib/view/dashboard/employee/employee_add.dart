@@ -51,64 +51,73 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            "Ajouter un Employee",
+            style: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: MySpacer.large,
+          ),
           Expanded(
               child: Scrollbar(
                   child: ListView(
             children: [
-              Text(
-                "Ajouter un Employee",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: MySpacer.large,
-              ),
-              Container(
-                child: Center(
-                    child: MaterialButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () async {
-                    await FilePicker.platform.pickFiles(
-                        allowMultiple: false,
-                        allowedExtensions: [
-                          'jpg',
-                          'jpeg',
-                          'png'
-                        ]).then((pickedFile) {
-                      if (pickedFile != null) {
-                        employeeService.base64Image = pickedFile.files[0].bytes;
-                      }
-                    });
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10000)),
-                  minWidth: MediaQuery.of(context).size.height * .15,
-                  height: MediaQuery.of(context).size.height * .15,
-                  child: Container(
-                    width: MediaQuery.of(context).size.height * .15,
-                    height: MediaQuery.of(context).size.height * .15,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10000),
-                        color: Colors.grey.shade100,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade400,
-                            offset: Offset(3, 3),
-                            blurRadius: 2,
-                          )
-                        ],
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            alignment: AlignmentDirectional.center,
-                            image: tempImageProvider(
-                                file: employeeService.base64Image,
-                                netWorkImage: widget.userToEdit?.picture,
-                                defaultImage: 'icons/admin_icon.png'),
-                            scale: 1)),
-                  ),
-                )),
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.height * .15,
+                      height: MediaQuery.of(context).size.height * .15,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10000),
+                          color: Colors.grey.shade100,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade400,
+                              offset: Offset(3, 3),
+                              blurRadius: 2,
+                            )
+                          ],
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              alignment: AlignmentDirectional.center,
+                              image: tempImageProvider(
+                                  file: employeeService.base64Image,
+                                  netWorkImage: widget.userToEdit?.picture,
+                                  defaultImage: 'icons/admin_icon.png'),
+                              scale: 1)),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: MaterialButton(
+                          color: Palette.drawerColor,
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () async {
+                            await FilePicker.platform.pickFiles(
+                                allowMultiple: false,
+                                allowedExtensions: [
+                                  'jpg',
+                                  'jpeg',
+                                  'png'
+                                ]).then((pickedFile) {
+                              if (pickedFile != null) {
+                                employeeService.base64Image =
+                                    pickedFile.files[0].bytes;
+                              }
+                            });
+                          },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10000)),
+                          minWidth: 50,
+                          height: 50,
+                          child: Icon(Icons.camera_alt, color: Colors.white)),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: MySpacer.large,

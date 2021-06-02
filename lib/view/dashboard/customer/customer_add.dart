@@ -69,47 +69,57 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
             children: [
               Container(
                 child: Center(
-                    child: MaterialButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () async {
-                    await FilePicker.platform.pickFiles(
-                        allowMultiple: false,
-                        allowedExtensions: [
-                          'jpg',
-                          'jpeg',
-                          'png'
-                        ]).then((pickedFile) {
-                      if (pickedFile != null) {
-                        customerService.base64Image = pickedFile.files[0].bytes;
-                      }
-                    });
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10000)),
-                  minWidth: MediaQuery.of(context).size.height * .15,
-                  height: MediaQuery.of(context).size.height * .15,
-                  child: Container(
-                    width: MediaQuery.of(context).size.height * .15,
-                    height: MediaQuery.of(context).size.height * .15,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10000),
-                        color: Colors.grey.shade100,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade400,
-                            offset: Offset(3, 3),
-                            blurRadius: 2,
-                          )
-                        ],
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            alignment: AlignmentDirectional.center,
-                            image: tempImageProvider(
-                                file: customerService.base64Image,
-                                netWorkImage: widget.customerToEdit?.picture,
-                                defaultImage: 'icons/admin_icon.png'),
-                            scale: 1)),
-                  ),
+                    child: Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.height * .15,
+                      height: MediaQuery.of(context).size.height * .15,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10000),
+                          color: Colors.grey.shade100,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade400,
+                              offset: Offset(3, 3),
+                              blurRadius: 2,
+                            )
+                          ],
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              alignment: AlignmentDirectional.center,
+                              image: tempImageProvider(
+                                  file: customerService.base64Image,
+                                  netWorkImage: widget.customerToEdit?.picture,
+                                  defaultImage: 'icons/admin_icon.png'),
+                              scale: 1)),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: MaterialButton(
+                          color: Palette.drawerColor,
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () async {
+                            await FilePicker.platform.pickFiles(
+                                allowMultiple: false,
+                                allowedExtensions: [
+                                  'jpg',
+                                  'jpeg',
+                                  'png'
+                                ]).then((pickedFile) {
+                              if (pickedFile != null) {
+                                customerService.base64Image =
+                                    pickedFile.files[0].bytes;
+                              }
+                            });
+                          },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10000)),
+                          minWidth: 50,
+                          height: 50,
+                          child: Icon(Icons.camera_alt, color: Colors.white)),
+                    ),
+                  ],
                 )),
               ),
               SizedBox(
