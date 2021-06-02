@@ -8,6 +8,7 @@ import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
@@ -60,7 +61,6 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             widget.fromPage == "project"
                                 ? ProjectList(
                                     assignUser: false,
-                                    userToAssign: null,
                                   )
                                 : CustomerList()),
                     Text(
@@ -498,30 +498,57 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                   const EdgeInsets.symmetric(horizontal: 10),
                               children:
                                   List.generate(warnings()!.length, (index) {
-                                return Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.notification_important_rounded,
-                                          color: Colors.grey,
+                                return Stack(
+                                  children: [
+                                    Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons
+                                                  .notification_important_rounded,
+                                              color: Colors.grey,
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: ListTile(
+                                                title: Text(
+                                                    "${warnings()![index].title}"),
+                                                subtitle: Text(
+                                                    "${warnings()![index].body}"),
+                                              ),
+                                            )
+                                          ],
                                         ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: ListTile(
-                                            title: Text(
-                                                "${warnings()![index].title}"),
-                                            subtitle: Text(
-                                                "${warnings()![index].body}"),
-                                          ),
-                                        )
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                    Consumer<ColorChangeService>(
+                                      builder: (context, data, child) {
+                                        return Positioned(
+                                            right: 10,
+                                            top: 10,
+                                            child: Container(
+                                              width: 100,
+                                              height: 20,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.grey,
+                                                  // color: data.statusColors[
+                                                  //     int.parse(
+                                                  //         warnings()![index]
+                                                  //             .type!)],
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10)),
+                                              child: Text(
+                                                  "${warnings()![index].body!}"),
+                                            ));
+                                      },
+                                    ),
+                                  ],
                                 );
                               }),
                             ),

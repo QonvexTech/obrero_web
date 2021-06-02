@@ -7,17 +7,17 @@ class LogModel {
   int? data_id;
   String? type;
   String? created_at;
-  LogModel({
-    required this.id,
-    required this.title,
-    required this.body,
-    required this.sender_id,
-    required this.seen,
-    required this.data_id,
-    required this.type,
-    required this.created_at
-  });
+  LogModel(
+      {required this.id,
+      required this.title,
+      required this.body,
+      required this.sender_id,
+      required this.seen,
+      required this.data_id,
+      required this.type,
+      required this.created_at});
   LogModel.fromJson(Map<String, dynamic> json) {
+    print("DATAS : $json");
     this.id = json["id"];
     this.title = json["title"];
     this.body = json["body"];

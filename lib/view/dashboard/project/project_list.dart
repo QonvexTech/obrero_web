@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
@@ -16,11 +15,11 @@ import 'package:uitemplate/widgets/tablePagination.dart';
 
 class ProjectList extends StatefulWidget {
   final bool? assignUser;
-  final EmployeesModel? userToAssign;
 
-  const ProjectList(
-      {Key? key, required this.assignUser, required this.userToAssign})
-      : super(key: key);
+  const ProjectList({
+    Key? key,
+    required this.assignUser,
+  }) : super(key: key);
   @override
   _ProjectListState createState() => _ProjectListState();
 }
@@ -28,8 +27,6 @@ class ProjectList extends StatefulWidget {
 class _ProjectListState extends State<ProjectList> {
   @override
   void initState() {
-    print("user to assign ${widget.userToAssign}");
-
     Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
     super.initState();
   }
@@ -103,13 +100,13 @@ class _ProjectListState extends State<ProjectList> {
                                 projectProvider,
                                 widget.assignUser!),
                             rowWidgetMobile: rowWidgetMobile(
-                                context,
-                                projectProvider.projects,
-                                projectProvider.removeProject,
-                                projectProvider.setPage,
-                                projectProvider,
-                                widget.assignUser!,
-                                widget.userToAssign!),
+                              context,
+                              projectProvider.projects,
+                              projectProvider.removeProject,
+                              projectProvider.setPage,
+                              projectProvider,
+                              widget.assignUser!,
+                            ),
                             headersMobile: ["NOM DU SITE", "OWNER", "ADDRESS"],
                             headers: [
                               "NOM DU SITE",
@@ -141,13 +138,13 @@ class _ProjectListState extends State<ProjectList> {
 }
 
 List<TableRow> rowWidgetMobile(
-    BuildContext context,
-    List<ProjectModel> datas,
-    Function remove,
-    Function setPage,
-    ProjectProvider projectProvider,
-    bool assignUser,
-    EmployeesModel userModel) {
+  BuildContext context,
+  List<ProjectModel> datas,
+  Function remove,
+  Function setPage,
+  ProjectProvider projectProvider,
+  bool assignUser,
+) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -205,54 +202,21 @@ List<TableRow> rowWidgetMobile(
           verticalAlignment: TableCellVerticalAlignment.middle,
           child: assignUser
               ? Center(
-                  child: data.assigneeIds != null
-                      ? Container(
-                          child: data.assignees!.contains(userModel)
-                              ? MaterialButton(
-                                  child: Center(
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Expanded(child: Container()),
-                                        Icon(Icons.minimize_rounded),
-                                        SizedBox(width: MySpacer.small),
-                                        Text("Resign"),
-                                        Expanded(child: Container()),
-                                      ],
-                                    ),
-                                  ),
-                                  onPressed: () {})
-                              : MaterialButton(
-                                  child: Center(
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Expanded(child: Container()),
-                                        Icon(Icons.add_circle_outlined),
-                                        SizedBox(width: MySpacer.small),
-                                        Text("Assign"),
-                                        Expanded(child: Container()),
-                                      ],
-                                    ),
-                                  ),
-                                  onPressed: () {}))
-                      : Container(
-                          child: MaterialButton(
-                              child: Center(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Expanded(child: Container()),
-                                    Icon(Icons.add_circle_outlined),
-                                    SizedBox(width: MySpacer.small),
-                                    Text("Assign"),
-                                    Expanded(child: Container()),
-                                  ],
-                                ),
-                              ),
-                              onPressed: () {})))
+                  child: Container(
+                      child: MaterialButton(
+                          child: Center(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(child: Container()),
+                                Icon(Icons.add_circle_outlined),
+                                SizedBox(width: MySpacer.small),
+                                Text("Assign"),
+                                Expanded(child: Container()),
+                              ],
+                            ),
+                          ),
+                          onPressed: () {})))
               : PopupMenuButton(
                   padding: EdgeInsets.all(0),
                   offset: Offset(0, 40),

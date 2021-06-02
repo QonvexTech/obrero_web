@@ -19,7 +19,6 @@ class ProjectListAssign extends StatelessWidget {
         children: [
           ProjectList(
             assignUser: true,
-            userToAssign: userId,
           ),
           IconButton(
               icon: Icon(

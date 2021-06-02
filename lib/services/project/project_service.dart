@@ -14,7 +14,6 @@ import 'package:uitemplate/widgets/mypicker.dart';
 class ProjectProvider extends ChangeNotifier {
   Widget activePageScreen = ProjectList(
     assignUser: false,
-    userToAssign: null,
   );
   List<ProjectModel>? _projects;
   List<ProjectModel>? _projectsDateBase;
