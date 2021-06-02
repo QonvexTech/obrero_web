@@ -47,336 +47,359 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         color: Palette.contentBackground,
-        child: AdaptiveContainer(children: [
-          AdaptiveItem(
-            content: Container(
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  backButton(
-                      context,
-                      widget.fromPage == "project"
-                          ? projectService.setPage
-                          : customerService.setPage,
-                      widget.fromPage == "project"
-                          ? ProjectList(
-                              assignUser: false,
-                            )
-                          : CustomerList()),
-                  Row(
+        child: AdaptiveContainer(
+            physics:
+                ClampingScrollPhysics(parent: NeverScrollableScrollPhysics()),
+            children: [
+              AdaptiveItem(
+                height: MediaQuery.of(context).size.height,
+                content: Container(
+                  padding: EdgeInsets.all(20),
+                  child: ListView(
+                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.height * .15,
-                        height: MediaQuery.of(context).size.height * .15,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10000),
-                            color: Colors.grey.shade100,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade400,
-                                offset: Offset(3, 3),
-                                blurRadius: 2,
-                              )
-                            ],
-                            image: DecorationImage(
-                                fit: widget.customer!.picture == null
-                                    ? BoxFit.scaleDown
-                                    : BoxFit.cover,
-                                alignment: widget.customer!.picture == null
-                                    ? AlignmentDirectional.bottomCenter
-                                    : AlignmentDirectional.center,
-                                image: fetchImage(
-                                    netWorkImage: widget.customer?.picture),
-                                scale:
-                                    widget.customer!.picture == null ? 5 : 1)),
-                      ),
-                      SizedBox(
-                        width: MySpacer.medium,
-                      ),
-                      Text(
-                        "${widget.customer!.fname} ${widget.customer!.lname}",
-                        style: Theme.of(context).textTheme.headline5,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: MySpacer.large,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Téléphone", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text("${widget.customer!.contactNumber}",
-                                style: boldText)
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Email", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text(
-                              "${widget.customer!.email}",
-                              style: boldText,
-                            )
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Adresse", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text("${widget.customer!.adress}", style: boldText)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: MySpacer.large,
-                  ),
-                  Text(
-                    "Détails du site",
-                    style: Theme.of(context).textTheme.headline5,
-                  ),
-                  SizedBox(
-                    height: MySpacer.small,
-                  ),
-                  customerService.customerProject == null
-                      ? Container(
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        )
-                      : customerService.customerProject!.length == 0
-                          ? EmptyContainer(
-                              addingFunc: ProjectAddScreen(),
-                              title: "No assigned project yet",
-                              description: "Add project Now",
-                              buttonText: "Add Project",
-                              showButton: true,
-                            )
-                          : Column(
-                              children: [
-                                for (ProjectModel project
-                                    in customerService.customerProject!)
-                                  Container(
-                                    padding: EdgeInsets.all(8),
-                                    margin: EdgeInsets.symmetric(vertical: 5),
-                                    color: Colors.white,
-                                    width: MediaQuery.of(context).size.width,
-                                    constraints: BoxConstraints(minHeight: 100),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          project.name!,
-                                          style: boldText,
-                                        ),
-                                        SizedBox(
-                                          height: MySpacer.small,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text("Description",
-                                                      style: transHeader),
-                                                  ReadMoreText(
-                                                    project.description!,
-                                                    trimLines: 2,
-                                                    trimLength: 290,
-                                                    trimMode: TrimMode.Length,
-                                                    trimCollapsedText:
-                                                        'Montre plus',
-                                                    trimExpandedText:
-                                                        'Montrer moins',
-                                                    style: TextStyle(
-                                                        color: Colors.black),
-                                                    moreStyle: TextStyle(
-                                                        color:
-                                                            Palette.drawerColor,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    lessStyle: TextStyle(
-                                                        color:
-                                                            Palette.drawerColor,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: MySpacer.medium,
-                                            ),
-                                            Container(
-                                              width: 300,
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text("Address",
-                                                          style: transHeader),
-                                                      Text(
-                                                        project.address ??
-                                                            "${project.coordinates!.latitude},${project.coordinates!.longitude}",
-                                                        style: TextStyle(
-                                                            color: Colors.green,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(
-                                                    height: MySpacer.medium,
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text("Status",
-                                                          style: transHeader),
-                                                      Consumer<
-                                                          ColorChangeService>(
-                                                        builder: (context, data,
-                                                            child) {
-                                                          return Text(
-                                                            statusTitles[project
-                                                                .status!],
-                                                            style: TextStyle(
-                                                                color: data
-                                                                        .statusColors[
-                                                                    project
-                                                                        .status!]),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                            ),
-                ],
-              ),
-            ),
-          ),
-          AdaptiveItem(
-              content: Container(
-                  padding: EdgeInsets.all(50),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                      backButton(
+                          context,
+                          widget.fromPage == "project"
+                              ? projectService.setPage
+                              : customerService.setPage,
+                          widget.fromPage == "project"
+                              ? ProjectList(
+                                  assignUser: false,
+                                )
+                              : CustomerList()),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          Container(
+                            width: MediaQuery.of(context).size.height * .15,
+                            height: MediaQuery.of(context).size.height * .15,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10000),
+                                color: Colors.grey.shade100,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.shade400,
+                                    offset: Offset(3, 3),
+                                    blurRadius: 2,
+                                  )
+                                ],
+                                image: DecorationImage(
+                                    fit: widget.customer!.picture == null
+                                        ? BoxFit.scaleDown
+                                        : BoxFit.cover,
+                                    alignment: widget.customer!.picture == null
+                                        ? AlignmentDirectional.bottomCenter
+                                        : AlignmentDirectional.center,
+                                    image: fetchImage(
+                                        netWorkImage: widget.customer?.picture),
+                                    scale: widget.customer!.picture == null
+                                        ? 5
+                                        : 1)),
+                          ),
+                          SizedBox(
+                            width: MySpacer.medium,
+                          ),
                           Text(
-                            "Chantier Emplacement",
+                            "${widget.customer!.fname} ${widget.customer!.lname}",
                             style: Theme.of(context).textTheme.headline5,
                           ),
                         ],
                       ),
                       SizedBox(
-                        height: MySpacer.medium,
+                        height: MySpacer.large,
                       ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.8,
-                        child: MapScreen(
-                          setCoord: false,
-                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Téléphone", style: transHeader),
+                                SizedBox(
+                                  height: MySpacer.small,
+                                ),
+                                Text("${widget.customer!.contactNumber}",
+                                    style: boldText)
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Email", style: transHeader),
+                                SizedBox(
+                                  height: MySpacer.small,
+                                ),
+                                Text(
+                                  "${widget.customer!.email}",
+                                  style: boldText,
+                                )
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Adresse", style: transHeader),
+                                SizedBox(
+                                  height: MySpacer.small,
+                                ),
+                                Text("${widget.customer!.adress}",
+                                    style: boldText)
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-
-                      // Container(
-                      //   height: MediaQuery.of(context).size.height * 0.35,
-                      //   child: Column(
-                      //     children: [
-                      //       Row(
-                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //         children: [
-                      //           Text(
-                      //             "Demande client et mise à jour",
-                      //             style: boldText,
-                      //           ),
-                      //           IconButton(
-                      //               icon: Icon(Icons.add_circle),
-                      //               onPressed: () {
-                      //                 //LOGS
-                      //               })
-                      //         ],
-                      //       ),
-                      //       SizedBox(
-                      //         height: MySpacer.small,
-                      //       ),
-                      //       Expanded(
-                      //         child: Container(
-                      //           child: ListView(
-                      //             children: [
-                      //               Card(
-                      //                 child: ListTile(
-                      //                   leading:
-                      //                       Icon(Icons.notification_important),
-                      //                   title: Row(
-                      //                     children: [
-                      //                       Text("Chantier"),
-                      //                       SizedBox(
-                      //                         width: MySpacer.small,
-                      //                       ),
-                      //                       Text("Avril")
-                      //                     ],
-                      //                   ),
-                      //                   subtitle: Text(
-                      //                       "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                      //                 ),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //       )
-                      //     ],
-                      //   ),
-                      // )
+                      SizedBox(
+                        height: MySpacer.large,
+                      ),
+                      Text(
+                        "Détails du site",
+                        style: Theme.of(context).textTheme.headline5,
+                      ),
+                      SizedBox(
+                        height: MySpacer.small,
+                      ),
+                      customerService.customerProject == null
+                          ? Container(
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          : customerService.customerProject!.length == 0
+                              ? EmptyContainer(
+                                  addingFunc: ProjectAddScreen(),
+                                  title: "No assigned project yet",
+                                  description: "Add project Now",
+                                  buttonText: "Add Project",
+                                  showButton: true,
+                                )
+                              : Column(
+                                  children: [
+                                    for (ProjectModel project
+                                        in customerService.customerProject!)
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 5),
+                                        color: Colors.white,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        constraints:
+                                            BoxConstraints(minHeight: 100),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              project.name!,
+                                              style: boldText,
+                                            ),
+                                            SizedBox(
+                                              height: MySpacer.small,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text("Description",
+                                                          style: transHeader),
+                                                      ReadMoreText(
+                                                        project.description!,
+                                                        trimLines: 2,
+                                                        trimLength: 290,
+                                                        trimMode:
+                                                            TrimMode.Length,
+                                                        trimCollapsedText:
+                                                            'Montre plus',
+                                                        trimExpandedText:
+                                                            'Montrer moins',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black),
+                                                        moreStyle: TextStyle(
+                                                            color: Palette
+                                                                .drawerColor,
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                        lessStyle: TextStyle(
+                                                            color: Palette
+                                                                .drawerColor,
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: MySpacer.medium,
+                                                ),
+                                                Container(
+                                                  width: 300,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text("Address",
+                                                              style:
+                                                                  transHeader),
+                                                          Text(
+                                                            project.address ??
+                                                                "${project.coordinates!.latitude},${project.coordinates!.longitude}",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .green,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        height: MySpacer.medium,
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text("Status",
+                                                              style:
+                                                                  transHeader),
+                                                          Consumer<
+                                                              ColorChangeService>(
+                                                            builder: (context,
+                                                                data, child) {
+                                                              return Text(
+                                                                statusTitles[
+                                                                    project
+                                                                        .status!],
+                                                                style: TextStyle(
+                                                                    color: data
+                                                                            .statusColors[
+                                                                        project
+                                                                            .status!]),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                      SizedBox(
+                        height: 100,
+                      ),
                     ],
-                  )))
-        ]));
+                  ),
+                ),
+              ),
+              AdaptiveItem(
+                  content: Container(
+                      padding: EdgeInsets.all(50),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Chantier Emplacement",
+                                style: Theme.of(context).textTheme.headline5,
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: MySpacer.medium,
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.8,
+                            child: MapScreen(
+                              setCoord: false,
+                            ),
+                          ),
+
+                          // Container(
+                          //   height: MediaQuery.of(context).size.height * 0.35,
+                          //   child: Column(
+                          //     children: [
+                          //       Row(
+                          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //         children: [
+                          //           Text(
+                          //             "Demande client et mise à jour",
+                          //             style: boldText,
+                          //           ),
+                          //           IconButton(
+                          //               icon: Icon(Icons.add_circle),
+                          //               onPressed: () {
+                          //                 //LOGS
+                          //               })
+                          //         ],
+                          //       ),
+                          //       SizedBox(
+                          //         height: MySpacer.small,
+                          //       ),
+                          //       Expanded(
+                          //         child: Container(
+                          //           child: ListView(
+                          //             children: [
+                          //               Card(
+                          //                 child: ListTile(
+                          //                   leading:
+                          //                       Icon(Icons.notification_important),
+                          //                   title: Row(
+                          //                     children: [
+                          //                       Text("Chantier"),
+                          //                       SizedBox(
+                          //                         width: MySpacer.small,
+                          //                       ),
+                          //                       Text("Avril")
+                          //                     ],
+                          //                   ),
+                          //                   subtitle: Text(
+                          //                       "Attention, il nous manque les plaques pour le toit de la terrasse"),
+                          //                 ),
+                          //               ),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //       )
+                          //     ],
+                          //   ),
+                          // )
+                        ],
+                      )))
+            ]));
   }
 }
