@@ -266,6 +266,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                         setState(() {
                           bodyToEdit.addAll(
                               {"id": widget.customerToEdit!.id.toString()});
+                          print("BODY TO EDIT $bodyToEdit");
                           customerService
                               .updateCustomer(bodyToEdit: bodyToEdit)
                               .whenComplete(() => Navigator.pop(context));

@@ -11,12 +11,10 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
-import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_add_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
 
@@ -279,109 +277,111 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                     ],
                                   ),
 
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10),
-                                        child: Text(
-                                          "Cliente",
-                                          style: boldText,
-                                        ),
-                                      ),
-                                      customerSelected != null
-                                          ? Row(
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.all(5),
-                                                  height: 60,
-                                                  width: 200,
-                                                  child: Card(
-                                                    color: Palette.drawerColor,
-                                                    child: Center(
-                                                        child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Row(
-                                                        children: [
-                                                          CircleAvatar(
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            maxRadius: 15,
-                                                            backgroundImage: fetchImage(
-                                                                netWorkImage:
-                                                                    customerSelected!
-                                                                        .picture),
-                                                          ),
-                                                          SizedBox(
-                                                            width:
-                                                                MySpacer.small,
-                                                          ),
-                                                          Text(
-                                                            "${customerSelected!.fname!} ${customerSelected!.lname!}",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )),
-                                                  ),
-                                                ),
-                                                _customPopupItemBuilderExample(
-                                                    context,
-                                                    Icon(Icons.loop),
-                                                    customerService,
-                                                    projectAddService),
-                                              ],
-                                            )
-                                          : Row(
-                                              children: [
-                                                Container(
-                                                    width: 200,
-                                                    height: 60,
-                                                    child:
-                                                        _customPopupItemBuilderExample(
-                                                            context,
-                                                            DottedBorder(
-                                                                child:
-                                                                    Container(
-                                                              height: 60,
-                                                              child: Center(
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Attribuer un client",
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: MySpacer
-                                                                          .small,
-                                                                    ),
-                                                                    Icon(Icons
-                                                                        .add_circle)
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            )),
-                                                            customerService,
-                                                            projectAddService)),
-                                              ],
+                                  isEdit
+                                      ? SizedBox()
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10),
+                                              child: Text(
+                                                "Cliente",
+                                                style: boldText,
+                                              ),
                                             ),
-                                    ],
-                                  ),
+                                            customerSelected != null
+                                                ? Row(
+                                                    children: [
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.all(5),
+                                                        height: 60,
+                                                        width: 200,
+                                                        child: Card(
+                                                          color: Palette
+                                                              .drawerColor,
+                                                          child: Center(
+                                                              child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Row(
+                                                              children: [
+                                                                CircleAvatar(
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  maxRadius: 15,
+                                                                  backgroundImage:
+                                                                      fetchImage(
+                                                                          netWorkImage:
+                                                                              customerSelected!.picture),
+                                                                ),
+                                                                SizedBox(
+                                                                  width: MySpacer
+                                                                      .small,
+                                                                ),
+                                                                Text(
+                                                                  "${customerSelected!.fname!} ${customerSelected!.lname!}",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          )),
+                                                        ),
+                                                      ),
+                                                      _customPopupItemBuilderExample(
+                                                          context,
+                                                          Icon(Icons.loop),
+                                                          customerService,
+                                                          projectAddService),
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    children: [
+                                                      Container(
+                                                          width: 200,
+                                                          height: 60,
+                                                          child: _customPopupItemBuilderExample(
+                                                              context,
+                                                              DottedBorder(
+                                                                  child: Container(
+                                                                height: 60,
+                                                                child: Center(
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Attribuer un client",
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width: MySpacer
+                                                                            .small,
+                                                                      ),
+                                                                      Icon(Icons
+                                                                          .add_circle)
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              )),
+                                                              customerService,
+                                                              projectAddService)),
+                                                    ],
+                                                  ),
+                                          ],
+                                        ),
 
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -806,11 +806,11 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                         minWidth: double.infinity,
                         onPressed: () {
                           if (isEdit) {
+                            projectAddService.setOwner(
+                                customerSelected!.id, isEdit);
                             projectAddService.addBodyEdit({
                               "project_id": widget.projectToEdit!.id.toString()
                             });
-                            // projectAddService
-                            //     .addBodyEdit({"address": mapService.addressGeo});
 
                             if (projectAddService.assignIdsToAdd.length > 0) {
                               print("ADDING");
@@ -839,6 +839,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                   .whenComplete(
                                       () => projectProvider.fetchProjects());
                             }
+
+                            print(
+                                " dataproejcttodedit ${projectAddService.bodyToEdit}");
 
                             projectProvider.updateProject(
                                 bodyToEdit: projectAddService.bodyToEdit);
