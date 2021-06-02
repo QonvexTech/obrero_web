@@ -103,7 +103,7 @@ class _CustomerListState extends State<CustomerList> {
                                       "EMAIL",
                                       "TÉLÉPHONE",
                                       "ADDRESSE",
-                                      "STATUS"
+                                      // "STATUS"
                                     ],
                                     assignUser: false,
                                   ),
@@ -293,25 +293,25 @@ List<TableRow> rowWidget(
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
-        TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Consumer<ColorChangeService>(
-                builder: (context, color, child) {
-                  return Text(
-                    statusTitles[
-                        data.status!.status == null ? 0 : data.status!.status!],
-                    style: TextStyle(
-                        color: color.statusColors[data.status!.status == null
-                            ? 0
-                            : data.status!.status!]),
-                    overflow: TextOverflow.ellipsis,
-                  );
-                },
-              ),
-            ))),
+        // TableCell(
+        //     verticalAlignment: TableCellVerticalAlignment.middle,
+        //     child: Center(
+        //         child: Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 8),
+        //       child: Consumer<ColorChangeService>(
+        //         builder: (context, color, child) {
+        //           return Text(
+        //             statusTitles[
+        //                 data.status!.status == null ? 0 : data.status!.status!],
+        //             style: TextStyle(
+        //                 color: color.statusColors[data.status!.status == null
+        //                     ? 0
+        //                     : data.status!.status!]),
+        //             overflow: TextOverflow.ellipsis,
+        //           );
+        //         },
+        //       ),
+        //     ))),
         TableCell(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

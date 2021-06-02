@@ -179,6 +179,21 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<EmployeesModel> datas,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           IconButton(
+                              icon: Icon(
+                                Icons.work,
+                                color: Palette.drawerColor,
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                        backgroundColor:
+                                            Palette.contentBackground,
+                                        content: EmployeeProjectsDetails(
+                                          emplyoyee: data,
+                                        )));
+                              }),
+                          IconButton(
                             onPressed: () {
                               showDialog(
                                   context: context,
@@ -279,22 +294,36 @@ List<TableRow> rowWidget(BuildContext context, List<EmployeesModel> datas,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MaterialButton(
-                color: Palette.drawerColor,
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                          backgroundColor: Palette.contentBackground,
-                          content: EmployeeProjectsDetails(
-                            emplyoyee: data,
-                          )));
-                },
-                child: Text(
-                  "Voir les projets",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              // MaterialButton(
+              //   color: Palette.drawerColor,
+              //   onPressed: () {
+              //     showDialog(
+              //         context: context,
+              //         builder: (_) => AlertDialog(
+              //             backgroundColor: Palette.contentBackground,
+              //             content: EmployeeProjectsDetails(
+              //               emplyoyee: data,
+              //             )));
+              //   },
+              //   child: Text(
+              //     "Voir les projets",
+              //     style: TextStyle(color: Colors.white),
+              //   ),
+              // ),
+              IconButton(
+                  icon: Icon(
+                    Icons.work,
+                    color: Palette.drawerColor,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                            backgroundColor: Palette.contentBackground,
+                            content: EmployeeProjectsDetails(
+                              emplyoyee: data,
+                            )));
+                  }),
               IconButton(
                 onPressed: () {
                   showDialog(

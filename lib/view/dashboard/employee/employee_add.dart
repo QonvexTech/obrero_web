@@ -26,6 +26,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
 
   @override
   void initState() {
+    Provider.of<EmployeeSevice>(context, listen: false)..base64Image = null;
     if (widget.userToEdit != null) {
       fnameController.text = widget.userToEdit!.fname!;
       lnameController.text = widget.userToEdit!.lname!;
@@ -34,13 +35,13 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
       contactNumberController.text = widget.userToEdit!.contactNumber!;
       isEdit = true;
     }
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    EmployeeSevice employeeService =
-        Provider.of<EmployeeSevice>(context, listen: false);
+    EmployeeSevice employeeService = Provider.of<EmployeeSevice>(context);
     final Size size = MediaQuery.of(context).size;
     return Container(
       width: size.width,
@@ -105,8 +106,10 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                                   'png'
                                 ]).then((pickedFile) {
                               if (pickedFile != null) {
-                                employeeService.base64Image =
-                                    pickedFile.files[0].bytes;
+                                setState(() {
+                                  employeeService.base64Image =
+                                      pickedFile.files[0].bytes;
+                                });
                               }
                             });
                           },
@@ -294,7 +297,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                         if (isEdit) {
                           bodyToUpdate.addAll(
                               {"user_id": widget.userToEdit!.id.toString()});
-                          print(bodyToUpdate);
+                          print("bodytoedit: $bodyToUpdate");
                           employeeService
                               .updateUser(body: bodyToUpdate)
                               .whenComplete(() {

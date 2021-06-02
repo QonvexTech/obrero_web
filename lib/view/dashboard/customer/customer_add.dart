@@ -27,6 +27,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
 
   @override
   void initState() {
+    Provider.of<CustomerService>(context, listen: false).base64Image = null;
     if (widget.customerToEdit != null) {
       fnameController.text = widget.customerToEdit!.fname!;
       lnameController.text = widget.customerToEdit!.lname!;
@@ -36,6 +37,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
       // amountController.text = widget.customerToEdit!.status!.amount!.toString();
       isEdit = true;
     }
+
     super.initState();
   }
 
