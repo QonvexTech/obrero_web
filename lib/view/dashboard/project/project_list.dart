@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
-import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
@@ -15,6 +14,11 @@ import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
 
 class ProjectList extends StatefulWidget {
+  final bool? assignUser;
+  final int? owner;
+
+  const ProjectList({Key? key, required this.assignUser, this.owner = 00})
+      : super(key: key);
   @override
   _ProjectListState createState() => _ProjectListState();
 }
@@ -29,7 +33,6 @@ class _ProjectListState extends State<ProjectList> {
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
-    CustomerService customerService = Provider.of<CustomerService>(context);
     PaginationService pageService = Provider.of<PaginationService>(context);
 
     if (projectProvider.projects == null) {
@@ -87,32 +90,34 @@ class _ProjectListState extends State<ProjectList> {
                       child: Column(
                         children: [
                           AllTable(
-                              datas: projectProvider.projects,
-                              rowWidget: rowWidget(
-                                  context,
-                                  projectProvider.projects,
-                                  projectProvider.removeProject,
-                                  projectProvider.setPage,
-                                  projectProvider),
-                              rowWidgetMobile: rowWidgetMobile(
-                                  context,
-                                  projectProvider.projects,
-                                  projectProvider.removeProject,
-                                  projectProvider.setPage,
-                                  projectProvider),
-                              headersMobile: [
-                                "NOM DU SITE",
-                                "OWNER",
-                                "ADDRESS"
-                              ],
-                              headers: [
-                                "NOM DU SITE",
-                                "OWNER",
-                                "ADDRESS",
-                                "AREA SIZE",
-                                "START DATE",
-                                "END DATE"
-                              ]),
+                            datas: projectProvider.projects,
+                            rowWidget: rowWidget(
+                              context,
+                              projectProvider.projects,
+                              projectProvider.removeProject,
+                              projectProvider.setPage,
+                              projectProvider,
+                            ),
+                            rowWidgetMobile: rowWidgetMobile(
+                              context,
+                              projectProvider.projects,
+                              projectProvider.removeProject,
+                              projectProvider.setPage,
+                              projectProvider,
+                              widget.owner!,
+                              widget.assignUser!,
+                            ),
+                            headersMobile: ["NOM DU SITE", "OWNER", "ADDRESS"],
+                            headers: [
+                              "NOM DU SITE",
+                              "OWNER",
+                              "ADDRESS",
+                              "AREA SIZE",
+                              "START DATE",
+                              "END DATE"
+                            ],
+                            assignUser: widget.assignUser,
+                          ),
                           SizedBox(
                             height: MySpacer.small,
                           ),
@@ -132,8 +137,15 @@ class _ProjectListState extends State<ProjectList> {
   }
 }
 
-List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage, ProjectProvider projectProvider) {
+List<TableRow> rowWidgetMobile(
+  BuildContext context,
+  List<ProjectModel> datas,
+  Function remove,
+  Function setPage,
+  ProjectProvider projectProvider,
+  int owner,
+  bool assignUser,
+) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -165,10 +177,11 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: TextButton(
                 onPressed: () {
-                  print("customer details");
                   setPage(
                       page: CustomerDetails(
-                          customer: data.owner, fromPage: "customer"));
+                    customer: data.owner,
+                    fromPage: "project",
+                  ));
                 },
                 child: Text(
                   "${data.owner!.fname} ${data.owner!.lname}",
@@ -187,54 +200,87 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<ProjectModel> datas,
               ),
             ))),
         TableCell(
-          child: PopupMenuButton(
-              padding: EdgeInsets.all(0),
-              offset: Offset(0, 40),
-              icon: Icon(
-                Icons.more_horiz_rounded,
-                color: Palette.drawerColor,
-              ),
-              itemBuilder: (context) => [
-                    PopupMenuItem(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.edit,
-                              color: Palette.drawerColor,
+          verticalAlignment: TableCellVerticalAlignment.middle,
+          child: assignUser
+              ? Center(
+                  child: Container(
+                      child: MaterialButton(
+                          child: Center(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(child: Container()),
+                                data.assigneeIds!.contains(owner)
+                                    ? Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      )
+                                    : Icon(
+                                        Icons.add_circle_outlined,
+                                        color: Colors.green,
+                                      ),
+                                SizedBox(width: MySpacer.small),
+                                Text(data.assigneeIds!.contains(owner)
+                                    ? "Resign"
+                                    : "Assign"),
+                                Expanded(child: Container()),
+                              ],
                             ),
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                      backgroundColor:
-                                          Palette.contentBackground,
-                                      content: ProjectAddScreen(
-                                        projectToEdit: data,
-                                      )));
-                            },
                           ),
-                          IconButton(
-                            onPressed: () {
-                              remove(id: data.id);
-                            },
-                            icon: Icon(
-                              Icons.delete,
-                              color: Palette.drawerColor,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ]),
+                          onPressed: () {})))
+              : PopupMenuButton(
+                  padding: EdgeInsets.all(0),
+                  offset: Offset(0, 40),
+                  icon: Icon(
+                    Icons.more_horiz_rounded,
+                    color: Palette.drawerColor,
+                  ),
+                  itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Palette.drawerColor,
+                                ),
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                          backgroundColor:
+                                              Palette.contentBackground,
+                                          content: ProjectAddScreen(
+                                            projectToEdit: data,
+                                          )));
+                                },
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  remove(id: data.id);
+                                },
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Palette.drawerColor,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ]),
         ),
       ])
   ];
 }
 
-List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
-    Function remove, Function setPage, ProjectProvider projectProvider) {
+List<TableRow> rowWidget(
+  BuildContext context,
+  List<ProjectModel> datas,
+  Function remove,
+  Function setPage,
+  ProjectProvider projectProvider,
+) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -324,6 +370,15 @@ List<TableRow> rowWidget(BuildContext context, List<ProjectModel> datas,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              IconButton(
+                onPressed: () {
+                  print("Assign");
+                },
+                icon: Icon(
+                  Icons.add_circle_outlined,
+                  color: Palette.drawerColor,
+                ),
+              ),
               IconButton(
                 onPressed: () {
                   showDialog(

@@ -15,6 +15,7 @@ class EmployeeAdd extends StatefulWidget {
 }
 
 class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
+  Map<dynamic, dynamic>? countryValue = countries[66];
   bool isEdit = false;
   Map<String, dynamic> bodyToUpdate = {};
   TextEditingController fnameController = TextEditingController();
@@ -26,6 +27,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
 
   @override
   void initState() {
+    Provider.of<EmployeeSevice>(context, listen: false)..base64Image = null;
     if (widget.userToEdit != null) {
       fnameController.text = widget.userToEdit!.fname!;
       lnameController.text = widget.userToEdit!.lname!;
@@ -39,81 +41,91 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
 
   @override
   Widget build(BuildContext context) {
-    EmployeeSevice employeeService =
-        Provider.of<EmployeeSevice>(context, listen: false);
+    EmployeeSevice employeeService = Provider.of<EmployeeSevice>(context);
+
     final Size size = MediaQuery.of(context).size;
     return Container(
       width: size.width,
       height: size.height,
       constraints: BoxConstraints(maxWidth: 800, maxHeight: size.height / 1.8),
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(10),
       child: Form(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            "Ajouter un Employee",
+            style: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: MySpacer.large,
+          ),
           Expanded(
               child: Scrollbar(
                   child: ListView(
             children: [
-              Text(
-                "Ajouter un Employee",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5!
-                    .copyWith(fontWeight: FontWeight.bold),
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.height * .15,
+                      height: MediaQuery.of(context).size.height * .15,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10000),
+                          color: Colors.grey.shade100,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade400,
+                              offset: Offset(3, 3),
+                              blurRadius: 2,
+                            )
+                          ],
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              alignment: AlignmentDirectional.center,
+                              image: tempImageProvider(
+                                  file: employeeService.base64Image,
+                                  netWorkImage: widget.userToEdit?.picture,
+                                  defaultImage: 'icons/admin_icon.png'),
+                              scale: 1)),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: MaterialButton(
+                          color: Palette.drawerColor,
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () async {
+                            await FilePicker.platform.pickFiles(
+                                allowMultiple: false,
+                                allowedExtensions: [
+                                  'jpg',
+                                  'jpeg',
+                                  'png'
+                                ]).then((pickedFile) {
+                              if (pickedFile != null) {
+                                setState(() {
+                                  employeeService.base64Image =
+                                      pickedFile.files[0].bytes;
+                                });
+                              }
+                            });
+                          },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10000)),
+                          minWidth: 50,
+                          height: 50,
+                          child: Icon(Icons.camera_alt, color: Colors.white)),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: MySpacer.large,
               ),
-              Container(
-                child: Center(
-                    child: MaterialButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () async {
-                    await FilePicker.platform.pickFiles(
-                        allowMultiple: false,
-                        allowedExtensions: [
-                          'jpg',
-                          'jpeg',
-                          'png'
-                        ]).then((pickedFile) {
-                      if (pickedFile != null) {
-                        employeeService.base64Image = pickedFile.files[0].bytes;
-                      }
-                    });
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10000)),
-                  minWidth: MediaQuery.of(context).size.height * .15,
-                  height: MediaQuery.of(context).size.height * .15,
-                  child: Container(
-                    width: MediaQuery.of(context).size.height * .15,
-                    height: MediaQuery.of(context).size.height * .15,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10000),
-                        color: Colors.grey.shade100,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade400,
-                            offset: Offset(3, 3),
-                            blurRadius: 2,
-                          )
-                        ],
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            alignment: AlignmentDirectional.center,
-                            image: tempImageProvider(
-                                file: employeeService.base64Image,
-                                netWorkImage: widget.userToEdit?.picture,
-                                defaultImage: 'icons/admin_icon.png'),
-                            scale: 1)),
-                  ),
-                )),
-              ),
-              SizedBox(
-                height: MySpacer.large,
-              ),
-
               TextField(
                 decoration: InputDecoration(
                     fillColor: Colors.white,
@@ -145,6 +157,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               TextField(
                 decoration: InputDecoration(
                   hintText: "Email",
+                  hintStyle: transHeader,
                   border: OutlineInputBorder(),
                 ),
                 controller: emailController,
@@ -160,6 +173,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                   : TextField(
                       decoration: InputDecoration(
                         hintText: "Password",
+                        hintStyle: transHeader,
                         border: OutlineInputBorder(),
                       ),
                       controller: passwordController,
@@ -170,6 +184,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               TextField(
                 decoration: InputDecoration(
                   hintText: "Téléphone",
+                  hintStyle: transHeader,
                   border: OutlineInputBorder(),
                 ),
                 controller: contactNumberController,
@@ -180,123 +195,184 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Address",
-                  border: OutlineInputBorder(),
-                ),
-                controller: addressController,
-                onChanged: (value) {
-                  bodyToUpdate.addAll({"address": value});
-                },
-              ),
+              MediaQuery.of(context).size.width > 800
+                  ? Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: DropdownButton<Map<dynamic, dynamic>>(
+                            underline: null,
+                            hint: Text("Country"),
+                            value: countryValue,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Palette.drawerColor),
+                            onChanged: (Map<dynamic, dynamic>? newValue) {
+                              setState(() {
+                                countryValue = newValue!;
+                              });
+                            },
+                            items: countries
+                                .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                    (value) {
+                              return DropdownMenuItem<Map<dynamic, dynamic>>(
+                                value: value,
+                                child: Text(
+                                  value["name"],
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MySpacer.small,
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: TextField(
+                            onChanged: (value) {
+                              bodyToUpdate.addAll({"address": value});
+                            },
+                            decoration: InputDecoration(
+                              hintStyle: transHeader,
+                              hintText: "Address",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: addressController,
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      child: DropdownButton<Map<dynamic, dynamic>>(
+                        underline: null,
+                        hint: Text("Country"),
+                        value: countryValue,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Palette.drawerColor),
+                        onChanged: (Map<dynamic, dynamic>? newValue) {
+                          setState(() {
+                            countryValue = newValue!;
+                          });
+                        },
+                        items: countries
+                            .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                (value) {
+                          return DropdownMenuItem<Map<dynamic, dynamic>>(
+                            value: value,
+                            child: Text(
+                              value["name"],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  : SizedBox(),
               SizedBox(
-                height: MySpacer.small,
-              ),
-
-              // Row(
-              //   children: [
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "State",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "City",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // SizedBox(
-              //   height: MySpacer.large,
-              // ),
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "Démarrer",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "Terminer",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //   ],
-              // ),
+                  width: MediaQuery.of(context).size.width < 800
+                      ? 0
+                      : MySpacer.small),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      flex: 3,
+                      child: TextField(
+                        onChanged: (value) {
+                          bodyToUpdate.addAll({"address": value});
+                        },
+                        decoration: InputDecoration(
+                          hintStyle: transHeader,
+                          hintText: "Address",
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: addressController,
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ))),
-          // const SizedBox(
-          //   height: MySpacer.small,
-          // ),
+          const SizedBox(
+            height: MySpacer.small,
+          ),
 
-          MaterialButton(
+          Container(
+            width: MediaQuery.of(context).size.width,
             height: 60,
-            minWidth: double.infinity,
-            color: Palette.drawerColor,
-            onPressed: () {
-              if (isEdit) {
-                bodyToUpdate
-                    .addAll({"user_id": widget.userToEdit!.id.toString()});
-                print(bodyToUpdate);
-                employeeService.updateUser(body: bodyToUpdate).whenComplete(() {
-                  setState(() {
-                    widget.userToEdit!.fname = fnameController.text;
-                    widget.userToEdit!.lname = lnameController.text;
-                    widget.userToEdit!.email = emailController.text;
-                    widget.userToEdit!.address = addressController.text;
-                    widget.userToEdit!.contactNumber =
-                        contactNumberController.text;
-                  });
-                  Navigator.pop(context);
-                });
-              } else {
-                EmployeesModel newEmployee = EmployeesModel(
-                  fname: fnameController.text,
-                  lname: lnameController.text,
-                  email: emailController.text,
-                  password: passwordController.text,
-                  address: addressController.text,
-                  picture: employeeService.base64Image != null
-                      ? employeeService.base64ImageEncoded
-                      : "",
-                  contactNumber: contactNumberController.text,
-                );
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    child: MaterialButton(
+                      color: Colors.grey[200],
+                      height: 60,
+                      minWidth: double.infinity,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Annuler",
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: MySpacer.medium),
+                Expanded(
+                    flex: 2,
+                    child: MaterialButton(
+                      height: 60,
+                      minWidth: double.infinity,
+                      color: Palette.drawerColor,
+                      onPressed: () {
+                        if (isEdit) {
+                          bodyToUpdate.addAll(
+                              {"user_id": widget.userToEdit!.id.toString()});
+                          print("bodytoedit: $bodyToUpdate");
+                          employeeService
+                              .updateUser(body: bodyToUpdate)
+                              .whenComplete(() {
+                            setState(() {
+                              widget.userToEdit!.fname = fnameController.text;
+                              widget.userToEdit!.lname = lnameController.text;
+                              widget.userToEdit!.email = emailController.text;
+                              widget.userToEdit!.address =
+                                  addressController.text;
+                              widget.userToEdit!.contactNumber =
+                                  contactNumberController.text;
+                            });
+                            Navigator.pop(context);
+                          });
+                        } else {
+                          EmployeesModel newEmployee = EmployeesModel(
+                            fname: fnameController.text,
+                            lname: lnameController.text,
+                            email: emailController.text,
+                            password: passwordController.text,
+                            address: addressController.text +
+                                ", ${countryValue!["name"]}",
+                            picture: employeeService.base64Image != null
+                                ? employeeService.base64ImageEncoded
+                                : "",
+                            contactNumber: contactNumberController.text,
+                          );
 
-                employeeService
-                    .createUser(newEmployee)
-                    .whenComplete(() => Navigator.pop(context));
-              }
-            },
-            child: Text(
-              isEdit ? "Save Edit" : "Caréer",
-              style: TextStyle(color: Colors.white),
+                          employeeService
+                              .createUser(newEmployee)
+                              .whenComplete(() => Navigator.pop(context));
+                        }
+                      },
+                      child: Text(
+                        isEdit ? "Save Edit" : "Caréer",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )),
+              ],
             ),
           )
 

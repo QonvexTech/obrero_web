@@ -4,7 +4,6 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
-import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
@@ -26,22 +25,23 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
   bool viewMore = false;
   @override
   Widget build(BuildContext context) {
-    MapService mapService = Provider.of<MapService>(context);
-    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
-
     DashboardService dashboardService = Provider.of<DashboardService>(context);
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     return GestureDetector(
         onTap: () {
-          mapService.focusMap(
+          dashboardService.focusMap(
               coordinates: widget.project!.coordinates!,
               markerId: widget.project!.id.toString());
           dashboardService.selectedPrject = widget.project!.id;
         },
         child: AnimatedContainer(
-          width: 200,
           margin: widget.lastIndex!
               ? EdgeInsets.only(bottom: 100)
               : EdgeInsets.only(bottom: 0.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: dashboardService.selectedProject == widget.project!.id
+                  ? 0
+                  : 10),
           duration: Duration(milliseconds: 200),
           child: Card(
               elevation: dashboardService.selectedProject == widget.project!.id
@@ -53,40 +53,48 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Palette.contentBackground,
-                          backgroundImage: widget.project!.images!.length > 0
-                              ? fetchImage(
-                                  netWorkImage: widget.project!.images![0].url)
-                              : AssetImage('images/emptyImage.jpg'),
+                        leading: Padding(
+                          padding: const EdgeInsets.only(left: 15),
+                          child: CircleAvatar(
+                            backgroundColor: Palette.contentBackground,
+                            backgroundImage: widget.project!.images!.length > 0
+                                ? fetchImage(
+                                    netWorkImage:
+                                        widget.project!.images![0].url)
+                                : AssetImage('images/emptyImage.jpg'),
+                          ),
                         ),
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                               child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(widget.project!.name!),
                                   Flexible(
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
-                                      child: Text(
-                                        "Du ${months[widget.project!.startDate!.month]} ${widget.project!.startDate!.day}, ${widget.project!.startDate!.year} Au ${months[widget.project!.endDate!.month]} ${widget.project!.endDate!.day}, ${widget.project!.endDate!.year}",
-                                        style: TextStyle(
-                                          color: Colors.black12,
+                                      child: Opacity(
+                                        opacity: 0.6,
+                                        child: Text(
+                                          "Du ${months[widget.project!.startDate!.month]} ${widget.project!.startDate!.day}, ${widget.project!.startDate!.year} Au ${months[widget.project!.endDate!.month]} ${widget.project!.endDate!.day}, ${widget.project!.endDate!.year}",
+                                          style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 13),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                            Expanded(child: Container()),
                             IconButton(
                               onPressed: () {
-                                mapService.focusMap(
+                                dashboardService.focusMap(
                                     coordinates: widget.project!.coordinates!,
                                     markerId: widget.project!.id.toString());
                                 dashboardService.selectedPrject =
@@ -251,8 +259,8 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                   Consumer<ColorChangeService>(
                     builder: (context, data, child) {
                       return Positioned(
-                        top: 5,
-                        left: 5,
+                        top: 10,
+                        left: 20,
                         child: Image.asset(
                           data.imagesStatus[0],
                           width: 20,

@@ -48,7 +48,7 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Palette.contentBackground,
       key: _key,
       body: messageSending
           ? Center(

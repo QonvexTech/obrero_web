@@ -79,28 +79,26 @@ class _EmployeeListState extends State<EmployeeList> {
                             child: Column(
                               children: [
                                 AllTable(
-                                    datas: employeeService.users,
-                                    rowWidget: rowWidget(
-                                        context,
-                                        employeeService.users!,
-                                        employeeService.removeUser,
-                                        employeeService.setPageScreen),
-                                    rowWidgetMobile: rowWidgetMobile(
-                                        context,
-                                        employeeService.users!,
-                                        employeeService.removeUser,
-                                        employeeService.setPageScreen),
-                                    headersMobile: [
-                                      "NOM",
-                                      "EMAIL",
-                                      "ADDRESSE"
-                                    ],
-                                    headers: [
-                                      "NOM",
-                                      "EMAIL",
-                                      "TÉLÉPHONE",
-                                      "ADDRESSE",
-                                    ]),
+                                  datas: employeeService.users,
+                                  rowWidget: rowWidget(
+                                      context,
+                                      employeeService.users!,
+                                      employeeService.removeUser,
+                                      employeeService.setPageScreen),
+                                  rowWidgetMobile: rowWidgetMobile(
+                                      context,
+                                      employeeService.users!,
+                                      employeeService.removeUser,
+                                      employeeService.setPageScreen),
+                                  headersMobile: ["NOM", "EMAIL", "ADDRESSE"],
+                                  headers: [
+                                    "NOM",
+                                    "EMAIL",
+                                    "TÉLÉPHONE",
+                                    "ADDRESSE",
+                                  ],
+                                  assignUser: false,
+                                ),
                                 SizedBox(
                                   height: MySpacer.small,
                                 ),
@@ -180,6 +178,21 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<EmployeesModel> datas,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
+                          IconButton(
+                              icon: Icon(
+                                Icons.work,
+                                color: Palette.drawerColor,
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                        backgroundColor:
+                                            Palette.contentBackground,
+                                        content: EmployeeProjectsDetails(
+                                          emplyoyee: data,
+                                        )));
+                              }),
                           IconButton(
                             onPressed: () {
                               showDialog(
@@ -281,22 +294,36 @@ List<TableRow> rowWidget(BuildContext context, List<EmployeesModel> datas,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MaterialButton(
-                color: Palette.drawerColor,
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                          backgroundColor: Palette.contentBackground,
-                          content: EmployeeProjectsDetails(
-                            emplyoyee: data,
-                          )));
-                },
-                child: Text(
-                  "Voir les projets",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              // MaterialButton(
+              //   color: Palette.drawerColor,
+              //   onPressed: () {
+              //     showDialog(
+              //         context: context,
+              //         builder: (_) => AlertDialog(
+              //             backgroundColor: Palette.contentBackground,
+              //             content: EmployeeProjectsDetails(
+              //               emplyoyee: data,
+              //             )));
+              //   },
+              //   child: Text(
+              //     "Voir les projets",
+              //     style: TextStyle(color: Colors.white),
+              //   ),
+              // ),
+              IconButton(
+                  icon: Icon(
+                    Icons.work,
+                    color: Palette.drawerColor,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                            backgroundColor: Palette.contentBackground,
+                            content: EmployeeProjectsDetails(
+                              emplyoyee: data,
+                            )));
+                  }),
               IconButton(
                 onPressed: () {
                   showDialog(

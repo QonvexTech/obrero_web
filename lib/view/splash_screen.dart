@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/caching.dart';
+import 'package:uitemplate/services/dashboard_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -15,6 +18,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     this.init();
+    var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
+    Provider.of<DashboardService>(context, listen: false)
+        .initGetId(projectProvider.projectsDateBase);
     super.initState();
   }
 

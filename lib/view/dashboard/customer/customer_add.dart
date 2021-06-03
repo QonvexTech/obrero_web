@@ -23,10 +23,11 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
-  Map<dynamic, dynamic>? countryValue;
+  Map<dynamic, dynamic>? countryValue = countries[66];
 
   @override
   void initState() {
+    Provider.of<CustomerService>(context, listen: false).base64Image = null;
     if (widget.customerToEdit != null) {
       fnameController.text = widget.customerToEdit!.fname!;
       lnameController.text = widget.customerToEdit!.lname!;
@@ -36,6 +37,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
       // amountController.text = widget.customerToEdit!.status!.amount!.toString();
       isEdit = true;
     }
+
     super.initState();
   }
 
@@ -69,47 +71,57 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
             children: [
               Container(
                 child: Center(
-                    child: MaterialButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () async {
-                    await FilePicker.platform.pickFiles(
-                        allowMultiple: false,
-                        allowedExtensions: [
-                          'jpg',
-                          'jpeg',
-                          'png'
-                        ]).then((pickedFile) {
-                      if (pickedFile != null) {
-                        customerService.base64Image = pickedFile.files[0].bytes;
-                      }
-                    });
-                  },
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10000)),
-                  minWidth: MediaQuery.of(context).size.height * .15,
-                  height: MediaQuery.of(context).size.height * .15,
-                  child: Container(
-                    width: MediaQuery.of(context).size.height * .15,
-                    height: MediaQuery.of(context).size.height * .15,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10000),
-                        color: Colors.grey.shade100,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade400,
-                            offset: Offset(3, 3),
-                            blurRadius: 2,
-                          )
-                        ],
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            alignment: AlignmentDirectional.center,
-                            image: tempImageProvider(
-                                file: customerService.base64Image,
-                                netWorkImage: widget.customerToEdit?.picture,
-                                defaultImage: 'icons/admin_icon.png'),
-                            scale: 1)),
-                  ),
+                    child: Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.height * .15,
+                      height: MediaQuery.of(context).size.height * .15,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10000),
+                          color: Colors.grey.shade100,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade400,
+                              offset: Offset(3, 3),
+                              blurRadius: 2,
+                            )
+                          ],
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              alignment: AlignmentDirectional.center,
+                              image: tempImageProvider(
+                                  file: customerService.base64Image,
+                                  netWorkImage: widget.customerToEdit?.picture,
+                                  defaultImage: 'icons/admin_icon.png'),
+                              scale: 1)),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: MaterialButton(
+                          color: Palette.drawerColor,
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () async {
+                            await FilePicker.platform.pickFiles(
+                                allowMultiple: false,
+                                allowedExtensions: [
+                                  'jpg',
+                                  'jpeg',
+                                  'png'
+                                ]).then((pickedFile) {
+                              if (pickedFile != null) {
+                                customerService.base64Image =
+                                    pickedFile.files[0].bytes;
+                              }
+                            });
+                          },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10000)),
+                          minWidth: 50,
+                          height: 50,
+                          child: Icon(Icons.camera_alt, color: Colors.white)),
+                    ),
+                  ],
                 )),
               ),
               SizedBox(
@@ -171,101 +183,171 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: DropdownButton<Map<dynamic, dynamic>>(
-                      underline: null,
-                      hint: Text("Select Your Country"),
-                      value: countryValue,
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Palette.drawerColor),
-                      onChanged: (Map<dynamic, dynamic>? newValue) {
-                        setState(() {
-                          countryValue = newValue!;
-                        });
-                      },
-                      items: countries
-                          .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
-                              (value) {
-                        return DropdownMenuItem<Map<dynamic, dynamic>>(
-                          value: value,
-                          child: Text(
-                            value["name"],
-                            overflow: TextOverflow.ellipsis,
+              MediaQuery.of(context).size.width > 800
+                  ? Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: DropdownButton<Map<dynamic, dynamic>>(
+                            underline: null,
+                            hint: Text("Country"),
+                            value: countryValue,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Palette.drawerColor),
+                            onChanged: (Map<dynamic, dynamic>? newValue) {
+                              setState(() {
+                                countryValue = newValue!;
+                              });
+                            },
+                            items: countries
+                                .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                    (value) {
+                              return DropdownMenuItem<Map<dynamic, dynamic>>(
+                                value: value,
+                                child: Text(
+                                  value["name"],
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
                           ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MySpacer.small,
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: TextField(
-                      onChanged: (value) {
-                        bodyToEdit.addAll({"address": value});
-                      },
-                      decoration: InputDecoration(
-                        hintStyle: transHeader,
-                        hintText: "Address",
-                        border: OutlineInputBorder(),
+                        ),
+                        SizedBox(
+                          width: MySpacer.small,
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: TextField(
+                            onChanged: (value) {
+                              bodyToEdit.addAll({"address": value});
+                            },
+                            decoration: InputDecoration(
+                              hintStyle: transHeader,
+                              hintText: "Address",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: addressController,
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      child: DropdownButton<Map<dynamic, dynamic>>(
+                        underline: null,
+                        hint: Text("Country"),
+                        value: countryValue,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Palette.drawerColor),
+                        onChanged: (Map<dynamic, dynamic>? newValue) {
+                          setState(() {
+                            countryValue = newValue!;
+                          });
+                        },
+                        items: countries
+                            .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                (value) {
+                          return DropdownMenuItem<Map<dynamic, dynamic>>(
+                            value: value,
+                            child: Text(
+                              value["name"],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
                       ),
-                      controller: addressController,
-                    ),
-                  ),
-                ],
-              ),
-              // TextField(
-              //   onChanged: (value) {
-              //     bodyToEdit.addAll({"address": value});
-              //   },R
-              //   decoration: InputDecoration(
-              //     hintText: "Status",
-              //     border: OutlineInputBorder(),
-              //   ),
-              //   controller: amountController,
-              // ),
+                    )
+                  : SizedBox(),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width < 800
+                      ? 0
+                      : MySpacer.small),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      flex: 3,
+                      child: TextField(
+                        onChanged: (value) {
+                          bodyToEdit.addAll({"address": value});
+                        },
+                        decoration: InputDecoration(
+                          hintStyle: transHeader,
+                          hintText: "Address",
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: addressController,
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ))),
-          MaterialButton(
-            height: 60,
-            minWidth: double.infinity,
-            color: Palette.drawerColor,
-            onPressed: () {
-              if (isEdit) {
-                setState(() {
-                  bodyToEdit
-                      .addAll({"id": widget.customerToEdit!.id.toString()});
-                  customerService
-                      .updateCustomer(bodyToEdit: bodyToEdit)
-                      .whenComplete(() => Navigator.pop(context));
-                });
-              } else {
-                CustomerModel newCustomer = CustomerModel(
-                  fname: fnameController.text,
-                  lname: lnameController.text,
-                  email: emailController.text,
-                  adress: addressController.text,
-                  picture: customerService.base64Image != null
-                      ? customerService.base64ImageEncoded
-                      : "",
-                  contactNumber: contactNumberController.text,
-                );
+          Container(
+            width: MediaQuery.of(context).size.width,
+            height: 70,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    child: MaterialButton(
+                      height: 60,
+                      color: Colors.grey[200],
+                      minWidth: double.infinity,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Annuler",
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: MySpacer.medium),
+                Expanded(
+                  flex: 2,
+                  child: MaterialButton(
+                    height: 60,
+                    minWidth: double.infinity,
+                    color: Palette.drawerColor,
+                    onPressed: () {
+                      if (isEdit) {
+                        setState(() {
+                          bodyToEdit.addAll(
+                              {"id": widget.customerToEdit!.id.toString()});
+                          print("BODY TO EDIT $bodyToEdit");
+                          customerService
+                              .updateCustomer(bodyToEdit: bodyToEdit)
+                              .whenComplete(() => Navigator.pop(context));
+                        });
+                      } else {
+                        CustomerModel newCustomer = CustomerModel(
+                          fname: fnameController.text,
+                          lname: lnameController.text,
+                          email: emailController.text,
+                          adress: addressController.text +
+                              ", ${countryValue!["name"]}",
+                          picture: customerService.base64Image != null
+                              ? customerService.base64ImageEncoded
+                              : "",
+                          contactNumber: contactNumberController.text,
+                        );
 
-                customerService
-                    .createCustomer(newCustomer: newCustomer)
-                    .whenComplete(() => Navigator.pop(context));
-              }
-            },
-            child: Text(
-              isEdit ? "Save Edit" : "Créer",
-              style: TextStyle(color: Colors.white),
+                        customerService
+                            .createCustomer(newCustomer: newCustomer)
+                            .whenComplete(() => Navigator.pop(context));
+                      }
+                    },
+                    child: Text(
+                      isEdit ? "Save Edit" : "Créer",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             ),
           )
         ],

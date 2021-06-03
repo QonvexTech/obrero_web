@@ -1,6 +1,6 @@
 import 'package:adaptive_container/adaptive_container.dart';
-import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -9,7 +9,7 @@ import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
-import 'package:uitemplate/widgets/map.dart';
+import 'package:uitemplate/widgets/mypicker.dart';
 import 'package:uitemplate/widgets/project_card.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:universal_html/html.dart';
@@ -25,11 +25,14 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
       Provider.of<MapService>(context, listen: false).mapInit(
-          projectProvider.projectsDateBase,
-          context,
-          Provider.of<ColorChangeService>(context, listen: false).imagesStatus);
-      Provider.of<DashboardService>(context, listen: false)
-          .initGetId(projectProvider.projectsDateBase);
+        projectProvider.projectsDateBase,
+        context,
+        Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
+      );
+    });
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      projectProvider.dateController.jumpToSelection(DateTime.now());
     });
 
     print("DASHBOARD SCREEN");
@@ -71,9 +74,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 context: context,
                                 mapService: mapService,
                                 isNow: false,
-                                controllerDate: dashboardService.dateController)
+                                controllerDate: projectProvider.dateController)
                             .then((date) {
-                          dashboardService.startDate = date;
+                          projectProvider.setSelectedDate(date);
                         });
                       },
                       child: Text(
@@ -91,9 +94,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   mapService: mapService,
                                   isNow: true,
                                   controllerDate:
-                                      dashboardService.dateController)
+                                      projectProvider.dateController)
                               .then((date) {
-                            dashboardService.startDate = date;
+                            projectProvider.setSelectedDate(date);
                           });
                         },
                         child: Text(
@@ -121,7 +124,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                     BoxConstraints(minWidth: 15, minHeight: 15),
                                 iconSize: 20,
                                 onPressed: () {
-                                  dashboardService.prevDate();
+                                  projectProvider.prevDate(context, mapService);
                                 },
                                 icon: Icon(
                                   Icons.arrow_back_ios_rounded,
@@ -133,27 +136,19 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             width: 5,
                           ),
                           Expanded(
-                            child: DatePicker(
-                              dashboardService.startDate,
-                              initialSelectedDate: projectProvider.selectedDate,
+                            child: DatePicker2(
+                              DateTime(2021, 1, 1),
+                              // initialSelectedDate: projectProvider.selectedDate,
                               selectionColor: Palette.drawerColor,
                               selectedTextColor: Colors.white,
                               deactivatedColor: Palette.contentBackground,
                               locale: "fr_FR",
-                              controller: dashboardService.dateController,
+                              controller: projectProvider.dateController,
                               onDateChange: (date) {
                                 //New Date
 
-                                projectProvider
-                                    .fetchProjectsBaseOnDates(
-                                        dateSelected: date,
-                                        controller:
-                                            dashboardService.dateController)
-                                    .whenComplete(() => mapService.mapInit(
-                                        projectProvider.projectsDateBase,
-                                        context,
-                                        Provider.of<ColorChangeService>(context)
-                                            .imagesStatus));
+                                projectProvider.fetchOnDates(
+                                    context: context, mapService: mapService);
                               },
                               width: 75,
                             ),
@@ -173,7 +168,8 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                         minWidth: 15, minHeight: 15),
                                     iconSize: 20,
                                     onPressed: () {
-                                      dashboardService.nextDate();
+                                      projectProvider.nextDate(
+                                          context, mapService);
                                     },
                                     icon: Icon(
                                       Icons.arrow_forward_ios_rounded,
@@ -196,8 +192,49 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                   height: MediaQuery.of(context).size.width > 800
                       ? MediaQuery.of(context).size.height * 0.7
                       : MediaQuery.of(context).size.height * 0.4,
-                  child: MapScreen(
-                    setCoord: false,
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  child: Stack(
+                    children: [
+                      initialPositon == null
+                          ? Center(
+                              child: CircularProgressIndicator(),
+                            )
+                          : InkWell(
+                              onHover: (value) {
+                                print(value);
+                              },
+                              child: GoogleMap(
+                                onTap: (x) {
+                                  mapService.gesture = true;
+                                },
+                                scrollGesturesEnabled: mapService.gesture,
+                                onMapCreated: (controller) {
+                                  setState(() {
+                                    dashboardService.mapController = controller;
+                                    if (projectProvider
+                                            .projectsDateBase.length >
+                                        0) {
+                                      dashboardService.mapController!
+                                          .showMarkerInfoWindow(MarkerId(
+                                              projectProvider
+                                                  .projectsDateBase[0].id
+                                                  .toString()));
+                                    }
+                                  });
+                                },
+                                myLocationButtonEnabled: true,
+                                rotateGesturesEnabled: true,
+                                initialCameraPosition: CameraPosition(
+                                  target: initialPositon,
+                                  zoom: mapService.zoom,
+                                ),
+                                buildingsEnabled: true,
+                                mapType: MapType.none,
+                                myLocationEnabled: true,
+                                markers: mapService.markers,
+                              ),
+                            ),
+                    ],
                   ),
                 ),
                 SizedBox(
@@ -229,18 +266,16 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               child: CircularProgressIndicator(),
             )
           : projectProvider.projectsDateBase.length <= 0
-              ? Container(
-                  width: 200,
-                  height: 500,
-                  color: Palette.contentBackground,
+              ? Expanded(
+                  // color: Palette.contentBackground,
                   child: EmptyContainer(
-                    addingFunc: ProjectAddScreen(),
-                    title: "No projects yet",
-                    description:
-                        "Its time to create a project \n choose the right client and location for your project",
-                    buttonText: "Créer",
-                    showButton: true,
-                  ))
+                  addingFunc: ProjectAddScreen(),
+                  title: "Aucun projet cette fois",
+                  description:
+                      "Il est temps de créer un projet\n choisissez le bon client et le bon emplacement pour votre projet.",
+                  buttonText: "Créer",
+                  showButton: true,
+                ))
               : Container(
                   color: Palette.contentBackground,
                   child: ListView.builder(

@@ -1,4 +1,3 @@
-import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -8,15 +7,30 @@ import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
 
 class DashboardService extends ChangeNotifier {
   Widget clientPage = CustomerScreen();
-  DatePickerController dateController = DatePickerController();
-  DateTime _startDate = DateTime.now();
+  GoogleMapController? mapController;
   DateTime? tempDate;
   int _selectedProject = 0;
+  bool? _activeAddProject = false;
+
+  void focusMap({required LatLng coordinates, required markerId}) {
+    mapController!.showMarkerInfoWindow(MarkerId(markerId));
+    mapController!
+        .moveCamera(CameraUpdate.newLatLng(coordinates))
+        .whenComplete(() {});
+
+    // notifyListeners();
+  }
+
+  get activeAddProject => _activeAddProject;
+  set activeAddProject(value) {
+    _activeAddProject = value;
+    notifyListeners();
+  }
 
   initGetId(List<ProjectModel> projects) async {
     if (projects.length > 0) {
       _selectedProject = projects[0].id!;
-      initialPositon = projects[0].coordinates;
+      initialPositon = projects[0].coordinates!;
     } else {
       initialPositon = await _getPosition();
     }
@@ -41,24 +55,7 @@ class DashboardService extends ChangeNotifier {
     notifyListeners();
   }
 
-  get startDate => _startDate;
-
-  set startDate(value) {
-    _startDate = value;
-    notifyListeners();
-  }
-
   get projectPage => clientPage;
-
-  void nextDate() {
-    _startDate = startDate.add(Duration(days: 5));
-    notifyListeners();
-  }
-
-  void prevDate() {
-    _startDate = startDate.subtract(Duration(days: 5));
-    notifyListeners();
-  }
 
   set projectPage(value) {
     clientPage = value;

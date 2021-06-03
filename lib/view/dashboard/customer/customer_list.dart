@@ -85,30 +85,28 @@ class _CustomerListState extends State<CustomerList> {
                               child: Column(
                                 children: [
                                   AllTable(
-                                      datas: customerService.customers,
-                                      rowWidget: rowWidget(
-                                          context,
-                                          customerService.customers,
-                                          customerService.removeCustomer,
-                                          customerService.setPage),
-                                      rowWidgetMobile: rowWidgetMobile(
+                                    datas: customerService.customers,
+                                    rowWidget: rowWidget(
                                         context,
                                         customerService.customers,
                                         customerService.removeCustomer,
-                                        customerService.setPage,
-                                      ),
-                                      headersMobile: [
-                                        "NOM",
-                                        "EMAIL",
-                                        "STATUS"
-                                      ],
-                                      headers: [
-                                        "NOM",
-                                        "EMAIL",
-                                        "TÉLÉPHONE",
-                                        "ADDRESSE",
-                                        "STATUS"
-                                      ]),
+                                        customerService.setPage),
+                                    rowWidgetMobile: rowWidgetMobile(
+                                      context,
+                                      customerService.customers,
+                                      customerService.removeCustomer,
+                                      customerService.setPage,
+                                    ),
+                                    headersMobile: ["NOM", "EMAIL", "STATUS"],
+                                    headers: [
+                                      "NOM",
+                                      "EMAIL",
+                                      "TÉLÉPHONE",
+                                      "ADDRESSE",
+                                      // "STATUS"
+                                    ],
+                                    assignUser: false,
+                                  ),
                                   SizedBox(
                                     height: MySpacer.small,
                                   ),
@@ -295,25 +293,25 @@ List<TableRow> rowWidget(
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
-        TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Consumer<ColorChangeService>(
-                builder: (context, color, child) {
-                  return Text(
-                    statusTitles[
-                        data.status!.status == null ? 0 : data.status!.status!],
-                    style: TextStyle(
-                        color: color.statusColors[data.status!.status == null
-                            ? 0
-                            : data.status!.status!]),
-                    overflow: TextOverflow.ellipsis,
-                  );
-                },
-              ),
-            ))),
+        // TableCell(
+        //     verticalAlignment: TableCellVerticalAlignment.middle,
+        //     child: Center(
+        //         child: Padding(
+        //       padding: const EdgeInsets.symmetric(horizontal: 8),
+        //       child: Consumer<ColorChangeService>(
+        //         builder: (context, color, child) {
+        //           return Text(
+        //             statusTitles[
+        //                 data.status!.status == null ? 0 : data.status!.status!],
+        //             style: TextStyle(
+        //                 color: color.statusColors[data.status!.status == null
+        //                     ? 0
+        //                     : data.status!.status!]),
+        //             overflow: TextOverflow.ellipsis,
+        //           );
+        //         },
+        //       ),
+        //     ))),
         TableCell(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

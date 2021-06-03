@@ -122,6 +122,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  expand_widget:
+    dependency: "direct main"
+    description:
+      name: expand_widget
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   fake_async:
     dependency: transitive
     description:
@@ -440,6 +447,13 @@ packages:
     dependency: "direct main"
     description:
       name: pull_to_refresh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  readmore:
+    dependency: "direct main"
+    description:
+      name: readmore
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"

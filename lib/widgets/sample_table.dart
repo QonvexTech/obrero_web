@@ -7,15 +7,17 @@ class AllTable extends StatelessWidget {
   final List? datas;
   final List<TableRow>? rowWidget;
   final List<TableRow>? rowWidgetMobile;
+  final bool? assignUser;
 
-  const AllTable({
-    Key? key,
-    required this.datas,
-    required this.rowWidget,
-    required this.rowWidgetMobile,
-    required this.headersMobile,
-    required this.headers,
-  }) : super(key: key);
+  const AllTable(
+      {Key? key,
+      required this.datas,
+      required this.rowWidget,
+      required this.rowWidgetMobile,
+      required this.headersMobile,
+      required this.headers,
+      required this.assignUser})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Table(
@@ -23,7 +25,7 @@ class AllTable extends StatelessWidget {
           color: Colors.black12, width: 1, style: BorderStyle.solid),
       children: [
         //HEADER
-        MediaQuery.of(context).size.width <= 500
+        MediaQuery.of(context).size.width <= 500 || assignUser!
             ? TableRow(
                 decoration: BoxDecoration(color: Palette.drawerColor),
                 children: [
@@ -72,7 +74,7 @@ class AllTable extends StatelessWidget {
                             )))),
                   ]),
 
-        for (var row in MediaQuery.of(context).size.width <= 500
+        for (var row in MediaQuery.of(context).size.width <= 500 || assignUser!
             ? rowWidgetMobile!
             : rowWidget!)
           row

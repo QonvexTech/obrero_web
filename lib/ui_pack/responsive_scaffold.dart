@@ -3,8 +3,11 @@ import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
+import 'package:uitemplate/services/log_service.dart';
+import 'package:uitemplate/services/notification_services.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
@@ -51,9 +54,7 @@ class ResponsiveScaffold extends StatefulWidget {
           SubDrawerItems(
               icon: Icons.all_out, title: "General", content: GeneralSettings())
         ],
-        content: Container(
-          color: Colors.red,
-        )),
+        content: Container()),
   ];
 
   @override
@@ -91,6 +92,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   double dragStartAt = 0.0;
   bool showDrawerText = true;
   bool _showDrawer = false;
+  bool activeSettings = false;
   DrawerItem? _selectedDrawerItem;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
 
@@ -177,6 +179,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
       drawer: MediaQuery.of(context).size.width > 900
           ? null
           : Drawer(
+              // MOBILE
               child: Container(
                 color: Palette.drawerColor,
                 width: 500,
@@ -225,10 +228,11 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                               onPressed: item.subItems != null &&
                                       item.subItems!.length > 0
                                   ? () {
-                                      Navigator.of(context).pop(null);
+                                      print("clicl");
                                       setState(() {
                                         if (_selectedDrawerItem == item) {
                                           _selectedDrawerItem = null;
+                                          activeSettings = true;
                                         } else {
                                           _selectedDrawerItem = item;
                                         }
@@ -236,6 +240,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                     }
                                   : item.content != null
                                       ? () {
+                                          print("clicl");
+                                          activeSettings = false;
                                           Navigator.of(context).pop(null);
                                           setState(() {
                                             scaff.selectedContent =
@@ -265,9 +271,11 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                   ),
                                   if ((item.subItems != null &&
                                       item.subItems!.length > 0)) ...{
-                                    Icon(_selectedDrawerItem == item
-                                        ? Icons.keyboard_arrow_up
-                                        : Icons.keyboard_arrow_down)
+                                    Icon(
+                                        _selectedDrawerItem == item
+                                            ? Icons.keyboard_arrow_up
+                                            : Icons.keyboard_arrow_down,
+                                        color: Colors.white),
                                   }
                                 ],
                               ),
@@ -278,7 +286,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                             for (var sub_items in item.subItems!) ...{
                               AnimatedContainer(
                                   width: double.infinity,
-                                  color: Palette.contentBackground,
+                                  color: Palette.drawerColor,
                                   height: _selectedDrawerItem == item ? 60 : 0,
                                   duration: Duration(
                                       milliseconds: 100 *
@@ -291,6 +299,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                             setState(() {
                                               scaff.selectedContent =
                                                   sub_items.content;
+                                              _selectedDrawerItem = item;
+                                              activeSettings = true;
                                             });
                                           }
                                         : null,
@@ -299,14 +309,17 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                     child: Row(
                                       children: [
                                         if (_selectedDrawerItem == item) ...{
-                                          Icon(sub_items.icon),
+                                          Icon(sub_items.icon,
+                                              color: Colors.white)
                                         },
                                         if (sub_items.title != null) ...{
                                           const SizedBox(
                                             width: 10,
                                           ),
                                           Expanded(
-                                            child: Text(sub_items.title!),
+                                            child: Text(sub_items.title!,
+                                                style: TextStyle(
+                                                    color: Colors.white)),
                                           )
                                         }
                                       ],
@@ -385,7 +398,155 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                     ),
 
                     Spacer(),
-                    NotificationCard(),
+
+                    //NOTIFICATIONS
+                    PopupMenuButton(
+                      offset: Offset(50, 50),
+                      icon: StreamBuilder<bool>(
+                          stream: rxNotificationService.streamNewMessage$,
+                          builder: (context, result) {
+                            if (result.hasError) {
+                              return Center(
+                                child: Text(
+                                  "${result.error}",
+                                ),
+                              );
+                            }
+                            if (result.hasData) {
+                              return Stack(
+                                children: [
+                                  Icon(Icons.notifications),
+                                  result.data! == true
+                                      ? Positioned(
+                                          // draw a red marble
+                                          top: 0.0,
+                                          right: 0.0,
+                                          child: new Icon(Icons.brightness_1,
+                                              size: 8.0,
+                                              color: Colors.redAccent),
+                                        )
+                                      : Container()
+                                ],
+                              );
+                            } else {
+                              return Icon(Icons.notifications);
+                            }
+                          }),
+                      itemBuilder: (BuildContext context) {
+                        rxNotificationService.openMessage();
+                        return [
+                          PopupMenuItem(
+                            child: Container(
+                              width: 650,
+                              // height: MediaQuery.of(context).size.height - 100,
+
+                              child: StreamBuilder<List<LogModel>>(
+                                  stream: logService.stream$,
+                                  builder: (context, result) {
+                                    if (result.hasError) {
+                                      return Center(
+                                        child: Text(
+                                          "${result.error}",
+                                        ),
+                                      );
+                                    }
+
+                                    if (result.hasData &&
+                                        result.data!.length > 0) {
+                                      return Container(
+                                        width: 650,
+                                        height:
+                                            MediaQuery.of(context).size.height -
+                                                100,
+                                        child: ListView(
+                                          children: List.generate(
+                                              result.data!.length,
+                                              (index) => GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        scaff.selectedContent =
+                                                            LogScreen();
+                                                      });
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Card(
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 0,
+                                                              vertical: 3),
+                                                      child: Container(
+                                                        constraints:
+                                                            BoxConstraints(
+                                                                maxHeight: 90),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      8),
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .notification_important_rounded,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                              Expanded(
+                                                                child: ListTile(
+                                                                  title: Text(
+                                                                    "${result.data![index].title}",
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                  ),
+                                                                  subtitle:
+                                                                      Text(
+                                                                    "${result.data![index].body}",
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        width: 650,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: MySpacer.small,
+                                              ),
+                                              Image.asset(
+                                                "assets/images/emptynotification.png",
+                                                width: 50,
+                                              ),
+                                              SizedBox(
+                                                height: MySpacer.small,
+                                              ),
+                                              Text("Pas encore de notification")
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }),
+                            ),
+                          )
+                        ];
+                      },
+                    ),
                     profileData == null
                         ? CircleAvatar(
                             radius: 5,
@@ -395,6 +556,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                             ))
                         : PopupMenuButton(
                             onSelected: (val) async {
+                              activeSettings = true;
                               if (val == 1) {
                                 setState(() {
                                   scaff.selectedContent = GeneralSettings();
@@ -495,7 +657,11 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                       color: scaff.selectedContent.toString() ==
                                               item.content.toString()
                                           ? Colors.white
-                                          : Palette.drawerColor,
+                                          : item.content.toString() ==
+                                                      "Container" &&
+                                                  activeSettings
+                                              ? Colors.white38
+                                              : Palette.drawerColor,
                                       width: double.infinity,
                                       height: 60,
                                       child: item.subItems != null &&
@@ -505,13 +671,19 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                               icon: Icon(
                                                 item.icon,
                                                 color: scaff.selectedContent
-                                                            .toString() ==
-                                                        item.content.toString()
+                                                                .toString() ==
+                                                            item.content
+                                                                .toString() ||
+                                                        (item.content
+                                                                    .toString() ==
+                                                                "Container" &&
+                                                            activeSettings)
                                                     ? Palette.drawerColor
                                                     : Colors.white,
                                               ),
                                               onSelected: (value) {
                                                 setState(() {
+                                                  activeSettings = true;
                                                   scaff.selectedContent = value;
                                                 });
                                               },
@@ -567,6 +739,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                           setState(() {
                                                             scaff.selectedContent =
                                                                 item.content;
+                                                            activeSettings =
+                                                                false;
                                                           });
                                                         }
                                                       : null,
@@ -647,6 +821,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                       setState(() {
                                                         scaff.selectedContent =
                                                             sub_items.content;
+                                                        activeSettings = true;
                                                       });
                                                     }
                                                   : null,

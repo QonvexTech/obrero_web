@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -7,8 +8,10 @@ import 'package:uitemplate/services/project/project_service.dart';
 
 class MapScreen extends StatefulWidget {
   final bool? setCoord;
+  final Function? onCreate;
   const MapScreen({
     required this.setCoord,
+    required this.onCreate,
     Key? key,
   }) : super(key: key);
   @override
@@ -32,20 +35,16 @@ class _MapScreenState extends State<MapScreen> {
                   print(value);
                 },
                 child: GoogleMap(
-                  scrollGesturesEnabled: mapService.gesture,
                   onMapCreated: (controller) {
                     setState(() {
                       mapService.mapController = controller;
-                      if (projectProvider.projectsDateBase.length > 0) {
-                        mapService.mapController!.showMarkerInfoWindow(MarkerId(
-                            projectProvider.projectsDateBase[0].id.toString()));
-                      }
+                      widget.onCreate!();
                     });
                   },
                   myLocationButtonEnabled: true,
                   rotateGesturesEnabled: true,
                   initialCameraPosition: CameraPosition(
-                    target: initialPositon!,
+                    target: initialPositon,
                     zoom: mapService.zoom,
                   ),
                   buildingsEnabled: true,

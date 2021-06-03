@@ -21,7 +21,7 @@ class EmployeeSevice extends ChangeNotifier {
   List<UserProjectModel>? employeeProjects;
 
   late PaginationModel _pagination =
-      PaginationModel(lastPage: 1, fetch: fetchUsers);
+      PaginationModel(lastPage: 1, fetch: fetchUsers, perPage: 11);
 
   late PaginationModel _paginationload =
       PaginationModel(lastPage: 1, fetch: fetchUsers, page: 1);
@@ -40,7 +40,7 @@ class EmployeeSevice extends ChangeNotifier {
     if (text.isEmpty) {
       _users = _tempUsers;
     }
-    _pagination.perPage = _users!.length - 1;
+    _pagination.perPage = _users!.length;
     notifyListeners();
   }
 
@@ -117,8 +117,7 @@ class EmployeeSevice extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body);
 
-        var tempUserProject = UserProjectModel.fromListToUserProjectModel(data);
-        employeeProjects = tempUserProject;
+        employeeProjects = UserProjectModel.fromListToUserProjectModel(data);
         notifyListeners();
       }
     } catch (e) {
@@ -129,6 +128,7 @@ class EmployeeSevice extends ChangeNotifier {
   Future pastProjects(int userId) async {}
 
   Future fetchUsers() async {
+    print("fetching...");
     var url =
         Uri.parse("$user_api${_pagination.perPage}?page=${_pagination.page}");
     try {
@@ -195,6 +195,7 @@ class EmployeeSevice extends ChangeNotifier {
   Future updateUser(
       {required Map<String, dynamic> body, bool isAdmin = false}) async {
     var url = Uri.parse("$user_update");
+    bool updateSuccess = false;
     try {
       await http.post(url, body: body, headers: {
         "Accept": "application/json",
@@ -207,12 +208,12 @@ class EmployeeSevice extends ChangeNotifier {
         }
         print(data);
       });
+      updateSuccess = true;
     } catch (e) {
       print("UPDATE ERROR:$e");
     }
+    return updateSuccess;
   }
-
-  //TODO:fix delete user
 
   Future removeUser({required int id}) async {
     var url = Uri.parse("$user_delete/$id");

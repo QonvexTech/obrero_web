@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -32,6 +33,7 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
     final double _scrh = MediaQuery.of(context).size.height;
     ProfileService profileService = Provider.of<ProfileService>(context);
     return Container(
+      padding: EdgeInsets.all(20),
       color: Palette.contentBackground,
       child: Stack(
         children: [
@@ -44,33 +46,11 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        width: _scrw * 0.5,
-                        height: _scrh * .3,
-                        child: Center(
-                            child: MaterialButton(
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () async {
-                            await FilePicker.platform.pickFiles(
-                                allowMultiple: false,
-                                allowedExtensions: [
-                                  'jpg',
-                                  'jpeg',
-                                  'png'
-                                ]).then((pickedFile) {
-                              if (pickedFile != null) {
-                                profileService.base64Image =
-                                    pickedFile.files[0].bytes;
-                              }
-                            });
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10000)),
-                          minWidth: _scrh * .26,
-                          height: _scrh * .26,
-                          child: Container(
-                            width: _scrh * .26,
-                            height: _scrh * .26,
+                      Stack(
+                        children: [
+                          Container(
+                            width: _scrh * .15,
+                            height: _scrh * .15,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10000),
                                 color: Colors.grey.shade100,
@@ -97,7 +77,37 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                                     scale:
                                         profileData?.picture == null ? 5 : 1)),
                           ),
-                        )),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: MaterialButton(
+                                color: Palette.drawerColor,
+                                padding: const EdgeInsets.all(0),
+                                onPressed: () async {
+                                  await FilePicker.platform.pickFiles(
+                                      allowMultiple: false,
+                                      allowedExtensions: [
+                                        'jpg',
+                                        'jpeg',
+                                        'png'
+                                      ]).then((pickedFile) {
+                                    if (pickedFile != null) {
+                                      profileService.base64Image =
+                                          pickedFile.files[0].bytes;
+                                    }
+                                  });
+                                },
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10000)),
+                                minWidth: 50,
+                                height: 50,
+                                child: Icon(Icons.camera_alt,
+                                    color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: MySpacer.medium,
                       ),
                       Expanded(
                           child: Column(
@@ -152,8 +162,19 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                               });
                               await _service
                                   .updateUser(body: body, isAdmin: true)
-                                  .whenComplete(() => setState(
-                                      () => profileService.isLoading = false));
+                                  .then((success) {
+                                profileService.isLoading = false;
+                                if (success) {
+                                  Fluttertoast.showToast(
+                                      webBgColor:
+                                          "linear-gradient(to right, #5585E5, #5585E5)",
+                                      msg: "Mise à jour réussie",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 2,
+                                      fontSize: 16.0);
+                                }
+                              });
                             } else {
                               print("CANT UPDATE");
                             }

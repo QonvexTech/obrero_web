@@ -8,6 +8,7 @@ import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
+import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
@@ -58,28 +59,18 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             context,
                             projectProvider.setPage,
                             widget.fromPage == "project"
-                                ? ProjectList()
+                                ? ProjectList(
+                                    assignUser: false,
+                                  )
                                 : CustomerList()),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                projectProvider.projectOnDetails!.name!,
-                                style: Theme.of(context).textTheme.headline5,
-                              ),
-                              Text(
-                                "Planifié du ${projectProvider.projectOnDetails!.startDate.toString().split(" ")[0]} au ${projectProvider.projectOnDetails!.endDate.toString().split(" ")[0]} ",
-                                style: Theme.of(context).textTheme.headline6,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Spacer(),
-                      ],
+                    Text(
+                      projectProvider.projectOnDetails!.name!,
+                      style: Theme.of(context).textTheme.headline5,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      "Planifié du ${projectProvider.projectOnDetails!.startDate.toString().split(" ")[0]} au ${projectProvider.projectOnDetails!.endDate.toString().split(" ")[0]} ",
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(
                       height: MySpacer.large,
@@ -507,30 +498,57 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                   const EdgeInsets.symmetric(horizontal: 10),
                               children:
                                   List.generate(warnings()!.length, (index) {
-                                return Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.notification_important_rounded,
-                                          color: Colors.grey,
+                                return Stack(
+                                  children: [
+                                    Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons
+                                                  .notification_important_rounded,
+                                              color: Colors.grey,
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: ListTile(
+                                                title: Text(
+                                                    "${warnings()![index].title}"),
+                                                subtitle: Text(
+                                                    "${warnings()![index].body}"),
+                                              ),
+                                            )
+                                          ],
                                         ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: ListTile(
-                                            title: Text(
-                                                "${warnings()![index].title}"),
-                                            subtitle: Text(
-                                                "${warnings()![index].body}"),
-                                          ),
-                                        )
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                    // Consumer<ColorChangeService>(
+                                    //   builder: (context, data, child) {
+                                    //     return Positioned(
+                                    //         right: 10,
+                                    //         top: 10,
+                                    //         child: Container(
+                                    //           width: 100,
+                                    //           height: 20,
+                                    //           decoration: BoxDecoration(
+                                    //               color: Colors.grey,
+                                    //               // color: data.statusColors[
+                                    //               //     int.parse(
+                                    //               //         warnings()![index]
+                                    //               //             .type!)],
+                                    //               borderRadius:
+                                    //                   BorderRadius.circular(
+                                    //                       10)),
+                                    //           child: Text(
+                                    //               "${warnings()![index].body!}"),
+                                    //         ));
+                                    //   },
+                                    // ),
+                                  ],
                                 );
                               }),
                             ),
