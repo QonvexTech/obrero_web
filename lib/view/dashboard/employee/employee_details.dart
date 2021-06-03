@@ -230,7 +230,6 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                             SizedBox(
                               height: MySpacer.large,
                             ),
-                            //TODO: Assign projext
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -238,35 +237,32 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                   "Sites Attribués",
                                   style: Theme.of(context).textTheme.headline5,
                                 ),
-                                Container(
-                                  width: 150,
-                                  child: Center(
-                                    child: AddingButton(
-                                        addingPage: ProjectListAssign(
-                                          userId: widget.employeesModel!,
-                                        ),
-                                        buttonText: "Add More"),
-                                  ),
-                                )
+                                // Container(
+                                //   width: 150,
+                                //   child: Center(
+                                //     child: AddingButton(
+                                //         addingPage: ProjectListAssign(
+                                //           userId: widget.employeesModel!,
+                                //         ),
+                                //         buttonText: "Add More"),
+                                //   ),
+                                // )
                               ],
                             ),
                             SizedBox(
                               height: MySpacer.small,
                             ),
-
                             employeeSevice.employeeProjects == null
                                 ? Center(
                                     child: CircularProgressIndicator(),
                                   )
                                 : employeeSevice.employeeProjects!.length == 0
                                     ? EmptyContainer(
-                                        addingFunc: ProjectListAssign(
-                                          userId: widget.employeesModel!,
-                                        ),
+                                        addingFunc: null,
                                         title: "No assigned project yet",
-                                        description: "Add project Now",
+                                        description: "",
                                         buttonText: "Assign Projects",
-                                        showButton: true,
+                                        showButton: false,
                                       )
                                     : Column(
                                         children: [

@@ -36,7 +36,10 @@ class AddingButton extends StatelessWidget {
           ),
           Text(
             buttonText!,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Colors.white,
+            ),
+            overflow: TextOverflow.ellipsis,
           )
         ],
       ),

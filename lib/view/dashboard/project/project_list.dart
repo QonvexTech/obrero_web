@@ -15,11 +15,10 @@ import 'package:uitemplate/widgets/tablePagination.dart';
 
 class ProjectList extends StatefulWidget {
   final bool? assignUser;
+  final int? owner;
 
-  const ProjectList({
-    Key? key,
-    required this.assignUser,
-  }) : super(key: key);
+  const ProjectList({Key? key, required this.assignUser, this.owner = 00})
+      : super(key: key);
   @override
   _ProjectListState createState() => _ProjectListState();
 }
@@ -93,18 +92,19 @@ class _ProjectListState extends State<ProjectList> {
                           AllTable(
                             datas: projectProvider.projects,
                             rowWidget: rowWidget(
-                                context,
-                                projectProvider.projects,
-                                projectProvider.removeProject,
-                                projectProvider.setPage,
-                                projectProvider,
-                                widget.assignUser!),
+                              context,
+                              projectProvider.projects,
+                              projectProvider.removeProject,
+                              projectProvider.setPage,
+                              projectProvider,
+                            ),
                             rowWidgetMobile: rowWidgetMobile(
                               context,
                               projectProvider.projects,
                               projectProvider.removeProject,
                               projectProvider.setPage,
                               projectProvider,
+                              widget.owner!,
                               widget.assignUser!,
                             ),
                             headersMobile: ["NOM DU SITE", "OWNER", "ADDRESS"],
@@ -143,6 +143,7 @@ List<TableRow> rowWidgetMobile(
   Function remove,
   Function setPage,
   ProjectProvider projectProvider,
+  int owner,
   bool assignUser,
 ) {
   return [
@@ -209,9 +210,19 @@ List<TableRow> rowWidgetMobile(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Expanded(child: Container()),
-                                Icon(Icons.add_circle_outlined),
+                                data.assigneeIds!.contains(owner)
+                                    ? Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      )
+                                    : Icon(
+                                        Icons.add_circle_outlined,
+                                        color: Colors.green,
+                                      ),
                                 SizedBox(width: MySpacer.small),
-                                Text("Assign"),
+                                Text(data.assigneeIds!.contains(owner)
+                                    ? "Resign"
+                                    : "Assign"),
                                 Expanded(child: Container()),
                               ],
                             ),
@@ -264,12 +275,12 @@ List<TableRow> rowWidgetMobile(
 }
 
 List<TableRow> rowWidget(
-    BuildContext context,
-    List<ProjectModel> datas,
-    Function remove,
-    Function setPage,
-    ProjectProvider projectProvider,
-    bool assignUser) {
+  BuildContext context,
+  List<ProjectModel> datas,
+  Function remove,
+  Function setPage,
+  ProjectProvider projectProvider,
+) {
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
@@ -359,17 +370,15 @@ List<TableRow> rowWidget(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              assignUser
-                  ? IconButton(
-                      onPressed: () {
-                        print("Assign");
-                      },
-                      icon: Icon(
-                        Icons.add_circle_outlined,
-                        color: Palette.drawerColor,
-                      ),
-                    )
-                  : SizedBox(),
+              IconButton(
+                onPressed: () {
+                  print("Assign");
+                },
+                icon: Icon(
+                  Icons.add_circle_outlined,
+                  color: Palette.drawerColor,
+                ),
+              ),
               IconButton(
                 onPressed: () {
                   showDialog(

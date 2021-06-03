@@ -17,7 +17,7 @@ class ProjectModel extends ChangeNotifier {
   List<WarningModel>? warnings;
   DateTime? startDate;
   DateTime? endDate;
-  List<int>? assigneeIds;
+  List<int>? assigneeIds = [];
   List<EmployeesModel>? assignees;
   String? picture;
   List<ProjectImageModel>? images;
@@ -71,6 +71,12 @@ class ProjectModel extends ChangeNotifier {
         ? ProjectImageModel.formListtoImageModel(json["images"])
         : [];
     this.address = json["address"];
+
+    if (this.assignees != null || this.assignees!.length > 0) {
+      for (var assign in this.assignees!) {
+        this.assigneeIds!.add(assign.id!);
+      }
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -88,6 +94,7 @@ class ProjectModel extends ChangeNotifier {
         this.assigneeIds.toString().replaceAll("[", "").replaceAll("]", "");
     data["address"] = this.address ?? "";
     data["area_size"] = this.areaSize.toString();
+
     return data;
   }
 
@@ -95,9 +102,9 @@ class ProjectModel extends ChangeNotifier {
     List<ProjectModel> newProjects = [];
     for (var project in projects) {
       ProjectModel newProject = ProjectModel.fromJson(project);
-
       newProjects.add(newProject);
     }
+
     newProjects.reversed;
     return newProjects;
   }

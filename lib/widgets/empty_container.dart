@@ -33,7 +33,7 @@ class EmptyContainer extends StatelessWidget {
             width: 100,
           ),
           SizedBox(
-            height: MySpacer.large,
+            height: MySpacer.small,
           ),
           Text(
             title!,
@@ -48,7 +48,7 @@ class EmptyContainer extends StatelessWidget {
           ),
           showButton
               ? Container(
-                  width: 150,
+                  width: 160,
                   child: Center(
                     child: AddingButton(
                         addingPage: addingFunc, buttonText: buttonText),

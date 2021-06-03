@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:uitemplate/models/employes_model.dart';
-import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 
 class ProjectListAssign extends StatelessWidget {
@@ -10,7 +8,6 @@ class ProjectListAssign extends StatelessWidget {
   const ProjectListAssign({Key? key, required this.userId}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     return Expanded(
         child: Container(
       width: MediaQuery.of(context).size.width * 0.4,
@@ -19,6 +16,7 @@ class ProjectListAssign extends StatelessWidget {
         children: [
           ProjectList(
             assignUser: true,
+            owner: userId!.id!,
           ),
           IconButton(
               icon: Icon(
