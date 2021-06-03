@@ -39,12 +39,28 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
       Provider.of<EmployeeSevice>(context, listen: false)
           .workingProjects(widget.employeesModel!.id!)
           .whenComplete(() {
-        setMap();
+        setMap().whenComplete(() {
+          MapService mapService =
+              Provider.of<MapService>(context, listen: false);
+
+          mapService.mapController!.showMarkerInfoWindow(MarkerId(
+              Provider.of<EmployeeSevice>(context, listen: false)
+                  .employeeProjects![0]
+                  .userProject!
+                  .id!
+                  .toString()));
+
+          mapService.mapController!.moveCamera(CameraUpdate.newLatLng(
+              Provider.of<EmployeeSevice>(context, listen: false)
+                  .employeeProjects![0]
+                  .userProject!
+                  .coordinates!));
+        });
       });
     });
   }
 
-  void setMap() async {
+  Future setMap() async {
     print(
         "number : ${Provider.of<EmployeeSevice>(context, listen: false).employeeProjects!.length}");
     if (Provider.of<EmployeeSevice>(context, listen: false)
@@ -54,7 +70,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
       for (UserProjectModel project
           in Provider.of<EmployeeSevice>(context, listen: false)
               .employeeProjects!) {
-        Provider.of<MapService>(context, listen: false).markers.add(Marker(
+        Provider.of<MapService>(context, listen: false).markersAdd(Marker(
             onTap: () {
               try {
                 Provider.of<MapService>(context, listen: false)
@@ -75,24 +91,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
             markerId: MarkerId(project.id.toString()),
             position: project.userProject!.coordinates!));
       }
-      activeProject = Provider.of<EmployeeSevice>(context, listen: false)
-          .employeeProjects![0]
-          .id!;
+      // activeProject = Provider.of<EmployeeSevice>(context, listen: false)
+      //     .employeeProjects![0]
+      //     .id!;
 
-      MapService mapService = Provider.of<MapService>(context, listen: false);
-
-      mapService.mapController!.showMarkerInfoWindow(MarkerId(
-          Provider.of<EmployeeSevice>(context, listen: false)
-              .employeeProjects![0]
-              .userProject!
-              .id!
-              .toString()));
-
-      mapService.mapController!.moveCamera(CameraUpdate.newLatLng(
-          Provider.of<EmployeeSevice>(context, listen: false)
-              .employeeProjects![0]
-              .userProject!
-              .coordinates!));
     }
   }
 
@@ -477,6 +479,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                             child: Container(
                               child: MapScreen(
                                 setCoord: false,
+                                onCreate: () {},
                               ),
                             )),
                         SizedBox(

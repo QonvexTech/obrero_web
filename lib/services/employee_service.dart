@@ -117,8 +117,7 @@ class EmployeeSevice extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body);
 
-        var tempUserProject = UserProjectModel.fromListToUserProjectModel(data);
-        employeeProjects = tempUserProject;
+        employeeProjects = UserProjectModel.fromListToUserProjectModel(data);
         notifyListeners();
       }
     } catch (e) {
@@ -215,8 +214,6 @@ class EmployeeSevice extends ChangeNotifier {
     }
     return updateSuccess;
   }
-
-  //TODO:fix delete user
 
   Future removeUser({required int id}) async {
     var url = Uri.parse("$user_delete/$id");

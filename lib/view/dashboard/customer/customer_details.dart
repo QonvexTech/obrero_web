@@ -36,23 +36,26 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      Provider.of<CustomerService>(context, listen: false)
+      CustomerService customerService =
+          Provider.of<CustomerService>(context, listen: false);
+
+      customerService
           .workingProjectsCustomer(widget.customer!.id!)
           .whenComplete(() {
         Provider.of<MapService>(context, listen: false).mapInit(
-          Provider.of<CustomerService>(context, listen: false).customerProject!,
+          customerService.customerProject!,
           context,
           Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
         );
 
-        if (Provider.of<CustomerService>(context, listen: false)
-                .customerProject!
-                .length >
-            0) {
-          activeProject = Provider.of<CustomerService>(context, listen: false)
-              .customerProject![0]
-              .id!;
-        }
+        // if (Provider.of<CustomerService>(context, listen: false)
+        //         .customerProject!
+        //         .length >
+        //     0) {
+        //   activeProject = Provider.of<CustomerService>(context, listen: false)
+        //       .customerProject![0]
+        //       .id!;
+        // }
       });
     });
   }
@@ -390,58 +393,11 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                             height: MediaQuery.of(context).size.height * 0.8,
                             child: MapScreen(
                               setCoord: false,
+                              onCreate: () {
+                                //TODO: add
+                              },
                             ),
                           ),
-
-                          // Container(
-                          //   height: MediaQuery.of(context).size.height * 0.35,
-                          //   child: Column(
-                          //     children: [
-                          //       Row(
-                          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //         children: [
-                          //           Text(
-                          //             "Demande client et mise à jour",
-                          //             style: boldText,
-                          //           ),
-                          //           IconButton(
-                          //               icon: Icon(Icons.add_circle),
-                          //               onPressed: () {
-                          //                 //LOGS
-                          //               })
-                          //         ],
-                          //       ),
-                          //       SizedBox(
-                          //         height: MySpacer.small,
-                          //       ),
-                          //       Expanded(
-                          //         child: Container(
-                          //           child: ListView(
-                          //             children: [
-                          //               Card(
-                          //                 child: ListTile(
-                          //                   leading:
-                          //                       Icon(Icons.notification_important),
-                          //                   title: Row(
-                          //                     children: [
-                          //                       Text("Chantier"),
-                          //                       SizedBox(
-                          //                         width: MySpacer.small,
-                          //                       ),
-                          //                       Text("Avril")
-                          //                     ],
-                          //                   ),
-                          //                   subtitle: Text(
-                          //                       "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                          //                 ),
-                          //               ),
-                          //             ],
-                          //           ),
-                          //         ),
-                          //       )
-                          //     ],
-                          //   ),
-                          // )
                         ],
                       )))
             ]));

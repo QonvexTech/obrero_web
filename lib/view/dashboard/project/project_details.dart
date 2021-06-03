@@ -526,28 +526,28 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                         ),
                                       ),
                                     ),
-                                    Consumer<ColorChangeService>(
-                                      builder: (context, data, child) {
-                                        return Positioned(
-                                            right: 10,
-                                            top: 10,
-                                            child: Container(
-                                              width: 100,
-                                              height: 20,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.grey,
-                                                  // color: data.statusColors[
-                                                  //     int.parse(
-                                                  //         warnings()![index]
-                                                  //             .type!)],
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Text(
-                                                  "${warnings()![index].body!}"),
-                                            ));
-                                      },
-                                    ),
+                                    // Consumer<ColorChangeService>(
+                                    //   builder: (context, data, child) {
+                                    //     return Positioned(
+                                    //         right: 10,
+                                    //         top: 10,
+                                    //         child: Container(
+                                    //           width: 100,
+                                    //           height: 20,
+                                    //           decoration: BoxDecoration(
+                                    //               color: Colors.grey,
+                                    //               // color: data.statusColors[
+                                    //               //     int.parse(
+                                    //               //         warnings()![index]
+                                    //               //             .type!)],
+                                    //               borderRadius:
+                                    //                   BorderRadius.circular(
+                                    //                       10)),
+                                    //           child: Text(
+                                    //               "${warnings()![index].body!}"),
+                                    //         ));
+                                    //   },
+                                    // ),
                                   ],
                                 );
                               }),

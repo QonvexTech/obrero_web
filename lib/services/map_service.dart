@@ -39,6 +39,11 @@ class MapService extends ChangeNotifier {
   get zoom => _zoom;
   get markers => _markers;
 
+  markersAdd(value) {
+    _markers.add(value);
+    notifyListeners();
+  }
+
   void removeDefaultMarker() {
     _markers.removeWhere((element) => element.markerId.value == "temp");
     notifyListeners();
@@ -93,6 +98,7 @@ class MapService extends ChangeNotifier {
       print(e);
     }
     print("markers : ${_markers.length}");
+
     notifyListeners();
   }
 

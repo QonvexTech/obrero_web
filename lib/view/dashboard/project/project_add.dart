@@ -130,6 +130,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                     width: double.infinity,
                                     child: MapScreen(
                                       setCoord: true,
+                                      onCreate: () {},
                                     ))
                                 : SizedBox(),
                             Expanded(
@@ -773,6 +774,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                               width: double.infinity,
                               child: MapScreen(
                                 setCoord: true,
+                                onCreate: () {},
                               ))),
                     ]),
               ),

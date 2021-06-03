@@ -8,8 +8,10 @@ import 'package:uitemplate/services/project/project_service.dart';
 
 class MapScreen extends StatefulWidget {
   final bool? setCoord;
+  final Function? onCreate;
   const MapScreen({
     required this.setCoord,
+    required this.onCreate,
     Key? key,
   }) : super(key: key);
   @override
@@ -36,10 +38,7 @@ class _MapScreenState extends State<MapScreen> {
                   onMapCreated: (controller) {
                     setState(() {
                       mapService.mapController = controller;
-                      if (projectProvider.projectsDateBase.length > 0) {
-                        mapService.mapController!.showMarkerInfoWindow(MarkerId(
-                            projectProvider.projectsDateBase[0].id.toString()));
-                      }
+                      widget.onCreate!();
                     });
                   },
                   myLocationButtonEnabled: true,
