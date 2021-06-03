@@ -126,7 +126,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.large,
               ),
-
               TextField(
                 decoration: InputDecoration(
                     fillColor: Colors.white,
@@ -196,7 +195,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
-
               MediaQuery.of(context).size.width > 800
                   ? Row(
                       mainAxisSize: MainAxisSize.max,
@@ -298,63 +296,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                       ),
                     )
                   : SizedBox(),
-
-              // Row(
-              //   children: [
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "State",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "City",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // SizedBox(
-              //   height: MySpacer.large,
-              // ),
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "Démarrer",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "Terminer",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ],
           ))),
           const SizedBox(
@@ -368,9 +309,8 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               children: [
                 Expanded(
                   child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black26)),
                     child: MaterialButton(
+                      color: Colors.grey[200],
                       height: 60,
                       minWidth: double.infinity,
                       onPressed: () {

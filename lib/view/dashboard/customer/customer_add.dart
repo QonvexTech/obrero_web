@@ -293,10 +293,9 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
               children: [
                 Expanded(
                   child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black26)),
                     child: MaterialButton(
                       height: 60,
+                      color: Colors.grey[200],
                       minWidth: double.infinity,
                       onPressed: () {
                         Navigator.pop(context);
