@@ -23,7 +23,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
-  Map<dynamic, dynamic>? countryValue;
+  Map<dynamic, dynamic>? countryValue = countries[66];
 
   @override
   void initState() {
@@ -183,66 +183,107 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: DropdownButton<Map<dynamic, dynamic>>(
-                      underline: null,
-                      hint: Text("Select Your Country"),
-                      value: countryValue,
-                      icon: Icon(Icons.arrow_drop_down),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: TextStyle(color: Palette.drawerColor),
-                      onChanged: (Map<dynamic, dynamic>? newValue) {
-                        setState(() {
-                          countryValue = newValue!;
-                        });
-                      },
-                      items: countries
-                          .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
-                              (value) {
-                        return DropdownMenuItem<Map<dynamic, dynamic>>(
-                          value: value,
-                          child: Text(
-                            value["name"],
-                            overflow: TextOverflow.ellipsis,
+              MediaQuery.of(context).size.width > 800
+                  ? Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: DropdownButton<Map<dynamic, dynamic>>(
+                            underline: null,
+                            hint: Text("Country"),
+                            value: countryValue,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Palette.drawerColor),
+                            onChanged: (Map<dynamic, dynamic>? newValue) {
+                              setState(() {
+                                countryValue = newValue!;
+                              });
+                            },
+                            items: countries
+                                .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                    (value) {
+                              return DropdownMenuItem<Map<dynamic, dynamic>>(
+                                value: value,
+                                child: Text(
+                                  value["name"],
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
                           ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MySpacer.small,
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: TextField(
-                      onChanged: (value) {
-                        bodyToEdit.addAll({"address": value});
-                      },
-                      decoration: InputDecoration(
-                        hintStyle: transHeader,
-                        hintText: "Address",
-                        border: OutlineInputBorder(),
+                        ),
+                        SizedBox(
+                          width: MySpacer.small,
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: TextField(
+                            onChanged: (value) {
+                              bodyToEdit.addAll({"address": value});
+                            },
+                            decoration: InputDecoration(
+                              hintStyle: transHeader,
+                              hintText: "Address",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: addressController,
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      child: DropdownButton<Map<dynamic, dynamic>>(
+                        underline: null,
+                        hint: Text("Country"),
+                        value: countryValue,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Palette.drawerColor),
+                        onChanged: (Map<dynamic, dynamic>? newValue) {
+                          setState(() {
+                            countryValue = newValue!;
+                          });
+                        },
+                        items: countries
+                            .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                (value) {
+                          return DropdownMenuItem<Map<dynamic, dynamic>>(
+                            value: value,
+                            child: Text(
+                              value["name"],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
                       ),
-                      controller: addressController,
-                    ),
-                  ),
-                ],
-              ),
-              // TextField(
-              //   onChanged: (value) {
-              //     bodyToEdit.addAll({"address": value});
-              //   },R
-              //   decoration: InputDecoration(
-              //     hintText: "Status",
-              //     border: OutlineInputBorder(),
-              //   ),
-              //   controller: amountController,
-              // ),
+                    )
+                  : SizedBox(),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width < 800
+                      ? 0
+                      : MySpacer.small),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      flex: 3,
+                      child: TextField(
+                        onChanged: (value) {
+                          bodyToEdit.addAll({"address": value});
+                        },
+                        decoration: InputDecoration(
+                          hintStyle: transHeader,
+                          hintText: "Address",
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: addressController,
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ))),
           Container(
@@ -288,7 +329,8 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                           fname: fnameController.text,
                           lname: lnameController.text,
                           email: emailController.text,
-                          adress: addressController.text,
+                          adress: addressController.text +
+                              ", ${countryValue!["name"]}",
                           picture: customerService.base64Image != null
                               ? customerService.base64ImageEncoded
                               : "",
