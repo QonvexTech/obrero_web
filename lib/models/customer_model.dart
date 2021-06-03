@@ -1,4 +1,5 @@
 import 'package:uitemplate/models/payment_model.dart';
+import 'package:uitemplate/models/project_model.dart';
 
 class CustomerModel {
   int? id;
@@ -63,7 +64,9 @@ class CustomerModel {
     data["picture"] = this.picture.toString();
     data["status"] = this.status.toString();
     data["contact_number"] = this.contactNumber;
-    data["projects"] = this.customerProjects.toString();
+    data["projects"] =
+        ProjectModel.fromJsonListToProject(this.customerProjects!);
+
     return data;
   }
 

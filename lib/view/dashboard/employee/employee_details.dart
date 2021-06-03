@@ -1,5 +1,6 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:uitemplate/config/global.dart';
@@ -9,6 +10,7 @@ import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/models/user_project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/log_service.dart';
+import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
@@ -35,13 +37,71 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       Provider.of<EmployeeSevice>(context, listen: false)
-          .workingProjects(widget.employeesModel!.id!);
+          .workingProjects(widget.employeesModel!.id!)
+          .whenComplete(() {
+        setMap();
+      });
     });
   }
+
+  void setMap() async {
+    print(
+        "number : ${Provider.of<EmployeeSevice>(context, listen: false).employeeProjects!.length}");
+    if (Provider.of<EmployeeSevice>(context, listen: false)
+            .employeeProjects!
+            .length >
+        0) {
+      for (UserProjectModel project
+          in Provider.of<EmployeeSevice>(context, listen: false)
+              .employeeProjects!) {
+        Provider.of<MapService>(context, listen: false).markers.add(Marker(
+            onTap: () {
+              try {
+                Provider.of<MapService>(context, listen: false)
+                    .mapController!
+                    .showMarkerInfoWindow(
+                        MarkerId(project.userProject!.id.toString()));
+              } catch (e) {
+                print(e);
+              }
+            },
+            infoWindow: InfoWindow(
+                title: project.userProject!.name,
+                snippet: project.userProject!.address!.toString()),
+            icon: await BitmapDescriptor.fromAssetImage(
+                ImageConfiguration(),
+                Provider.of<ColorChangeService>(context, listen: false)
+                    .imagesStatus[project.userProject!.status!]),
+            markerId: MarkerId(project.id.toString()),
+            position: project.userProject!.coordinates!));
+      }
+      activeProject = Provider.of<EmployeeSevice>(context, listen: false)
+          .employeeProjects![0]
+          .id!;
+
+      MapService mapService = Provider.of<MapService>(context, listen: false);
+
+      mapService.mapController!.showMarkerInfoWindow(MarkerId(
+          Provider.of<EmployeeSevice>(context, listen: false)
+              .employeeProjects![0]
+              .userProject!
+              .id!
+              .toString()));
+
+      mapService.mapController!.moveCamera(CameraUpdate.newLatLng(
+          Provider.of<EmployeeSevice>(context, listen: false)
+              .employeeProjects![0]
+              .userProject!
+              .coordinates!));
+    }
+  }
+
+  int activeProject = 0;
 
   @override
   Widget build(BuildContext context) {
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
+    MapService mapService = Provider.of<MapService>(context);
     return Container(
       color: Palette.contentBackground,
       child: AdaptiveContainer(
@@ -188,6 +248,9 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                 )
                               ],
                             ),
+                            SizedBox(
+                              height: MySpacer.small,
+                            ),
 
                             employeeSevice.employeeProjects == null
                                 ? Center(
@@ -208,143 +271,174 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                           for (UserProjectModel project
                                               in employeeSevice
                                                   .employeeProjects!)
-                                            Container(
-                                              padding: EdgeInsets.all(8),
-                                              margin: EdgeInsets.symmetric(
-                                                  vertical: 5),
-                                              color: Colors.white,
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              constraints: BoxConstraints(
-                                                  minHeight: 150),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    project.userProject!.name!,
-                                                    style: boldText,
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Column(
+                                            GestureDetector(
+                                              onTap: () {
+                                                print("Click");
+                                                mapService.mapController!
+                                                    .showMarkerInfoWindow(
+                                                        MarkerId(project.id
+                                                            .toString()));
+                                                mapService.mapController!
+                                                    .moveCamera(
+                                                        CameraUpdate.newLatLng(
+                                                            project.userProject!
+                                                                .coordinates!));
+
+                                                setState(() {
+                                                  activeProject = project.id!;
+                                                });
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    border: Border.all(
+                                                        color: activeProject ==
+                                                                project.id
+                                                            ? Palette
+                                                                .drawerColor
+                                                            : Colors
+                                                                .transparent)),
+                                                padding: EdgeInsets.all(8),
+                                                margin: EdgeInsets.symmetric(
+                                                    vertical: 5),
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                constraints: BoxConstraints(
+                                                    minHeight: 150),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      project
+                                                          .userProject!.name!,
+                                                      style: boldText,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                  "Description",
+                                                                  style:
+                                                                      transHeader),
+                                                              ReadMoreText(
+                                                                project
+                                                                    .userProject!
+                                                                    .description!,
+                                                                trimLines: 1,
+                                                                trimLength: 290,
+                                                                trimMode:
+                                                                    TrimMode
+                                                                        .Length,
+                                                                trimCollapsedText:
+                                                                    'Montre plus',
+                                                                trimExpandedText:
+                                                                    'Montrer moins',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black),
+                                                                moreStyle: TextStyle(
+                                                                    color: Palette
+                                                                        .drawerColor,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                                lessStyle: TextStyle(
+                                                                    color: Palette
+                                                                        .drawerColor,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Column(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
                                                                   .start,
                                                           children: [
-                                                            Text("Description",
-                                                                style:
-                                                                    transHeader),
-                                                            ReadMoreText(
-                                                              project
-                                                                  .userProject!
-                                                                  .description!,
-                                                              trimLines: 1,
-                                                              trimLength: 290,
-                                                              trimMode: TrimMode
-                                                                  .Length,
-                                                              trimCollapsedText:
-                                                                  'Montre plus',
-                                                              trimExpandedText:
-                                                                  'Montrer moins',
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black),
-                                                              moreStyle: TextStyle(
-                                                                  color: Palette
-                                                                      .drawerColor,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                              lessStyle: TextStyle(
-                                                                  color: Palette
-                                                                      .drawerColor,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            )
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                    "Total des Heures Travaillées",
+                                                                    style:
+                                                                        transHeader),
+                                                                Text(
+                                                                  project.employeeHourList!.length >
+                                                                              0 &&
+                                                                          employeeSevice.getTotalHours(project.employeeHourList!) !=
+                                                                              null
+                                                                      ? "${employeeSevice.getTotalHours(project.employeeHourList!)}"
+                                                                      : "0.00",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .green,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            SizedBox(
+                                                              height: MySpacer
+                                                                  .medium,
+                                                            ),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text("Status",
+                                                                    style:
+                                                                        transHeader),
+                                                                Consumer<
+                                                                    ColorChangeService>(
+                                                                  builder:
+                                                                      (context,
+                                                                          data,
+                                                                          child) {
+                                                                    return Text(
+                                                                      statusTitles[project
+                                                                          .userProject!
+                                                                          .status!],
+                                                                      style: TextStyle(
+                                                                          color: data.statusColors[project
+                                                                              .userProject!
+                                                                              .status!]),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ],
                                                         ),
-                                                      ),
-                                                      SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                  "Total des Heures Travaillées",
-                                                                  style:
-                                                                      transHeader),
-                                                              Text(
-                                                                project.employeeHourList!.length >
-                                                                            0 &&
-                                                                        employeeSevice.getTotalHours(project.employeeHourList!) !=
-                                                                            null
-                                                                    ? "${employeeSevice.getTotalHours(project.employeeHourList!)}"
-                                                                    : "0.00",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .green,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          SizedBox(
-                                                            height:
-                                                                MySpacer.medium,
-                                                          ),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text("Status",
-                                                                  style:
-                                                                      transHeader),
-                                                              Consumer<
-                                                                  ColorChangeService>(
-                                                                builder:
-                                                                    (context,
-                                                                        data,
-                                                                        child) {
-                                                                  return Text(
-                                                                    statusTitles[project
-                                                                        .userProject!
-                                                                        .status!],
-                                                                    style: TextStyle(
-                                                                        color: data.statusColors[project
-                                                                            .userProject!
-                                                                            .status!]),
-                                                                  );
-                                                                },
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                         ],
