@@ -68,16 +68,31 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            "${widget.emplyoyee!.fname} ${widget.emplyoyee!.lname}",
-                            style: TextStyle(color: Colors.white),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "${widget.emplyoyee!.fname} ${widget.emplyoyee!.lname}",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              MediaQuery.of(context).size.width < 1300
+                                  ? Text(
+                                      "Projets totaux: ${employeeService.employeeProjects != null && employeeService.employeeProjects!.length > 0 ? employeeService.employeeProjects!.length : 0} ",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 10),
+                                    )
+                                  : SizedBox()
+                            ],
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          "Projets totaux: ${employeeService.employeeProjects != null && employeeService.employeeProjects!.length > 0 ? employeeService.employeeProjects!.length : 0} ",
-                          style: TextStyle(color: Colors.white, fontSize: 10),
-                        )
+                        MediaQuery.of(context).size.width > 1300
+                            ? Text(
+                                "Projets totaux: ${employeeService.employeeProjects != null && employeeService.employeeProjects!.length > 0 ? employeeService.employeeProjects!.length : 0} ",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 10),
+                              )
+                            : SizedBox()
                       ],
                     ),
                   ),
