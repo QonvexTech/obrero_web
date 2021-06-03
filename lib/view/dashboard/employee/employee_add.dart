@@ -15,6 +15,7 @@ class EmployeeAdd extends StatefulWidget {
 }
 
 class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
+  Map<dynamic, dynamic>? countryValue = countries[66];
   bool isEdit = false;
   Map<String, dynamic> bodyToUpdate = {};
   TextEditingController fnameController = TextEditingController();
@@ -41,6 +42,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     EmployeeSevice employeeService = Provider.of<EmployeeSevice>(context);
+
     final Size size = MediaQuery.of(context).size;
     return Container(
       width: size.width,
@@ -156,6 +158,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               TextField(
                 decoration: InputDecoration(
                   hintText: "Email",
+                  hintStyle: transHeader,
                   border: OutlineInputBorder(),
                 ),
                 controller: emailController,
@@ -171,6 +174,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                   : TextField(
                       decoration: InputDecoration(
                         hintText: "Password",
+                        hintStyle: transHeader,
                         border: OutlineInputBorder(),
                       ),
                       controller: passwordController,
@@ -181,6 +185,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               TextField(
                 decoration: InputDecoration(
                   hintText: "Téléphone",
+                  hintStyle: transHeader,
                   border: OutlineInputBorder(),
                 ),
                 controller: contactNumberController,
@@ -191,16 +196,108 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Address",
-                  border: OutlineInputBorder(),
-                ),
-                controller: addressController,
-                onChanged: (value) {
-                  bodyToUpdate.addAll({"address": value});
-                },
-              ),
+
+              MediaQuery.of(context).size.width > 800
+                  ? Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: DropdownButton<Map<dynamic, dynamic>>(
+                            underline: null,
+                            hint: Text("Country"),
+                            value: countryValue,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Palette.drawerColor),
+                            onChanged: (Map<dynamic, dynamic>? newValue) {
+                              setState(() {
+                                countryValue = newValue!;
+                              });
+                            },
+                            items: countries
+                                .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                    (value) {
+                              return DropdownMenuItem<Map<dynamic, dynamic>>(
+                                value: value,
+                                child: Text(
+                                  value["name"],
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MySpacer.small,
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: TextField(
+                            onChanged: (value) {
+                              bodyToUpdate.addAll({"address": value});
+                            },
+                            decoration: InputDecoration(
+                              hintStyle: transHeader,
+                              hintText: "Address",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: addressController,
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      child: DropdownButton<Map<dynamic, dynamic>>(
+                        underline: null,
+                        hint: Text("Country"),
+                        value: countryValue,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Palette.drawerColor),
+                        onChanged: (Map<dynamic, dynamic>? newValue) {
+                          setState(() {
+                            countryValue = newValue!;
+                          });
+                        },
+                        items: countries
+                            .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                (value) {
+                          return DropdownMenuItem<Map<dynamic, dynamic>>(
+                            value: value,
+                            child: Text(
+                              value["name"],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  : SizedBox(),
+              SizedBox(
+                  width: MediaQuery.of(context).size.width < 800
+                      ? 0
+                      : MySpacer.small),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      flex: 3,
+                      child: TextField(
+                        onChanged: (value) {
+                          bodyToUpdate.addAll({"address": value});
+                        },
+                        decoration: InputDecoration(
+                          hintStyle: transHeader,
+                          hintText: "Address",
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: addressController,
+                      ),
+                    )
+                  : SizedBox(),
 
               // Row(
               //   children: [
@@ -317,7 +414,8 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                             lname: lnameController.text,
                             email: emailController.text,
                             password: passwordController.text,
-                            address: addressController.text,
+                            address: addressController.text +
+                                ", ${countryValue!["name"]}",
                             picture: employeeService.base64Image != null
                                 ? employeeService.base64ImageEncoded
                                 : "",
