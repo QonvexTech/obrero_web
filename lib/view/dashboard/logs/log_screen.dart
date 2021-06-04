@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/services/log_service.dart';
@@ -40,30 +42,71 @@ class LogScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         children: List.generate(
                             result.data!.length,
-                            (index) => Card(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.notification_important_rounded,
-                                          color: Colors.grey,
+                            (index) => Stack(
+                                  children: [
+                                    Card(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons
+                                                  .notification_important_rounded,
+                                              color: Colors.grey,
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: ListTile(
+                                                  title: Text(
+                                                      "${result.data![index].title}"),
+                                                  subtitle: ReadMoreText(
+                                                    result.data![index].body
+                                                        .toString(),
+                                                    trimLines: 2,
+                                                    trimLength: 390,
+                                                    trimMode: TrimMode.Length,
+                                                    trimCollapsedText:
+                                                        'Montre plus',
+                                                    trimExpandedText:
+                                                        'Montrer moins',
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                    moreStyle: TextStyle(
+                                                        color:
+                                                            Palette.drawerColor,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                    lessStyle: TextStyle(
+                                                        color:
+                                                            Palette.drawerColor,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )),
+                                            ),
+                                            SizedBox(
+                                              width: MySpacer.large,
+                                            ),
+                                            SizedBox(
+                                              width: MySpacer.small,
+                                            )
+                                          ],
                                         ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: ListTile(
-                                            title: Text(
-                                                "${result.data![index].title}"),
-                                            subtitle: Text(
-                                                "${result.data![index].body}"),
-                                          ),
-                                        )
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                    Positioned(
+                                        bottom: 10,
+                                        right: 10,
+                                        child: Text(
+                                          "${months[DateTime.parse(result.data![index].created_at!).month]} ${DateTime.parse(result.data![index].created_at!).day}, ${DateTime.parse(result.data![index].created_at!).year}",
+                                          style:
+                                              TextStyle(color: Colors.black26),
+                                        ))
+                                  ],
                                 )),
                       ),
                     );

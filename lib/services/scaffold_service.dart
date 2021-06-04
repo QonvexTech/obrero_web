@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 
 class ScaffoldService extends ChangeNotifier {
-  dynamic? _selectedContent;
+  Widget? _selectedContent;
   int _selectedIndex = 0;
 
   get selectedContent => _selectedContent;
@@ -19,5 +20,6 @@ class ScaffoldService extends ChangeNotifier {
 
   init(value) {
     _selectedContent = value;
+    notifyListeners();
   }
 }

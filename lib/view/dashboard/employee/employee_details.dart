@@ -15,11 +15,9 @@ import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
-import 'package:uitemplate/widgets/adding_button.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/map.dart';
-import 'package:uitemplate/widgets/project_list_for_assigning.dart';
 
 class EmployeeDetails extends StatefulWidget {
   final EmployeesModel? employeesModel;
@@ -106,6 +104,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
     MapService mapService = Provider.of<MapService>(context);
     return Container(
       color: Palette.contentBackground,
+      padding: EdgeInsets.only(top: 20),
       child: AdaptiveContainer(
           physics:
               ClampingScrollPhysics(parent: NeverScrollableScrollPhysics()),
@@ -117,11 +116,16 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                 height: MediaQuery.of(context).size.height,
                 child: Column(
                   children: [
-                    backButton(
-                        context, employeeSevice.setPageScreen, EmployeeList()),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: backButton(context, employeeSevice.setPageScreen,
+                          EmployeeList()),
+                    ),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                        ),
                         child: ListView(
                           children: [
                             Row(

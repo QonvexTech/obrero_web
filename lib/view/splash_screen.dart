@@ -19,8 +19,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     this.init();
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
-    Provider.of<DashboardService>(context, listen: false)
-        .initGetId(projectProvider.projectsDateBase);
+    if (projectProvider.projects != null) {
+      Provider.of<DashboardService>(context, listen: false)
+          .initGetId(projectProvider.projectsDateBase);
+    }
+
     super.initState();
   }
 
