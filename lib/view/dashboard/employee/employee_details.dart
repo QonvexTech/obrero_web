@@ -15,11 +15,9 @@ import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
-import 'package:uitemplate/widgets/adding_button.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/map.dart';
-import 'package:uitemplate/widgets/project_list_for_assigning.dart';
 
 class EmployeeDetails extends StatefulWidget {
   final EmployeesModel? employeesModel;
