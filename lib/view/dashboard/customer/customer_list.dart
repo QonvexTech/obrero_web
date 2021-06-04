@@ -333,7 +333,68 @@ List<TableRow> rowWidget(
               ),
               IconButton(
                 onPressed: () {
-                  remove(id: data.id);
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                            backgroundColor: Palette.contentBackground,
+                            content: Container(
+                              height: 65,
+                              width: 380,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(
+                                        Icons.warning,
+                                        color: Colors.red,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text("Are you sure to delete "),
+                                          Text("${data.fname} ${data.lname}?",
+                                              style: TextStyle(
+                                                  color: Palette.drawerColor))
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: MySpacer.small,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      MaterialButton(
+                                        color: Colors.grey,
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("Cancel",
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ),
+                                      SizedBox(
+                                        width: MySpacer.medium,
+                                      ),
+                                      MaterialButton(
+                                        color: Palette.drawerColor,
+                                        onPressed: () {
+                                          remove(id: data.id);
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          "Confirm",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ));
                 },
                 icon: Icon(
                   Icons.delete,

@@ -476,52 +476,75 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                         });
                                                         Navigator.pop(context);
                                                       },
-                                                      child: Card(
-                                                        margin: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal: 0,
-                                                                vertical: 3),
-                                                        child: Container(
-                                                          constraints:
-                                                              BoxConstraints(
-                                                                  maxHeight:
-                                                                      90),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
+                                                      child: Stack(
+                                                        children: [
+                                                          Card(
+                                                            margin: EdgeInsets
+                                                                .symmetric(
                                                                     horizontal:
-                                                                        8),
-                                                            child: Row(
+                                                                        0,
+                                                                    vertical:
+                                                                        3),
+                                                            child: Column(
                                                               children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .notification_important_rounded,
-                                                                  color: Colors
-                                                                      .grey,
-                                                                ),
-                                                                Expanded(
+                                                                Container(
+                                                                  constraints:
+                                                                      BoxConstraints(
+                                                                          maxHeight:
+                                                                              90),
                                                                   child:
-                                                                      ListTile(
-                                                                    title: Text(
-                                                                      "${result.data![index].title}",
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                    subtitle:
-                                                                        Text(
-                                                                      "${result.data![index].body}",
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
+                                                                      Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                        horizontal:
+                                                                            8),
+                                                                    child: Row(
+                                                                      children: [
+                                                                        Icon(
+                                                                          Icons
+                                                                              .notification_important_rounded,
+                                                                          color:
+                                                                              Colors.grey,
+                                                                        ),
+                                                                        Expanded(
+                                                                          child:
+                                                                              ListTile(
+                                                                            title:
+                                                                                Text(
+                                                                              "${result.data![index].title}",
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                            subtitle:
+                                                                                Text(
+                                                                              "${result.data![index].body}",
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
                                                                     ),
                                                                   ),
+                                                                ),
+                                                                SizedBox(
+                                                                  height:
+                                                                      MySpacer
+                                                                          .small,
                                                                 )
                                                               ],
                                                             ),
                                                           ),
-                                                        ),
+                                                          Positioned(
+                                                            bottom: 10,
+                                                            right: 10,
+                                                            child: Text(
+                                                              "${months[DateTime.parse(result.data![index].created_at!).month]} ${DateTime.parse(result.data![index].created_at!).day}, ${DateTime.parse(result.data![index].created_at!).year}",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black26,
+                                                                  fontSize: 13),
+                                                            ),
+                                                          )
+                                                        ],
                                                       ),
                                                     )),
                                           ),
