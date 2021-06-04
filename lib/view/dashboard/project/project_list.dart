@@ -258,7 +258,95 @@ List<TableRow> rowWidgetMobile(
                               ),
                               IconButton(
                                 onPressed: () {
-                                  remove(id: data.id);
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                            backgroundColor:
+                                                Palette.contentBackground,
+                                            content: Expanded(
+                                              child: Container(
+                                                height: 70,
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(
+                                                          Icons.warning,
+                                                          color: Colors.red,
+                                                        ),
+                                                        SizedBox(
+                                                          width: MySpacer.small,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                                "Are you sure to delete "),
+                                                            Container(
+                                                              width: 100,
+                                                              child: Text(
+                                                                "${data.name}?",
+                                                                style: TextStyle(
+                                                                    color: Palette
+                                                                        .drawerColor),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: MySpacer.small,
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        MaterialButton(
+                                                          color: Colors.grey,
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: Text("Cancel",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white)),
+                                                        ),
+                                                        SizedBox(
+                                                          width:
+                                                              MySpacer.medium,
+                                                        ),
+                                                        MaterialButton(
+                                                          color: Palette
+                                                              .drawerColor,
+                                                          onPressed: () {
+                                                            remove(id: data.id);
+                                                            Navigator.pop(
+                                                                context);
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: Text(
+                                                            "Confirm",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ));
                                 },
                                 icon: Icon(
                                   Icons.delete,
@@ -396,7 +484,81 @@ List<TableRow> rowWidget(
               ),
               IconButton(
                 onPressed: () {
-                  remove(id: data.id);
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                            backgroundColor: Palette.contentBackground,
+                            content: Expanded(
+                              child: Container(
+                                height: 70,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.warning,
+                                          color: Colors.red,
+                                        ),
+                                        SizedBox(
+                                          width: MySpacer.small,
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text("Are you sure to delete "),
+                                            Container(
+                                              width: 100,
+                                              child: Text(
+                                                "${data.name}?",
+                                                style: TextStyle(
+                                                    color: Palette.drawerColor),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: MySpacer.small,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        MaterialButton(
+                                          color: Colors.grey,
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text("Cancel",
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                        ),
+                                        SizedBox(
+                                          width: MySpacer.medium,
+                                        ),
+                                        MaterialButton(
+                                          color: Palette.drawerColor,
+                                          onPressed: () {
+                                            remove(id: data.id);
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            "Confirm",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ));
                 },
                 icon: Icon(
                   Icons.delete,
