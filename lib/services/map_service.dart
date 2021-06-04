@@ -183,7 +183,14 @@ class MapService extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = json.decode(response.body);
         addressGeo = data["plus_code"]["compound_code"] ?? "$lat , $lang";
-        address.text = addressGeo;
+        var splitAdd = addressGeo.split(" ");
+        splitAdd.removeAt(0);
+        var concatenate = StringBuffer();
+
+        splitAdd.forEach((item) {
+          concatenate.write(item + " ");
+        });
+        address.text = concatenate.toString();
 
         notifyListeners();
       } else {

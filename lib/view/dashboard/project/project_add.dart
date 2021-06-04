@@ -842,9 +842,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       () => projectProvider.fetchProjects());
                             }
 
-                            print(
-                                " dataproejcttodedit ${projectAddService.bodyToEdit}");
-
                             projectProvider.updateProject(
                                 bodyToEdit: projectAddService.bodyToEdit);
 
