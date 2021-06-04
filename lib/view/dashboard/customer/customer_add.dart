@@ -49,7 +49,8 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
     return Container(
       width: size.width,
       height: size.height,
-      constraints: BoxConstraints(maxWidth: 800, maxHeight: size.height / 1.3),
+      constraints:
+          BoxConstraints(maxWidth: 800, maxHeight: (size.height * 0.6) + 40),
       padding: EdgeInsets.all(10),
       child: Form(
           child: Column(

@@ -21,7 +21,7 @@ class EmployeeSevice extends ChangeNotifier {
   List<UserProjectModel>? employeeProjects;
 
   late PaginationModel _pagination =
-      PaginationModel(lastPage: 1, fetch: fetchUsers, perPage: 11);
+      PaginationModel(lastPage: 1, fetch: fetchUsers, perPage: 10);
 
   late PaginationModel _paginationload =
       PaginationModel(lastPage: 1, fetch: fetchUsers, page: 1);
@@ -129,8 +129,8 @@ class EmployeeSevice extends ChangeNotifier {
 
   Future fetchUsers() async {
     print("fetching...");
-    var url =
-        Uri.parse("$user_api${_pagination.perPage}?page=${_pagination.page}");
+    var url = Uri.parse(
+        "$user_api${_pagination.perPage + 1}?page=${_pagination.page}");
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",
@@ -139,7 +139,8 @@ class EmployeeSevice extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
-        if (json.decode(response.body)["next_page_url"] != null) {
+        if (json.decode(response.body)["next_page_url"] != null &&
+            json.decode(response.body)["total"] != _pagination.perPage) {
           _pagination.isNext = true;
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
@@ -149,14 +150,17 @@ class EmployeeSevice extends ChangeNotifier {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
 
-        _pagination.totalEntries = json.decode(response.body)["total"] - 1;
-
         notifyListeners();
 
         print("TOTAL USER : ${_pagination.totalEntries}");
         print(data);
 
         var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
+        _pagination.totalEntries = json.decode(response.body)["total"] - 1;
+
+        if (_paginationload.totalEntries <= _paginationload.perPage) {
+          _paginationload.perPage = _paginationload.totalEntries;
+        }
         _users = listOfUsers;
         _tempUsers = listOfUsers;
         searchController.clear();
@@ -264,14 +268,16 @@ class EmployeeSevice extends ChangeNotifier {
           _paginationload.lastPage = json.decode(response.body)["last_page"];
         }
 
-        _paginationload.totalEntries = json.decode(response.body)["total"] - 1;
-        if (_paginationload.totalEntries < _paginationload.perPage) {
-          _paginationload.perPage = _paginationload.totalEntries;
-        }
         notifyListeners();
         print(data);
 
         var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
+
+        _pagination.totalEntries = json.decode(response.body)["total"] - 1;
+
+        if (_paginationload.totalEntries <= _paginationload.perPage) {
+          _paginationload.perPage = _paginationload.totalEntries;
+        }
         _usersload!.addAll(listOfUsers);
         _tempUsersload!.addAll(listOfUsers);
         searchController.clear();
