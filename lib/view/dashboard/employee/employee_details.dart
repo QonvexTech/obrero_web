@@ -106,6 +106,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
     MapService mapService = Provider.of<MapService>(context);
     return Container(
       color: Palette.contentBackground,
+      padding: EdgeInsets.only(top: 20),
       child: AdaptiveContainer(
           physics:
               ClampingScrollPhysics(parent: NeverScrollableScrollPhysics()),
@@ -117,11 +118,16 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                 height: MediaQuery.of(context).size.height,
                 child: Column(
                   children: [
-                    backButton(
-                        context, employeeSevice.setPageScreen, EmployeeList()),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: backButton(context, employeeSevice.setPageScreen,
+                          EmployeeList()),
+                    ),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                        ),
                         child: ListView(
                           children: [
                             Row(

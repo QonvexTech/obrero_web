@@ -78,7 +78,11 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
               AdaptiveItem(
                 height: MediaQuery.of(context).size.height,
                 content: Container(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.only(
+                    top: 20,
+                    left: 20,
+                    bottom: 20,
+                  ),
                   child: ListView(
                     // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -373,7 +377,8 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
               ),
               AdaptiveItem(
                   content: Container(
-                      padding: EdgeInsets.all(50),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 30, horizontal: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

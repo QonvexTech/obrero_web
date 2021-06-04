@@ -24,11 +24,13 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   void initState() {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
-      Provider.of<MapService>(context, listen: false).mapInit(
-        projectProvider.projectsDateBase,
-        context,
-        Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
-      );
+      if (projectProvider.projects != null) {
+        Provider.of<MapService>(context, listen: false).mapInit(
+          projectProvider.projectsDateBase,
+          context,
+          Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
+        );
+      }
     });
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -211,14 +213,17 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 onMapCreated: (controller) {
                                   setState(() {
                                     dashboardService.mapController = controller;
-                                    if (projectProvider
-                                            .projectsDateBase.length >
-                                        0) {
-                                      dashboardService.mapController!
-                                          .showMarkerInfoWindow(MarkerId(
-                                              projectProvider
-                                                  .projectsDateBase[0].id
-                                                  .toString()));
+                                    if (projectProvider.projectsDateBase !=
+                                        null) {
+                                      if (projectProvider
+                                              .projectsDateBase.length >
+                                          0) {
+                                        dashboardService.mapController!
+                                            .showMarkerInfoWindow(MarkerId(
+                                                projectProvider
+                                                    .projectsDateBase[0].id
+                                                    .toString()));
+                                      }
                                     }
                                   });
                                 },
@@ -266,7 +271,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               child: CircularProgressIndicator(),
             )
           : projectProvider.projectsDateBase.length <= 0
-              ? Expanded(
+              ? Container(
                   // color: Palette.contentBackground,
                   child: EmptyContainer(
                   addingFunc: ProjectAddScreen(),
