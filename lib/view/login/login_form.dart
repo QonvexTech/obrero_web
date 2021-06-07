@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/autentication.dart';
 
@@ -53,6 +54,7 @@ class _LoginFormState extends State<LoginForm> {
     });
 
     if (_formKey.currentState!.validate()) {
+      print("login");
       auth.login(_emailController.text, _passwordController.text).then((value) {
         if (value) {
           setState(() {
@@ -60,11 +62,22 @@ class _LoginFormState extends State<LoginForm> {
             Navigator.pushReplacementNamed(context, "/home");
           });
         } else {
+          Fluttertoast.showToast(
+              webBgColor: "linear-gradient(to right, #E21010, #ED9393)",
+              msg: "Invalid Account",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 2,
+              fontSize: 16.0);
           setState(() {
             loader = false;
           });
           print("Login fail");
         }
+      });
+    } else {
+      setState(() {
+        loader = false;
       });
     }
   }
@@ -150,6 +163,7 @@ class _LoginFormState extends State<LoginForm> {
                   TextFormField(
                       focusNode: _passwordFocus,
                       onFieldSubmitted: (value) {
+                        print("login");
                         login(auth, context);
                       },
                       controller: _passwordController,
@@ -208,6 +222,7 @@ class _LoginFormState extends State<LoginForm> {
                           widget.widthButton, 15, widget.widthButton, 15),
                       color: Colors.white,
                       onPressed: () {
+                        print("login");
                         login(auth, context);
                       },
                       child: Text('Login',
