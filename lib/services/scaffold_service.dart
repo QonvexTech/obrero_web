@@ -20,6 +20,5 @@ class ScaffoldService extends ChangeNotifier {
 
   init(value) {
     _selectedContent = value;
-    notifyListeners();
   }
 }

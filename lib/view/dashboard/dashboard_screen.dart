@@ -272,7 +272,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             )
           : projectProvider.projectsDateBase.length <= 0
               ? Container(
-                  // color: Palette.contentBackground,
                   child: EmptyContainer(
                   addingFunc: ProjectAddScreen(),
                   title: "Aucun projet cette fois",

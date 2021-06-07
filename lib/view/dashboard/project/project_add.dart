@@ -76,10 +76,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       }
 
       isEdit = true;
-    } else {
-      // Provider.of<MapService>(context, listen: false).findLocalByCoordinates(
-      //     widget.projectToEdit!.coordinates!.latitude.toString(),
-      //     widget.projectToEdit!.coordinates!.longitude.toString());
     }
 
     Provider.of<ProjectAddService>(context, listen: false).bodyToEdit = {};

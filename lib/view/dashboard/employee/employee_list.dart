@@ -355,36 +355,10 @@ List<TableRow> rowWidget(BuildContext context, List<EmployeesModel> datas,
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
-        // TableCell(
-        //     verticalAlignment: TableCellVerticalAlignment.middle,
-        //     child: Center(
-        //         child: Padding(
-        //       padding: const EdgeInsets.symmetric(horizontal: 8),
-        //       child: Text(
-        //         data.status.toString(),
-        //         overflow: TextOverflow.ellipsis,
-        //       ),
-        //     ))),
         TableCell(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // MaterialButton(
-              //   color: Palette.drawerColor,
-              //   onPressed: () {
-              //     showDialog(
-              //         context: context,
-              //         builder: (_) => AlertDialog(
-              //             backgroundColor: Palette.contentBackground,
-              //             content: EmployeeProjectsDetails(
-              //               emplyoyee: data,
-              //             )));
-              //   },
-              //   child: Text(
-              //     "Voir les projets",
-              //     style: TextStyle(color: Colors.white),
-              //   ),
-              // ),
               IconButton(
                   icon: Icon(
                     Icons.work,

@@ -179,7 +179,6 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       var response = await http.post(url, body: newEmployee.toJson(), headers: {
         "Accept": "application/json",
-        // "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -227,8 +226,6 @@ class EmployeeSevice extends ChangeNotifier {
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
-        var data = json.decode(response.body);
-        // print(data);
         _users!.removeWhere((element) => element.id == id);
 
         if (_users!.length == 0) {
