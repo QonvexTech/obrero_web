@@ -68,8 +68,10 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       style: Theme.of(context).textTheme.headline5,
                       overflow: TextOverflow.ellipsis,
                     ),
+
+                    // "${months[projectProvider.projectOnDetails!.startDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} "
                     Text(
-                      "Planifié du ${projectProvider.projectOnDetails!.startDate.toString().split(" ")[0]} au ${projectProvider.projectOnDetails!.endDate.toString().split(" ")[0]} ",
+                      "Planifié du ${months[projectProvider.projectOnDetails!.startDate.month]} ${projectProvider.projectOnDetails!.startDate.day}, ${projectProvider.projectOnDetails!.startDate.year} au ${months[projectProvider.projectOnDetails!.endDate.month]} ${projectProvider.projectOnDetails!.endDate.day}, ${projectProvider.projectOnDetails!.endDate.year} ",
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(
