@@ -107,14 +107,20 @@ class _ProjectListState extends State<ProjectList> {
                               widget.owner!,
                               widget.assignUser!,
                             ),
-                            headersMobile: ["NOM DU SITE", "OWNER", "ADDRESS"],
+                            headersMobile: [
+                              "NOM DU SITE",
+                              "OWNER",
+                              "ADDRESS",
+                              "ACTIONS"
+                            ],
                             headers: [
                               "NOM DU SITE",
                               "OWNER",
                               "ADDRESS",
                               "AREA SIZE",
                               "START DATE",
-                              "END DATE"
+                              "END DATE",
+                              "ACTIONS"
                             ],
                             assignUser: widget.assignUser,
                           ),

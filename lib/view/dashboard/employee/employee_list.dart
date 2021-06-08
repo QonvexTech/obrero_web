@@ -90,12 +90,18 @@ class _EmployeeListState extends State<EmployeeList> {
                                       employeeService.users!,
                                       employeeService.removeUser,
                                       employeeService.setPageScreen),
-                                  headersMobile: ["NOM", "EMAIL", "ADDRESSE"],
+                                  headersMobile: [
+                                    "NOM",
+                                    "EMAIL",
+                                    "ADDRESSE",
+                                    "ACTIONS"
+                                  ],
                                   headers: [
                                     "NOM",
                                     "EMAIL",
                                     "TÉLÉPHONE",
                                     "ADDRESSE",
+                                    "ACTIONS"
                                   ],
                                   assignUser: false,
                                 ),

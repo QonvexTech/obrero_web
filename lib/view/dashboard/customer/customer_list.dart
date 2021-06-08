@@ -97,13 +97,18 @@ class _CustomerListState extends State<CustomerList> {
                                       customerService.removeCustomer,
                                       customerService.setPage,
                                     ),
-                                    headersMobile: ["NOM", "EMAIL", "STATUS"],
+                                    headersMobile: [
+                                      "NOM",
+                                      "EMAIL",
+                                      "STATUS",
+                                      "ACTIONS"
+                                    ],
                                     headers: [
                                       "NOM",
                                       "EMAIL",
                                       "TÉLÉPHONE",
                                       "ADDRESSE",
-                                      // "STATUS"
+                                      "ACTIONS"
                                     ],
                                     assignUser: false,
                                   ),

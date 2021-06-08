@@ -42,14 +42,6 @@ class AllTable extends StatelessWidget {
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               )))),
-                    TableCell(
-                        child: Container(
-                            height: 50,
-                            child: Center(
-                                child: Text(
-                              "",
-                              style: TextStyle(color: Colors.white),
-                            )))),
                   ])
             : TableRow(
                 decoration: BoxDecoration(color: Palette.drawerColor),
@@ -64,14 +56,6 @@ class AllTable extends StatelessWidget {
                                 header,
                                 style: TextStyle(color: Colors.white),
                               )))),
-                    TableCell(
-                        child: Container(
-                            height: 50,
-                            child: Center(
-                                child: Text(
-                              "",
-                              style: TextStyle(color: Colors.white),
-                            )))),
                   ]),
 
         for (var row in MediaQuery.of(context).size.width <= 500 || assignUser!
