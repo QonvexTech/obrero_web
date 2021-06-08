@@ -128,16 +128,13 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                           children: [
                             Flexible(
                               child: Container(
-                                padding: EdgeInsets.only(right: 50),
+                                padding: EdgeInsets.only(right: 50, bottom: 10),
                                 width: viewMore
                                     ? MediaQuery.of(context).size.width
                                     : MediaQuery.of(context).size.width * 0.2,
-                                child: Text(
-                                  widget.project!.description!,
-                                  overflow: viewMore
-                                      ? TextOverflow.fade
-                                      : TextOverflow.ellipsis,
-                                ),
+                                child: Text(widget.project!.description!,
+                                    maxLines: viewMore ? 5 : 2,
+                                    overflow: TextOverflow.ellipsis),
                               ),
                             ),
                             viewMore
