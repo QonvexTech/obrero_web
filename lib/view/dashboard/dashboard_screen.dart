@@ -24,13 +24,11 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   void initState() {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
-      if (projectProvider.projects != null) {
-        Provider.of<MapService>(context, listen: false).mapInit(
-          projectProvider.projectsDateBase,
-          context,
-          Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
-        );
-      }
+      Provider.of<MapService>(context, listen: false).mapInit(
+        projectProvider.projectsDateBase,
+        context,
+        Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
+      );
     });
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -202,9 +200,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                               child: CircularProgressIndicator(),
                             )
                           : InkWell(
-                              onHover: (value) {
-                                print(value);
-                              },
                               child: GoogleMap(
                                 onTap: (x) {
                                   mapService.gesture = true;
