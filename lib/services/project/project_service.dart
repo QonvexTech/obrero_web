@@ -25,6 +25,14 @@ class ProjectProvider extends ChangeNotifier {
   String hours = "0.00";
   List<String> listHours = [];
 
+  double _warningHeight = 800;
+
+  get warningHeight => _warningHeight;
+  set warningHeight(value) {
+    _warningHeight = value;
+    notifyListeners();
+  }
+
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchProjects);
 

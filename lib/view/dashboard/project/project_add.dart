@@ -88,6 +88,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   void dispose() {
     nameController.dispose();
     descriptionController.dispose();
+
     Provider.of<ProjectAddService>(context, listen: false)
         .clear()
         .Provider

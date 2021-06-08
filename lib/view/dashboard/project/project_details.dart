@@ -8,7 +8,6 @@ import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
@@ -39,6 +38,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+
     var scaff = Provider.of<ScaffoldService>(context);
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -432,8 +432,8 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                     height: MySpacer.small,
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.7,
                     width: MediaQuery.of(context).size.width,
+                    height: projectProvider.warningHeight,
                     child: StreamBuilder<List<LogModel>>(
                       builder: (context, result) {
                         if (result.hasError) {
@@ -454,10 +454,16 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                 newWarnings.add(log);
                               }
                             }
+
+                            projectProvider.warningHeight =
+                                MediaQuery.of(context).size.height * 0.7;
+
                             return newWarnings;
                           }
 
                           if (warnings()!.length <= 0) {
+                            projectProvider.warningHeight =
+                                MediaQuery.of(context).size.height * 0.2;
                             return Container(
                               height: 50,
                               child: Center(
