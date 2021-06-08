@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/employes_model.dart';
@@ -72,6 +73,16 @@ class ProjectAddService extends ChangeNotifier {
         .replaceAll(",", ".!.")
         .replaceAll("4.!.", "4,")
         .substring(1, encodedImagetoString.length - 1);
+  }
+
+  removeImage(var image) {
+    _projectImages!.remove(image);
+    notifyListeners();
+  }
+
+  clear() {
+    _base64Image!.clear();
+    _projectImages!.clear();
   }
 
   setOwner(value, isEdit) {
