@@ -129,68 +129,68 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                               ],
                             ),
                           ),
-                          customTextField(controller: email, label: "Email")
-                        ],
-                      )),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: MaterialButton(
-                          minWidth: double.infinity,
-                          height: 60,
-                          onPressed: () async {
-                            Map<String, dynamic> body = {
-                              "user_id": profileData!.id.toString()
-                            };
-                            if (email.text != profileData!.email) {
-                              body.addAll({"email": email.text});
-                            }
-                            if (first_name.text != profileData!.firstName) {
-                              body.addAll({"first_name": first_name.text});
-                            }
-                            if (last_name.text != profileData!.lastName) {
-                              body.addAll({"last_name": last_name.text});
-                            }
-                            if (profileService.base64Image != null) {
-                              body.addAll({
-                                "picture":
-                                    "data:image/jpg;base64,${profileService.base64ImageEncoded}"
-                              });
-                            }
-                            if (body.length > 1) {
-                              setState(() {
-                                profileService.isLoading = true;
-                              });
-                              await _service
-                                  .updateUser(body: body, isAdmin: true)
-                                  .then((success) {
-                                profileService.isLoading = false;
-                                if (success) {
-                                  Fluttertoast.showToast(
-                                      webBgColor:
-                                          "linear-gradient(to right, #5585E5, #5585E5)",
-                                      msg: "Mise à jour réussie",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 2,
-                                      fontSize: 16.0);
+                          customTextField(controller: email, label: "Email"),
+                          SizedBox(
+                            height: MySpacer.medium,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: MaterialButton(
+                              minWidth: double.infinity,
+                              height: 60,
+                              onPressed: () async {
+                                Map<String, dynamic> body = {
+                                  "user_id": profileData!.id.toString()
+                                };
+                                if (email.text != profileData!.email) {
+                                  body.addAll({"email": email.text});
                                 }
-                              });
-                            } else {
-                              print("CANT UPDATE");
-                            }
-                          },
-                          child: Center(
-                            child: Text(
-                              "Mettre à jour",
-                              style: TextStyle(color: Colors.white),
+                                if (first_name.text != profileData!.firstName) {
+                                  body.addAll({"first_name": first_name.text});
+                                }
+                                if (last_name.text != profileData!.lastName) {
+                                  body.addAll({"last_name": last_name.text});
+                                }
+                                if (profileService.base64Image != null) {
+                                  body.addAll({
+                                    "picture":
+                                        "data:image/jpg;base64,${profileService.base64ImageEncoded}"
+                                  });
+                                }
+                                if (body.length > 1) {
+                                  setState(() {
+                                    profileService.isLoading = true;
+                                  });
+                                  await _service
+                                      .updateUser(body: body, isAdmin: true)
+                                      .then((success) {
+                                    profileService.isLoading = false;
+                                    if (success) {
+                                      Fluttertoast.showToast(
+                                          webBgColor:
+                                              "linear-gradient(to right, #5585E5, #5585E5)",
+                                          msg: "Mise à jour réussie",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 2,
+                                          fontSize: 16.0);
+                                    }
+                                  });
+                                } else {
+                                  print("CANT UPDATE");
+                                }
+                              },
+                              child: Center(
+                                child: Text(
+                                  "Mettre à jour",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                              color: Palette.drawerColor,
                             ),
                           ),
-                          color: Palette.drawerColor,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      )
+                        ],
+                      )),
                     ],
                   ),
                 )),
