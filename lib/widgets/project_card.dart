@@ -158,7 +158,8 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                       ),
                       viewMore
                           ? Padding(
-                              padding: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 23, vertical: 10),
                               child: Row(
                                 children: [
                                   SizedBox(
