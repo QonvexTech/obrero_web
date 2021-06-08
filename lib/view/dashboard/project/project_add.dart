@@ -41,7 +41,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
 
   bool isEdit = false;
   bool checked = false;
-  bool showImageDelete = false;
 
   CustomerModel? customerSelected;
 
@@ -703,102 +702,87 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                   for (var image
                                                       in projectAddService
                                                           .projectImages)
-                                                    MaterialButton(
-                                                      onPressed: () {
-                                                        setState(() {
-                                                          showImageDelete =
-                                                              true;
+                                                    Stack(
+                                                      children: [
+                                                        Container(
+                                                          width: _scrh * .26,
+                                                          height: _scrh * .26,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade100,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade400,
+                                                                      offset:
+                                                                          Offset(
+                                                                              3,
+                                                                              3),
+                                                                      blurRadius:
+                                                                          2,
+                                                                    )
+                                                                  ],
+                                                                  image: DecorationImage(
+                                                                      fit: profileData?.picture == null && image == null
+                                                                          ? BoxFit
+                                                                              .scaleDown
+                                                                          : BoxFit
+                                                                              .cover,
+                                                                      alignment: profileData?.picture == null &&
+                                                                              image ==
+                                                                                  null
+                                                                          ? AlignmentDirectional
+                                                                              .bottomCenter
+                                                                          : AlignmentDirectional
+                                                                              .center,
+                                                                      image: tempImageProvider(
+                                                                          file:
+                                                                              image,
+                                                                          netWorkImage: profileData
+                                                                              ?.picture,
+                                                                          defaultImage:
+                                                                              'icons/admin_icon.png'),
+                                                                      scale: profileData?.picture ==
+                                                                              null
+                                                                          ? 5
+                                                                          : 1)),
+                                                        ),
+                                                        Positioned(
+                                                          top: 5,
+                                                          right: 5,
+                                                          child:
+                                                              AnimatedContainer(
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    300),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            100),
+                                                                color: Colors
+                                                                    .white38),
+                                                            child: IconButton(
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .delete_forever,
+                                                                  color: Colors
+                                                                      .red[600],
+                                                                ),
+                                                                onPressed: () {
+                                                                  print(
+                                                                      "DELETE");
 
-                                                          Future.delayed(
-                                                              Duration(
-                                                                  seconds: 2),
-                                                              () {
-                                                            setState(() {
-                                                              showImageDelete =
-                                                                  false;
-                                                            });
-                                                          });
-                                                        });
-                                                      },
-                                                      child: Stack(
-                                                        children: [
-                                                          Container(
-                                                            width: _scrh * .26,
-                                                            height: _scrh * .26,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade100,
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .shade400,
-                                                                        offset: Offset(
-                                                                            3,
-                                                                            3),
-                                                                        blurRadius:
-                                                                            2,
-                                                                      )
-                                                                    ],
-                                                                    image: DecorationImage(
-                                                                        fit: profileData?.picture == null && image == null
-                                                                            ? BoxFit
-                                                                                .scaleDown
-                                                                            : BoxFit
-                                                                                .cover,
-                                                                        alignment: profileData?.picture == null && image == null
-                                                                            ? AlignmentDirectional
-                                                                                .bottomCenter
-                                                                            : AlignmentDirectional
-                                                                                .center,
-                                                                        image: tempImageProvider(
-                                                                            file:
-                                                                                image,
-                                                                            netWorkImage: profileData
-                                                                                ?.picture,
-                                                                            defaultImage:
-                                                                                'icons/admin_icon.png'),
-                                                                        scale: profileData?.picture ==
-                                                                                null
-                                                                            ? 5
-                                                                            : 1)),
+                                                                  projectAddService
+                                                                      .removeImage(
+                                                                          image);
+                                                                }),
                                                           ),
-                                                          showImageDelete
-                                                              ? Positioned(
-                                                                  bottom: 5,
-                                                                  right: 5,
-                                                                  child:
-                                                                      AnimatedContainer(
-                                                                    duration: Duration(
-                                                                        milliseconds:
-                                                                            300),
-                                                                    decoration: BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                                100),
-                                                                        color: Colors
-                                                                            .white38),
-                                                                    child: IconButton(
-                                                                        icon: Icon(
-                                                                          Icons
-                                                                              .delete_forever,
-                                                                          color:
-                                                                              Colors.red[600],
-                                                                        ),
-                                                                        onPressed: () {
-                                                                          print(
-                                                                              "DELETE");
-
-                                                                          projectAddService
-                                                                              .removeImage(image);
-                                                                        }),
-                                                                  ),
-                                                                )
-                                                              : SizedBox()
-                                                        ],
-                                                      ),
+                                                        )
+                                                      ],
                                                     ),
                                                   if (projectAddService
                                                           .projectImages
