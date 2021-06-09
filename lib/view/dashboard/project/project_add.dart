@@ -76,13 +76,11 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       }
 
       isEdit = true;
-    } else {
-      Provider.of<ProjectAddService>(context, listen: false).initUint8();
     }
+    // else {
+    //   Provider.of<ProjectAddService>(context, listen: false).initUint8();
+    // }
 
-    Provider.of<ProjectAddService>(context, listen: false)
-        .addBodyEdit({"id": widget.projectToEdit!.id.toString()});
-    print(Provider.of<ProjectAddService>(context, listen: false).bodyToEdit);
     super.initState();
   }
 
