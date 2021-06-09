@@ -79,7 +79,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       isEdit = true;
     }
 
-    Provider.of<ProjectAddService>(context, listen: false).bodyToEdit = {};
+    Provider.of<ProjectAddService>(context, listen: false)
+        .addBodyEdit({"id": widget.projectToEdit!.id.toString()});
     print(Provider.of<ProjectAddService>(context, listen: false).bodyToEdit);
     super.initState();
   }
@@ -885,6 +886,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                   .whenComplete(
                                       () => projectProvider.fetchProjects());
                             }
+
+                            projectAddService.addBodyEdit({
+                              "picture": projectAddService.converteduint8list()
+                            });
 
                             projectProvider.updateProject(
                                 bodyToEdit: projectAddService.bodyToEdit);

@@ -274,6 +274,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                   ),
                                 ),
                               ),
+                              SizedBox(height: MySpacer.small),
                             ],
                           )
                         : Column(

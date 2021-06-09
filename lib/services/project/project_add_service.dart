@@ -18,7 +18,7 @@ class ProjectAddService extends ChangeNotifier {
   int _activeOwnerIndex = 0;
   List<Uint8List>? _projectImages = [];
   Uint8List? _base64Image;
-  Map _bodyToEdit = {};
+  Map<dynamic, dynamic> _bodyToEdit = {};
   bool justScroll = true;
 
   get bodyToEdit => _bodyToEdit;
@@ -34,7 +34,7 @@ class ProjectAddService extends ChangeNotifier {
   get assignIdsToRemove => _assignIdsToRemove;
   get assignIdsToAdd => _assignIdsToAdd;
 
-  addBodyEdit(value) {
+  addBodyEdit(dynamic value) {
     _bodyToEdit.addAll(value);
     notifyListeners();
   }
