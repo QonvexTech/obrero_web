@@ -27,7 +27,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
 
   @override
   void initState() {
-    Provider.of<EmployeeSevice>(context, listen: false)..base64Image = null;
     if (widget.userToEdit != null) {
       fnameController.text = widget.userToEdit!.fname!;
       lnameController.text = widget.userToEdit!.lname!;
@@ -108,10 +107,8 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                                   'png'
                                 ]).then((pickedFile) {
                               if (pickedFile != null) {
-                                setState(() {
-                                  employeeService.base64Image =
-                                      pickedFile.files[0].bytes;
-                                });
+                                employeeService.base64Image =
+                                    pickedFile.files[0].bytes;
                               }
                             });
                           },
@@ -350,6 +347,8 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                             Navigator.pop(context);
                           });
                         } else {
+                          print(employeeService.base64Image);
+                          print(employeeService.base64ImageEncoded);
                           EmployeesModel newEmployee = EmployeesModel(
                             fname: fnameController.text,
                             lname: lnameController.text,
@@ -365,7 +364,9 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
 
                           employeeService
                               .createUser(newEmployee)
-                              .whenComplete(() => Navigator.pop(context));
+                              .whenComplete(() {
+                            Navigator.pop(context);
+                          });
                         }
                       },
                       child: Text(

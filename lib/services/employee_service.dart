@@ -18,7 +18,14 @@ class EmployeeSevice extends ChangeNotifier {
   List<EmployeesModel>? _usersload;
   List<EmployeesModel>? _tempUsersload;
   PaginationService paginationService = PaginationService();
-  List<UserProjectModel>? employeeProjects;
+  List<UserProjectModel>? _employeeProjects;
+
+  get employeeProjects => _employeeProjects;
+
+  set employeeProjects(value) {
+    _employeeProjects = value;
+    notifyListeners();
+  }
 
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchUsers, perPage: 10);
@@ -118,11 +125,11 @@ class EmployeeSevice extends ChangeNotifier {
         List data = json.decode(response.body);
 
         employeeProjects = UserProjectModel.fromListToUserProjectModel(data);
-        notifyListeners();
       }
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
 
   Future pastProjects(int userId) async {}
@@ -149,8 +156,6 @@ class EmployeeSevice extends ChangeNotifier {
         if (json.decode(response.body)["last_page"] != null) {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
-
-        notifyListeners();
 
         print("TOTAL USER : ${_pagination.totalEntries}");
         print(data);
@@ -182,7 +187,14 @@ class EmployeeSevice extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print(response.body);
+        print("BODY :${response.body}");
+
+        var data = json.decode(response.body);
+
+        updateUser(body: {
+          "user_id": data["data"]["details"]["id"],
+          "picture": newEmployee.picture != null ? newEmployee.picture : "",
+        });
 
         paginationService.addedItem(_pagination);
         fetchUsers();

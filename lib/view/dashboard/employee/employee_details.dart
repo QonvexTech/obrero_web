@@ -34,65 +34,77 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      Provider.of<EmployeeSevice>(context, listen: false)
-          .workingProjects(widget.employeesModel!.id!)
-          .whenComplete(() {
-        setMap().whenComplete(() {
-          MapService mapService =
-              Provider.of<MapService>(context, listen: false);
+      try {
+        Provider.of<EmployeeSevice>(context, listen: false)
+            .workingProjects(widget.employeesModel!.id!)
+            .whenComplete(() {
+          if (Provider.of<EmployeeSevice>(context, listen: false)
+                  .employeeProjects ==
+              null) {
+            setMap().whenComplete(() {
+              MapService mapService =
+                  Provider.of<MapService>(context, listen: false);
 
-          mapService.mapController!.showMarkerInfoWindow(MarkerId(
-              Provider.of<EmployeeSevice>(context, listen: false)
-                  .employeeProjects![0]
-                  .userProject!
-                  .id!
-                  .toString()));
+              mapService.mapController!.showMarkerInfoWindow(MarkerId(
+                  Provider.of<EmployeeSevice>(context, listen: false)
+                      .employeeProjects![0]
+                      .userProject!
+                      .id!
+                      .toString()));
 
-          mapService.mapController!.moveCamera(CameraUpdate.newLatLng(
-              Provider.of<EmployeeSevice>(context, listen: false)
-                  .employeeProjects![0]
-                  .userProject!
-                  .coordinates!));
+              mapService.mapController!.moveCamera(CameraUpdate.newLatLng(
+                  Provider.of<EmployeeSevice>(context, listen: false)
+                      .employeeProjects![0]
+                      .userProject!
+                      .coordinates!));
+            });
+          }
         });
-      });
+      } catch (e) {
+        print(e);
+      }
     });
   }
 
   Future setMap() async {
-    print(
-        "number : ${Provider.of<EmployeeSevice>(context, listen: false).employeeProjects!.length}");
-    if (Provider.of<EmployeeSevice>(context, listen: false)
-            .employeeProjects!
-            .length >
-        0) {
-      for (UserProjectModel project
-          in Provider.of<EmployeeSevice>(context, listen: false)
-              .employeeProjects!) {
-        Provider.of<MapService>(context, listen: false).markersAdd(Marker(
-            onTap: () {
-              try {
-                Provider.of<MapService>(context, listen: false)
-                    .mapController!
-                    .showMarkerInfoWindow(
-                        MarkerId(project.userProject!.id.toString()));
-              } catch (e) {
-                print(e);
-              }
-            },
-            infoWindow: InfoWindow(
-                title: project.userProject!.name,
-                snippet: project.userProject!.address!.toString()),
-            icon: await BitmapDescriptor.fromAssetImage(
-                ImageConfiguration(),
-                Provider.of<ColorChangeService>(context, listen: false)
-                    .imagesStatus[project.userProject!.status!]),
-            markerId: MarkerId(project.id.toString()),
-            position: project.userProject!.coordinates!));
-      }
-      // activeProject = Provider.of<EmployeeSevice>(context, listen: false)
-      //     .employeeProjects![0]
-      //     .id!;
+    try {
+      print(
+          "number : ${Provider.of<EmployeeSevice>(context, listen: false).employeeProjects!.length}");
+      if (Provider.of<EmployeeSevice>(context, listen: false)
+              .employeeProjects!
+              .length >
+          0) {
+        for (UserProjectModel project
+            in Provider.of<EmployeeSevice>(context, listen: false)
+                .employeeProjects!) {
+          Provider.of<MapService>(context, listen: false).markersAdd(Marker(
+              onTap: () {
+                try {
+                  Provider.of<MapService>(context, listen: false)
+                      .mapController!
+                      .showMarkerInfoWindow(
+                          MarkerId(project.userProject!.id.toString()));
+                } catch (e) {
+                  print(e);
+                }
+              },
+              infoWindow: InfoWindow(
+                  title: project.userProject!.name,
+                  snippet: project.userProject!.address!.toString()),
+              icon: await BitmapDescriptor.fromAssetImage(
+                  ImageConfiguration(),
+                  Provider.of<ColorChangeService>(context, listen: false)
+                      .imagesStatus[project.userProject!.status!]),
+              markerId: MarkerId(project.id.toString()),
+              position: project.userProject!.coordinates!));
+        }
+        // activeProject = Provider.of<EmployeeSevice>(context, listen: false)
+        //     .employeeProjects![0]
+        //     .id!;
 
+      }
+    } catch (e) {
+      print(e);
     }
   }
 

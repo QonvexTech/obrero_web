@@ -5,6 +5,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/settings/color_change_service.dart';
+import 'package:uitemplate/services/settings/tableHelper.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_add.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
@@ -20,7 +21,7 @@ class CustomerList extends StatefulWidget {
   _CustomerListState createState() => _CustomerListState();
 }
 
-class _CustomerListState extends State<CustomerList> {
+class _CustomerListState extends State<CustomerList> with TableHelper {
   @override
   void initState() {
     super.initState();
@@ -223,90 +224,13 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
                           ),
                           IconButton(
                             onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                        backgroundColor:
-                                            Palette.contentBackground,
-                                        content: Expanded(
-                                          child: Container(
-                                            height: 70,
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.warning,
-                                                      color: Colors.red,
-                                                    ),
-                                                    SizedBox(
-                                                      width: MySpacer.small,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                            "Are you sure to delete "),
-                                                        Container(
-                                                          width: 150,
-                                                          child: Text(
-                                                            "${data.fname} ${data.lname}?",
-                                                            style: TextStyle(
-                                                                color: Palette
-                                                                    .drawerColor),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: MySpacer.small,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    MaterialButton(
-                                                      color: Colors.grey,
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text("Cancel",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .white)),
-                                                    ),
-                                                    SizedBox(
-                                                      width: MySpacer.medium,
-                                                    ),
-                                                    MaterialButton(
-                                                      color:
-                                                          Palette.drawerColor,
-                                                      onPressed: () {
-                                                        remove(id: data.id);
-                                                        Navigator.pop(context);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text(
-                                                        "Confirm",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ));
+                              TableHelper.showDeleteCard(
+                                  context,
+                                  data.fname.toString() +
+                                      " " +
+                                      data.fname.toString(),
+                                  remove,
+                                  data.id);
                             },
                             icon: Icon(
                               Icons.delete,
@@ -420,74 +344,11 @@ List<TableRow> rowWidget(
               ),
               IconButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                            backgroundColor: Palette.contentBackground,
-                            content: Expanded(
-                              child: Container(
-                                height: 70,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Icon(
-                                          Icons.warning,
-                                          color: Colors.red,
-                                        ),
-                                        SizedBox(
-                                          width: MySpacer.small,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text("Are you sure to delete "),
-                                            Text("${data.fname} ${data.lname}?",
-                                                style: TextStyle(
-                                                    color: Palette.drawerColor))
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: MySpacer.small,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        MaterialButton(
-                                          color: Colors.grey,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text("Cancel",
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                        ),
-                                        SizedBox(
-                                          width: MySpacer.medium,
-                                        ),
-                                        MaterialButton(
-                                          color: Palette.drawerColor,
-                                          onPressed: () {
-                                            remove(id: data.id);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            "Confirm",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ));
+                  TableHelper.showDeleteCard(
+                      context,
+                      data.fname.toString() + " " + data.fname.toString(),
+                      remove,
+                      data.id);
                 },
                 icon: Icon(
                   Icons.delete,
