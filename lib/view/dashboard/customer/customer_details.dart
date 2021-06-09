@@ -118,11 +118,12 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                     alignment: widget.customer!.picture == null
                                         ? AlignmentDirectional.bottomCenter
                                         : AlignmentDirectional.center,
-                                    image: fetchImage(
-                                        netWorkImage: widget.customer?.picture),
-                                    scale: widget.customer!.picture == null
-                                        ? 5
-                                        : 1)),
+                                    image: widget.customer?.picture == null
+                                        ? AssetImage('icons/admin_icon.png')
+                                        : fetchImage(
+                                            netWorkImage:
+                                                widget.customer?.picture),
+                                    scale: 1)),
                           ),
                           SizedBox(
                             width: MySpacer.medium,
