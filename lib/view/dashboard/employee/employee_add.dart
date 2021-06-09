@@ -348,7 +348,8 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                           });
                         } else {
                           print(employeeService.base64Image);
-                          print(employeeService.base64ImageEncoded);
+                          print(
+                              "PICTURE : ${employeeService.base64ImageEncoded}");
                           EmployeesModel newEmployee = EmployeesModel(
                             fname: fnameController.text,
                             lname: lnameController.text,

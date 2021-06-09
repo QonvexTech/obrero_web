@@ -191,10 +191,10 @@ class EmployeeSevice extends ChangeNotifier {
 
         var data = json.decode(response.body);
 
-        updateUser(body: {
-          "user_id": data["data"]["details"]["id"],
-          "picture": newEmployee.picture != null ? newEmployee.picture : "",
-        });
+        // updateUser(body: {
+        //   "user_id": data["data"]["details"]["id"],
+        //   "picture": newEmployee.picture != null ? newEmployee.picture : "",
+        // });
 
         paginationService.addedItem(_pagination);
         fetchUsers();
@@ -224,6 +224,7 @@ class EmployeeSevice extends ChangeNotifier {
         print(data);
       });
       updateSuccess = true;
+      print("UPDATE SUCCESS");
     } catch (e) {
       print("UPDATE ERROR:$e");
     }

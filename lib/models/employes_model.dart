@@ -58,6 +58,8 @@ class EmployeesModel extends ChangeNotifier {
     data["first_name"] = this.fname;
     data["last_name"] = this.lname;
     data["email"] = this.email;
+    data["picture"] =
+        this.picture != null ? "data:image/jpg;base64,${this.picture}" : "";
     data["password"] = this.password;
     data["address"] = this.address;
     data["contact_number"] = this.contactNumber;
