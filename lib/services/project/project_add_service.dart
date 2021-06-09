@@ -34,6 +34,10 @@ class ProjectAddService extends ChangeNotifier {
   get assignIdsToRemove => _assignIdsToRemove;
   get assignIdsToAdd => _assignIdsToAdd;
 
+  initUint8() {
+    _projectImages = [];
+  }
+
   addBodyEdit(dynamic value) {
     _bodyToEdit.addAll(value);
     notifyListeners();

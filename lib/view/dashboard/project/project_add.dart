@@ -36,7 +36,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   TextEditingController searchController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
   bool isEdit = false;
   bool checked = false;
 
@@ -77,6 +76,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       }
 
       isEdit = true;
+    } else {
+      Provider.of<ProjectAddService>(context, listen: false).initUint8();
     }
 
     Provider.of<ProjectAddService>(context, listen: false)
