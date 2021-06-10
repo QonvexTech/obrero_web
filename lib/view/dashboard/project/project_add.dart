@@ -3,6 +3,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:provider/provider.dart';
@@ -854,76 +855,90 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                         color: Palette.drawerColor,
                         minWidth: double.infinity,
                         onPressed: () {
-                          if (isEdit) {
-                            projectAddService.setOwner(
-                                customerSelected!.id, isEdit);
-                            projectAddService.addBodyEdit({
-                              "project_id": widget.projectToEdit!.id.toString()
-                            });
+                          if (_formKey.currentState!.validate()) {
+                            if (customerSelected != null) {
+                              if (isEdit) {
+                                projectAddService.setOwner(
+                                    customerSelected!.id, isEdit);
+                                projectAddService.addBodyEdit({
+                                  "project_id":
+                                      widget.projectToEdit!.id.toString()
+                                });
 
-                            if (projectAddService.assignIdsToAdd.length > 0) {
-                              print("ADDING");
-                              projectAddService
-                                  .assign(
-                                      listAssignIds: projectAddService
-                                          .assignIdsToAdd
-                                          .toString()
-                                          .replaceAll("[", "")
-                                          .replaceAll("]", ""),
-                                      projectId: widget.projectToEdit!.id!)
-                                  .whenComplete(
-                                      () => projectProvider.fetchProjects());
-                            }
-                            if (projectAddService.assignIdsToRemove.length >
-                                0) {
-                              print("REMOVING");
-                              projectAddService
-                                  .removeAssign(
-                                      listAssignIds: projectAddService
-                                          .assignIdsToRemove
-                                          .toString()
-                                          .replaceAll("[", "")
-                                          .replaceAll("]", ""),
-                                      projectId: widget.projectToEdit!.id!)
-                                  .whenComplete(
-                                      () => projectProvider.fetchProjects());
-                            }
+                                if (projectAddService.assignIdsToAdd.length >
+                                    0) {
+                                  print("ADDING");
+                                  projectAddService
+                                      .assign(
+                                          listAssignIds: projectAddService
+                                              .assignIdsToAdd
+                                              .toString()
+                                              .replaceAll("[", "")
+                                              .replaceAll("]", ""),
+                                          projectId: widget.projectToEdit!.id!)
+                                      .whenComplete(() =>
+                                          projectProvider.fetchProjects());
+                                }
+                                if (projectAddService.assignIdsToRemove.length >
+                                    0) {
+                                  print("REMOVING");
+                                  projectAddService
+                                      .removeAssign(
+                                          listAssignIds: projectAddService
+                                              .assignIdsToRemove
+                                              .toString()
+                                              .replaceAll("[", "")
+                                              .replaceAll("]", ""),
+                                          projectId: widget.projectToEdit!.id!)
+                                      .whenComplete(() =>
+                                          projectProvider.fetchProjects());
+                                }
 
-                            projectAddService.addBodyEdit({
-                              "picture": projectAddService.converteduint8list()
-                            });
+                                projectAddService.addBodyEdit({
+                                  "picture":
+                                      projectAddService.converteduint8list()
+                                });
 
-                            projectProvider.updateProject(
-                                bodyToEdit: projectAddService.bodyToEdit);
+                                projectProvider.updateProject(
+                                    bodyToEdit: projectAddService.bodyToEdit);
 
-                            Navigator.pop(context);
-                          } else {
-                            if (_formKey.currentState!.validate()) {
-                              ProjectModel newProject = ProjectModel(
-                                  assigneeIds: projectAddService.assignIds,
-                                  customerId:
-                                      projectAddService.activeOwnerIndex,
-                                  description: descriptionController.text,
-                                  name: nameController.text,
-                                  coordinates: mapService.coordinates,
-                                  picture:
-                                      projectAddService.converteduint8list(),
-                                  startDate: projectAddService.startDate,
-                                  endDate: projectAddService.endDate,
-                                  address: mapService.address.text,
-                                  areaSize: projectAddService.areaSize);
-
-                              projectProvider
-                                  .createProjects(
-                                newProject: newProject,
-                              )
-                                  .whenComplete(() {
-                                Provider.of<CustomerService>(context,
-                                        listen: false)
-                                    .workingProjectsCustomer(
-                                        projectAddService.activeOwnerIndex);
                                 Navigator.pop(context);
-                              });
+                              } else {
+                                ProjectModel newProject = ProjectModel(
+                                    assigneeIds: projectAddService.assignIds,
+                                    customerId:
+                                        projectAddService.activeOwnerIndex,
+                                    description: descriptionController.text,
+                                    name: nameController.text,
+                                    coordinates: mapService.coordinates,
+                                    picture:
+                                        projectAddService.converteduint8list(),
+                                    startDate: projectAddService.startDate,
+                                    endDate: projectAddService.endDate,
+                                    address: mapService.address.text,
+                                    areaSize: projectAddService.areaSize);
+
+                                projectProvider
+                                    .createProjects(
+                                  newProject: newProject,
+                                )
+                                    .whenComplete(() {
+                                  Provider.of<CustomerService>(context,
+                                          listen: false)
+                                      .workingProjectsCustomer(
+                                          projectAddService.activeOwnerIndex);
+                                  Navigator.pop(context);
+                                });
+                              }
+                            } else {
+                              Fluttertoast.showToast(
+                                  webBgColor:
+                                      "linear-gradient(to right, #5585E5, #5585E5)",
+                                  msg: "Please provide a client",
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.CENTER,
+                                  timeInSecForIosWeb: 2,
+                                  fontSize: 16.0);
                             }
                           }
                         },
