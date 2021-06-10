@@ -17,11 +17,11 @@ class LogModel {
       required this.type,
       required this.created_at});
   LogModel.fromJson(Map<String, dynamic> json) {
-    print("DATAS : $json");
     this.id = json["id"];
     this.title = json["title"];
     this.body = json["body"];
-    this.sender_id = json["sender_id"];
+    this.sender_id =
+        json["sender_details"] != null ? json["sender_details"]["id"] : null;
     this.seen = json["seen"];
     this.data_id = json["data_id"];
     this.type = json["type"];

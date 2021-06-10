@@ -629,7 +629,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                                         child:
                                                                             ListTile(
                                                                           title:
-                                                                              Text("${warnings()![index].data_id}"),
+                                                                              Text("${warnings()![index].title}"),
                                                                           subtitle:
                                                                               Text("${warnings()![index].body}"),
                                                                         ),
