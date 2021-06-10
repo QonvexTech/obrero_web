@@ -1,3 +1,4 @@
+import 'dart:html';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -84,6 +85,11 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    document.addEventListener('keydown', (dynamic event) {
+      if (event.code == 'Tab') {
+        print("TAB");
+      }
+    });
     final double widthSize = MediaQuery.of(context).size.width;
     final double heightSize = MediaQuery.of(context).size.height;
     return loader
@@ -110,48 +116,50 @@ class _LoginFormState extends State<LoginForm> {
                               fontSize: widthSize * widget.fontSizeTextField,
                               fontFamily: 'Poppins',
                               color: Colors.black))),
-                  TextFormField(
-                      autofocus: true,
-                      focusNode: _emailFocus,
-                      onFieldSubmitted: (value) {
-                        _passwordFocus.requestFocus();
-                      },
-                      controller: _emailController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Email Required!';
-                        }
-                        if (!EmailValidator.validate(value)) {
-                          return 'Invalid Email!';
-                        }
-                      },
-                      cursorColor: Colors.black,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        fillColor: Colors.black,
-                        border: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.red, width: 2)),
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Palette.drawerColorLight, width: 2)),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Palette.drawerColor, width: 2)),
-                        labelStyle: TextStyle(color: Colors.black),
-                        errorStyle: TextStyle(
-                            color: Colors.red,
-                            fontSize: widthSize * widget.errorFormMessage),
-                        prefixIcon: Icon(
-                          Icons.person,
-                          size: widthSize * widget.iconFormSize,
-                          color: Colors.black,
+                  RawKeyboardListener(
+                    focusNode: _emailFocus,
+                    child: TextFormField(
+                        autofocus: true,
+                        onFieldSubmitted: (value) {
+                          _passwordFocus.requestFocus();
+                        },
+                        controller: _emailController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Email Required!';
+                          }
+                          if (!EmailValidator.validate(value)) {
+                            return 'Invalid Email!';
+                          }
+                        },
+                        cursorColor: Colors.black,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          fillColor: Colors.black,
+                          border: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.red, width: 2)),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Palette.drawerColorLight, width: 2)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Palette.drawerColor, width: 2)),
+                          labelStyle: TextStyle(color: Colors.black),
+                          errorStyle: TextStyle(
+                              color: Colors.red,
+                              fontSize: widthSize * widget.errorFormMessage),
+                          prefixIcon: Icon(
+                            Icons.person,
+                            size: widthSize * widget.iconFormSize,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: widget.fontSizeTextFormField)),
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: widget.fontSizeTextFormField)),
+                  ),
                   SizedBox(height: heightSize * widget.spaceBetweenFields),
                   Align(
                       alignment: Alignment.centerLeft,

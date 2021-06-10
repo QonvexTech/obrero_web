@@ -27,6 +27,12 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
   Map<dynamic, dynamic>? countryValue = countries[66];
   final _formKey = GlobalKey<FormState>();
 
+  final _prenom = FocusNode();
+  final _nom = FocusNode();
+  final _email = FocusNode();
+  final _tel = FocusNode();
+  final _address = FocusNode();
+
   @override
   void initState() {
     if (widget.customerToEdit != null) {
@@ -132,30 +138,40 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                   SizedBox(
                     height: MySpacer.large,
                   ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Prénom Required!';
-                      }
-                    },
-                    onChanged: (value) {
-                      bodyToEdit.addAll({"first_name": value});
-                    },
-                    decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        hintText: "Prénom",
-                        border: OutlineInputBorder(),
-                        hintStyle: transHeader),
-                    controller: fnameController,
+                  RawKeyboardListener(
+                    focusNode: _prenom,
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Prénom Required!';
+                        }
+                      },
+                      onFieldSubmitted: (x) {
+                        _nom.requestFocus();
+                      },
+                      onChanged: (value) {
+                        bodyToEdit.addAll({"first_name": value});
+                      },
+                      decoration: InputDecoration(
+                          fillColor: Colors.white,
+                          hintText: "Prénom",
+                          border: OutlineInputBorder(),
+                          hintStyle: transHeader),
+                      controller: fnameController,
+                    ),
                   ),
                   SizedBox(
                     height: MySpacer.small,
                   ),
                   TextFormField(
+                    focusNode: _nom,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Nom de famillie Required!';
                       }
+                    },
+                    onFieldSubmitted: (x) {
+                      _email.requestFocus();
                     },
                     onChanged: (value) {
                       bodyToEdit.addAll({"last_name": value});
@@ -171,6 +187,10 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                     height: MySpacer.small,
                   ),
                   TextFormField(
+                    focusNode: _email,
+                    onFieldSubmitted: (x) {
+                      _tel.requestFocus();
+                    },
                     onChanged: (value) {
                       bodyToEdit.addAll({"email": value});
                     },
@@ -193,10 +213,14 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                     height: MySpacer.small,
                   ),
                   TextFormField(
+                    focusNode: _tel,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Téléphone Required!';
                       }
+                    },
+                    onFieldSubmitted: (x) {
+                      _address.requestFocus();
                     },
                     onChanged: (value) {
                       bodyToEdit.addAll({"contact_number": value});
@@ -250,6 +274,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                             Expanded(
                               flex: 3,
                               child: TextFormField(
+                                focusNode: _address,
                                 validator: (value) {
                                   if (value!.isEmpty) {
                                     return 'Address Required!';
