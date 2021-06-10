@@ -173,6 +173,11 @@ class EmployeeSevice extends ChangeNotifier {
         if (_pagination.page == 1) {
           loadLastPage(_pagination.lastPage, _pagination.perPage);
         }
+
+        if (_pagination.page == _pagination.lastPage) {
+          _users!.removeAt(_users!.length - 1);
+        }
+
         searchController.clear();
         print(data);
       } else {
@@ -323,7 +328,7 @@ class EmployeeSevice extends ChangeNotifier {
 
         print("LISTUSER: $listOfUsers");
         // _users!.add(listOfUsers[listOfUsers.length - 1]);
-        // _tempUsers!.add(listOfUsers[listOfUsers.length - 1]);
+        _tempUsers!.add(listOfUsers[listOfUsers.length - 1]);
         notifyListeners();
       } else {
         print(response.body);
