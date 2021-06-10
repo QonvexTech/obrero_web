@@ -70,9 +70,10 @@ class EmployeesModel extends ChangeNotifier {
     List<EmployeesModel> newUsers = [];
     for (var user in users) {
       EmployeesModel userModel = EmployeesModel.fromJson(user);
-      if (!userModel.isAdmin!) {
-        newUsers.add(userModel);
-      }
+      // if (!userModel.isAdmin!) {
+      //   newUsers.add(userModel);
+      // }
+      newUsers.add(userModel);
     }
     newUsers.reversed;
     return newUsers;

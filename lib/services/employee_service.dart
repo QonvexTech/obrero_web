@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -206,7 +205,7 @@ class EmployeeSevice extends ChangeNotifier {
         //   "picture": newEmployee.picture != null ? newEmployee.picture : "",
         // });
 
-        paginationService.addedItem(_pagination);
+        // paginationService.addedItem(_pagination);
         fetchUsers();
         notifyListeners();
       } else {
@@ -312,8 +311,8 @@ class EmployeeSevice extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future loadLastPage(int lastPage, page) async {
-    var url = Uri.parse("$user_api${page}?page=$lastPage");
+  Future loadLastPage(perPage, int page) async {
+    var url = Uri.parse("$user_api$perPage?page=${page + 1}");
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",
@@ -328,7 +327,7 @@ class EmployeeSevice extends ChangeNotifier {
 
         print("LISTUSER: $listOfUsers");
         // _users!.add(listOfUsers[listOfUsers.length - 1]);
-        _tempUsers!.add(listOfUsers[listOfUsers.length - 1]);
+        _tempUsers!.add(listOfUsers[0]);
         notifyListeners();
       } else {
         print(response.body);
