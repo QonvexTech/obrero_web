@@ -20,10 +20,9 @@ import 'package:uitemplate/widgets/map.dart';
 
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
-  const ProjectAddScreen({
-    Key? key,
-    this.projectToEdit,
-  }) : super(key: key);
+  final CustomerModel? customer;
+  const ProjectAddScreen({Key? key, this.projectToEdit, this.customer})
+      : super(key: key);
 
   @override
   _ProjectAddScreenState createState() => _ProjectAddScreenState();
@@ -47,6 +46,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).initLoad();
     Provider.of<CustomerService>(context, listen: false).initLoad();
+
+    if (widget.customer != null) {
+      customerSelected = widget.customer;
+    }
 
     if (widget.projectToEdit != null) {
       var projectAddService =

@@ -202,7 +202,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                             )
                           : customerService.customerProject!.length == 0
                               ? EmptyContainer(
-                                  addingFunc: ProjectAddScreen(),
+                                  addingFunc: ProjectAddScreen(
+                                    customer: widget.customer,
+                                  ),
                                   title: "No assigned project yet",
                                   description: "Add project Now",
                                   buttonText: "Add Project",
