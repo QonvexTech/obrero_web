@@ -140,6 +140,9 @@ class ProjectAddService extends ChangeNotifier {
 
   Future<void> selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
+        locale: Locale('fr', 'CA'),
+        fieldHintText:
+            "${_startDate.month}-${_startDate.day}-${_startDate.year}",
         context: context,
         initialDate: startDate,
         firstDate: DateTime(2015, 8),
@@ -151,6 +154,7 @@ class ProjectAddService extends ChangeNotifier {
 
   Future<void> selectEndDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
+        locale: Locale('fr', 'CA'),
         context: context,
         initialDate: endDate,
         firstDate: DateTime(2015, 8),

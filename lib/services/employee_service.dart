@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:isolate';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/admin_model.dart';
@@ -132,12 +134,10 @@ class EmployeeSevice extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future pastProjects(int userId) async {}
-
   Future fetchUsers() async {
     print("fetching...");
-    var url = Uri.parse(
-        "$user_api${_pagination.perPage + 1}?page=${_pagination.page}");
+    var url =
+        Uri.parse("$user_api${_pagination.perPage}?page=${_pagination.page}");
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",
@@ -146,6 +146,7 @@ class EmployeeSevice extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
+        print(data);
         if (json.decode(response.body)["next_page_url"] != null &&
             json.decode(response.body)["total"] != _pagination.perPage) {
           _pagination.isNext = true;
@@ -168,6 +169,10 @@ class EmployeeSevice extends ChangeNotifier {
         }
         _users = listOfUsers;
         _tempUsers = listOfUsers;
+
+        if (_pagination.page == 1) {
+          loadLastPage(_pagination.lastPage, _pagination.perPage);
+        }
         searchController.clear();
         print(data);
       } else {
@@ -283,15 +288,43 @@ class EmployeeSevice extends ChangeNotifier {
 
         var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
 
-        _pagination.totalEntries = json.decode(response.body)["total"] - 1;
+        _pagination.totalEntries = json.decode(response.body)["total"];
 
         if (_paginationload.totalEntries <= _paginationload.perPage) {
           _paginationload.perPage = _paginationload.totalEntries;
         }
         _usersload!.addAll(listOfUsers);
         _tempUsersload!.addAll(listOfUsers);
+
         searchController.clear();
         print(data);
+      } else {
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
+    }
+    notifyListeners();
+  }
+
+  Future loadLastPage(int lastPage, page) async {
+    var url = Uri.parse("$user_api${page}?page=$lastPage");
+    try {
+      var response = await http.get(url, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List data = json.decode(response.body)["data"];
+        print("data: ${response.body}");
+
+        var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
+
+        print("LISTUSER: $listOfUsers");
+        // _users!.add(listOfUsers[listOfUsers.length - 1]);
+        // _tempUsers!.add(listOfUsers[listOfUsers.length - 1]);
+        notifyListeners();
       } else {
         print(response.body);
       }

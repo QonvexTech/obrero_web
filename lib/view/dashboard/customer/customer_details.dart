@@ -67,6 +67,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
     CustomerService customerService = Provider.of<CustomerService>(context);
     ProjectProvider projectService = Provider.of<ProjectProvider>(context);
     MapService mapService = Provider.of<MapService>(context);
+
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,

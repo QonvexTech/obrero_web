@@ -912,9 +912,15 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
 
                               projectProvider
                                   .createProjects(
-                                    newProject: newProject,
-                                  )
-                                  .whenComplete(() => Navigator.pop(context));
+                                newProject: newProject,
+                              )
+                                  .whenComplete(() {
+                                Provider.of<CustomerService>(context,
+                                        listen: false)
+                                    .workingProjectsCustomer(
+                                        projectAddService.activeOwnerIndex);
+                                Navigator.pop(context);
+                              });
                             }
                           }
                         },
