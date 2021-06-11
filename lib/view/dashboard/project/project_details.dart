@@ -35,6 +35,9 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
     super.initState();
   }
 
+  bool showWarning = true;
+  double warningHeight = 200;
+
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
@@ -68,8 +71,6 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       style: Theme.of(context).textTheme.headline5,
                       overflow: TextOverflow.ellipsis,
                     ),
-
-                    // "${months[projectProvider.projectOnDetails!.startDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} "
                     Text(
                       "Planifié du ${months[projectProvider.projectOnDetails!.startDate.month]} ${projectProvider.projectOnDetails!.startDate.day}, ${projectProvider.projectOnDetails!.startDate.year} au ${months[projectProvider.projectOnDetails!.endDate.month]} ${projectProvider.projectOnDetails!.endDate.day}, ${projectProvider.projectOnDetails!.endDate.year} ",
                       overflow: TextOverflow.ellipsis,
@@ -436,7 +437,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: projectProvider.warningHeight,
+                    height: warningHeight,
                     child: StreamBuilder<List<LogModel>>(
                       builder: (context, result) {
                         if (result.hasError) {
@@ -458,15 +459,11 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                               }
                             }
 
-                            projectProvider.warningHeight =
-                                MediaQuery.of(context).size.height * 0.7;
-
                             return newWarnings;
                           }
 
                           if (warnings()!.length <= 0) {
-                            projectProvider.warningHeight =
-                                MediaQuery.of(context).size.height * 0.2;
+                            showWarning = false;
                             return Container(
                               height: 50,
                               child: Center(
@@ -499,69 +496,11 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                 ),
                               ),
                             );
+                          } else {
+                            warningHeight = 0;
                           }
 
-                          return Scrollbar(
-                            child: ListView(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              children:
-                                  List.generate(warnings()!.length, (index) {
-                                return Stack(
-                                  children: [
-                                    Card(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons
-                                                  .notification_important_rounded,
-                                              color: Colors.grey,
-                                            ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                              child: ListTile(
-                                                title: Text(
-                                                    "${warnings()![index].title}"),
-                                                subtitle: Text(
-                                                    "${warnings()![index].body}"),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    // Consumer<ColorChangeService>(
-                                    //   builder: (context, data, child) {
-                                    //     return Positioned(
-                                    //         right: 10,
-                                    //         top: 10,
-                                    //         child: Container(
-                                    //           width: 100,
-                                    //           height: 20,
-                                    //           decoration: BoxDecoration(
-                                    //               color: Colors.grey,
-                                    //               // color: data.statusColors[
-                                    //               //     int.parse(
-                                    //               //         warnings()![index]
-                                    //               //             .type!)],
-                                    //               borderRadius:
-                                    //                   BorderRadius.circular(
-                                    //                       10)),
-                                    //           child: Text(
-                                    //               "${warnings()![index].body!}"),
-                                    //         ));
-                                    //   },
-                                    // ),
-                                  ],
-                                );
-                              }),
-                            ),
-                          );
+                          return SizedBox();
                         } else {
                           return Container(
                             child: LogsLoader.load(),
@@ -571,6 +510,144 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       stream: logService.stream$,
                     ),
                   ),
+                  showWarning
+                      ? Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: StreamBuilder<List<LogModel>>(
+                            builder: (context, result) {
+                              if (result.hasError) {
+                                return Center(
+                                  child: Text(
+                                    "${result.error}",
+                                  ),
+                                );
+                              }
+
+                              if (result.hasData && result.data!.length > 0) {
+                                List<LogModel>? warnings() {
+                                  List<LogModel> newWarnings = [];
+                                  for (LogModel log in result.data!) {
+                                    if (log.type == "project_warning" &&
+                                        log.data_id ==
+                                            projectProvider
+                                                .projectOnDetails!.id) {
+                                      newWarnings.add(log);
+                                    }
+                                  }
+
+                                  return newWarnings;
+                                }
+
+                                if (warnings()!.length <= 0) {
+                                  return Container(
+                                    height: 50,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Card(
+                                            child: Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              height: 150,
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                        Icons
+                                                            .notifications_none_sharp,
+                                                        size: 50,
+                                                        color: Colors.grey),
+                                                    Text(
+                                                        "Pas encore d'avertissements!")
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                return Scrollbar(
+                                  child: ListView(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    children: List.generate(warnings()!.length,
+                                        (index) {
+                                      return Stack(
+                                        children: [
+                                          Card(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons
+                                                        .notification_important_rounded,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Expanded(
+                                                    child: ListTile(
+                                                      title: Text(
+                                                          "${warnings()![index].title}"),
+                                                      subtitle: Text(
+                                                          "${warnings()![index].body}"),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          // Consumer<ColorChangeService>(
+                                          //   builder: (context, data, child) {
+                                          //     return Positioned(
+                                          //         right: 10,
+                                          //         top: 10,
+                                          //         child: Container(
+                                          //           width: 100,
+                                          //           height: 20,
+                                          //           decoration: BoxDecoration(
+                                          //               color: Colors.grey,
+                                          //               // color: data.statusColors[
+                                          //               //     int.parse(
+                                          //               //         warnings()![index]
+                                          //               //             .type!)],
+                                          //               borderRadius:
+                                          //                   BorderRadius.circular(
+                                          //                       10)),
+                                          //           child: Text(
+                                          //               "${warnings()![index].body!}"),
+                                          //         ));
+                                          //   },
+                                          // ),
+                                        ],
+                                      );
+                                    }),
+                                  ),
+                                );
+                              } else {
+                                return Container(
+                                  child: LogsLoader.load(),
+                                );
+                              }
+                            },
+                            stream: logService.stream$,
+                          ),
+                        )
+                      : SizedBox(),
                 ],
               ),
             ))

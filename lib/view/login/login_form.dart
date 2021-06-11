@@ -1,4 +1,3 @@
-import 'dart:html';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -85,11 +84,6 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    document.addEventListener('keydown', (dynamic event) {
-      if (event.code == 'Tab') {
-        print("TAB");
-      }
-    });
     final double widthSize = MediaQuery.of(context).size.width;
     final double heightSize = MediaQuery.of(context).size.height;
     return loader
