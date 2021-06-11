@@ -161,7 +161,7 @@ class EmployeeSevice extends ChangeNotifier {
         print(data);
 
         var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
-        _pagination.totalEntries = json.decode(response.body)["total"] - 1;
+        _pagination.totalEntries = json.decode(response.body)["total"];
 
         if (_paginationload.totalEntries <= _paginationload.perPage) {
           _paginationload.perPage = _paginationload.totalEntries;
@@ -169,13 +169,13 @@ class EmployeeSevice extends ChangeNotifier {
         _users = listOfUsers;
         _tempUsers = listOfUsers;
 
-        if (_pagination.page == 1) {
-          loadLastPage(_pagination.lastPage, _pagination.perPage);
-        }
+        // if (_pagination.page == 1) {
+        //   loadLastPage(_pagination.lastPage, _pagination.perPage);
+        // }
 
-        if (_pagination.page == _pagination.lastPage) {
-          _users!.removeAt(_users!.length - 1);
-        }
+        // if (_pagination.page == _pagination.lastPage) {
+        //   _users!.removeAt(_users!.length - 1);
+        // }
 
         searchController.clear();
         print(data);
@@ -196,16 +196,6 @@ class EmployeeSevice extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print("BODY :${response.body}");
-
-        var data = json.decode(response.body);
-
-        // updateUser(body: {
-        //   "user_id": data["data"]["details"]["id"],
-        //   "picture": newEmployee.picture != null ? newEmployee.picture : "",
-        // });
-
-        // paginationService.addedItem(_pagination);
         fetchUsers();
         notifyListeners();
       } else {
@@ -311,30 +301,25 @@ class EmployeeSevice extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future loadLastPage(perPage, int page) async {
-    var url = Uri.parse("$user_api$perPage?page=${page + 1}");
-    try {
-      var response = await http.get(url, headers: {
-        "Accept": "application/json",
-        "Authorization": "Bearer $authToken",
-        "Content-Type": "application/x-www-form-urlencoded"
-      });
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        List data = json.decode(response.body)["data"];
-        print("data: ${response.body}");
-
-        var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
-
-        print("LISTUSER: $listOfUsers");
-        // _users!.add(listOfUsers[listOfUsers.length - 1]);
-        _tempUsers!.add(listOfUsers[0]);
-        notifyListeners();
-      } else {
-        print(response.body);
-      }
-    } catch (e) {
-      print(e);
-    }
-    notifyListeners();
-  }
+  // Future loadLastPage(perPage, int page) async {
+  //   var url = Uri.parse("$user_api$perPage?page=${page + 1}");
+  //   try {
+  //     var response = await http.get(url, headers: {
+  //       "Accept": "application/json",
+  //       "Authorization": "Bearer $authToken",
+  //       "Content-Type": "application/x-www-form-urlencoded"
+  //     });
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       List data = json.decode(response.body)["data"];
+  //       var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
+  //       _tempUsers!.add(listOfUsers[0]);
+  //       notifyListeners();
+  //     } else {
+  //       print(response.body);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  //   notifyListeners();
+  // }
 }

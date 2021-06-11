@@ -50,7 +50,6 @@ class EmployeesModel extends ChangeNotifier {
     this.enableNotification = json["enable_notification"] == 1 ? true : false;
     this.status = json["status"];
     this.archivedStatus = json["archived_status"];
-    print(json["picture"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -70,6 +69,7 @@ class EmployeesModel extends ChangeNotifier {
     List<EmployeesModel> newUsers = [];
     for (var user in users) {
       EmployeesModel userModel = EmployeesModel.fromJson(user);
+      //TODO: backend reverse list
       // if (!userModel.isAdmin!) {
       //   newUsers.add(userModel);
       // }
