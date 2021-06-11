@@ -10,6 +10,7 @@ import 'package:uitemplate/services/messaging/messaging_data_helper.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view_model/messaging/image_viewer.dart';
 import 'package:uitemplate/view_model/messaging/view.dart';
+import 'package:uitemplate/widgets/message_history.dart';
 
 class MessageScreen extends StatefulWidget {
   final List<EmployeesModel> recepients;
@@ -208,6 +209,22 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                               ),
                             ),
                           )),
+                          MaterialButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                      backgroundColor:
+                                          Palette.contentBackground,
+                                      content: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.35,
+                                          child: MessageHistory())));
+                            },
+                            child: Text("History"),
+                          ),
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 15),

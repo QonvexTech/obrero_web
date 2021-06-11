@@ -6,6 +6,7 @@ const String api = "https://obrero.checkmy.dev/api";
 
 //ADMIN
 const String login_api = "$api/admin-login";
+const String message_history = "$api/admin-login";
 
 //PROJECT or CHANTIER
 const String project_api = "$api/project/";
