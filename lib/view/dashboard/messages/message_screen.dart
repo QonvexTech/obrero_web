@@ -74,9 +74,10 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                   Expanded(
                     child: Container(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(right: 25),
+                            padding: const EdgeInsets.only(left: 10, top: 20),
                             child: AppBar(
                               centerTitle: false,
                               elevation: 0,
@@ -103,20 +104,24 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                                 const SizedBox(
                                   width: 15,
                                 ),
-                                MaterialButton(
-                                  padding: const EdgeInsets.all(20),
-                                  onPressed: () =>
-                                      setState(() => _showList = !_showList),
-                                  minWidth: 60,
-                                  height: 60,
-                                  color: Theme.of(context).accentColor,
-                                  child: Center(
-                                    child: Image.asset(
-                                      "assets/icons/icon.png",
-                                      color: Colors.white,
+                                Container(
+                                  padding: EdgeInsets.all(5),
+                                  child: MaterialButton(
+                                    padding: const EdgeInsets.all(15),
+                                    onPressed: () =>
+                                        setState(() => _showList = !_showList),
+                                    minWidth: 60,
+                                    height: 60,
+                                    color: Theme.of(context).accentColor,
+                                    child: Center(
+                                      child: Image.asset(
+                                        "assets/icons/icon.png",
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                )
+                                ),
+                                SizedBox(width: 25)
                               ],
                               automaticallyImplyLeading: false,
                             ),
