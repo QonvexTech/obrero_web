@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
@@ -37,7 +38,7 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
 
   @override
   void initState() {
-    Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
+    Provider.of<EmployeeSevice>(context, listen: false).initLoad();
     super.initState();
   }
 
@@ -46,6 +47,7 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
   Widget build(BuildContext context) {
     MessageService messageService = Provider.of<MessageService>(context);
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
+
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Palette.contentBackground,
@@ -308,22 +310,98 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                                     .fontSize),
                           ),
                         ),
-                        Expanded(
-                            child: Container(
-                          child: employeeSevice.users == null
-                              ? Views.shimmerLoader()
-                              : Views.employeesList(employeeSevice,
-                                  callback: (employeeData) {
-                                  if (!MessagingDataHelper.contains(
-                                      widget.recepients, employeeData.id!)) {
-                                    print(employeeData);
-                                    setState(() {
-                                      widget.recepients.add(employeeData);
-                                      // messageSending = false;
-                                    });
-                                  }
-                                }),
-                        ))
+
+                        employeeSevice.userload == null
+                            ? Center(child: CircularProgressIndicator())
+                            : employeeSevice.userload!.length == 0
+                                ? Text("No employee to assign")
+                                : Container(
+                                    height: 800,
+                                    child: LazyLoadScrollView(
+                                      isLoading: true,
+                                      onEndOfPage: () {
+                                        setState(() {
+                                          employeeSevice.loadMore();
+                                        });
+                                      },
+                                      child: ListView.builder(
+                                          itemCount:
+                                              employeeSevice.userload!.length,
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                                onTap: () {
+                                                  if (!MessagingDataHelper
+                                                      .contains(
+                                                          widget.recepients,
+                                                          employeeSevice
+                                                              .userload[index]
+                                                              .id!)) {
+                                                    setState(() {
+                                                      widget.recepients.add(
+                                                          employeeSevice
+                                                              .userload[index]);
+                                                    });
+                                                  }
+                                                },
+                                                child: Container(
+                                                  margin: EdgeInsets.all(5),
+                                                  height: 60,
+                                                  width: 200,
+                                                  child: Card(
+                                                    child: Center(
+                                                        child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Row(
+                                                        children: [
+                                                          CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            maxRadius: 15,
+                                                            backgroundImage: fetchImage(
+                                                                netWorkImage:
+                                                                    employeeSevice
+                                                                        .userload![
+                                                                            index]
+                                                                        .picture),
+                                                          ),
+                                                          SizedBox(
+                                                            width:
+                                                                MySpacer.small,
+                                                          ),
+                                                          Text(
+                                                            "${employeeSevice.userload![index].fname!} ${employeeSevice.userload![index].lname!}",
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )),
+                                                  ),
+                                                ));
+                                          }),
+                                    ),
+                                  ),
+
+                        // Expanded(
+                        //     child: Container(
+                        //   child: employeeSevice.users == null
+                        //       ? Views.shimmerLoader()
+                        //       : Views.employeesList(employeeSevice,
+                        //           callback: (employeeData) {
+                        //           if (!MessagingDataHelper.contains(
+                        //               widget.recepients, employeeData.id!)) {
+                        //             print(employeeData);
+                        //             setState(() {
+                        //               widget.recepients.add(employeeData);
+                        //               // messageSending = false;
+                        //             });
+                        //           }
+                        //         }),
+                        // ))
                       ],
                     ),
                   )
@@ -502,5 +580,13 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
     //     ],
     //   ),
     // );
+  }
+
+  static ImageProvider _imageProvider({String? image}) {
+    if (image == null) {
+      return AssetImage("assets/icons/admin_icon.png");
+    } else {
+      return NetworkImage("https://obrero.checkmy.dev$image");
+    }
   }
 }
