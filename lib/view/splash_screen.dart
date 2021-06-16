@@ -5,7 +5,6 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/colors_service.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
-import 'package:uitemplate/services/message_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -18,7 +17,6 @@ class _SplashScreenState extends State<SplashScreen> {
     await DataCacher().getCredentials(context);
     await colorsService.getColors.then((va) {
       colorsSettings = va!;
-
       print("Lengh Is ${colorsSettings.length}");
     });
   }
@@ -26,7 +24,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     this.init();
-
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     if (projectProvider.projects != null) {
       Provider.of<DashboardService>(context, listen: false)

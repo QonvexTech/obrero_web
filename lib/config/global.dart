@@ -8,6 +8,7 @@ const String api = "https://obrero.checkmy.dev/api";
 //ADMIN
 const String login_api = "$api/admin-login";
 const String message_history = "$api/messaging/my_sentbox";
+const String add_warning = "$api/project/warning/create";
 
 //PROJECT or CHANTIER
 const String project_api = "$api/project/";

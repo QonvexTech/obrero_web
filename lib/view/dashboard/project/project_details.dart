@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
+import 'package:uitemplate/services/add_warning_service.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
@@ -428,7 +429,11 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       IconButton(
                           icon: Icon(Icons.add_circle),
                           onPressed: () {
-                            //LOGS
+                            AddWarning().addWaring(
+                                projectProvider.projectOnDetails!.id.toString(),
+                                "title",
+                                "descp sample",
+                                "2");
                           })
                     ],
                   ),
