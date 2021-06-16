@@ -35,7 +35,6 @@ void main() async {
     ChangeNotifierProvider(create: (_) => MessageService()),
     ChangeNotifierProvider(create: (_) => ProfileService()),
     ChangeNotifierProvider(create: (_) => ScaffoldService()),
-    ChangeNotifierProvider(create: (_) => ColorChangeService()),
   ], child: MyApp()));
 }
 

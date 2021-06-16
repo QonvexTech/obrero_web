@@ -6,10 +6,8 @@ import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/project/project_details.dart';
-import 'package:universal_html/html.dart';
 
 class ProjectCard extends StatefulWidget {
   final ProjectModel? project;
@@ -207,18 +205,12 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                                                           right: 20),
                                                   child: Row(
                                                     children: [
-                                                      Consumer<
-                                                          ColorChangeService>(
-                                                        builder: (context, data,
-                                                            child) {
-                                                          return Icon(
-                                                            Icons.circle,
-                                                            size: 15,
-                                                            color: data
-                                                                .statusColors[0],
-                                                          );
-                                                        },
-                                                      ),
+                                                      //TODO: project card color status
+                                                      // Icon(
+                                                      //   Icons.circle,
+                                                      //   size: 15,
+                                                      //   color: colorsSettings[widget.project!.assignees![x].status],
+                                                      // ),
                                                       SizedBox(
                                                         width: 5,
                                                       ),
@@ -257,17 +249,16 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                           : Container()
                     ],
                   ),
-                  Consumer<ColorChangeService>(
-                    builder: (context, data, child) {
-                      return Positioned(
-                        top: 10,
-                        left: 20,
-                        child: Image.asset(
-                          data.imagesStatus[0],
-                          width: 20,
-                        ),
-                      );
-                    },
+                  Positioned(
+                    top: 10,
+                    left: 20,
+                    child: colorsSettings.length > 0
+                        ? Image.asset(
+                            colorsSettings[widget.project!.status!]
+                                .circleAsset!,
+                            width: 20,
+                          )
+                        : SizedBox(),
                   )
                 ],
               )),

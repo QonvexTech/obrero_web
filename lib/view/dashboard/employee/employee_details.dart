@@ -91,10 +91,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
               infoWindow: InfoWindow(
                   title: project.userProject!.name,
                   snippet: project.userProject!.address!.toString()),
-              icon: await BitmapDescriptor.fromAssetImage(
-                  ImageConfiguration(),
-                  Provider.of<ColorChangeService>(context, listen: false)
-                      .imagesStatus[project.userProject!.status!]),
+              icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
+                  colorsSettings[project.userProject!.status!].circleAsset!),
               markerId: MarkerId(project.id.toString()),
               position: project.userProject!.coordinates!));
         }
@@ -428,23 +426,16 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                                 Text("Status",
                                                                     style:
                                                                         transHeader),
-                                                                Consumer<
-                                                                    ColorChangeService>(
-                                                                  builder:
-                                                                      (context,
-                                                                          data,
-                                                                          child) {
-                                                                    return Text(
-                                                                      statusTitles[project
-                                                                          .userProject!
-                                                                          .status!],
-                                                                      style: TextStyle(
-                                                                          color: data.statusColors[project
+                                                                Text(
+                                                                  statusTitles[project
+                                                                      .userProject!
+                                                                      .status!],
+                                                                  style: TextStyle(
+                                                                      color: colorsSettings[project
                                                                               .userProject!
-                                                                              .status!]),
-                                                                    );
-                                                                  },
-                                                                ),
+                                                                              .status!]
+                                                                          .color),
+                                                                )
                                                               ],
                                                             ),
                                                           ],

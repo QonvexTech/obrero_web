@@ -4,17 +4,13 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/tableHelper.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_add.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
-import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
-import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
-import 'package:universal_html/html.dart';
 
 class CustomerList extends StatefulWidget {
   @override
@@ -178,21 +174,18 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(
                 child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Consumer<ColorChangeService>(
-                builder: (context, color, child) {
-                  return Text(
-                    statusTitles[
-                        data.status!.status == null ? 0 : data.status!.status!],
-                    style: TextStyle(
-                        color: color.statusColors[data.status!.status == null
-                            ? 0
-                            : data.status!.status!]),
-                    overflow: TextOverflow.ellipsis,
-                  );
-                },
-              ),
-            ))),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      statusTitles[data.status!.status == null
+                          ? 0
+                          : data.status!.status!],
+                      style: TextStyle(
+                          color: colorsSettings[data.status!.status == null
+                                  ? 0
+                                  : data.status!.status!]
+                              .color),
+                      overflow: TextOverflow.ellipsis,
+                    )))),
         TableCell(
           child: PopupMenuButton(
               padding: EdgeInsets.all(0),

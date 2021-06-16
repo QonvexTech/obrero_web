@@ -2,8 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_html/html.dart' as html;
 
-// see https://pub.dev/packages/universal_html
-
 class HandCursor extends MouseRegion {
   // get a reference to the body element that we previously altered
   static final appContainer =

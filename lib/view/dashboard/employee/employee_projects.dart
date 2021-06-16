@@ -140,15 +140,12 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Consumer<ColorChangeService>(
-                                            builder: (context, data, child) {
-                                              return Icon(
-                                                Icons.circle,
-                                                color: data.statusColors[project
-                                                    .userProject!.status!],
-                                                size: 15,
-                                              );
-                                            },
+                                          Icon(
+                                            Icons.circle,
+                                            color: colorsSettings[project
+                                                    .userProject!.status!]
+                                                .color,
+                                            size: 15,
                                           ),
                                           SizedBox(
                                             width: MySpacer.small,

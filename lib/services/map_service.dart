@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -64,7 +65,7 @@ class MapService extends ChangeNotifier {
   //       .asUint8List();
   // }
 
-  mapInit(List<ProjectModel> projects, context, List imagesStatus) async {
+  mapInit(List<ProjectModel> projects, context) async {
     if (_markers.length > 0) {
       coordinates = _markers.first.position;
       location.text =
@@ -87,8 +88,8 @@ class MapService extends ChangeNotifier {
             },
             infoWindow: InfoWindow(
                 title: project.name, snippet: project.address.toString()),
-            icon: await BitmapDescriptor.fromAssetImage(
-                ImageConfiguration(), imagesStatus[project.status!]),
+            icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
+                colorsSettings[project.status!].circleAsset!),
             markerId: MarkerId(project.id.toString()),
             position: project.coordinates!));
       }

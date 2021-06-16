@@ -42,11 +42,8 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
       customerService
           .workingProjectsCustomer(widget.customer!.id!)
           .whenComplete(() {
-        Provider.of<MapService>(context, listen: false).mapInit(
-          customerService.customerProject!,
-          context,
-          Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
-        );
+        Provider.of<MapService>(context, listen: false)
+            .mapInit(customerService.customerProject!, context);
 
         // if (Provider.of<CustomerService>(context, listen: false)
         //         .customerProject!
@@ -343,22 +340,16 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                                             Text("Status",
                                                                 style:
                                                                     transHeader),
-                                                            Consumer<
-                                                                ColorChangeService>(
-                                                              builder: (context,
-                                                                  data, child) {
-                                                                return Text(
-                                                                  statusTitles[
-                                                                      project
-                                                                          .status!],
-                                                                  style: TextStyle(
-                                                                      color: data
-                                                                              .statusColors[
+                                                            Text(
+                                                              statusTitles[
+                                                                  project
+                                                                      .status!],
+                                                              style: TextStyle(
+                                                                  color: colorsSettings[
                                                                           project
-                                                                              .status!]),
-                                                                );
-                                                              },
-                                                            ),
+                                                                              .status!]
+                                                                      .color),
+                                                            )
                                                           ],
                                                         ),
                                                       ],

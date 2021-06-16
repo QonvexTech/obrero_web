@@ -84,11 +84,8 @@ class ProjectProvider extends ChangeNotifier {
 
   void fetchOnDates(
       {required BuildContext context, required MapService mapService}) {
-    fetchProjectsBaseOnDates().whenComplete(() => mapService.mapInit(
-          _projectsDateBase!,
-          context,
-          Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
-        ));
+    fetchProjectsBaseOnDates()
+        .whenComplete(() => mapService.mapInit(_projectsDateBase!, context));
   }
 
   init(mapService) {

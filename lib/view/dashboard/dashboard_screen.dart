@@ -27,7 +27,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       Provider.of<MapService>(context, listen: false).mapInit(
         projectProvider.projectsDateBase,
         context,
-        Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
       );
     });
 
