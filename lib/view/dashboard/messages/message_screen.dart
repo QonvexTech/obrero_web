@@ -85,9 +85,34 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                               centerTitle: false,
                               elevation: 0,
                               backgroundColor: Colors.transparent,
-                              title: Text(
-                                "Messagerie",
-                                style: TextStyle(color: Colors.black),
+                              title: Row(
+                                children: [
+                                  Text(
+                                    "Messagerie",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  MaterialButton(
+                                    onPressed: () {
+                                      MessageService()
+                                          .showHistory()
+                                          .whenComplete(() {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                                backgroundColor:
+                                                    Palette.contentBackground,
+                                                content: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.35,
+                                                    child: MessageHistory())));
+                                      });
+                                    },
+                                    child: Icon(Icons.history),
+                                  ),
+                                ],
                               ),
                               actions: [
                                 IconButton(
@@ -209,22 +234,6 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                               ),
                             ),
                           )),
-                          MaterialButton(
-                            onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                      backgroundColor:
-                                          Palette.contentBackground,
-                                      content: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.35,
-                                          child: MessageHistory())));
-                            },
-                            child: Text("History"),
-                          ),
                           Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 15),

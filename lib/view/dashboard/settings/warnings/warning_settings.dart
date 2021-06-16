@@ -7,7 +7,6 @@ import 'package:uitemplate/view/dashboard/settings/warnings/color_change.dart';
 class WarningSettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // var colorService = Provider.of<ColorChangeService>(context);
     return Container(
         color: Palette.contentBackground,
         child: Row(

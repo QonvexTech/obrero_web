@@ -425,11 +425,11 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         "Warnings",
                         style: Theme.of(context).textTheme.headline6,
                       ),
-                      // IconButton(
-                      //     icon: Icon(Icons.add_circle),
-                      //     onPressed: () {
-                      //       //LOGS
-                      //     })
+                      IconButton(
+                          icon: Icon(Icons.add_circle),
+                          onPressed: () {
+                            //LOGS
+                          })
                     ],
                   ),
                   SizedBox(

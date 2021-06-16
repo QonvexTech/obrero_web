@@ -5,6 +5,7 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/colors_service.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
+import 'package:uitemplate/services/message_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 
 class SplashScreen extends StatefulWidget {
