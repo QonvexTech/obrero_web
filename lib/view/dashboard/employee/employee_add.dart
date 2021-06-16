@@ -7,6 +7,8 @@ import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 
+//TODO: empty pick cant add employee
+
 class EmployeeAdd extends StatefulWidget {
   final EmployeesModel? userToEdit;
   const EmployeeAdd({Key? key, this.userToEdit}) : super(key: key);

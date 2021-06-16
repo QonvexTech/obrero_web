@@ -176,9 +176,10 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
                 child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Text(
-                      statusTitles[data.status!.status == null
-                          ? 0
-                          : data.status!.status!],
+                      colorsSettings[data.status!.status == null
+                              ? 0
+                              : data.status!.status!]
+                          .colorName,
                       style: TextStyle(
                           color: colorsSettings[data.status!.status == null
                                   ? 0

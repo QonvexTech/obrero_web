@@ -11,7 +11,6 @@ import 'package:uitemplate/models/user_project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/map_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
@@ -427,9 +426,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                                     style:
                                                                         transHeader),
                                                                 Text(
-                                                                  statusTitles[project
-                                                                      .userProject!
-                                                                      .status!],
+                                                                  colorsSettings[project
+                                                                          .userProject!
+                                                                          .status!]
+                                                                      .colorName,
                                                                   style: TextStyle(
                                                                       color: colorsSettings[project
                                                                               .userProject!

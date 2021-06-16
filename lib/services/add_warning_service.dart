@@ -9,9 +9,8 @@ class AddWarning {
     try {
       var url = Uri.parse(add_warning);
       await http.post(url, body: {
-        "user_id"
-            "1"
-            "project_id": projectId,
+        "user_id": "1",
+        "project_id": projectId,
         "title": title,
         "description": descp,
         "type": type
@@ -25,6 +24,7 @@ class AddWarning {
           print(data);
           print("Success add");
         } else {
+          print(json.decode(value.body));
           print("fail api to add warning");
         }
       });

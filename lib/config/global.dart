@@ -62,8 +62,6 @@ List<ColorModels> colorsSettings = [];
 
 List historyMessages = [];
 
-List<String> statusTitles = ['En cours', 'En attente', 'Annulé', 'Compléter'];
-
 Map<String, String> defaultImageTag = {
   "red": "assets/icons/red.png",
   "pink": "assets/icons/pink.png",

@@ -81,9 +81,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
 
       isEdit = true;
     }
-    // else {
-    //   Provider.of<ProjectAddService>(context, listen: false).initUint8();
-    // }
 
     super.initState();
   }

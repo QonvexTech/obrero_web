@@ -10,7 +10,6 @@ import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
@@ -341,9 +340,10 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                                                 style:
                                                                     transHeader),
                                                             Text(
-                                                              statusTitles[
-                                                                  project
-                                                                      .status!],
+                                                              colorsSettings[
+                                                                      project
+                                                                          .status!]
+                                                                  .colorName,
                                                               style: TextStyle(
                                                                   color: colorsSettings[
                                                                           project

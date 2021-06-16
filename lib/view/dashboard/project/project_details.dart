@@ -15,6 +15,7 @@ import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
+import 'package:uitemplate/widgets/add_warning_screen.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 
 class ProjectDetails extends StatefulWidget {
@@ -429,11 +430,14 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       IconButton(
                           icon: Icon(Icons.add_circle),
                           onPressed: () {
-                            AddWarning().addWaring(
-                                projectProvider.projectOnDetails!.id.toString(),
-                                "title",
-                                "descp sample",
-                                "2");
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                    backgroundColor: Palette.contentBackground,
+                                    content: AddWaringScreen(
+                                      projectId:
+                                          projectProvider.projectOnDetails!.id!,
+                                    )));
                           })
                     ],
                   ),
