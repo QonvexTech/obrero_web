@@ -17,6 +17,7 @@ class LogModel {
       required this.type,
       required this.created_at});
   LogModel.fromJson(Map<String, dynamic> json) {
+    print("NOTES : $json");
     this.id = json["id"];
     this.title = json["title"];
     this.body = json["body"];

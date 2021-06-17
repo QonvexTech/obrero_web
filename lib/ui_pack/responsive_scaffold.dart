@@ -400,8 +400,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                           PopupMenuItem(
                             child: Container(
                               width: 650,
-                              // height: MediaQuery.of(context).size.height - 100,
-
                               child: StreamBuilder<List<LogModel>>(
                                   stream: logService.stream$,
                                   builder: (context, result) {
