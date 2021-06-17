@@ -205,7 +205,6 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                                                           right: 20),
                                                   child: Row(
                                                     children: [
-                                                      //TODO: project card color status
                                                       Icon(
                                                         Icons.circle,
                                                         size: 15,

@@ -343,7 +343,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                                               colorsSettings[
                                                                       project
                                                                           .status!]
-                                                                  .colorName,
+                                                                  .name!,
                                                               style: TextStyle(
                                                                   color: colorsSettings[
                                                                           project
