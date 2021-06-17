@@ -3,7 +3,7 @@ import 'package:uitemplate/config/global.dart';
 
 class ColorModels {
   final int? id;
-  final String? name;
+  String? name;
   Color? color;
   String colorName;
   String? circleAsset;
