@@ -429,7 +429,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                                   colorsSettings[project
                                                                           .userProject!
                                                                           .status!]
-                                                                      .colorName,
+                                                                      .name!,
                                                                   style: TextStyle(
                                                                       color: colorsSettings[project
                                                                               .userProject!

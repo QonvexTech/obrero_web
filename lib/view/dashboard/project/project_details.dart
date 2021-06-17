@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
-import 'package:uitemplate/services/add_warning_service.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
@@ -444,219 +443,282 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                   SizedBox(
                     height: MySpacer.small,
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: warningHeight,
-                    child: StreamBuilder<List<LogModel>>(
-                      builder: (context, result) {
-                        if (result.hasError) {
-                          return Center(
-                            child: Text(
-                              "${result.error}",
-                            ),
-                          );
-                        }
-
-                        if (result.hasData && result.data!.length > 0) {
-                          List<LogModel>? warnings() {
-                            List<LogModel> newWarnings = [];
-                            for (LogModel log in result.data!) {
-                              if (log.type == "project_warning" &&
-                                  log.data_id ==
-                                      projectProvider.projectOnDetails!.id) {
-                                newWarnings.add(log);
-                              }
-                            }
-
-                            return newWarnings;
-                          }
-
-                          if (warnings()!.length <= 0) {
-                            showWarning = false;
-                            return Container(
-                              height: 50,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Card(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 150,
-                                        child: Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                  Icons
-                                                      .notifications_none_sharp,
-                                                  size: 50,
-                                                  color: Colors.grey),
-                                              Text(
-                                                  "Pas encore d'avertissements!")
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          } else {
-                            warningHeight = 0;
-                          }
-
-                          return SizedBox();
-                        } else {
-                          return Container(
-                            child: LogsLoader.load(),
-                          );
-                        }
-                      },
-                      stream: logService.stream$,
-                    ),
-                  ),
-                  showWarning
+                  projectProvider.projectOnDetails!.warnings.length == 0
                       ? Container(
+                          height: 200,
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          child: StreamBuilder<List<LogModel>>(
-                            builder: (context, result) {
-                              if (result.hasError) {
-                                return Center(
-                                  child: Text(
-                                    "${result.error}",
-                                  ),
-                                );
-                              }
-
-                              if (result.hasData && result.data!.length > 0) {
-                                List<LogModel>? warnings() {
-                                  List<LogModel> newWarnings = [];
-                                  for (LogModel log in result.data!) {
-                                    if (log.type == "project_warning" &&
-                                        log.data_id ==
-                                            projectProvider
-                                                .projectOnDetails!.id) {
-                                      newWarnings.add(log);
-                                    }
-                                  }
-
-                                  return newWarnings;
-                                }
-
-                                if (warnings()!.length <= 0) {
-                                  return Container(
-                                    height: 50,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Card(
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 150,
                                     child: Center(
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                            MainAxisAlignment.center,
                                         children: [
-                                          Card(
-                                            child: Container(
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              height: 150,
-                                              child: Center(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                        Icons
-                                                            .notifications_none_sharp,
-                                                        size: 50,
-                                                        color: Colors.grey),
-                                                    Text(
-                                                        "Pas encore d'avertissements!")
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
+                                          Icon(Icons.notifications_none_sharp,
+                                              size: 50, color: Colors.grey),
+                                          Text("Pas encore d'avertissements!")
                                         ],
                                       ),
                                     ),
-                                  );
-                                }
-
-                                return Scrollbar(
-                                  child: ListView(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10),
-                                    children: List.generate(warnings()!.length,
-                                        (index) {
-                                      return Stack(
-                                        children: [
-                                          Card(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20),
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons
-                                                        .notification_important_rounded,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Expanded(
-                                                    child: ListTile(
-                                                      title: Text(
-                                                          "${warnings()![index].title}"),
-                                                      subtitle: Text(
-                                                          "${warnings()![index].body}"),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          // Consumer<ColorChangeService>(
-                                          //   builder: (context, data, child) {
-                                          //     return Positioned(
-                                          //         right: 10,
-                                          //         top: 10,
-                                          //         child: Container(
-                                          //           width: 100,
-                                          //           height: 20,
-                                          //           decoration: BoxDecoration(
-                                          //               color: Colors.grey,
-                                          //               // color: data.statusColors[
-                                          //               //     int.parse(
-                                          //               //         warnings()![index]
-                                          //               //             .type!)],
-                                          //               borderRadius:
-                                          //                   BorderRadius.circular(
-                                          //                       10)),
-                                          //           child: Text(
-                                          //               "${warnings()![index].body!}"),
-                                          //         ));
-                                          //   },
-                                          // ),
-                                        ],
-                                      );
-                                    }),
                                   ),
-                                );
-                              } else {
-                                return Container(
-                                  child: LogsLoader.load(),
-                                );
-                              }
-                            },
-                            stream: logService.stream$,
+                                ),
+                              ],
+                            ),
                           ),
                         )
-                      : SizedBox(),
+                      : Container(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: ListView(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            children: List.generate(
+                                projectProvider.projectOnDetails!.warnings
+                                    .length, (index) {
+                              return Stack(
+                                children: [
+                                  Card(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      decoration: BoxDecoration(
+                                          border: Border(
+                                              left: BorderSide(
+                                                  color: colorsSettings[
+                                                          projectProvider
+                                                              .projectOnDetails!
+                                                              .warnings[index]
+                                                              .type]
+                                                      .color!,
+                                                  width: 7))),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons
+                                                .notification_important_rounded,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text(
+                                                  "${projectProvider.projectOnDetails!.warnings[index].title}"),
+                                              subtitle: Text(
+                                                  "${projectProvider.projectOnDetails!.warnings[index].description}"),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
+                          ),
+                        ),
+                  // Container(
+                  //   width: MediaQuery.of(context).size.width,
+                  //   height: warningHeight,
+                  //   child: StreamBuilder<List<LogModel>>(
+                  //     builder: (context, result) {
+                  //       if (result.hasError) {
+                  //         return Center(
+                  //           child: Text(
+                  //             "${result.error}",
+                  //           ),
+                  //         );
+                  //       }
+
+                  //       if (result.hasData && result.data!.length > 0) {
+                  //         List<LogModel>? warnings() {
+                  //           List<LogModel> newWarnings = [];
+                  //           for (LogModel log in result.data!) {
+                  //             if (log.type == "project_warning" &&
+                  //                 log.data_id ==
+                  //                     projectProvider.projectOnDetails!.id) {
+                  //               newWarnings.add(log);
+                  //             }
+                  //           }
+
+                  //           return newWarnings;
+                  //         }
+
+                  //         if (warnings()!.length <= 0) {
+                  //           showWarning = false;
+                  //           return Container(
+                  //             height: 50,
+                  //             child: Center(
+                  //               child: Column(
+                  //                 mainAxisAlignment: MainAxisAlignment.start,
+                  //                 children: [
+                  //                   Card(
+                  //                     child: Container(
+                  //                       width:
+                  //                           MediaQuery.of(context).size.width,
+                  //                       height: 150,
+                  //                       child: Center(
+                  //                         child: Column(
+                  //                           mainAxisAlignment:
+                  //                               MainAxisAlignment.center,
+                  //                           children: [
+                  //                             Icon(
+                  //                                 Icons
+                  //                                     .notifications_none_sharp,
+                  //                                 size: 50,
+                  //                                 color: Colors.grey),
+                  //                             Text(
+                  //                                 "Pas encore d'avertissements!")
+                  //                           ],
+                  //                         ),
+                  //                       ),
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           );
+                  //         } else {
+                  //           warningHeight = 0;
+                  //         }
+
+                  //         return SizedBox();
+                  //       } else {
+                  //         return Container(
+                  //           child: LogsLoader.load(),
+                  //         );
+                  //       }
+                  //     },
+                  //     stream: logService.stream$,
+                  //   ),
+                  // ),
+                  // showWarning
+                  //     ? Container(
+                  //         width: MediaQuery.of(context).size.width,
+                  //         height: MediaQuery.of(context).size.height * 0.7,
+                  //         child: StreamBuilder<List<LogModel>>(
+                  //           builder: (context, result) {
+                  //             if (result.hasError) {
+                  //               return Center(
+                  //                 child: Text(
+                  //                   "${result.error}",
+                  //                 ),
+                  //               );
+                  //             }
+
+                  //             if (result.hasData && result.data!.length > 0) {
+                  //               List<LogModel>? warnings() {
+                  //                 List<LogModel> newWarnings = [];
+                  //                 for (LogModel log in result.data!) {
+                  //                   if (log.type == "project_warning" &&
+                  //                       log.data_id ==
+                  //                           projectProvider
+                  //                               .projectOnDetails!.id) {
+                  //                     newWarnings.add(log);
+                  //                   }
+                  //                 }
+
+                  //                 return newWarnings;
+                  //               }
+
+                  //               if (warnings()!.length <= 0) {
+                  //                 return Container(
+                  //                   height: 50,
+                  //                   child: Center(
+                  //                     child: Column(
+                  //                       mainAxisAlignment:
+                  //                           MainAxisAlignment.start,
+                  //                       children: [
+                  //                         Card(
+                  //                           child: Container(
+                  //                             width: MediaQuery.of(context)
+                  //                                 .size
+                  //                                 .width,
+                  //                             height: 150,
+                  //                             child: Center(
+                  //                               child: Column(
+                  //                                 mainAxisAlignment:
+                  //                                     MainAxisAlignment.center,
+                  //                                 children: [
+                  //                                   Icon(
+                  //                                       Icons
+                  //                                           .notifications_none_sharp,
+                  //                                       size: 50,
+                  //                                       color: Colors.grey),
+                  //                                   Text(
+                  //                                       "Pas encore d'avertissements!")
+                  //                                 ],
+                  //                               ),
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ],
+                  //                     ),
+                  //                   ),
+                  //                 );
+                  //               }
+
+                  //               return Scrollbar(
+                  //                 child: ListView(
+                  //                   padding: const EdgeInsets.symmetric(
+                  //                       horizontal: 10),
+                  //                   children: List.generate(warnings()!.length,
+                  //                       (index) {
+                  //                     return Stack(
+                  //                       children: [
+                  //                         Card(
+                  //                           child: Container(
+                  //                             padding:
+                  //                                 const EdgeInsets.symmetric(
+                  //                                     horizontal: 20),
+                  //                             decoration: BoxDecoration(
+                  //                                 border: Border(
+                  //                                     left: BorderSide(
+                  //                                         color: Colors.grey,
+                  //                                         width: 7))),
+                  //                             child: Row(
+                  //                               children: [
+                  //                                 Icon(
+                  //                                   Icons
+                  //                                       .notification_important_rounded,
+                  //                                   color: Colors.grey,
+                  //                                 ),
+                  //                                 const SizedBox(
+                  //                                   width: 10,
+                  //                                 ),
+                  //                                 Expanded(
+                  //                                   child: ListTile(
+                  //                                     title: Text(
+                  //                                         "${warnings()![index].title}"),
+                  //                                     subtitle: Text(
+                  //                                         "${warnings()![index].body}"),
+                  //                                   ),
+                  //                                 )
+                  //                               ],
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ],
+                  //                     );
+                  //                   }),
+                  //                 ),
+                  //               );
+                  //             } else {
+                  //               return Container(
+                  //                 child: LogsLoader.load(),
+                  //               );
+                  //             }
+                  //           },
+                  //           stream: logService.stream$,
+                  //         ),
+                  //       )
+                  //     : SizedBox(),
                 ],
               ),
             ))
