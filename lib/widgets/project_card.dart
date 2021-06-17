@@ -206,11 +206,29 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                                                   child: Row(
                                                     children: [
                                                       //TODO: project card color status
-                                                      // Icon(
-                                                      //   Icons.circle,
-                                                      //   size: 15,
-                                                      //   color: colorsSettings[widget.project!.assignees![x].status],
-                                                      // ),
+                                                      Icon(
+                                                        Icons.circle,
+                                                        size: 15,
+                                                        color: widget
+                                                                    .project!
+                                                                    .assignees![
+                                                                        x]
+                                                                    .userStatus ==
+                                                                null
+                                                            ? Colors.grey
+                                                            : widget.project!
+                                                                            .assignees![x].userStatus![
+                                                                        "time_in"] !=
+                                                                    null
+                                                                ? widget.project!.assignees![x].userStatus![
+                                                                            "time_out"] !=
+                                                                        null
+                                                                    ? Colors
+                                                                        .grey
+                                                                    : Colors
+                                                                        .green
+                                                                : Colors.grey,
+                                                      ),
                                                       SizedBox(
                                                         width: 5,
                                                       ),

@@ -145,7 +145,7 @@ class EmployeeSevice extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
-        print(data);
+        print("Employees : $data");
         if (json.decode(response.body)["next_page_url"] != null &&
             json.decode(response.body)["total"] != _pagination.perPage) {
           _pagination.isNext = true;
