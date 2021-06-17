@@ -8,7 +8,6 @@ import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 
 //TODO: empty pick cant add employee
-
 class EmployeeAdd extends StatefulWidget {
   final EmployeesModel? userToEdit;
   const EmployeeAdd({Key? key, this.userToEdit}) : super(key: key);
@@ -93,32 +92,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                                   netWorkImage: widget.userToEdit?.picture,
                                   defaultImage: 'icons/admin_icon.png'),
                               scale: 1)),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: MaterialButton(
-                          color: Palette.drawerColor,
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () async {
-                            await FilePicker.platform.pickFiles(
-                                allowMultiple: false,
-                                allowedExtensions: [
-                                  'jpg',
-                                  'jpeg',
-                                  'png'
-                                ]).then((pickedFile) {
-                              if (pickedFile != null) {
-                                employeeService.base64Image =
-                                    pickedFile.files[0].bytes;
-                              }
-                            });
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10000)),
-                          minWidth: 50,
-                          height: 50,
-                          child: Icon(Icons.camera_alt, color: Colors.white)),
                     ),
                   ],
                 ),
@@ -349,9 +322,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                             Navigator.pop(context);
                           });
                         } else {
-                          print(employeeService.base64Image);
-                          print(
-                              "PICTURE : ${employeeService.base64ImageEncoded}");
                           EmployeesModel newEmployee = EmployeesModel(
                             fname: fnameController.text,
                             lname: lnameController.text,
@@ -359,9 +329,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                             password: passwordController.text,
                             address: addressController.text +
                                 ", ${countryValue!["name"]}",
-                            picture: employeeService.base64Image != null
-                                ? employeeService.base64ImageEncoded
-                                : "",
                             contactNumber: contactNumberController.text,
                           );
 
