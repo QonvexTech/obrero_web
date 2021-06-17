@@ -1,4 +1,3 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
@@ -7,7 +6,6 @@ import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 
-//TODO: empty pick cant add employee
 class EmployeeAdd extends StatefulWidget {
   final EmployeesModel? userToEdit;
   const EmployeeAdd({Key? key, this.userToEdit}) : super(key: key);
@@ -274,7 +272,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
           const SizedBox(
             height: MySpacer.small,
           ),
-
           Container(
             width: MediaQuery.of(context).size.width,
             height: 60,
@@ -347,11 +344,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               ],
             ),
           )
-
-          //TODO: dropdown client
-          //TODO: map or coordinates
-          // TODO: warnigs
-          // TODO:Start date/end
         ],
       )),
     );

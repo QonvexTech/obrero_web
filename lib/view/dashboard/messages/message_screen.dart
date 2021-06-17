@@ -343,14 +343,14 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                                 ? Text("No employee to assign")
                                 : Container(
                                     height: 800,
+                                    width: double.infinity,
                                     child: LazyLoadScrollView(
-                                      isLoading: true,
+                                      scrollDirection: Axis.vertical,
                                       onEndOfPage: () {
-                                        setState(() {
-                                          employeeSevice.loadMore();
-                                        });
+                                        employeeSevice.loadMore();
                                       },
                                       child: ListView.builder(
+                                          scrollDirection: Axis.vertical,
                                           itemCount:
                                               employeeSevice.userload!.length,
                                           itemBuilder: (context, index) {

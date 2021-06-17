@@ -56,6 +56,7 @@ class EmployeeSevice extends ChangeNotifier {
     _usersload = [];
     _tempUsersload = [];
     _paginationload.page = 1;
+    _paginationload.perPage = 15;
     loadUser();
   }
 
@@ -262,20 +263,16 @@ class EmployeeSevice extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
-        if (json.decode(response.body)["next_page_url"] != null) {
+        if (json.decode(response.body)["next_page_url"] != null &&
+            json.decode(response.body)["total"] != _pagination.perPage) {
           _paginationload.isNext = true;
-        } else {
-          _paginationload.isNext = false;
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
           _paginationload.isPrev = true;
-        } else {
-          _paginationload.isPrev = false;
         }
         if (json.decode(response.body)["last_page"] != null) {
           _paginationload.lastPage = json.decode(response.body)["last_page"];
         }
-
         notifyListeners();
         print(data);
 
