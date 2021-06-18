@@ -11,6 +11,8 @@ const String message_history = "$api/messaging/my_sentbox";
 const String add_warning = "$api/project/warning/create";
 const String update_color_name = "$api/colors/update_name";
 
+const String delete_notification = "$api/notification/delete";
+
 //PROJECT or CHANTIER
 const String project_api = "$api/project/";
 const String project_create_api = "$api/project/create";
