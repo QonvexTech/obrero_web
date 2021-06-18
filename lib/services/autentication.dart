@@ -9,13 +9,6 @@ import '../config/global.dart';
 
 class Authentication {
   var error;
-
-  Future logout() async {
-    try {
-      //TODO: logout
-    } catch (e) {}
-  }
-
   Future<bool> login(String email, String password) async {
     try {
       bool success = false;

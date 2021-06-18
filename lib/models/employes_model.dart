@@ -14,6 +14,7 @@ class EmployeesModel extends ChangeNotifier {
   DateTime? updatedAt;
   bool? enableNotification;
   List? status;
+  var userStatus;
   List? archivedStatus;
   bool isSelected = false;
 
@@ -34,12 +35,15 @@ class EmployeesModel extends ChangeNotifier {
     required this.address,
   });
 
-  EmployeesModel.fromJson(Map<String, dynamic> json) {
+  EmployeesModel.fromJson(
+    Map<String, dynamic> json,
+  ) {
     this.id = json["id"];
     this.isAdmin = json["is_admin"] > 0;
     this.fname = json["first_name"];
     this.lname = json["last_name"];
     this.email = json["email"];
+    this.userStatus = json["user_status"];
     this.picture = json["picture"];
     this.contactNumber = json["contact_number"];
     this.address = json["address"];
@@ -57,6 +61,8 @@ class EmployeesModel extends ChangeNotifier {
     data["first_name"] = this.fname;
     data["last_name"] = this.lname;
     data["email"] = this.email;
+    data["picture"] =
+        this.picture != null ? "data:image/jpg;base64,${this.picture}" : "";
     data["password"] = this.password;
     data["address"] = this.address;
     data["contact_number"] = this.contactNumber;
@@ -67,9 +73,7 @@ class EmployeesModel extends ChangeNotifier {
     List<EmployeesModel> newUsers = [];
     for (var user in users) {
       EmployeesModel userModel = EmployeesModel.fromJson(user);
-      if (!userModel.isAdmin!) {
-        newUsers.add(userModel);
-      }
+      newUsers.add(userModel);
     }
     newUsers.reversed;
     return newUsers;
@@ -79,6 +83,8 @@ class EmployeesModel extends ChangeNotifier {
     List<EmployeesModel> newUsers = [];
     for (var user in users) {
       EmployeesModel userModel = EmployeesModel.fromJson(user["user_details"]);
+      userModel.userStatus = user["user_status"];
+      print("STATUSUSER: ${user["user_status"]}");
       if (!userModel.isAdmin!) {
         newUsers.add(userModel);
       }

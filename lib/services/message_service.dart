@@ -75,4 +75,20 @@ class MessageService extends ChangeNotifier {
       return successSend;
     }
   }
+
+  Future showHistory() async {
+    try {
+      var url = Uri.parse(message_history);
+      await http.get(url, headers: {
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $authToken"
+      }).then((response) {
+        var data = json.decode(response.body);
+        print("HISTORY MESSAGES");
+        historyMessages = data["data"];
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 }

@@ -17,10 +17,16 @@ class LogScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Les détails de"),
-          Text(
-            "Tous bûches",
-            style: Theme.of(context).textTheme.headline6,
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text("Les détails de"),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text(
+              "Tous bûches",
+              style: Theme.of(context).textTheme.headline6,
+            ),
           ),
           SizedBox(
             height: MySpacer.large,

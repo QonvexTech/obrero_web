@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uitemplate/models/admin_model.dart';
+import 'package:uitemplate/models/color_model.dart';
 
 const String api = "https://obrero.checkmy.dev/api";
 
 //ADMIN
 const String login_api = "$api/admin-login";
+const String message_history = "$api/messaging/my_sentbox";
+const String add_warning = "$api/project/warning/create";
+const String update_color_name = "$api/colors/update_name";
 
 //PROJECT or CHANTIER
 const String project_api = "$api/project/";
@@ -55,53 +59,55 @@ const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);
 String? authToken;
 Admin? profileData;
 
-List<String> statusTitles = ['En cours', 'En attente', 'Annulé', 'Compléter'];
+List<ColorModels> colorsSettings = [];
 
-List<String> defaultImageTag = [
-  "assets/icons/red.png",
-  "assets/icons/pink.png",
-  "assets/icons/purple.png",
-  "assets/icons/deepPurple.png",
-  "assets/icons/indigo.png",
-  "assets/icons/blue.png",
-  "assets/icons/lightBlue.png",
-  "assets/icons/cyan.png",
-  "assets/icons/teal.png",
-  "assets/icons/green.png",
-  "assets/icons/lighGreen.png",
-  "assets/icons/lime.png",
-  "assets/icons/yellow.png",
-  "assets/icons/amber.png",
-  "assets/icons/orange.png",
-  "assets/icons/deepOrange.png",
-  "assets/icons/brown.png",
-  "assets/icons/grey.png",
-  "assets/icons/blueGrey.png",
-  "assets/icons/black.png"
-];
+List historyMessages = [];
 
-List<Color> defaultColors = [
-  Colors.red,
-  Colors.pink,
-  Colors.purple,
-  Colors.deepPurple,
-  Colors.indigo,
-  Colors.blue,
-  Colors.lightBlue,
-  Colors.cyan,
-  Colors.teal,
-  Colors.green,
-  Colors.lightGreen,
-  Colors.lime,
-  Colors.yellow,
-  Colors.amber,
-  Colors.orange,
-  Colors.deepOrange,
-  Colors.brown,
-  Colors.grey,
-  Colors.blueGrey,
-  Colors.black,
-];
+Map<String, String> defaultImageTag = {
+  "red": "assets/icons/red.png",
+  "pink": "assets/icons/pink.png",
+  "purple": "assets/icons/purple.png",
+  "deepPurple": "assets/icons/deepPurple.png",
+  "indigo": "assets/icons/indigo.png",
+  "blue": "assets/icons/blue.png",
+  "lightBlue": "assets/icons/lightBlue.png",
+  "cyan": "assets/icons/cyan.png",
+  "teal": "assets/icons/teal.png",
+  "green": "assets/icons/green.png",
+  "lightGreen": "assets/icons/lighGreen.png",
+  "lime": "assets/icons/lighGreen.png",
+  "yellow": "assets/icons/yellow.png",
+  "amber": "assets/icons/amber.png",
+  "orange": "assets/icons/orange.png",
+  "deepOrange": "assets/icons/deepOrange.png",
+  "brown": "assets/icons/brown.png",
+  "grey": "assets/icons/grey.png",
+  "blueGrey": "assets/icons/blueGrey.png",
+  "black": "assets/icons/black.png"
+};
+
+Map<String, Color> colorMap = {
+  "red": Colors.red,
+  "pink": Colors.pink,
+  "purple": Colors.purple,
+  "deepPurple": Colors.deepPurple,
+  "indigo": Colors.indigo,
+  "blue": Colors.blue,
+  "lightBlue": Colors.lightBlue,
+  "cyan": Colors.cyan,
+  "teal": Colors.teal,
+  "green": Colors.green,
+  "lightGreen": Colors.lightGreen,
+  "lime": Colors.lime,
+  "yellow": Colors.yellow,
+  "amber": Colors.amber,
+  "orange": Colors.orange,
+  "deepOrange": Colors.deepOrange,
+  "brown": Colors.brown,
+  "grey": Colors.grey,
+  "blueGrey": Colors.blueGrey,
+  "black": Colors.black,
+};
 
 List countries = [
   {"name": 'Afghanistan', "code": 'AF'},

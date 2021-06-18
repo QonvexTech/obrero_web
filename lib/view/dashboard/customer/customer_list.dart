@@ -4,23 +4,20 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
+import 'package:uitemplate/services/settings/tableHelper.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_add.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
-import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
-import 'package:uitemplate/widgets/empty_container.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
-import 'package:universal_html/html.dart';
 
 class CustomerList extends StatefulWidget {
   @override
   _CustomerListState createState() => _CustomerListState();
 }
 
-class _CustomerListState extends State<CustomerList> {
+class _CustomerListState extends State<CustomerList> with TableHelper {
   @override
   void initState() {
     super.initState();
@@ -97,13 +94,18 @@ class _CustomerListState extends State<CustomerList> {
                                       customerService.removeCustomer,
                                       customerService.setPage,
                                     ),
-                                    headersMobile: ["NOM", "EMAIL", "STATUS"],
+                                    headersMobile: [
+                                      "NOM",
+                                      "EMAIL",
+                                      "STATUS",
+                                      "ACTIONS"
+                                    ],
                                     headers: [
                                       "NOM",
                                       "EMAIL",
                                       "TÉLÉPHONE",
                                       "ADDRESSE",
-                                      // "STATUS"
+                                      "ACTIONS"
                                     ],
                                     assignUser: false,
                                   ),
@@ -172,21 +174,19 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(
                 child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Consumer<ColorChangeService>(
-                builder: (context, color, child) {
-                  return Text(
-                    statusTitles[
-                        data.status!.status == null ? 0 : data.status!.status!],
-                    style: TextStyle(
-                        color: color.statusColors[data.status!.status == null
-                            ? 0
-                            : data.status!.status!]),
-                    overflow: TextOverflow.ellipsis,
-                  );
-                },
-              ),
-            ))),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      colorsSettings[data.status!.status == null
+                              ? 0
+                              : data.status!.status!]
+                          .colorName,
+                      style: TextStyle(
+                          color: colorsSettings[data.status!.status == null
+                                  ? 0
+                                  : data.status!.status!]
+                              .color),
+                      overflow: TextOverflow.ellipsis,
+                    )))),
         TableCell(
           child: PopupMenuButton(
               padding: EdgeInsets.all(0),
@@ -218,90 +218,13 @@ List<TableRow> rowWidgetMobile(BuildContext context, List<CustomerModel> datas,
                           ),
                           IconButton(
                             onPressed: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                        backgroundColor:
-                                            Palette.contentBackground,
-                                        content: Expanded(
-                                          child: Container(
-                                            height: 70,
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Icon(
-                                                      Icons.warning,
-                                                      color: Colors.red,
-                                                    ),
-                                                    SizedBox(
-                                                      width: MySpacer.small,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                            "Are you sure to delete "),
-                                                        Container(
-                                                          width: 150,
-                                                          child: Text(
-                                                            "${data.fname} ${data.lname}?",
-                                                            style: TextStyle(
-                                                                color: Palette
-                                                                    .drawerColor),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: MySpacer.small,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    MaterialButton(
-                                                      color: Colors.grey,
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text("Cancel",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .white)),
-                                                    ),
-                                                    SizedBox(
-                                                      width: MySpacer.medium,
-                                                    ),
-                                                    MaterialButton(
-                                                      color:
-                                                          Palette.drawerColor,
-                                                      onPressed: () {
-                                                        remove(id: data.id);
-                                                        Navigator.pop(context);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: Text(
-                                                        "Confirm",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ));
+                              TableHelper.showDeleteCard(
+                                  context,
+                                  data.fname.toString() +
+                                      " " +
+                                      data.fname.toString(),
+                                  remove,
+                                  data.id);
                             },
                             icon: Icon(
                               Icons.delete,
@@ -415,74 +338,11 @@ List<TableRow> rowWidget(
               ),
               IconButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                            backgroundColor: Palette.contentBackground,
-                            content: Expanded(
-                              child: Container(
-                                height: 70,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Icon(
-                                          Icons.warning,
-                                          color: Colors.red,
-                                        ),
-                                        SizedBox(
-                                          width: MySpacer.small,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text("Are you sure to delete "),
-                                            Text("${data.fname} ${data.lname}?",
-                                                style: TextStyle(
-                                                    color: Palette.drawerColor))
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: MySpacer.small,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        MaterialButton(
-                                          color: Colors.grey,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text("Cancel",
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                        ),
-                                        SizedBox(
-                                          width: MySpacer.medium,
-                                        ),
-                                        MaterialButton(
-                                          color: Palette.drawerColor,
-                                          onPressed: () {
-                                            remove(id: data.id);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            "Confirm",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ));
+                  TableHelper.showDeleteCard(
+                      context,
+                      data.fname.toString() + " " + data.fname.toString(),
+                      remove,
+                      data.id);
                 },
                 icon: Icon(
                   Icons.delete,

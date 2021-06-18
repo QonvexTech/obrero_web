@@ -2,10 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:provider/provider.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/services/dashboard_service.dart';
 
 class MapService extends ChangeNotifier {
   final containerKey = GlobalKey();
@@ -66,7 +65,7 @@ class MapService extends ChangeNotifier {
   //       .asUint8List();
   // }
 
-  mapInit(List<ProjectModel> projects, context, List imagesStatus) async {
+  mapInit(List<ProjectModel> projects, context) async {
     if (_markers.length > 0) {
       coordinates = _markers.first.position;
       location.text =
@@ -89,8 +88,8 @@ class MapService extends ChangeNotifier {
             },
             infoWindow: InfoWindow(
                 title: project.name, snippet: project.address.toString()),
-            icon: await BitmapDescriptor.fromAssetImage(
-                ImageConfiguration(), imagesStatus[project.status!]),
+            icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
+                colorsSettings[project.status!].circleAsset!),
             markerId: MarkerId(project.id.toString()),
             position: project.coordinates!));
       }
@@ -183,7 +182,14 @@ class MapService extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = json.decode(response.body);
         addressGeo = data["plus_code"]["compound_code"] ?? "$lat , $lang";
-        address.text = addressGeo;
+        var splitAdd = addressGeo.split(" ");
+        splitAdd.removeAt(0);
+        var concatenate = StringBuffer();
+
+        splitAdd.forEach((item) {
+          concatenate.write(item + " ");
+        });
+        address.text = concatenate.toString();
 
         notifyListeners();
       } else {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/admin_model.dart';
@@ -18,7 +19,14 @@ class EmployeeSevice extends ChangeNotifier {
   List<EmployeesModel>? _usersload;
   List<EmployeesModel>? _tempUsersload;
   PaginationService paginationService = PaginationService();
-  List<UserProjectModel>? employeeProjects;
+  List<UserProjectModel>? _employeeProjects;
+
+  get employeeProjects => _employeeProjects;
+
+  set employeeProjects(value) {
+    _employeeProjects = value;
+    notifyListeners();
+  }
 
   late PaginationModel _pagination =
       PaginationModel(lastPage: 1, fetch: fetchUsers, perPage: 10);
@@ -48,6 +56,7 @@ class EmployeeSevice extends ChangeNotifier {
     _usersload = [];
     _tempUsersload = [];
     _paginationload.page = 1;
+    _paginationload.perPage = 15;
     loadUser();
   }
 
@@ -56,7 +65,6 @@ class EmployeeSevice extends ChangeNotifier {
       _paginationload.page += 1;
       loadUser();
     }
-    print("end");
   }
 
   //IMAGES
@@ -118,19 +126,17 @@ class EmployeeSevice extends ChangeNotifier {
         List data = json.decode(response.body);
 
         employeeProjects = UserProjectModel.fromListToUserProjectModel(data);
-        notifyListeners();
       }
     } catch (e) {
       print(e);
     }
+    notifyListeners();
   }
-
-  Future pastProjects(int userId) async {}
 
   Future fetchUsers() async {
     print("fetching...");
-    var url = Uri.parse(
-        "$user_api${_pagination.perPage + 1}?page=${_pagination.page}");
+    var url =
+        Uri.parse("$user_api${_pagination.perPage}?page=${_pagination.page}");
     try {
       var response = await http.get(url, headers: {
         "Accept": "application/json",
@@ -139,6 +145,7 @@ class EmployeeSevice extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
+        print("Employees : $data");
         if (json.decode(response.body)["next_page_url"] != null &&
             json.decode(response.body)["total"] != _pagination.perPage) {
           _pagination.isNext = true;
@@ -150,19 +157,26 @@ class EmployeeSevice extends ChangeNotifier {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
 
-        notifyListeners();
-
         print("TOTAL USER : ${_pagination.totalEntries}");
         print(data);
 
         var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
-        _pagination.totalEntries = json.decode(response.body)["total"] - 1;
+        _pagination.totalEntries = json.decode(response.body)["total"];
 
         if (_paginationload.totalEntries <= _paginationload.perPage) {
           _paginationload.perPage = _paginationload.totalEntries;
         }
         _users = listOfUsers;
         _tempUsers = listOfUsers;
+
+        // if (_pagination.page == 1) {
+        //   loadLastPage(_pagination.lastPage, _pagination.perPage);
+        // }
+
+        // if (_pagination.page == _pagination.lastPage) {
+        //   _users!.removeAt(_users!.length - 1);
+        // }
+
         searchController.clear();
         print(data);
       } else {
@@ -179,13 +193,9 @@ class EmployeeSevice extends ChangeNotifier {
     try {
       var response = await http.post(url, body: newEmployee.toJson(), headers: {
         "Accept": "application/json",
-        // "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print(response.body);
-
-        paginationService.addedItem(_pagination);
         fetchUsers();
         notifyListeners();
       } else {
@@ -213,6 +223,7 @@ class EmployeeSevice extends ChangeNotifier {
         print(data);
       });
       updateSuccess = true;
+      print("UPDATE SUCCESS");
     } catch (e) {
       print("UPDATE ERROR:$e");
     }
@@ -227,8 +238,6 @@ class EmployeeSevice extends ChangeNotifier {
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
-        var data = json.decode(response.body);
-        // print(data);
         _users!.removeWhere((element) => element.id == id);
 
         if (_users!.length == 0) {
@@ -254,32 +263,29 @@ class EmployeeSevice extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
-        if (json.decode(response.body)["next_page_url"] != null) {
+        if (json.decode(response.body)["next_page_url"] != null &&
+            json.decode(response.body)["total"] != _pagination.perPage) {
           _paginationload.isNext = true;
-        } else {
-          _paginationload.isNext = false;
         }
         if (json.decode(response.body)["prev_page_url"] != null) {
           _paginationload.isPrev = true;
-        } else {
-          _paginationload.isPrev = false;
         }
         if (json.decode(response.body)["last_page"] != null) {
           _paginationload.lastPage = json.decode(response.body)["last_page"];
         }
-
         notifyListeners();
         print(data);
 
         var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
 
-        _pagination.totalEntries = json.decode(response.body)["total"] - 1;
+        _pagination.totalEntries = json.decode(response.body)["total"];
 
         if (_paginationload.totalEntries <= _paginationload.perPage) {
           _paginationload.perPage = _paginationload.totalEntries;
         }
         _usersload!.addAll(listOfUsers);
         _tempUsersload!.addAll(listOfUsers);
+
         searchController.clear();
         print(data);
       } else {
@@ -290,4 +296,26 @@ class EmployeeSevice extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // Future loadLastPage(perPage, int page) async {
+  //   var url = Uri.parse("$user_api$perPage?page=${page + 1}");
+  //   try {
+  //     var response = await http.get(url, headers: {
+  //       "Accept": "application/json",
+  //       "Authorization": "Bearer $authToken",
+  //       "Content-Type": "application/x-www-form-urlencoded"
+  //     });
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       List data = json.decode(response.body)["data"];
+  //       var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
+  //       _tempUsers!.add(listOfUsers[0]);
+  //       notifyListeners();
+  //     } else {
+  //       print(response.body);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  //   notifyListeners();
+  // }
 }

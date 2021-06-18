@@ -14,6 +14,7 @@ class CustomerService extends ChangeNotifier {
   Widget activePageScreen = CustomerList();
 
   bool _loader = false;
+
   // BuildContext? fromContext;
   PaginationService paginationService = PaginationService();
   TextEditingController searchController = TextEditingController();
@@ -159,7 +160,7 @@ class CustomerService extends ChangeNotifier {
         } else {
           customerProject = [];
         }
-
+        print("customerproject: ${customerProject!.length}");
         notifyListeners();
       }
     } catch (e) {

@@ -84,11 +84,8 @@ class ProjectProvider extends ChangeNotifier {
 
   void fetchOnDates(
       {required BuildContext context, required MapService mapService}) {
-    fetchProjectsBaseOnDates().whenComplete(() => mapService.mapInit(
-          _projectsDateBase!,
-          context,
-          Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
-        ));
+    fetchProjectsBaseOnDates()
+        .whenComplete(() => mapService.mapInit(_projectsDateBase!, context));
   }
 
   init(mapService) {
@@ -166,6 +163,7 @@ class ProjectProvider extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
+        print("projects: $data");
         if (json.decode(response.body)["next_page_url"] != null) {
           _pagination.isNext = true;
         }

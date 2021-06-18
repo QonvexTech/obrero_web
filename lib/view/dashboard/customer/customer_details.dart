@@ -10,7 +10,6 @@ import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
@@ -42,11 +41,8 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
       customerService
           .workingProjectsCustomer(widget.customer!.id!)
           .whenComplete(() {
-        Provider.of<MapService>(context, listen: false).mapInit(
-          customerService.customerProject!,
-          context,
-          Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
-        );
+        Provider.of<MapService>(context, listen: false)
+            .mapInit(customerService.customerProject!, context);
 
         // if (Provider.of<CustomerService>(context, listen: false)
         //         .customerProject!
@@ -67,6 +63,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
     CustomerService customerService = Provider.of<CustomerService>(context);
     ProjectProvider projectService = Provider.of<ProjectProvider>(context);
     MapService mapService = Provider.of<MapService>(context);
+
     return Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -118,11 +115,12 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                     alignment: widget.customer!.picture == null
                                         ? AlignmentDirectional.bottomCenter
                                         : AlignmentDirectional.center,
-                                    image: fetchImage(
-                                        netWorkImage: widget.customer?.picture),
-                                    scale: widget.customer!.picture == null
-                                        ? 5
-                                        : 1)),
+                                    image: widget.customer?.picture == null
+                                        ? AssetImage('icons/admin_icon.png')
+                                        : fetchImage(
+                                            netWorkImage:
+                                                widget.customer?.picture),
+                                    scale: 1)),
                           ),
                           SizedBox(
                             width: MySpacer.medium,
@@ -200,7 +198,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                             )
                           : customerService.customerProject!.length == 0
                               ? EmptyContainer(
-                                  addingFunc: ProjectAddScreen(),
+                                  addingFunc: ProjectAddScreen(
+                                    customer: widget.customer,
+                                  ),
                                   title: "No assigned project yet",
                                   description: "Add project Now",
                                   buttonText: "Add Project",
@@ -339,22 +339,17 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                                             Text("Status",
                                                                 style:
                                                                     transHeader),
-                                                            Consumer<
-                                                                ColorChangeService>(
-                                                              builder: (context,
-                                                                  data, child) {
-                                                                return Text(
-                                                                  statusTitles[
+                                                            Text(
+                                                              colorsSettings[
                                                                       project
-                                                                          .status!],
-                                                                  style: TextStyle(
-                                                                      color: data
-                                                                              .statusColors[
+                                                                          .status!]
+                                                                  .name!,
+                                                              style: TextStyle(
+                                                                  color: colorsSettings[
                                                                           project
-                                                                              .status!]),
-                                                                );
-                                                              },
-                                                            ),
+                                                                              .status!]
+                                                                      .color),
+                                                            )
                                                           ],
                                                         ),
                                                       ],

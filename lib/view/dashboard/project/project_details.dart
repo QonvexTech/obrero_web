@@ -8,13 +8,13 @@ import 'package:uitemplate/models/log_model.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
+import 'package:uitemplate/widgets/add_warning_screen.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 
 class ProjectDetails extends StatefulWidget {
@@ -36,9 +36,13 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
     super.initState();
   }
 
+  bool showWarning = true;
+  double warningHeight = 200;
+
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+
     var scaff = Provider.of<ScaffoldService>(context);
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -69,7 +73,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                      "Planifié du ${projectProvider.projectOnDetails!.startDate.toString().split(" ")[0]} au ${projectProvider.projectOnDetails!.endDate.toString().split(" ")[0]} ",
+                      "Planifié du ${months[projectProvider.projectOnDetails!.startDate.month]} ${projectProvider.projectOnDetails!.startDate.day}, ${projectProvider.projectOnDetails!.startDate.year} au ${months[projectProvider.projectOnDetails!.endDate.month]} ${projectProvider.projectOnDetails!.endDate.day}, ${projectProvider.projectOnDetails!.endDate.year} ",
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(
@@ -272,6 +276,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                   ),
                                 ),
                               ),
+                              SizedBox(height: MySpacer.small),
                             ],
                           )
                         : Column(
@@ -421,147 +426,299 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         "Warnings",
                         style: Theme.of(context).textTheme.headline6,
                       ),
-                      // IconButton(
-                      //     icon: Icon(Icons.add_circle),
-                      //     onPressed: () {
-                      //       //LOGS
-                      //     })
+                      IconButton(
+                          icon: Icon(Icons.add_circle),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                    backgroundColor: Palette.contentBackground,
+                                    content: AddWaringScreen(
+                                      projectId:
+                                          projectProvider.projectOnDetails!.id!,
+                                    )));
+                          })
                     ],
                   ),
                   SizedBox(
                     height: MySpacer.small,
                   ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.7,
-                    width: MediaQuery.of(context).size.width,
-                    child: StreamBuilder<List<LogModel>>(
-                      builder: (context, result) {
-                        if (result.hasError) {
-                          return Center(
-                            child: Text(
-                              "${result.error}",
-                            ),
-                          );
-                        }
-
-                        if (result.hasData && result.data!.length > 0) {
-                          List<LogModel>? warnings() {
-                            List<LogModel> newWarnings = [];
-                            for (LogModel log in result.data!) {
-                              if (log.type == "project_warning" &&
-                                  log.data_id ==
-                                      projectProvider.projectOnDetails!.id) {
-                                newWarnings.add(log);
-                              }
-                            }
-                            return newWarnings;
-                          }
-
-                          if (warnings()!.length <= 0) {
-                            return Container(
-                              height: 50,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Card(
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 150,
-                                        child: Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                  Icons
-                                                      .notifications_none_sharp,
-                                                  size: 50,
-                                                  color: Colors.grey),
-                                              Text(
-                                                  "Pas encore d'avertissements!")
-                                            ],
-                                          ),
-                                        ),
+                  projectProvider.projectOnDetails!.warnings.length == 0
+                      ? Container(
+                          height: 200,
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Card(
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 150,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.notifications_none_sharp,
+                                              size: 50, color: Colors.grey),
+                                          Text("Pas encore d'avertissements!")
+                                        ],
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-
-                          return Scrollbar(
-                            child: ListView(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              children:
-                                  List.generate(warnings()!.length, (index) {
-                                return Stack(
-                                  children: [
-                                    Card(
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons
-                                                  .notification_important_rounded,
-                                              color: Colors.grey,
+                              ],
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: ListView(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            children: List.generate(
+                                projectProvider.projectOnDetails!.warnings
+                                    .length, (index) {
+                              return Stack(
+                                children: [
+                                  Card(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20),
+                                      decoration: BoxDecoration(
+                                          border: Border(
+                                              left: BorderSide(
+                                                  color: colorsSettings[
+                                                          projectProvider
+                                                              .projectOnDetails!
+                                                              .warnings[index]
+                                                              .type]
+                                                      .color!,
+                                                  width: 7))),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons
+                                                .notification_important_rounded,
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text(
+                                                  "${projectProvider.projectOnDetails!.warnings[index].title}"),
+                                              subtitle: Text(
+                                                  "${projectProvider.projectOnDetails!.warnings[index].description}"),
                                             ),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                            Expanded(
-                                              child: ListTile(
-                                                title: Text(
-                                                    "${warnings()![index].title}"),
-                                                subtitle: Text(
-                                                    "${warnings()![index].body}"),
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                                          )
+                                        ],
                                       ),
                                     ),
-                                    // Consumer<ColorChangeService>(
-                                    //   builder: (context, data, child) {
-                                    //     return Positioned(
-                                    //         right: 10,
-                                    //         top: 10,
-                                    //         child: Container(
-                                    //           width: 100,
-                                    //           height: 20,
-                                    //           decoration: BoxDecoration(
-                                    //               color: Colors.grey,
-                                    //               // color: data.statusColors[
-                                    //               //     int.parse(
-                                    //               //         warnings()![index]
-                                    //               //             .type!)],
-                                    //               borderRadius:
-                                    //                   BorderRadius.circular(
-                                    //                       10)),
-                                    //           child: Text(
-                                    //               "${warnings()![index].body!}"),
-                                    //         ));
-                                    //   },
-                                    // ),
-                                  ],
-                                );
-                              }),
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            child: LogsLoader.load(),
-                          );
-                        }
-                      },
-                      stream: logService.stream$,
-                    ),
-                  ),
+                                  ),
+                                ],
+                              );
+                            }),
+                          ),
+                        ),
+                  // Container(
+                  //   width: MediaQuery.of(context).size.width,
+                  //   height: warningHeight,
+                  //   child: StreamBuilder<List<LogModel>>(
+                  //     builder: (context, result) {
+                  //       if (result.hasError) {
+                  //         return Center(
+                  //           child: Text(
+                  //             "${result.error}",
+                  //           ),
+                  //         );
+                  //       }
+
+                  //       if (result.hasData && result.data!.length > 0) {
+                  //         List<LogModel>? warnings() {
+                  //           List<LogModel> newWarnings = [];
+                  //           for (LogModel log in result.data!) {
+                  //             if (log.type == "project_warning" &&
+                  //                 log.data_id ==
+                  //                     projectProvider.projectOnDetails!.id) {
+                  //               newWarnings.add(log);
+                  //             }
+                  //           }
+
+                  //           return newWarnings;
+                  //         }
+
+                  //         if (warnings()!.length <= 0) {
+                  //           showWarning = false;
+                  //           return Container(
+                  //             height: 50,
+                  //             child: Center(
+                  //               child: Column(
+                  //                 mainAxisAlignment: MainAxisAlignment.start,
+                  //                 children: [
+                  //                   Card(
+                  //                     child: Container(
+                  //                       width:
+                  //                           MediaQuery.of(context).size.width,
+                  //                       height: 150,
+                  //                       child: Center(
+                  //                         child: Column(
+                  //                           mainAxisAlignment:
+                  //                               MainAxisAlignment.center,
+                  //                           children: [
+                  //                             Icon(
+                  //                                 Icons
+                  //                                     .notifications_none_sharp,
+                  //                                 size: 50,
+                  //                                 color: Colors.grey),
+                  //                             Text(
+                  //                                 "Pas encore d'avertissements!")
+                  //                           ],
+                  //                         ),
+                  //                       ),
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           );
+                  //         } else {
+                  //           warningHeight = 0;
+                  //         }
+
+                  //         return SizedBox();
+                  //       } else {
+                  //         return Container(
+                  //           child: LogsLoader.load(),
+                  //         );
+                  //       }
+                  //     },
+                  //     stream: logService.stream$,
+                  //   ),
+                  // ),
+                  // showWarning
+                  //     ? Container(
+                  //         width: MediaQuery.of(context).size.width,
+                  //         height: MediaQuery.of(context).size.height * 0.7,
+                  //         child: StreamBuilder<List<LogModel>>(
+                  //           builder: (context, result) {
+                  //             if (result.hasError) {
+                  //               return Center(
+                  //                 child: Text(
+                  //                   "${result.error}",
+                  //                 ),
+                  //               );
+                  //             }
+
+                  //             if (result.hasData && result.data!.length > 0) {
+                  //               List<LogModel>? warnings() {
+                  //                 List<LogModel> newWarnings = [];
+                  //                 for (LogModel log in result.data!) {
+                  //                   if (log.type == "project_warning" &&
+                  //                       log.data_id ==
+                  //                           projectProvider
+                  //                               .projectOnDetails!.id) {
+                  //                     newWarnings.add(log);
+                  //                   }
+                  //                 }
+
+                  //                 return newWarnings;
+                  //               }
+
+                  //               if (warnings()!.length <= 0) {
+                  //                 return Container(
+                  //                   height: 50,
+                  //                   child: Center(
+                  //                     child: Column(
+                  //                       mainAxisAlignment:
+                  //                           MainAxisAlignment.start,
+                  //                       children: [
+                  //                         Card(
+                  //                           child: Container(
+                  //                             width: MediaQuery.of(context)
+                  //                                 .size
+                  //                                 .width,
+                  //                             height: 150,
+                  //                             child: Center(
+                  //                               child: Column(
+                  //                                 mainAxisAlignment:
+                  //                                     MainAxisAlignment.center,
+                  //                                 children: [
+                  //                                   Icon(
+                  //                                       Icons
+                  //                                           .notifications_none_sharp,
+                  //                                       size: 50,
+                  //                                       color: Colors.grey),
+                  //                                   Text(
+                  //                                       "Pas encore d'avertissements!")
+                  //                                 ],
+                  //                               ),
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ],
+                  //                     ),
+                  //                   ),
+                  //                 );
+                  //               }
+
+                  //               return Scrollbar(
+                  //                 child: ListView(
+                  //                   padding: const EdgeInsets.symmetric(
+                  //                       horizontal: 10),
+                  //                   children: List.generate(warnings()!.length,
+                  //                       (index) {
+                  //                     return Stack(
+                  //                       children: [
+                  //                         Card(
+                  //                           child: Container(
+                  //                             padding:
+                  //                                 const EdgeInsets.symmetric(
+                  //                                     horizontal: 20),
+                  //                             decoration: BoxDecoration(
+                  //                                 border: Border(
+                  //                                     left: BorderSide(
+                  //                                         color: Colors.grey,
+                  //                                         width: 7))),
+                  //                             child: Row(
+                  //                               children: [
+                  //                                 Icon(
+                  //                                   Icons
+                  //                                       .notification_important_rounded,
+                  //                                   color: Colors.grey,
+                  //                                 ),
+                  //                                 const SizedBox(
+                  //                                   width: 10,
+                  //                                 ),
+                  //                                 Expanded(
+                  //                                   child: ListTile(
+                  //                                     title: Text(
+                  //                                         "${warnings()![index].title}"),
+                  //                                     subtitle: Text(
+                  //                                         "${warnings()![index].body}"),
+                  //                                   ),
+                  //                                 )
+                  //                               ],
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ],
+                  //                     );
+                  //                   }),
+                  //                 ),
+                  //               );
+                  //             } else {
+                  //               return Container(
+                  //                 child: LogsLoader.load(),
+                  //               );
+                  //             }
+                  //           },
+                  //           stream: logService.stream$,
+                  //         ),
+                  //       )
+                  //     : SizedBox(),
                 ],
               ),
             ))

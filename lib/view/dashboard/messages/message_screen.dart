@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
@@ -9,6 +10,7 @@ import 'package:uitemplate/services/messaging/messaging_data_helper.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view_model/messaging/image_viewer.dart';
 import 'package:uitemplate/view_model/messaging/view.dart';
+import 'package:uitemplate/widgets/message_history.dart';
 
 class MessageScreen extends StatefulWidget {
   final List<EmployeesModel> recepients;
@@ -37,7 +39,7 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
 
   @override
   void initState() {
-    Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
+    Provider.of<EmployeeSevice>(context, listen: false).initLoad();
     super.initState();
   }
 
@@ -46,6 +48,7 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
   Widget build(BuildContext context) {
     MessageService messageService = Provider.of<MessageService>(context);
     EmployeeSevice employeeSevice = Provider.of<EmployeeSevice>(context);
+
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Palette.contentBackground,
@@ -74,16 +77,42 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                   Expanded(
                     child: Container(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(right: 25),
+                            padding: const EdgeInsets.only(left: 10, top: 20),
                             child: AppBar(
                               centerTitle: false,
                               elevation: 0,
                               backgroundColor: Colors.transparent,
-                              title: Text(
-                                "Messagerie",
-                                style: TextStyle(color: Colors.black),
+                              title: Row(
+                                children: [
+                                  Text(
+                                    "Messagerie",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  MaterialButton(
+                                    onPressed: () {
+                                      MessageService()
+                                          .showHistory()
+                                          .whenComplete(() {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                                backgroundColor:
+                                                    Palette.contentBackground,
+                                                content: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.35,
+                                                    child: MessageHistory())));
+                                      });
+                                    },
+                                    child: Icon(Icons.history),
+                                  ),
+                                ],
                               ),
                               actions: [
                                 IconButton(
@@ -103,20 +132,24 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                                 const SizedBox(
                                   width: 15,
                                 ),
-                                MaterialButton(
-                                  padding: const EdgeInsets.all(20),
-                                  onPressed: () =>
-                                      setState(() => _showList = !_showList),
-                                  minWidth: 60,
-                                  height: 60,
-                                  color: Theme.of(context).accentColor,
-                                  child: Center(
-                                    child: Image.asset(
-                                      "assets/icons/icon.png",
-                                      color: Colors.white,
+                                Container(
+                                  padding: EdgeInsets.all(5),
+                                  child: MaterialButton(
+                                    padding: const EdgeInsets.all(15),
+                                    onPressed: () =>
+                                        setState(() => _showList = !_showList),
+                                    minWidth: 60,
+                                    height: 60,
+                                    color: Theme.of(context).accentColor,
+                                    child: Center(
+                                      child: Image.asset(
+                                        "assets/icons/icon.png",
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                )
+                                ),
+                                SizedBox(width: 25)
                               ],
                               automaticallyImplyLeading: false,
                             ),
@@ -303,22 +336,98 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                                     .fontSize),
                           ),
                         ),
-                        Expanded(
-                            child: Container(
-                          child: employeeSevice.users == null
-                              ? Views.shimmerLoader()
-                              : Views.employeesList(employeeSevice,
-                                  callback: (employeeData) {
-                                  if (!MessagingDataHelper.contains(
-                                      widget.recepients, employeeData.id!)) {
-                                    print(employeeData);
-                                    setState(() {
-                                      widget.recepients.add(employeeData);
-                                      // messageSending = false;
-                                    });
-                                  }
-                                }),
-                        ))
+
+                        employeeSevice.userload == null
+                            ? Center(child: CircularProgressIndicator())
+                            : employeeSevice.userload!.length == 0
+                                ? Text("No employee to assign")
+                                : Container(
+                                    height: 800,
+                                    width: double.infinity,
+                                    child: LazyLoadScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      onEndOfPage: () {
+                                        employeeSevice.loadMore();
+                                      },
+                                      child: ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          itemCount:
+                                              employeeSevice.userload!.length,
+                                          itemBuilder: (context, index) {
+                                            return GestureDetector(
+                                                onTap: () {
+                                                  if (!MessagingDataHelper
+                                                      .contains(
+                                                          widget.recepients,
+                                                          employeeSevice
+                                                              .userload[index]
+                                                              .id!)) {
+                                                    setState(() {
+                                                      widget.recepients.add(
+                                                          employeeSevice
+                                                              .userload[index]);
+                                                    });
+                                                  }
+                                                },
+                                                child: Container(
+                                                  margin: EdgeInsets.all(5),
+                                                  height: 60,
+                                                  width: 200,
+                                                  child: Card(
+                                                    child: Center(
+                                                        child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Row(
+                                                        children: [
+                                                          CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            maxRadius: 15,
+                                                            backgroundImage: fetchImage(
+                                                                netWorkImage:
+                                                                    employeeSevice
+                                                                        .userload![
+                                                                            index]
+                                                                        .picture),
+                                                          ),
+                                                          SizedBox(
+                                                            width:
+                                                                MySpacer.small,
+                                                          ),
+                                                          Text(
+                                                            "${employeeSevice.userload![index].fname!} ${employeeSevice.userload![index].lname!}",
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )),
+                                                  ),
+                                                ));
+                                          }),
+                                    ),
+                                  ),
+
+                        // Expanded(
+                        //     child: Container(
+                        //   child: employeeSevice.users == null
+                        //       ? Views.shimmerLoader()
+                        //       : Views.employeesList(employeeSevice,
+                        //           callback: (employeeData) {
+                        //           if (!MessagingDataHelper.contains(
+                        //               widget.recepients, employeeData.id!)) {
+                        //             print(employeeData);
+                        //             setState(() {
+                        //               widget.recepients.add(employeeData);
+                        //               // messageSending = false;
+                        //             });
+                        //           }
+                        //         }),
+                        // ))
                       ],
                     ),
                   )
@@ -497,5 +606,13 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
     //     ],
     //   ),
     // );
+  }
+
+  static ImageProvider _imageProvider({String? image}) {
+    if (image == null) {
+      return AssetImage("assets/icons/admin_icon.png");
+    } else {
+      return NetworkImage("https://obrero.checkmy.dev$image");
+    }
   }
 }

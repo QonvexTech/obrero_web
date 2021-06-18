@@ -1,4 +1,3 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
@@ -27,7 +26,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
 
   @override
   void initState() {
-    Provider.of<EmployeeSevice>(context, listen: false)..base64Image = null;
     if (widget.userToEdit != null) {
       fnameController.text = widget.userToEdit!.fname!;
       lnameController.text = widget.userToEdit!.lname!;
@@ -92,34 +90,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                                   netWorkImage: widget.userToEdit?.picture,
                                   defaultImage: 'icons/admin_icon.png'),
                               scale: 1)),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: MaterialButton(
-                          color: Palette.drawerColor,
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () async {
-                            await FilePicker.platform.pickFiles(
-                                allowMultiple: false,
-                                allowedExtensions: [
-                                  'jpg',
-                                  'jpeg',
-                                  'png'
-                                ]).then((pickedFile) {
-                              if (pickedFile != null) {
-                                setState(() {
-                                  employeeService.base64Image =
-                                      pickedFile.files[0].bytes;
-                                });
-                              }
-                            });
-                          },
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10000)),
-                          minWidth: 50,
-                          height: 50,
-                          child: Icon(Icons.camera_alt, color: Colors.white)),
                     ),
                   ],
                 ),
@@ -302,7 +272,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
           const SizedBox(
             height: MySpacer.small,
           ),
-
           Container(
             width: MediaQuery.of(context).size.width,
             height: 60,
@@ -357,15 +326,14 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                             password: passwordController.text,
                             address: addressController.text +
                                 ", ${countryValue!["name"]}",
-                            picture: employeeService.base64Image != null
-                                ? employeeService.base64ImageEncoded
-                                : "",
                             contactNumber: contactNumberController.text,
                           );
 
                           employeeService
                               .createUser(newEmployee)
-                              .whenComplete(() => Navigator.pop(context));
+                              .whenComplete(() {
+                            Navigator.pop(context);
+                          });
                         }
                       },
                       child: Text(
@@ -376,11 +344,6 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               ],
             ),
           )
-
-          //TODO: dropdown client
-          //TODO: map or coordinates
-          // TODO: warnigs
-          // TODO:Start date/end
         ],
       )),
     );

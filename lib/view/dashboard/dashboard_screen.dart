@@ -24,13 +24,10 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   void initState() {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
     projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
-      if (projectProvider.projects != null) {
-        Provider.of<MapService>(context, listen: false).mapInit(
-          projectProvider.projectsDateBase,
-          context,
-          Provider.of<ColorChangeService>(context, listen: false).imagesStatus,
-        );
-      }
+      Provider.of<MapService>(context, listen: false).mapInit(
+        projectProvider.projectsDateBase,
+        context,
+      );
     });
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -53,48 +50,30 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       context,
     );
 
-    return AdaptiveContainer(
-        physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
-        children: [
-          AdaptiveItem(
-              content: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.all(20),
-            color: Palette.contentBackground,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    MaterialButton(
-                      onPressed: () {
-                        projectProvider
-                            .selectDate(
-                                context: context,
-                                mapService: mapService,
-                                isNow: false,
-                                controllerDate: projectProvider.dateController)
-                            .then((date) {
-                          projectProvider.setSelectedDate(date);
-                        });
-                      },
-                      child: Text(
-                        "${months[projectProvider.selectedDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} ",
-                        style: boldText,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: MaterialButton(
+    return GestureDetector(
+      child: AdaptiveContainer(
+          physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
+          children: [
+            AdaptiveItem(
+                content: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.all(20),
+              color: Palette.contentBackground,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      MaterialButton(
                         onPressed: () {
                           projectProvider
                               .selectDate(
                                   context: context,
                                   mapService: mapService,
-                                  isNow: true,
+                                  isNow: false,
                                   controllerDate:
                                       projectProvider.dateController)
                               .then((date) {
@@ -102,165 +81,188 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                           });
                         },
                         child: Text(
-                          "Aujourd'hui",
-                          style: TextStyle(color: Palette.drawerColor),
+                          "${months[projectProvider.selectedDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} ",
+                          style: boldText,
                         ),
                       ),
-                    )
-                  ],
-                ),
-                Container(
-                  color: Palette.contentBackground,
-                  child: Card(
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      child: Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Palette.drawerColor,
-                                borderRadius: BorderRadius.circular(100)),
-                            child: IconButton(
-                                padding: EdgeInsets.all(5),
-                                constraints:
-                                    BoxConstraints(minWidth: 15, minHeight: 15),
-                                iconSize: 20,
-                                onPressed: () {
-                                  projectProvider.prevDate(context, mapService);
-                                },
-                                icon: Icon(
-                                  Icons.arrow_back_ios_rounded,
-                                  color: Colors.white,
-                                  size: 15,
-                                )),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: MaterialButton(
+                          onPressed: () {
+                            projectProvider
+                                .selectDate(
+                                    context: context,
+                                    mapService: mapService,
+                                    isNow: true,
+                                    controllerDate:
+                                        projectProvider.dateController)
+                                .then((date) {
+                              projectProvider.setSelectedDate(date);
+                            });
+                          },
+                          child: Text(
+                            "Aujourd'hui",
+                            style: TextStyle(color: Palette.drawerColor),
                           ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Expanded(
-                            child: DatePicker2(
-                              DateTime(2021, 1, 1),
-                              // initialSelectedDate: projectProvider.selectedDate,
-                              selectionColor: Palette.drawerColor,
-                              selectedTextColor: Colors.white,
-                              deactivatedColor: Palette.contentBackground,
-                              locale: "fr_FR",
-                              controller: projectProvider.dateController,
-                              onDateChange: (date) {
-                                //New Date
-
-                                projectProvider.fetchOnDates(
-                                    context: context, mapService: mapService);
-                              },
-                              width: 75,
+                        ),
+                      )
+                    ],
+                  ),
+                  Container(
+                    color: Palette.contentBackground,
+                    child: Card(
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Palette.drawerColor,
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: IconButton(
+                                  padding: EdgeInsets.all(5),
+                                  constraints: BoxConstraints(
+                                      minWidth: 15, minHeight: 15),
+                                  iconSize: 20,
+                                  onPressed: () {
+                                    projectProvider.prevDate(
+                                        context, mapService);
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_back_ios_rounded,
+                                    color: Colors.white,
+                                    size: 15,
+                                  )),
                             ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    color: Palette.drawerColor,
-                                    borderRadius: BorderRadius.circular(100)),
-                                child: IconButton(
-                                    padding: EdgeInsets.all(5),
-                                    constraints: BoxConstraints(
-                                        minWidth: 15, minHeight: 15),
-                                    iconSize: 20,
-                                    onPressed: () {
-                                      projectProvider.nextDate(
-                                          context, mapService);
-                                    },
-                                    icon: Icon(
-                                      Icons.arrow_forward_ios_rounded,
-                                      size: 15,
-                                      color: Colors.white,
-                                    )),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: DatePicker2(
+                                DateTime(2021, 1, 1),
+                                // initialSelectedDate: projectProvider.selectedDate,
+                                selectionColor: Palette.drawerColor,
+                                selectedTextColor: Colors.white,
+                                deactivatedColor: Palette.contentBackground,
+                                locale: "fr_FR",
+                                controller: projectProvider.dateController,
+                                onDateChange: (date) {
+                                  //New Date
+
+                                  projectProvider.fetchOnDates(
+                                      context: context, mapService: mapService);
+                                },
+                                width: 75,
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Palette.drawerColor,
+                                      borderRadius: BorderRadius.circular(100)),
+                                  child: IconButton(
+                                      padding: EdgeInsets.all(5),
+                                      constraints: BoxConstraints(
+                                          minWidth: 15, minHeight: 15),
+                                      iconSize: 20,
+                                      onPressed: () {
+                                        projectProvider.nextDate(
+                                            context, mapService);
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 15,
+                                        color: Colors.white,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: MySpacer.small,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width > 800
-                      ? MediaQuery.of(context).size.height * 0.7
-                      : MediaQuery.of(context).size.height * 0.4,
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: Stack(
-                    children: [
-                      initialPositon == null
-                          ? Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : InkWell(
-                              onHover: (value) {
-                                print(value);
-                              },
-                              child: GoogleMap(
-                                onTap: (x) {
-                                  mapService.gesture = true;
-                                },
-                                scrollGesturesEnabled: mapService.gesture,
-                                onMapCreated: (controller) {
-                                  setState(() {
-                                    dashboardService.mapController = controller;
-                                    if (projectProvider.projectsDateBase !=
-                                        null) {
-                                      if (projectProvider
-                                              .projectsDateBase.length >
-                                          0) {
-                                        dashboardService.mapController!
-                                            .showMarkerInfoWindow(MarkerId(
-                                                projectProvider
-                                                    .projectsDateBase[0].id
-                                                    .toString()));
-                                      }
-                                    }
-                                  });
-                                },
-                                myLocationButtonEnabled: true,
-                                rotateGesturesEnabled: true,
-                                initialCameraPosition: CameraPosition(
-                                  target: initialPositon,
-                                  zoom: mapService.zoom,
-                                ),
-                                buildingsEnabled: true,
-                                mapType: MapType.none,
-                                myLocationEnabled: true,
-                                markers: mapService.markers,
-                              ),
-                            ),
-                    ],
+                  SizedBox(
+                    height: MySpacer.small,
                   ),
-                ),
-                SizedBox(
-                  height: MySpacer.small,
-                ),
-                MediaQuery.of(context).size.width > 800
-                    ? SizedBox()
-                    : Expanded(child: listProjects(projectProvider))
-              ],
-            ),
-          )),
-          AdaptiveItem(
-              bgColor: Palette.contentBackground,
-              height: MediaQuery.of(context).size.width > 900
-                  ? MediaQuery.of(context).size.height
-                  : MediaQuery.of(context).size.height * .7,
-              content: Padding(
-                padding: const EdgeInsets.only(top: 50, right: 20, bottom: 100),
-                child: listProjects(projectProvider),
-              ))
-        ]);
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width > 800
+                        ? MediaQuery.of(context).size.height * 0.7
+                        : MediaQuery.of(context).size.height * 0.4,
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Stack(
+                      children: [
+                        initialPositon == null
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : GestureDetector(
+                                onVerticalDragDown: (x) {
+                                  if (mapService.gesture == false) {
+                                    mapService.gesture = true;
+                                  }
+                                },
+                                child: GoogleMap(
+                                  scrollGesturesEnabled: mapService.gesture,
+                                  onMapCreated: (controller) {
+                                    setState(() {
+                                      dashboardService.mapController =
+                                          controller;
+                                      if (projectProvider.projectsDateBase !=
+                                          null) {
+                                        if (projectProvider
+                                                .projectsDateBase.length >
+                                            0) {
+                                          dashboardService.mapController!
+                                              .showMarkerInfoWindow(MarkerId(
+                                                  projectProvider
+                                                      .projectsDateBase[0].id
+                                                      .toString()));
+                                        }
+                                      }
+                                    });
+                                  },
+                                  myLocationButtonEnabled: true,
+                                  rotateGesturesEnabled: true,
+                                  initialCameraPosition: CameraPosition(
+                                    target: initialPositon,
+                                    zoom: mapService.zoom,
+                                  ),
+                                  buildingsEnabled: true,
+                                  mapType: MapType.none,
+                                  myLocationEnabled: true,
+                                  markers: mapService.markers,
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
+                  MediaQuery.of(context).size.width > 800
+                      ? SizedBox()
+                      : Expanded(child: listProjects(projectProvider))
+                ],
+              ),
+            )),
+            AdaptiveItem(
+                bgColor: Palette.contentBackground,
+                height: MediaQuery.of(context).size.width > 900
+                    ? MediaQuery.of(context).size.height
+                    : MediaQuery.of(context).size.height * .7,
+                content: Padding(
+                  padding:
+                      const EdgeInsets.only(top: 50, right: 20, bottom: 100),
+                  child: listProjects(projectProvider),
+                ))
+          ]),
+    );
   }
 
   Widget listProjects(projectProvider) {
@@ -272,7 +274,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             )
           : projectProvider.projectsDateBase.length <= 0
               ? Container(
-                  // color: Palette.contentBackground,
                   child: EmptyContainer(
                   addingFunc: ProjectAddScreen(),
                   title: "Aucun projet cette fois",

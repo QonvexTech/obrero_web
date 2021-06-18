@@ -8,6 +8,7 @@ class PaginationService extends ChangeNotifier {
     int value,
     PaginationModel page,
   ) {
+    page.page = 1;
     page.perPage = value;
     page.isNext = false;
     page.isPrev = false;

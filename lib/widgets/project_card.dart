@@ -4,11 +4,10 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
+import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view/dashboard/project/project_details.dart';
-import 'package:universal_html/html.dart';
 
 class ProjectCard extends StatefulWidget {
   final ProjectModel? project;
@@ -27,6 +26,7 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
   Widget build(BuildContext context) {
     DashboardService dashboardService = Provider.of<DashboardService>(context);
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+    MapService mapService = Provider.of<MapService>(context);
     return GestureDetector(
         onTap: () {
           dashboardService.focusMap(
@@ -94,6 +94,7 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                             ),
                             IconButton(
                               onPressed: () {
+                                mapService.gesture = false;
                                 dashboardService.focusMap(
                                     coordinates: widget.project!.coordinates!,
                                     markerId: widget.project!.id.toString());
@@ -128,16 +129,13 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                           children: [
                             Flexible(
                               child: Container(
-                                padding: EdgeInsets.only(right: 50),
+                                padding: EdgeInsets.only(right: 50, bottom: 10),
                                 width: viewMore
                                     ? MediaQuery.of(context).size.width
                                     : MediaQuery.of(context).size.width * 0.2,
-                                child: Text(
-                                  widget.project!.description!,
-                                  overflow: viewMore
-                                      ? TextOverflow.fade
-                                      : TextOverflow.ellipsis,
-                                ),
+                                child: Text(widget.project!.description!,
+                                    maxLines: viewMore ? 5 : 2,
+                                    overflow: TextOverflow.ellipsis),
                               ),
                             ),
                             viewMore
@@ -158,7 +156,8 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                       ),
                       viewMore
                           ? Padding(
-                              padding: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 23, vertical: 10),
                               child: Row(
                                 children: [
                                   SizedBox(
@@ -206,17 +205,28 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                                                           right: 20),
                                                   child: Row(
                                                     children: [
-                                                      Consumer<
-                                                          ColorChangeService>(
-                                                        builder: (context, data,
-                                                            child) {
-                                                          return Icon(
-                                                            Icons.circle,
-                                                            size: 15,
-                                                            color: data
-                                                                .statusColors[0],
-                                                          );
-                                                        },
+                                                      Icon(
+                                                        Icons.circle,
+                                                        size: 15,
+                                                        color: widget
+                                                                    .project!
+                                                                    .assignees![
+                                                                        x]
+                                                                    .userStatus ==
+                                                                null
+                                                            ? Colors.grey
+                                                            : widget.project!
+                                                                            .assignees![x].userStatus![
+                                                                        "time_in"] !=
+                                                                    null
+                                                                ? widget.project!.assignees![x].userStatus![
+                                                                            "time_out"] !=
+                                                                        null
+                                                                    ? Colors
+                                                                        .grey
+                                                                    : Colors
+                                                                        .green
+                                                                : Colors.grey,
                                                       ),
                                                       SizedBox(
                                                         width: 5,
@@ -256,17 +266,16 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                           : Container()
                     ],
                   ),
-                  Consumer<ColorChangeService>(
-                    builder: (context, data, child) {
-                      return Positioned(
-                        top: 10,
-                        left: 20,
-                        child: Image.asset(
-                          data.imagesStatus[0],
-                          width: 20,
-                        ),
-                      );
-                    },
+                  Positioned(
+                    top: 10,
+                    left: 20,
+                    child: colorsSettings.length > 0
+                        ? Image.asset(
+                            colorsSettings[widget.project!.status!]
+                                .circleAsset!,
+                            width: 20,
+                          )
+                        : SizedBox(),
                   )
                 ],
               )),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/employes_model.dart';
@@ -17,7 +18,7 @@ class ProjectAddService extends ChangeNotifier {
   int _activeOwnerIndex = 0;
   List<Uint8List>? _projectImages = [];
   Uint8List? _base64Image;
-  Map _bodyToEdit = {};
+  Map<dynamic, dynamic> _bodyToEdit = {};
   bool justScroll = true;
 
   get bodyToEdit => _bodyToEdit;
@@ -33,7 +34,11 @@ class ProjectAddService extends ChangeNotifier {
   get assignIdsToRemove => _assignIdsToRemove;
   get assignIdsToAdd => _assignIdsToAdd;
 
-  addBodyEdit(value) {
+  initUint8() {
+    _projectImages = [];
+  }
+
+  addBodyEdit(dynamic value) {
     _bodyToEdit.addAll(value);
     notifyListeners();
   }
@@ -72,6 +77,16 @@ class ProjectAddService extends ChangeNotifier {
         .replaceAll(",", ".!.")
         .replaceAll("4.!.", "4,")
         .substring(1, encodedImagetoString.length - 1);
+  }
+
+  removeImage(var image) {
+    _projectImages!.remove(image);
+    notifyListeners();
+  }
+
+  clear() {
+    _base64Image!.clear();
+    _projectImages!.clear();
   }
 
   setOwner(value, isEdit) {
@@ -125,6 +140,9 @@ class ProjectAddService extends ChangeNotifier {
 
   Future<void> selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
+        locale: Locale('fr', 'CA'),
+        fieldHintText:
+            "${_startDate.month}-${_startDate.day}-${_startDate.year}",
         context: context,
         initialDate: startDate,
         firstDate: DateTime(2015, 8),
@@ -136,6 +154,7 @@ class ProjectAddService extends ChangeNotifier {
 
   Future<void> selectEndDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
+        locale: Locale('fr', 'CA'),
         context: context,
         initialDate: endDate,
         firstDate: DateTime(2015, 8),
