@@ -35,16 +35,33 @@ class MapService extends ChangeNotifier {
   }
 
   Set<Marker> _markers = {};
+  Set<Circle> _circles = {};
   get zoom => _zoom;
   get markers => _markers;
+  get circles => _circles;
 
   markersAdd(value) {
     _markers.add(value);
     notifyListeners();
   }
 
+  void changeAreaSize(area, coord) {
+    _circles.removeWhere((element) => element.circleId.value == "temp");
+    _circles.add(Circle(
+        fillColor: Color.fromRGBO(60, 120, 225, 0.2),
+        circleId: CircleId(
+          "temp",
+        ),
+        radius: area / 50,
+        strokeWidth: 1,
+        strokeColor: Colors.black12,
+        center: coord));
+    notifyListeners();
+  }
+
   void removeDefaultMarker() {
     _markers.removeWhere((element) => element.markerId.value == "temp");
+    _circles.removeWhere((element) => element.circleId.value == "temp");
     notifyListeners();
   }
 
@@ -73,6 +90,7 @@ class MapService extends ChangeNotifier {
       findLocalByCoordinates(
           coordinates.latitude.toString(), coordinates.longitude.toString());
       _markers.clear();
+      _circles.clear();
     }
 
     try {
@@ -92,7 +110,18 @@ class MapService extends ChangeNotifier {
                 colorsSettings[project.status!].circleAsset!),
             markerId: MarkerId(project.id.toString()),
             position: project.coordinates!));
+
+        _circles.add(Circle(
+            fillColor: Color.fromRGBO(60, 120, 225, 0.2),
+            circleId: CircleId(
+              project.id.toString(),
+            ),
+            radius: project.areaSize!,
+            strokeWidth: 1,
+            strokeColor: Colors.black12,
+            center: project.coordinates!));
       }
+      print("CIRCLE: ${_circles.length}");
     } catch (e) {
       print(e);
     }
@@ -101,13 +130,19 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCoordinates({LatLng? coord, BuildContext? context}) async {
+  void setCoordinates(
+      {LatLng? coord, BuildContext? context, double? areaSize}) async {
     Marker toRemove = _markers.firstWhere(
         (element) => element.mapsId.value == "temp",
         orElse: () => Marker(markerId: MarkerId("temp")));
 
+    Circle toRemoveCircle = _circles.firstWhere(
+        (element) => element.mapsId.value == "temp",
+        orElse: () => Circle(circleId: CircleId("temp")));
+
     if (_markers.contains(toRemove)) {
       _markers.remove(toRemove);
+      _circles.remove(toRemoveCircle);
     } else {
       if (coord != null) {
         coordinates = coord;
@@ -124,7 +159,18 @@ class MapService extends ChangeNotifier {
           markerId: MarkerId("temp"),
           position: coord!);
 
+      Circle defCircle = Circle(
+          fillColor: Color.fromRGBO(60, 120, 225, 0.2),
+          circleId: CircleId(
+            "temp",
+          ),
+          radius: areaSize!,
+          strokeWidth: 1,
+          strokeColor: Colors.black12,
+          center: coord);
+
       _markers.add(defMarker);
+      _circles.add(defCircle);
     }
     notifyListeners();
   }

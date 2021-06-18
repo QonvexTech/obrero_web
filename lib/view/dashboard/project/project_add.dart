@@ -153,6 +153,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           child: MapScreen(
                                             setCoord: true,
                                             onCreate: () {},
+                                            areaSize:
+                                                projectAddService.areaSize,
                                           ))
                                       : SizedBox(),
                                   Expanded(
@@ -572,6 +574,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                   onChanged: (newValue) {
                                                     projectAddService.areaSize =
                                                         newValue;
+
+                                                    mapService.changeAreaSize(
+                                                        newValue,
+                                                        Provider.of<MapService>(
+                                                                context,
+                                                                listen: false)
+                                                            .coordinates);
                                                   }),
                                             ),
                                             Positioned(
@@ -840,6 +849,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                     child: MapScreen(
                                       setCoord: true,
                                       onCreate: () {},
+                                      areaSize: projectAddService.areaSize,
                                     ))),
                           ]),
                     ),

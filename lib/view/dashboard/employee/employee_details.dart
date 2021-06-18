@@ -37,6 +37,11 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
         Provider.of<EmployeeSevice>(context, listen: false)
             .workingProjects(widget.employeesModel!.id!)
             .whenComplete(() {
+          Provider.of<MapService>(context, listen: false).mapInit(
+            Provider.of<EmployeeSevice>(context, listen: false)
+                .getEmployeeProjects(),
+            context,
+          );
           if (Provider.of<EmployeeSevice>(context, listen: false)
                   .employeeProjects ==
               null) {
@@ -483,6 +488,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                               child: MapScreen(
                                 setCoord: false,
                                 onCreate: () {},
+                                areaSize: 0,
                               ),
                             )),
                         SizedBox(

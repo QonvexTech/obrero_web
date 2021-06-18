@@ -27,6 +27,7 @@ class ProjectAddService extends ChangeNotifier {
   get areaSize => _areaSize;
   set areaSize(value) {
     _areaSize = value;
+
     notifyListeners();
   }
 

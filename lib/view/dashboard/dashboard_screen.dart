@@ -237,6 +237,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                   mapType: MapType.none,
                                   myLocationEnabled: true,
                                   markers: mapService.markers,
+                                  circles: mapService.circles,
                                 ),
                               ),
                       ],

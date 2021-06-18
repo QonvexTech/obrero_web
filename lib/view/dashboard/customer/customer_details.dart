@@ -396,6 +396,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                               onCreate: () {
                                 //TODO: add
                               },
+                              areaSize: 0,
                             ),
                           ),
                         ],
