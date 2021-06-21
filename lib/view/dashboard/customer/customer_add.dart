@@ -377,6 +377,11 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                             setState(() {
                               bodyToEdit.addAll(
                                   {"id": widget.customerToEdit!.id.toString()});
+                              bodyToEdit.addAll({
+                                "picture": customerService.base64Image != null
+                                    ? customerService.base64ImageEncoded
+                                    : "",
+                              });
                               print("BODY TO EDIT $bodyToEdit");
                               customerService
                                   .updateCustomer(bodyToEdit: bodyToEdit)
@@ -392,7 +397,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                                     ", ${countryValue!["name"]}",
                                 picture: customerService.base64Image != null
                                     ? customerService.base64ImageEncoded
-                                    : null,
+                                    : "",
                                 contactNumber: contactNumberController.text,
                               );
 

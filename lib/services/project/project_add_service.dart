@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/employes_model.dart';
@@ -21,6 +20,11 @@ class ProjectAddService extends ChangeNotifier {
   Map<dynamic, dynamic> _bodyToEdit = {};
   bool justScroll = true;
 
+  setProjectImages(value) {
+    _projectImages = value;
+    notifyListeners();
+  }
+
   get bodyToEdit => _bodyToEdit;
   set bodyToEdit(value) => _bodyToEdit = value;
 
@@ -35,9 +39,14 @@ class ProjectAddService extends ChangeNotifier {
   get assignIdsToRemove => _assignIdsToRemove;
   get assignIdsToAdd => _assignIdsToAdd;
 
-  initUint8() {
-    _projectImages = [];
-  }
+  // initUint8() {
+  //   _projectImages = [];
+  // }
+
+  // setProjectImages(value) {
+  //   _projectImages = value;
+  //   notifyListeners();
+  // }
 
   addBodyEdit(dynamic value) {
     _bodyToEdit.addAll(value);

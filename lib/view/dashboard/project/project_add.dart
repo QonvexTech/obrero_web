@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
