@@ -8,6 +8,7 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/profile_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
+import 'package:uitemplate/view/dashboard/tracker.dart';
 import '../../../config/global.dart';
 import '../../../config/pallete.dart';
 import '../../../services/employee_service.dart';
@@ -189,6 +190,12 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                               color: Palette.drawerColor,
                             ),
                           ),
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 15),
+                              child: TrackerPage(),
+                            ),
+                          )
                         ],
                       )),
                     ],
