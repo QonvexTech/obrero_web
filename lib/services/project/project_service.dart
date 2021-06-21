@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/services/map_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
 import 'package:uitemplate/widgets/mypicker.dart';

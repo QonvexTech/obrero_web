@@ -7,7 +7,6 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/mypicker.dart';
 import 'package:uitemplate/widgets/project_card.dart';

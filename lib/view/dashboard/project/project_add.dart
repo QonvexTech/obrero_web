@@ -63,6 +63,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       projectAddService.startDate = widget.projectToEdit!.startDate ?? "";
       projectAddService.endDate = widget.projectToEdit!.endDate ?? "";
 
+      print("image length ${widget.projectToEdit!.images!.length}");
+
       projectAddService.userToAssignIds(widget.projectToEdit!.assignees!);
       if (widget.projectToEdit!.owner!.id != null) {
         projectAddService.activeOwnerIndex = widget.projectToEdit!.owner!.id;
@@ -611,226 +613,297 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                         ),
 
                                         //PICTURES
-                                        projectAddService
-                                                    .projectImages.length <=
-                                                0
-                                            ? Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Photos",
-                                                    style: boldText,
-                                                  ),
-                                                  SizedBox(
-                                                      height: MySpacer.small),
-                                                  MaterialButton(
-                                                    onPressed: () async {
-                                                      await FilePicker.platform
-                                                          .pickFiles(
-                                                              allowMultiple:
-                                                                  false,
-                                                              allowedExtensions: [
-                                                            'jpg',
-                                                            'jpeg',
-                                                            'png'
-                                                          ]).then((pickedFile) {
-                                                        projectAddService
-                                                            .addPicture(
-                                                                pickedFile);
-                                                      });
-                                                    },
-                                                    child: DottedBorder(
-                                                      color: Colors.black12,
-                                                      strokeWidth: 2,
-                                                      child: Container(
-                                                        width: MediaQuery.of(
-                                                                context)
-                                                            .size
-                                                            .width,
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height *
-                                                            0.2,
-                                                        child: Center(
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              IconButton(
-                                                                onPressed:
-                                                                    () async {
-                                                                  await FilePicker
-                                                                      .platform
-                                                                      .pickFiles(
-                                                                          allowMultiple:
-                                                                              true,
-                                                                          allowedExtensions: [
-                                                                        'jpg',
-                                                                        'jpeg',
-                                                                        'png'
-                                                                      ]).then(
-                                                                          (pickedFile) {
-                                                                    print(
-                                                                        pickedFile);
-                                                                    projectAddService
-                                                                        .addPicture(
-                                                                            pickedFile);
-                                                                  });
-                                                                },
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .upload_rounded,
-                                                                  color: Palette
-                                                                      .drawerColor,
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                  "Upload Image")
-                                                            ],
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Photos",
+                                              style: boldText,
+                                            ),
+                                            SizedBox(height: MySpacer.small),
+                                            MaterialButton(
+                                              onPressed: () async {
+                                                await FilePicker.platform
+                                                    .pickFiles(
+                                                        allowMultiple: false,
+                                                        allowedExtensions: [
+                                                      'jpg',
+                                                      'jpeg',
+                                                      'png'
+                                                    ]).then((pickedFile) {
+                                                  projectAddService
+                                                      .addPicture(pickedFile);
+                                                });
+                                              },
+                                              child: DottedBorder(
+                                                color: Colors.black12,
+                                                strokeWidth: 2,
+                                                child: Container(
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.2,
+                                                  child: Center(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        IconButton(
+                                                          onPressed: () async {
+                                                            await FilePicker
+                                                                .platform
+                                                                .pickFiles(
+                                                                    allowMultiple:
+                                                                        true,
+                                                                    allowedExtensions: [
+                                                                  'jpg',
+                                                                  'jpeg',
+                                                                  'png'
+                                                                ]).then(
+                                                                    (pickedFile) {
+                                                              print(pickedFile);
+                                                              projectAddService
+                                                                  .addPicture(
+                                                                      pickedFile);
+                                                            });
+                                                          },
+                                                          icon: Icon(
+                                                            Icons
+                                                                .upload_rounded,
+                                                            color: Palette
+                                                                .drawerColor,
                                                           ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            : Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  MaterialButton(
-                                                      onPressed: () async {
-                                                        try {
-                                                          await FilePicker
-                                                              .platform
-                                                              .pickFiles(
-                                                                  allowMultiple:
-                                                                      false,
-                                                                  allowedExtensions: [
-                                                                'jpg',
-                                                                'jpeg',
-                                                                'png'
-                                                              ]).then(
-                                                                  (pickedFile) {
-                                                            projectAddService
-                                                                .addPicture(
-                                                                    pickedFile);
-                                                          });
-                                                        } catch (e) {
-                                                          print(e);
-                                                        }
-                                                      },
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Text("Add More"),
-                                                          SizedBox(
-                                                            width:
-                                                                MySpacer.small,
-                                                          ),
-                                                          Icon(
-                                                              Icons.add_circle),
-                                                        ],
-                                                      )),
-                                                  Container(
-                                                    width: _scrw,
-                                                    height: _scrh * .3,
-                                                    child: GridView.count(
-                                                      crossAxisCount: 3,
-                                                      mainAxisSpacing: 5,
-                                                      crossAxisSpacing: 5,
-                                                      children: [
-                                                        for (var image
-                                                            in projectAddService
-                                                                .projectImages)
-                                                          Stack(
-                                                            children: [
-                                                              Container(
-                                                                width:
-                                                                    _scrh * .26,
-                                                                height:
-                                                                    _scrh * .26,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .shade100,
-                                                                        boxShadow: [
-                                                                          BoxShadow(
-                                                                            color:
-                                                                                Colors.grey.shade400,
-                                                                            offset:
-                                                                                Offset(3, 3),
-                                                                            blurRadius:
-                                                                                2,
-                                                                          )
-                                                                        ],
-                                                                        image: DecorationImage(
-                                                                            fit: profileData?.picture == null && image == null
-                                                                                ? BoxFit.scaleDown
-                                                                                : BoxFit.cover,
-                                                                            alignment: profileData?.picture == null && image == null ? AlignmentDirectional.bottomCenter : AlignmentDirectional.center,
-                                                                            image: tempImageProvider(file: image, netWorkImage: profileData?.picture, defaultImage: 'icons/admin_icon.png'),
-                                                                            scale: profileData?.picture == null ? 5 : 1)),
-                                                              ),
-                                                              Positioned(
-                                                                top: 5,
-                                                                right: 5,
-                                                                child:
-                                                                    AnimatedContainer(
-                                                                  duration: Duration(
-                                                                      milliseconds:
-                                                                          300),
-                                                                  decoration: BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              100),
-                                                                      color: Colors
-                                                                          .white38),
-                                                                  child:
-                                                                      IconButton(
-                                                                          icon:
-                                                                              Icon(
-                                                                            Icons.delete_forever,
-                                                                            color:
-                                                                                Colors.red[600],
-                                                                          ),
-                                                                          onPressed:
-                                                                              () {
-                                                                            print("DELETE");
-
-                                                                            projectAddService.removeImage(image);
-                                                                          }),
-                                                                ),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        if (projectAddService
-                                                                .projectImages
-                                                                .length ==
-                                                            0)
-                                                          Container(
-                                                            width: _scrw,
-                                                            height:
-                                                                _scrh * 0.15,
-                                                            decoration: BoxDecoration(
-                                                                image: DecorationImage(
-                                                                    image: AssetImage(
-                                                                        "assets/images/emptyImage.jpg"))),
-                                                          ),
+                                                        Text("Upload Image")
                                                       ],
                                                     ),
                                                   ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            MaterialButton(
+                                                onPressed: () async {
+                                                  try {
+                                                    await FilePicker.platform
+                                                        .pickFiles(
+                                                            allowMultiple:
+                                                                false,
+                                                            allowedExtensions: [
+                                                          'jpg',
+                                                          'jpeg',
+                                                          'png'
+                                                        ]).then((pickedFile) {
+                                                      projectAddService
+                                                          .addPicture(
+                                                              pickedFile);
+                                                    });
+                                                  } catch (e) {
+                                                    print(e);
+                                                  }
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  children: [
+                                                    Text("Add More"),
+                                                    SizedBox(
+                                                      width: MySpacer.small,
+                                                    ),
+                                                    Icon(Icons.add_circle),
+                                                  ],
+                                                )),
+                                            Container(
+                                              width: _scrw,
+                                              height: _scrh * .3,
+                                              child: GridView.count(
+                                                crossAxisCount: 3,
+                                                mainAxisSpacing: 5,
+                                                crossAxisSpacing: 5,
+                                                children: [
+                                                  for (var image in widget
+                                                      .projectToEdit!
+                                                      .images!) ...{
+                                                    Stack(
+                                                      children: [
+                                                        Container(
+                                                            width: _scrh * .26,
+                                                            height: _scrh * .26,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Colors.grey
+                                                                  .shade100,
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade400,
+                                                                  offset:
+                                                                      Offset(
+                                                                          3, 3),
+                                                                  blurRadius: 2,
+                                                                )
+                                                              ],
+                                                              image: DecorationImage(
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  image: tempImageProvider(
+                                                                      netWorkImage:
+                                                                          image
+                                                                              .url,
+                                                                      defaultImage:
+                                                                          "images/emptyImage.jpg")),
+                                                            )),
+                                                        Positioned(
+                                                          top: 5,
+                                                          right: 5,
+                                                          child:
+                                                              AnimatedContainer(
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    300),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            100),
+                                                                color: Colors
+                                                                    .white38),
+                                                            child: IconButton(
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .delete_forever,
+                                                                  color: Colors
+                                                                      .red[600],
+                                                                ),
+                                                                onPressed: () {
+                                                                  print(
+                                                                      "DELETE");
+
+                                                                  projectAddService
+                                                                      .removeImage(
+                                                                          image);
+                                                                }),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  },
+                                                  for (var image
+                                                      in projectAddService
+                                                          .projectImages)
+                                                    Stack(
+                                                      children: [
+                                                        Container(
+                                                          width: _scrh * .26,
+                                                          height: _scrh * .26,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade100,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade400,
+                                                                      offset:
+                                                                          Offset(
+                                                                              3,
+                                                                              3),
+                                                                      blurRadius:
+                                                                          2,
+                                                                    )
+                                                                  ],
+                                                                  image: DecorationImage(
+                                                                      fit: profileData?.picture == null && image == null
+                                                                          ? BoxFit
+                                                                              .scaleDown
+                                                                          : BoxFit
+                                                                              .cover,
+                                                                      alignment: profileData?.picture == null &&
+                                                                              image ==
+                                                                                  null
+                                                                          ? AlignmentDirectional
+                                                                              .bottomCenter
+                                                                          : AlignmentDirectional
+                                                                              .center,
+                                                                      image: tempImageProvider(
+                                                                          file:
+                                                                              image,
+                                                                          netWorkImage: profileData
+                                                                              ?.picture,
+                                                                          defaultImage:
+                                                                              'icons/admin_icon.png'),
+                                                                      scale: profileData?.picture ==
+                                                                              null
+                                                                          ? 5
+                                                                          : 1)),
+                                                        ),
+                                                        Positioned(
+                                                          top: 5,
+                                                          right: 5,
+                                                          child:
+                                                              AnimatedContainer(
+                                                            duration: Duration(
+                                                                milliseconds:
+                                                                    300),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            100),
+                                                                color: Colors
+                                                                    .white38),
+                                                            child: IconButton(
+                                                                icon: Icon(
+                                                                  Icons
+                                                                      .delete_forever,
+                                                                  color: Colors
+                                                                      .red[600],
+                                                                ),
+                                                                onPressed: () {
+                                                                  print(
+                                                                      "DELETE");
+
+                                                                  projectAddService
+                                                                      .removeImage(
+                                                                          image);
+                                                                }),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  // if (projectAddService
+                                                  //         .projectImages
+                                                  //         .length ==
+                                                  //     0)
+                                                  //   Container(
+                                                  //     width: _scrw,
+                                                  //     height: _scrh * 0.15,
+                                                  //     decoration: BoxDecoration(
+                                                  //         image: DecorationImage(
+                                                  //             image: AssetImage(
+                                                  //                 "assets/images/emptyImage.jpg"))),
+                                                  //   ),
                                                 ],
                                               ),
+                                            ),
+                                          ],
+                                        ),
                                         SizedBox(
                                           height: 500,
                                         )
@@ -840,19 +913,19 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                 ],
                               ),
                             ),
-                            AdaptiveItem(
-                                content: Container(
-                                    padding: EdgeInsets.only(top: 20, left: 20),
-                                    height:
-                                        MediaQuery.of(context).size.width > 800
-                                            ? MediaQuery.of(context).size.height
-                                            : MediaQuery.of(context).size.width,
-                                    width: double.infinity,
-                                    child: MapScreen(
-                                      setCoord: true,
-                                      onCreate: () {},
-                                      areaSize: projectAddService.areaSize,
-                                    ))),
+                            // AdaptiveItem(
+                            //     content: Container(
+                            //         padding: EdgeInsets.only(top: 20, left: 20),
+                            //         height:
+                            //             MediaQuery.of(context).size.width > 800
+                            //                 ? MediaQuery.of(context).size.height
+                            //                 : MediaQuery.of(context).size.width,
+                            //         width: double.infinity,
+                            //         child: MapScreen(
+                            //           setCoord: true,
+                            //           onCreate: () {},
+                            //           areaSize: projectAddService.areaSize,
+                            //         ))),
                           ]),
                     ),
                     SizedBox(

@@ -202,9 +202,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                     customer: widget.customer,
                                   ),
                                   title: "No assigned project yet",
-                                  description: "Add project Now",
-                                  buttonText: "Add Project",
-                                  showButton: true,
+                                  description: "",
+                                  buttonText: "",
+                                  showButton: false,
                                 )
                               : Column(
                                   children: [

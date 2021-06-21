@@ -5,7 +5,6 @@ import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/models/user_project_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 
 class EmployeeProjectsDetails extends StatefulWidget {

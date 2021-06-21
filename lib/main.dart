@@ -10,7 +10,6 @@ import 'package:uitemplate/services/profile_service.dart';
 import 'package:uitemplate/services/project/project_add_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
-import 'package:uitemplate/services/settings/color_change_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/ui_pack/responsive_scaffold.dart';
 import 'package:uitemplate/view/dashboard/dashboard_screen.dart';
