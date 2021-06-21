@@ -127,6 +127,11 @@ class ProjectProvider extends ChangeNotifier {
   get projects => _projects;
   get projectsDateBase => _projectsDateBase;
 
+  addWaring(value) {
+    _projectOnDetails!.warnings!.add(value);
+    notifyListeners();
+  }
+
   Future<String> fetchHours(int projectId) async {
     String? hours;
     try {

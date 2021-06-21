@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/color_model.dart';
+import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/models/warning.dart';
 import 'package:uitemplate/services/add_warning_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/view_model/logs/log_api_call.dart';
 
 class AddWaringScreen extends StatefulWidget {
   final int? projectId;
@@ -32,6 +37,9 @@ class _AddWaringScreenState extends State<AddWaringScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    var projectProvider = Provider.of<ProjectProvider>(
+      context,
+    );
     return Container(
       width: size.width,
       height: size.height,
@@ -234,7 +242,23 @@ class _AddWaringScreenState extends State<AddWaringScreen> {
                                       colorsSettings
                                           .indexOf(selectedStatus!)
                                           .toString())
-                                  .whenComplete(() {
+                                  .then((val) {
+                                print("warneng");
+
+                                projectProvider.addWaring(WarningModel(
+                                    val["id"],
+                                    int.parse(val["user_id"]),
+                                    int.parse(
+                                      val["project_id"],
+                                    ),
+                                    val["title"],
+                                    val["description"],
+                                    int.parse(val["type"]),
+                                    val[""],
+                                    val["created_at"]));
+
+                                print(val);
+
                                 setState(() {
                                   loader = false;
                                 });
