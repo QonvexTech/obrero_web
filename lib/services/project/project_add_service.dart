@@ -94,6 +94,34 @@ class ProjectAddService extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future removeImageFromApi(id) async {
+    var url = Uri.parse("$api/project/remove_image");
+    try {
+      await http.delete(url, body: {
+        "id": id.toString()
+      }, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      }).then((response) {
+        // _projects!.removeWhere((element) => element.id == id);
+        // projectsDateBase!.removeWhere((element) => element.id == id);
+        // notifyListeners();
+        // if (_projects!.length == 0) {
+        //   if (_pagination.isPrev) {
+        //     paginationService.prevPage(_pagination);
+        //   }
+        // }
+        var data = json.decode(response.body);
+        print(data);
+        print("deleteSucc");
+      });
+    } catch (e) {
+      print("deleteFail");
+      print(e);
+    }
+  }
+
   clear() {
     _base64Image!.clear();
     _projectImages!.clear();

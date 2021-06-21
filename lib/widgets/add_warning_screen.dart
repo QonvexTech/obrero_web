@@ -3,11 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/color_model.dart';
-import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/models/warning.dart';
 import 'package:uitemplate/services/add_warning_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
-import 'package:uitemplate/view_model/logs/log_api_call.dart';
 
 class AddWaringScreen extends StatefulWidget {
   final int? projectId;
