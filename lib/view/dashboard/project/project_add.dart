@@ -19,6 +19,8 @@ import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
 
+//TODO: add more status colors;
+
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
   final CustomerModel? customer;

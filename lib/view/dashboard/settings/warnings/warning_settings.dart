@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/color_model.dart';
+import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/status_service.dart';
 import 'package:uitemplate/view/dashboard/settings/warnings/color_change.dart';
 
@@ -50,6 +52,7 @@ class _WarningSettingsState extends State<WarningSettings> {
 
   @override
   Widget build(BuildContext context) {
+    var employeeService = Provider.of<EmployeeSevice>(context);
     return Container(
         color: Palette.contentBackground,
         child: Row(
@@ -166,6 +169,16 @@ class _WarningSettingsState extends State<WarningSettings> {
                     SizedBox(
                       height: MySpacer.large,
                     ),
+                    MaterialButton(
+                      color: Palette.drawerColor,
+                      onPressed: () {
+                        employeeService.timeOutAllUser();
+                      },
+                      child: Text(
+                        "Time Out All Users",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
                   ],
                 ),
               ),

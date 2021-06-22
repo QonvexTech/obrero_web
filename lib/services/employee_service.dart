@@ -143,6 +143,27 @@ class EmployeeSevice extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future timeOutAllUser() async {
+    print("clikc");
+    try {
+      var url = Uri.parse("$api/user/time_out_all");
+      var response = await http.put(url, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        List data = json.decode(response.body);
+        print(data);
+        print("Successful stop");
+      }
+    } catch (e) {
+      print(e);
+      print("FAil stop");
+    }
+    notifyListeners();
+  }
+
   Future fetchUsers() async {
     print("fetching...");
     var url =

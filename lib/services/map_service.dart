@@ -151,6 +151,8 @@ class MapService extends ChangeNotifier {
         findLocalByCoordinates(
             coord.latitude.toString(), coord.longitude.toString());
       }
+
+      //TODO: always color green
       Marker defMarker = Marker(
           onTap: () {},
           zIndex: 20,

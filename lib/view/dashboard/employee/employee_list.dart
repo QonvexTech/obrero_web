@@ -8,6 +8,7 @@ import 'package:uitemplate/services/widgetService/table_pagination_service.dart'
 import 'package:uitemplate/view/dashboard/employee/employee_add.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_details.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_projects.dart';
+import 'package:uitemplate/widgets/adding_button.dart';
 import 'package:uitemplate/widgets/headerList.dart';
 import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
