@@ -52,7 +52,6 @@ class _WarningSettingsState extends State<WarningSettings> {
 
   @override
   Widget build(BuildContext context) {
-    var employeeService = Provider.of<EmployeeSevice>(context);
     return Container(
         color: Palette.contentBackground,
         child: Row(
@@ -166,19 +165,6 @@ class _WarningSettingsState extends State<WarningSettings> {
                         }
                       ],
                     ),
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
-                    MaterialButton(
-                      color: Palette.drawerColor,
-                      onPressed: () {
-                        employeeService.timeOutAllUser();
-                      },
-                      child: Text(
-                        "Time Out All Users",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
                   ],
                 ),
               ),

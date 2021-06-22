@@ -190,12 +190,12 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                               color: Palette.drawerColor,
                             ),
                           ),
-                          Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.only(top: 15),
-                              child: TrackerPage(),
-                            ),
-                          )
+                          // Expanded(
+                          //   child: Container(
+                          //     margin: const EdgeInsets.only(top: 15),
+                          //     child: TrackerPage(),
+                          //   ),
+                          // )
                         ],
                       )),
                     ],

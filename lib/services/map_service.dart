@@ -19,8 +19,15 @@ class MapService extends ChangeNotifier {
   bool _gesture = true;
   TextEditingController location = TextEditingController();
   TextEditingController address = TextEditingController();
+
+  int statusDefault = 0;
   void setLocation(value) {
     location.text = value;
+  }
+
+  void setStatus(value) {
+    statusDefault = value;
+    notifyListeners();
   }
 
   void setAddress(value) {
@@ -130,8 +137,11 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCoordinates(
-      {LatLng? coord, BuildContext? context, double? areaSize}) async {
+  void setCoordinates({
+    LatLng? coord,
+    BuildContext? context,
+    double? areaSize,
+  }) async {
     Marker toRemove = _markers.firstWhere(
         (element) => element.mapsId.value == "temp",
         orElse: () => Marker(markerId: MarkerId("temp")));
@@ -157,7 +167,7 @@ class MapService extends ChangeNotifier {
           onTap: () {},
           zIndex: 20,
           icon: await BitmapDescriptor.fromAssetImage(
-              ImageConfiguration(), "assets/icons/green.png"),
+              ImageConfiguration(), colorsSettings[statusDefault].circleAsset!),
           markerId: MarkerId("temp"),
           position: coord!);
 

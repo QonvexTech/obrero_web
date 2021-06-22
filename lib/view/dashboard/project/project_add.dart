@@ -9,6 +9,7 @@ import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/color_model.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
@@ -20,7 +21,6 @@ import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 //TODO: add more status colors;
-
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
   final CustomerModel? customer;
@@ -36,6 +36,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController searchController = TextEditingController();
+
+  ColorModels? selectedStatus;
 
   final _formKey = GlobalKey<FormState>();
   bool isEdit = false;
@@ -53,6 +55,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     Provider.of<ProjectAddService>(context, listen: false)
         .projectImages
         .clear();
+
+    selectedStatus = colorsSettings[0];
 
     if (widget.customer != null) {
       customerSelected = widget.customer;
@@ -276,24 +280,126 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           ),
                                         ),
 
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Location",
-                                              style: boldText,
-                                            ),
-                                            Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 5),
-                                                child: TextField(
-                                                  controller:
-                                                      mapService.location,
-                                                )),
-                                          ],
-                                        ),
+                                        // Column(
+                                        //   crossAxisAlignment:
+                                        //       CrossAxisAlignment.start,
+                                        //   children: [
+                                        //     Text(
+                                        //       "Status",
+                                        //       style: boldText,
+                                        //     ),
+                                        //     Container(
+                                        //       height: 60,
+                                        //       child: ListView(
+                                        //         scrollDirection:
+                                        //             Axis.horizontal,
+                                        //         children: [
+                                        //           for (var color
+                                        //               in colorsSettings)
+                                        //             color == selectedStatus
+                                        //                 ? GestureDetector(
+                                        //                     onTap: () {},
+                                        //                     child: Container(
+                                        //                       margin: EdgeInsets
+                                        //                           .all(5),
+                                        //                       height: 60,
+                                        //                       width: 200,
+                                        //                       child: Card(
+                                        //                         color: Palette
+                                        //                             .drawerColor,
+                                        //                         child: Center(
+                                        //                             child:
+                                        //                                 Padding(
+                                        //                           padding:
+                                        //                               const EdgeInsets
+                                        //                                       .all(
+                                        //                                   8.0),
+                                        //                           child: Row(
+                                        //                             children: [
+                                        //                               Icon(
+                                        //                                 Icons
+                                        //                                     .circle,
+                                        //                                 color: color
+                                        //                                     .color,
+                                        //                               ),
+                                        //                               SizedBox(
+                                        //                                 width: MySpacer
+                                        //                                     .small,
+                                        //                               ),
+                                        //                               Flexible(
+                                        //                                 child:
+                                        //                                     Text(
+                                        //                                   "${color.name}",
+                                        //                                   style: TextStyle(
+                                        //                                       fontSize: 13,
+                                        //                                       color: Colors.white),
+                                        //                                   overflow:
+                                        //                                       TextOverflow.ellipsis,
+                                        //                                 ),
+                                        //                               ),
+                                        //                             ],
+                                        //                           ),
+                                        //                         )),
+                                        //                       ),
+                                        //                     ),
+                                        //                   )
+                                        //                 : GestureDetector(
+                                        //                     onTap: () {
+                                        //                       setState(() {
+                                        //                         selectedStatus =
+                                        //                             color;
+
+                                        //                         mapService
+                                        //                             .setStatus(colorsSettings.indexOf(selectedStatus!));
+                                        //                       });
+                                        //                     },
+                                        //                     child: Container(
+                                        //                       margin: EdgeInsets
+                                        //                           .all(5),
+                                        //                       height: 60,
+                                        //                       width: 200,
+                                        //                       child: Card(
+                                        //                         child: Center(
+                                        //                             child:
+                                        //                                 Padding(
+                                        //                           padding:
+                                        //                               const EdgeInsets
+                                        //                                       .all(
+                                        //                                   8.0),
+                                        //                           child: Row(
+                                        //                             children: [
+                                        //                               Icon(
+                                        //                                 Icons
+                                        //                                     .circle,
+                                        //                                 color: color
+                                        //                                     .color,
+                                        //                               ),
+                                        //                               SizedBox(
+                                        //                                 width: MySpacer
+                                        //                                     .small,
+                                        //                               ),
+                                        //                               Flexible(
+                                        //                                 child:
+                                        //                                     Text(
+                                        //                                   "${color.name}",
+                                        //                                   style: TextStyle(
+                                        //                                       fontSize: 13,
+                                        //                                       color: Colors.black),
+                                        //                                   overflow:
+                                        //                                       TextOverflow.ellipsis,
+                                        //                                 ),
+                                        //                               ),
+                                        //                             ],
+                                        //                           ),
+                                        //                         )),
+                                        //                       ),
+                                        //                     ),
+                                        //                   )
+                                        //         ],
+                                        //       ),
+                                        //     )
+                                        //   ],
+                                        // ),
                                         SizedBox(
                                           height: MySpacer.small,
                                         ),
@@ -1055,6 +1161,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       Navigator.pop(context);
                                     } else {
                                       ProjectModel newProject = ProjectModel(
+                                          status: colorsSettings
+                                              .indexOf(selectedStatus!),
                                           assigneeIds:
                                               projectAddService.assignIds,
                                           customerId: projectAddService

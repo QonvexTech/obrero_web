@@ -1,6 +1,9 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/view/dashboard/tracker.dart';
 import 'package:uitemplate/widgets/adding_button.dart';
 
 class HeaderList extends StatelessWidget {
@@ -18,6 +21,7 @@ class HeaderList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var employeeService = Provider.of<EmployeeSevice>(context);
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -57,6 +61,62 @@ class HeaderList extends StatelessWidget {
                   )),
                 ),
                 Expanded(child: Container()),
+                title == "Employee"
+                    ? MaterialButton(
+                        color: Palette.drawerColor,
+                        onPressed: () {
+                          //SHOW MAP MONITOR
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                  backgroundColor: Palette.contentBackground,
+                                  content: Container(
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
+                                      child: Column(
+                                        children: [
+                                          MaterialButton(
+                                            color: Palette.drawerColor,
+                                            onPressed: () {
+                                              employeeService.timeOutAllUser();
+                                            },
+                                            child: Text(
+                                              "Time Out All Users",
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: MySpacer.medium,
+                                          ),
+                                          Expanded(child: TrackerPage()),
+                                        ],
+                                      ))));
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.monitor,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: MySpacer.small,
+                            ),
+                            Text(
+                              "Monitor All Users",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          ],
+                        ),
+                      )
+                    : SizedBox(),
+                SizedBox(
+                  width: MySpacer.medium,
+                ),
                 Container(
                   height: 40,
                   decoration:

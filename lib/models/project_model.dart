@@ -52,7 +52,9 @@ class ProjectModel extends ChangeNotifier {
     this.areaSize = json["area_size"];
     this.name = json["name"];
     this.customerId = json["customer_id"];
+
     this.status = json["status"];
+    print("STATUS : $status");
     this.owner =
         json["owner"] != null ? CustomerModel.fromJson(json["owner"]) : null;
     this.coordinates = convertedCoord(json["coordinates"]);
@@ -94,6 +96,7 @@ class ProjectModel extends ChangeNotifier {
         this.assigneeIds.toString().replaceAll("[", "").replaceAll("]", "");
     data["address"] = this.address ?? "";
     data["area_size"] = this.areaSize.toString();
+    data["status"] = this.status.toString();
 
     return data;
   }
