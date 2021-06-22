@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/payment_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/services/autentication.dart';
 
 class PaymentService extends ChangeNotifier {
-  //TODO: payments crud test
   final List<PaymentModel> _payments = [];
   get payments => _payments;
   Future createPayment(PaymentModel newPayment) async {

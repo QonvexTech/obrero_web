@@ -52,7 +52,7 @@ class MapService extends ChangeNotifier {
         circleId: CircleId(
           "temp",
         ),
-        radius: area / 50,
+        radius: area / 2,
         strokeWidth: 1,
         strokeColor: Colors.black12,
         center: coord));
@@ -116,7 +116,7 @@ class MapService extends ChangeNotifier {
             circleId: CircleId(
               project.id.toString(),
             ),
-            radius: project.areaSize!,
+            radius: 1000 / project.areaSize!,
             strokeWidth: 1,
             strokeColor: Colors.black12,
             center: project.coordinates!));
@@ -164,7 +164,7 @@ class MapService extends ChangeNotifier {
           circleId: CircleId(
             "temp",
           ),
-          radius: areaSize!,
+          radius: 1000 / areaSize!,
           strokeWidth: 1,
           strokeColor: Colors.black12,
           center: coord);
