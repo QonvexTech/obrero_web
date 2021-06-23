@@ -143,8 +143,8 @@ class EmployeeSevice extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future timeOutAllUser() async {
-    print("clikc");
+  Future<String> timeOutAllUser() async {
+    String value = "Something Wrong";
     try {
       var url = Uri.parse("$api/user/time_out_all");
       var response = await http.put(url, headers: {
@@ -153,15 +153,16 @@ class EmployeeSevice extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        List data = json.decode(response.body);
+        var data = json.decode(response.body);
         print(data);
-        print("Successful stop");
+        value = "All users are now time-out";
       }
     } catch (e) {
       print(e);
-      print("FAil stop");
     }
+
     notifyListeners();
+    return value;
   }
 
   Future fetchUsers() async {

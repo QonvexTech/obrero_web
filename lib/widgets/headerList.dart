@@ -1,5 +1,6 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/employee_service.dart';
@@ -70,28 +71,61 @@ class HeaderList extends StatelessWidget {
                               context: context,
                               builder: (_) => AlertDialog(
                                   backgroundColor: Palette.contentBackground,
-                                  content: Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 2,
-                                      child: Column(
-                                        children: [
-                                          MaterialButton(
-                                            color: Palette.drawerColor,
-                                            onPressed: () {
-                                              employeeService.timeOutAllUser();
-                                            },
-                                            child: Text(
-                                              "Time Out All Users",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
+                                  content: Stack(
+                                    children: [
+                                      Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2,
+                                          child: Column(
+                                            children: [
+                                              MaterialButton(
+                                                color: Palette.drawerColor,
+                                                onPressed: () {
+                                                  employeeService
+                                                      .timeOutAllUser()
+                                                      .then((value) {
+                                                    Fluttertoast.showToast(
+                                                        webBgColor:
+                                                            "linear-gradient(to right, #5585E5, #5585E5)",
+                                                        msg: value,
+                                                        toastLength:
+                                                            Toast.LENGTH_SHORT,
+                                                        gravity:
+                                                            ToastGravity.CENTER,
+                                                        timeInSecForIosWeb: 2,
+                                                        fontSize: 16.0);
+                                                  });
+                                                },
+                                                child: Text(
+                                                  "Time Out All Users",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: MySpacer.medium,
+                                              ),
+                                              Expanded(child: TrackerPage()),
+                                            ],
+                                          )),
+                                      Positioned(
+                                        right: 0,
+                                        top: 0,
+                                        child: IconButton(
+                                          splashRadius: 15,
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          icon: Icon(
+                                            Icons.close,
+                                            color: Colors.red,
                                           ),
-                                          SizedBox(
-                                            height: MySpacer.medium,
-                                          ),
-                                          Expanded(child: TrackerPage()),
-                                        ],
-                                      ))));
+                                        ),
+                                      )
+                                    ],
+                                  )));
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
