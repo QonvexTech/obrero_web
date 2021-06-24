@@ -382,7 +382,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                             children: [
                               Text(
                                 "Chantier Emplacement",
-                                style: Theme.of(context).textTheme.headline5,
+                                style: Theme.of(context).textTheme.headline6,
                               ),
                             ],
                           ),

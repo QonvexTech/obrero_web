@@ -85,7 +85,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("AreaSize", style: transHeader),
+                            Text("Surface", style: transHeader),
                             SizedBox(
                               height: MySpacer.small,
                             ),
@@ -98,7 +98,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Location", style: transHeader),
+                            Text("Adresse", style: transHeader),
                             SizedBox(
                               height: MySpacer.small,
                             ),
@@ -113,7 +113,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Owner", style: transHeader),
+                            Text("Propriétaire", style: transHeader),
                             SizedBox(
                               height: MySpacer.small,
                             ),
@@ -270,7 +270,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                             color: Palette.drawerColor,
                                           ),
                                         ),
-                                        Text("Upload Image")
+                                        Text("Importer image")
                                       ],
                                     ),
                                   ),
@@ -283,7 +283,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Photos",
+                                "Images",
                                 style: transHeader,
                               ),
                               SizedBox(
@@ -407,7 +407,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                 style: Theme.of(context).textTheme.headline3,
                               ),
                               Text(
-                                "Warning",
+                                "Alerte",
                                 style: TextStyle(fontSize: 10),
                               )
                             ],
@@ -423,7 +423,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Warnings",
+                        "Alertes",
                         style: Theme.of(context).textTheme.headline6,
                       ),
                       IconButton(
@@ -462,7 +462,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                         children: [
                                           Icon(Icons.notifications_none_sharp,
                                               size: 50, color: Colors.grey),
-                                          Text("Pas encore d'avertissements!")
+                                          Text("Pas encore d'alertes")
                                         ],
                                       ),
                                     ),

@@ -477,7 +477,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                       children: [
                         Text(
                           "Chantier emplacement",
-                          style: Theme.of(context).textTheme.headline5,
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                         SizedBox(
                           height: MySpacer.medium,
@@ -504,8 +504,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Avertissements récents et mise à jour",
-                                        style: boldText,
+                                        "Alertes",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6,
                                       ),
                                     ],
                                   ),
