@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
@@ -10,6 +11,7 @@ import 'package:uitemplate/models/pagination_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/models/user_project_model.dart';
+import 'package:uitemplate/services/firestore_service.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 import 'package:uitemplate/view/dashboard/employee/employee_list.dart';
 
@@ -21,6 +23,7 @@ class EmployeeSevice extends ChangeNotifier {
   List<EmployeesModel>? _tempUsersload;
   PaginationService paginationService = PaginationService();
   List<UserProjectModel>? _employeeProjects;
+  final FirestoreService _firestoreService = FirestoreService.instance;
 
   get employeeProjects => _employeeProjects;
 
@@ -156,6 +159,11 @@ class EmployeeSevice extends ChangeNotifier {
         var data = json.decode(response.body);
         print(data);
         value = "All users are now time-out";
+        this._firestoreService.collectionReference.get().then((QuerySnapshot querySnapshot) {
+          for(DocumentSnapshot documentSnapshot in querySnapshot.docs){
+            documentSnapshot.reference.delete();
+          }
+        });
       }
     } catch (e) {
       print(e);

@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/user_location_model.dart';
+import 'package:uitemplate/services/firestore_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 
 class TrackerPage extends StatefulWidget {
@@ -16,10 +17,8 @@ class TrackerPage extends StatefulWidget {
 }
 
 class _TrackerPageState extends State<TrackerPage> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final Future<FirebaseApp> _firebaseInit = Firebase.initializeApp();
-  late final CollectionReference _collectionReference =
-      _firestore.collection('obrero-location-collection');
+  final FirestoreService _firestoreService = FirestoreService.instance;
+
   late MapService mapService = Provider.of<MapService>(
     context,
   );
@@ -27,7 +26,7 @@ class _TrackerPageState extends State<TrackerPage> {
   Widget build(BuildContext context) {
     return Material(
       child: FutureBuilder(
-        future: _firebaseInit,
+        future: _firestoreService.firebaseInit,
         builder: (_, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -36,7 +35,7 @@ class _TrackerPageState extends State<TrackerPage> {
           }
           if (snapshot.connectionState == ConnectionState.done) {
             return StreamBuilder<QuerySnapshot>(
-              stream: _collectionReference.snapshots(),
+              stream: _firestoreService.collectionReference.snapshots(),
               builder: (_, firestoreSnap) {
                 if (firestoreSnap.hasError) {
                   return Center(
