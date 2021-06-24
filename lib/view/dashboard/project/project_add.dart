@@ -271,7 +271,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                               .selectEndDate(
                                                                   context),
                                                       child: Text(
-                                                          "${months[projectAddService.startDate.month]} ${projectAddService.startDate.day}, ${DateFormat.y().format(projectAddService.endDate)}"),
+                                                          "${months[projectAddService.endDate.month]} ${projectAddService.endDate.day}, ${DateFormat.y().format(projectAddService.endDate)}"),
                                                     ),
                                                   ],
                                                 ),
