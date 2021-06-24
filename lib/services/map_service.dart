@@ -55,11 +55,11 @@ class MapService extends ChangeNotifier {
   void changeAreaSize(area, coord) {
     _circles.removeWhere((element) => element.circleId.value == "temp");
     _circles.add(Circle(
-        fillColor: Color.fromRGBO(60, 120, 225, 0.2),
+        fillColor: Color.fromRGBO(60, 120, 225, 0.1),
         circleId: CircleId(
           "temp",
         ),
-        radius: area / 2,
+        radius: area,
         strokeWidth: 1,
         strokeColor: Colors.black12,
         center: coord));
@@ -119,11 +119,11 @@ class MapService extends ChangeNotifier {
             position: project.coordinates!));
 
         _circles.add(Circle(
-            fillColor: Color.fromRGBO(60, 120, 225, 0.2),
+            fillColor: Color.fromRGBO(60, 120, 225, 0.1),
             circleId: CircleId(
               project.id.toString(),
             ),
-            radius: 1000 / project.areaSize!,
+            radius: project.areaSize!,
             strokeWidth: 1,
             strokeColor: Colors.black12,
             center: project.coordinates!));
@@ -172,11 +172,11 @@ class MapService extends ChangeNotifier {
           position: coord!);
 
       Circle defCircle = Circle(
-          fillColor: Color.fromRGBO(60, 120, 225, 0.2),
+          fillColor: Color.fromRGBO(60, 120, 225, 0.1),
           circleId: CircleId(
             "temp",
           ),
-          radius: 1000 / areaSize!,
+          radius: areaSize!,
           strokeWidth: 1,
           strokeColor: Colors.black12,
           center: coord);
