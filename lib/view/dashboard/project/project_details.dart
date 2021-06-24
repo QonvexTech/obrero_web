@@ -2,6 +2,7 @@ import 'package:adaptive_container/adaptive_container.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
@@ -475,6 +476,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       : Container(
                           height: MediaQuery.of(context).size.height * 0.7,
                           width: MediaQuery.of(context).size.width / 2,
+                          // constraints: BoxConstraints(minw),
                           child: ListView(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             children: List.generate(
@@ -497,21 +499,55 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                                       .color!,
                                                   width: 7))),
                                       child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          Icon(
-                                            Icons
-                                                .notification_important_rounded,
-                                            color: Colors.grey,
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 20),
+                                            child: Icon(
+                                              Icons
+                                                  .notification_important_rounded,
+                                              color: Colors.grey,
+                                            ),
                                           ),
                                           const SizedBox(
-                                            width: 10,
+                                            width: 5,
                                           ),
                                           Expanded(
-                                            child: ListTile(
-                                              title: Text(
-                                                  "${projectProvider.projectOnDetails!.warnings[index].title}"),
-                                              subtitle: Text(
-                                                  "${projectProvider.projectOnDetails!.warnings[index].description}"),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: ListTile(
+                                                  title: Text(
+                                                      "${projectProvider.projectOnDetails!.warnings[index].title}"),
+                                                  subtitle: ReadMoreText(
+                                                    projectProvider
+                                                        .projectOnDetails!
+                                                        .warnings[index]
+                                                        .description,
+                                                    trimLines: 1,
+                                                    trimLength: 120,
+                                                    trimMode: TrimMode.Length,
+                                                    trimCollapsedText:
+                                                        'Montre plus',
+                                                    trimExpandedText:
+                                                        'Montrer moins',
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                    moreStyle: TextStyle(
+                                                        color:
+                                                            Palette.drawerColor,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                    lessStyle: TextStyle(
+                                                        color:
+                                                            Palette.drawerColor,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )),
                                             ),
                                           )
                                         ],
