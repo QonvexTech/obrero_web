@@ -21,7 +21,7 @@ class Views {
           maxLines: maxLine,
           keyboardType: TextInputType.multiline,
           decoration: InputDecoration(
-              labelText: "Un message",
+              labelText: "Votre message",
               alignLabelWithHint: true,
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(10))),

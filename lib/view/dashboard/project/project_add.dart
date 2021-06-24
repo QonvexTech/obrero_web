@@ -251,7 +251,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                               .selectStartDate(
                                                                   context),
                                                       child: Text(
-                                                          "${DateFormat.MMMMd().format(projectAddService.startDate)}, ${DateFormat.y().format(projectAddService.startDate)}"),
+                                                          "${months[projectAddService.startDate.month]} ${projectAddService.startDate.day}, ${DateFormat.y().format(projectAddService.startDate)}"),
                                                     ),
                                                   ],
                                                 ),
@@ -271,7 +271,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                               .selectEndDate(
                                                                   context),
                                                       child: Text(
-                                                          "${DateFormat.MMMMd().format(projectAddService.endDate)}, ${DateFormat.y().format(projectAddService.endDate)}"),
+                                                          "${months[projectAddService.startDate.month]} ${projectAddService.startDate.day}, ${DateFormat.y().format(projectAddService.endDate)}"),
                                                     ),
                                                   ],
                                                 ),
@@ -408,7 +408,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              "Address",
+                                              "Adresse",
                                               style: boldText,
                                             ),
                                             Padding(
@@ -532,7 +532,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           child: Text(
                                             isEdit
                                                 ? "Employés affectés"
-                                                : "Affecter des employés",
+                                                : "Employés assignés",
                                             style: boldText,
                                           ),
                                         ),
@@ -663,7 +663,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           height: MySpacer.small,
                                         ),
                                         Text(
-                                          "Taille de la zone",
+                                          "Surface",
                                           style: boldText,
                                         ),
                                         SizedBox(
@@ -793,7 +793,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                 .drawerColor,
                                                           ),
                                                         ),
-                                                        Text("Upload Image"),
+                                                        Text("Importer image"),
                                                         SizedBox(
                                                           height:
                                                               MySpacer.small,

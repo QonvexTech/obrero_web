@@ -165,7 +165,6 @@ class _LoginFormState extends State<LoginForm> {
                   TextFormField(
                       focusNode: _passwordFocus,
                       onFieldSubmitted: (value) {
-                        print("login");
                         login(auth, context);
                       },
                       controller: _passwordController,
@@ -224,10 +223,9 @@ class _LoginFormState extends State<LoginForm> {
                           widget.widthButton, 15, widget.widthButton, 15),
                       color: Colors.white,
                       onPressed: () {
-                        print("login");
                         login(auth, context);
                       },
-                      child: Text('Login',
+                      child: Text('Connexion',
                           style: TextStyle(
                               fontSize: widthSize * widget.fontSizeButton,
                               fontFamily: 'Poppins',

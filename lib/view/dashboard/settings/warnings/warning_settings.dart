@@ -63,7 +63,7 @@ class _WarningSettingsState extends State<WarningSettings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Types de Warning",
+                      "Types d’alerte",
                       style: Theme.of(context).textTheme.headline6,
                     ),
                     SizedBox(

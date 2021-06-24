@@ -109,19 +109,19 @@ class _ProjectListState extends State<ProjectList> with TableHelper {
                               widget.assignUser!,
                             ),
                             headersMobile: [
-                              "NOM DU SITE",
-                              "OWNER",
-                              "ADDRESS",
-                              "ACTIONS"
+                              "Nom du site",
+                              "Propriétaire",
+                              "Adresse",
+                              "Actions"
                             ],
                             headers: [
-                              "NOM DU SITE",
-                              "OWNER",
-                              "ADDRESS",
-                              "AREA SIZE",
-                              "START DATE",
-                              "END DATE",
-                              "ACTIONS"
+                              "Nom du site",
+                              "Propriétaire",
+                              "Adresse",
+                              "Surface",
+                              "Date de début",
+                              "Date de fin",
+                              "Actions"
                             ],
                             assignUser: widget.assignUser,
                           ),

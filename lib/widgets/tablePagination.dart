@@ -14,7 +14,7 @@ Widget pageControll(PaginationService pageService,
         Expanded(
           child: Row(
             children: [
-              Text("Showing"),
+              Text("Affichage"),
               SizedBox(
                 width: MySpacer.small,
               ),
@@ -58,7 +58,7 @@ Widget pageControll(PaginationService pageService,
                                   child: Center(child: Text("All")))),
                         ),
                       ]),
-              Text("of ${paginationModel.totalEntries} entries")
+              Text("sur ${paginationModel.totalEntries} enregistrements")
             ],
           ),
         ),
@@ -78,7 +78,7 @@ Widget pageControll(PaginationService pageService,
                         Icons.arrow_back_ios,
                       )
                     : Text(
-                        "Prev",
+                        "Préc.",
                         style: TextStyle(
                             color: paginationModel.isPrev
                                 ? Palette.drawerColor
@@ -128,7 +128,7 @@ Widget pageControll(PaginationService pageService,
                 child: MediaQuery.of(context).size.width <= 500
                     ? Icon(Icons.arrow_forward_ios)
                     : Text(
-                        "Next",
+                        "Suiv.",
                         style: TextStyle(
                             color: paginationModel.isNext
                                 ? Palette.drawerColor

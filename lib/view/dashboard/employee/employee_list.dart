@@ -93,17 +93,17 @@ class _EmployeeListState extends State<EmployeeList> with TableHelper {
                                       employeeService.removeUser,
                                       employeeService.setPageScreen),
                                   headersMobile: [
-                                    "NOM",
-                                    "EMAIL",
-                                    "ADDRESSE",
-                                    "ACTIONS"
+                                    "Nom",
+                                    "Email",
+                                    "Adresse",
+                                    "Actions"
                                   ],
                                   headers: [
-                                    "NOM",
-                                    "EMAIL",
-                                    "TÉLÉPHONE",
-                                    "ADDRESSE",
-                                    "ACTIONS"
+                                    "Nom",
+                                    "Email",
+                                    "Téléphone",
+                                    "Adresse",
+                                    "Actions"
                                   ],
                                   assignUser: false,
                                 ),

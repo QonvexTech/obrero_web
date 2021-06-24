@@ -328,7 +328,7 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           alignment: AlignmentDirectional.centerStart,
                           child: Text(
-                            "Employees",
+                            "Employé",
                             style: TextStyle(
                                 fontSize: Theme.of(context)
                                     .textTheme
@@ -340,7 +340,7 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                         employeeSevice.userload == null
                             ? Center(child: CircularProgressIndicator())
                             : employeeSevice.userload!.length == 0
-                                ? Text("No employee to assign")
+                                ? Text("No employé to assign")
                                 : Container(
                                     height: 800,
                                     width: double.infinity,

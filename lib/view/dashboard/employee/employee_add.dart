@@ -53,7 +53,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Ajouter un Employee",
+            "Ajouter un employé",
             style: Theme.of(context)
                 .textTheme
                 .headline5!
@@ -113,7 +113,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               ),
               TextField(
                 decoration: InputDecoration(
-                  hintText: "Nom de famillie",
+                  hintText: "Nom de famille",
                   hintStyle: transHeader,
                   border: OutlineInputBorder(),
                 ),
@@ -143,7 +143,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                   ? SizedBox()
                   : TextField(
                       decoration: InputDecoration(
-                        hintText: "Password",
+                        hintText: "Mot de passe",
                         hintStyle: transHeader,
                         border: OutlineInputBorder(),
                       ),
@@ -174,7 +174,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                         Expanded(
                           child: DropdownButton<Map<dynamic, dynamic>>(
                             underline: null,
-                            hint: Text("Country"),
+                            hint: Text("Pays"),
                             value: countryValue,
                             icon: Icon(Icons.arrow_drop_down),
                             iconSize: 24,
@@ -209,7 +209,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                             },
                             decoration: InputDecoration(
                               hintStyle: transHeader,
-                              hintText: "Address",
+                              hintText: "Adresse",
                               border: OutlineInputBorder(),
                             ),
                             controller: addressController,
@@ -222,7 +222,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                   ? Expanded(
                       child: DropdownButton<Map<dynamic, dynamic>>(
                         underline: null,
-                        hint: Text("Country"),
+                        hint: Text("Pays"),
                         value: countryValue,
                         icon: Icon(Icons.arrow_drop_down),
                         iconSize: 24,
@@ -260,7 +260,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                         },
                         decoration: InputDecoration(
                           hintStyle: transHeader,
-                          hintText: "Address",
+                          hintText: "Adresse",
                           border: OutlineInputBorder(),
                         ),
                         controller: addressController,
@@ -337,7 +337,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                         }
                       },
                       child: Text(
-                        isEdit ? "Save Edit" : "Caréer",
+                        isEdit ? "Sauvegarder" : "Créer",
                         style: TextStyle(color: Colors.white),
                       ),
                     )),

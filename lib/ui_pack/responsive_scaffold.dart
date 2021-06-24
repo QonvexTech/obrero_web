@@ -24,18 +24,19 @@ import 'children/sub_drawer_item.dart';
 class ResponsiveScaffold extends StatefulWidget {
   final List<DrawerItem> drawerItems = [
     DrawerItem(
-        icon: Icons.dashboard, text: "Dashboard", content: DashBoardScreen()),
-    DrawerItem(
-        icon: Icons.people, text: "Customers", content: CustomerScreen()),
+        icon: Icons.dashboard,
+        text: "Tableau de bord",
+        content: DashBoardScreen()),
+    DrawerItem(icon: Icons.people, text: "Clients", content: CustomerScreen()),
     DrawerItem(
         icon: Icons.pin_drop_outlined,
         text: "Chantiers",
         content: ProjectScreen()),
     DrawerItem(
         icon: Icons.person_pin_circle_outlined,
-        text: "Employee",
+        text: "Employés",
         content: EmployeeScreen()),
-    DrawerItem(icon: Icons.list, text: "Logs", content: LogScreen()),
+    DrawerItem(icon: Icons.list, text: "Pointage", content: LogScreen()),
     DrawerItem(
         icon: Icons.message,
         text: "Pushs",
@@ -47,9 +48,7 @@ class ResponsiveScaffold extends StatefulWidget {
         text: "Préférences",
         subItems: [
           SubDrawerItems(
-              icon: Icons.warning,
-              title: "Warning",
-              content: WarningSettings()),
+              icon: Icons.warning, title: "Alerte", content: WarningSettings()),
           SubDrawerItems(
               icon: Icons.all_out, title: "General", content: GeneralSettings())
         ],
@@ -603,7 +602,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Text(
-                                          "Logout",
+                                          "Déconnexion",
                                           style: TextStyle(color: Colors.red),
                                         ),
                                       ],

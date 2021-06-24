@@ -95,17 +95,17 @@ class _CustomerListState extends State<CustomerList> with TableHelper {
                                       customerService.setPage,
                                     ),
                                     headersMobile: [
-                                      "NOM",
-                                      "EMAIL",
-                                      "STATUS",
-                                      "ACTIONS"
+                                      "Nom",
+                                      "Email",
+                                      "Status",
+                                      "Actions"
                                     ],
                                     headers: [
-                                      "NOM",
-                                      "EMAIL",
-                                      "TÉLÉPHONE",
-                                      "ADDRESSE",
-                                      "ACTIONS"
+                                      "Nom",
+                                      "Email",
+                                      "Téléphone",
+                                      "Adresse",
+                                      "Actions"
                                     ],
                                     assignUser: false,
                                   ),

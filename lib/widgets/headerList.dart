@@ -63,88 +63,91 @@ class HeaderList extends StatelessWidget {
                 ),
                 Expanded(child: Container()),
                 title == "Employee"
-                    ? MaterialButton(
-                        color: Palette.drawerColor,
-                        onPressed: () {
-                          //SHOW MAP MONITOR
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                  backgroundColor: Palette.contentBackground,
-                                  content: Stack(
-                                    children: [
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2,
-                                          child: Column(
-                                            children: [
-                                              MaterialButton(
-                                                color: Palette.drawerColor,
-                                                onPressed: () {
-                                                  employeeService
-                                                      .timeOutAllUser()
-                                                      .then((value) {
-                                                    Fluttertoast.showToast(
-                                                        webBgColor:
-                                                            "linear-gradient(to right, #5585E5, #5585E5)",
-                                                        msg: value,
-                                                        toastLength:
-                                                            Toast.LENGTH_SHORT,
-                                                        gravity:
-                                                            ToastGravity.CENTER,
-                                                        timeInSecForIosWeb: 2,
-                                                        fontSize: 16.0);
-                                                  });
-                                                },
-                                                child: Text(
-                                                  "Time Out All Users",
-                                                  style: TextStyle(
-                                                      color: Colors.white),
+                    ? Container(
+                        height: 40,
+                        child: MaterialButton(
+                          color: Palette.drawerColor,
+                          onPressed: () {
+                            //SHOW MAP MONITOR
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                    backgroundColor: Palette.contentBackground,
+                                    content: Stack(
+                                      children: [
+                                        Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2,
+                                            child: Column(
+                                              children: [
+                                                MaterialButton(
+                                                  color: Palette.drawerColor,
+                                                  onPressed: () {
+                                                    employeeService
+                                                        .timeOutAllUser()
+                                                        .then((value) {
+                                                      Fluttertoast.showToast(
+                                                          webBgColor:
+                                                              "linear-gradient(to right, #5585E5, #5585E5)",
+                                                          msg: value,
+                                                          toastLength: Toast
+                                                              .LENGTH_SHORT,
+                                                          gravity: ToastGravity
+                                                              .CENTER,
+                                                          timeInSecForIosWeb: 2,
+                                                          fontSize: 16.0);
+                                                    });
+                                                  },
+                                                  child: Text(
+                                                    "Time Out All Users",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                height: MySpacer.medium,
-                                              ),
-                                              Expanded(child: TrackerPage()),
-                                            ],
-                                          )),
-                                      Positioned(
-                                        right: 0,
-                                        top: 0,
-                                        child: IconButton(
-                                          splashRadius: 15,
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          icon: Icon(
-                                            Icons.close,
-                                            color: Colors.red,
+                                                SizedBox(
+                                                  height: MySpacer.medium,
+                                                ),
+                                                Expanded(child: TrackerPage()),
+                                              ],
+                                            )),
+                                        Positioned(
+                                          right: 0,
+                                          top: 0,
+                                          child: IconButton(
+                                            splashRadius: 15,
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.red,
+                                            ),
                                           ),
-                                        ),
-                                      )
-                                    ],
-                                  )));
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.monitor,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text(
-                              "Monitor All Users",
-                              style: TextStyle(
+                                        )
+                                      ],
+                                    )));
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.monitor,
                                 color: Colors.white,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            )
-                          ],
+                              SizedBox(
+                                width: MySpacer.small,
+                              ),
+                              Text(
+                                "Monitor All Users",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            ],
+                          ),
                         ),
                       )
                     : SizedBox(),
