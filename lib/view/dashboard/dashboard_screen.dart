@@ -146,7 +146,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 locale: "fr_FR",
                                 controller: projectProvider.dateController,
                                 onDateChange: (date) {
-                                  //New Date
+                                  print(date);
 
                                   projectProvider.fetchOnDates(
                                       context: context, mapService: mapService);

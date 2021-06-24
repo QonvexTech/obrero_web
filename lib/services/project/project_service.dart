@@ -80,15 +80,21 @@ class ProjectProvider extends ChangeNotifier {
     return _selectedDate;
   }
 
-  void fetchOnDates(
-      {required BuildContext context, required MapService mapService}) {
-    fetchProjectsBaseOnDates()
-        .whenComplete(() => mapService.mapInit(_projectsDateBase!, context));
+  Future fetchOnDates(
+      {required BuildContext context, required MapService mapService}) async {
+    fetchProjectsBaseOnDates().whenComplete(() {
+      mapService.mapInit(_projectsDateBase!, context);
+    }).whenComplete(() {
+      fetchProjectsBaseOnDates().whenComplete(() {
+        notifyListeners();
+      });
+    });
   }
 
   init(mapService) {
     fetchProjectsBaseOnDates()
         .then((x) => mapService.mapInit(_projectsDateBase));
+    notifyListeners();
   }
 
   Future initHours(int projectId) async {
@@ -143,7 +149,7 @@ class ProjectProvider extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = json.decode(response.body);
-        print(data["hours"]);
+
         hours = double.parse(data['hours'].toString()).toStringAsFixed(2);
       } else {
         print(response.body);
@@ -166,7 +172,7 @@ class ProjectProvider extends ChangeNotifier {
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         List data = json.decode(response.body)["data"];
-        print("projects: $data");
+
         if (json.decode(response.body)["next_page_url"] != null) {
           _pagination.isNext = true;
         }
@@ -180,10 +186,11 @@ class ProjectProvider extends ChangeNotifier {
         if (_pagination.totalEntries < _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
-        var projects = ProjectModel.fromJsonListToProject(data);
+        ProjectModel.fromJsonListToProject(data).then((value) {
+          _projects = value;
+          _tempProjects = value;
+        });
 
-        _projects = projects;
-        _tempProjects = projects;
         notifyListeners();
         print(data);
       } else {
@@ -218,10 +225,9 @@ class ProjectProvider extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         List datas = json.decode(response.body);
 
-        var projectsdate = ProjectModel.fromJsonListToProject(datas);
-        _projectsDateBase = await projectsdate;
-
-        print(response.body);
+        ProjectModel.fromJsonListToProject(datas).then((value) {
+          _projectsDateBase = value;
+        });
       } else {
         print("fail");
         print(response.body);
@@ -229,7 +235,6 @@ class ProjectProvider extends ChangeNotifier {
     } catch (e) {
       print("project fetch error : $e");
     }
-    notifyListeners();
   }
 
   Future createProjects({required ProjectModel newProject}) async {
@@ -241,9 +246,9 @@ class ProjectProvider extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print("success to add");
         fetchProjectsBaseOnDates();
         fetchProjects();
+        print("success to add");
       } else {
         print(response.body);
         print("fail to add");

@@ -101,7 +101,7 @@ class ProjectModel extends ChangeNotifier {
     return data;
   }
 
-  static List<ProjectModel> fromJsonListToProject(List projects) {
+  static Future<List<ProjectModel>> fromJsonListToProject(List projects) async {
     List<ProjectModel> newProjects = [];
     for (var project in projects) {
       ProjectModel newProject = ProjectModel.fromJson(project);

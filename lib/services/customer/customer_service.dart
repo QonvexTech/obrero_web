@@ -154,9 +154,9 @@ class CustomerService extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = json.decode(response.body);
         if (data["projects"] != null) {
-          var tempCustomerProject =
-              ProjectModel.fromJsonListToProject(data["projects"]);
-          customerProject = tempCustomerProject;
+          ProjectModel.fromJsonListToProject(data["projects"]).then((value) {
+            customerProject = value;
+          });
         } else {
           customerProject = [];
         }
