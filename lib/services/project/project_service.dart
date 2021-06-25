@@ -14,7 +14,7 @@ class ProjectProvider extends ChangeNotifier {
     assignUser: false,
   );
   List<ProjectModel>? _projects;
-  List<ProjectModel>? _projectsDateBase;
+  List<ProjectModel>? _projectsDateBase = [];
   List<ProjectModel> _tempProjects = [];
   PaginationService paginationService = PaginationService();
   ProjectModel? _projectOnDetails;
@@ -220,11 +220,9 @@ class ProjectProvider extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         List datas = json.decode(response.body);
 
-        if (datas.length > 0) {
-          ProjectModel.fromJsonListToProject(datas).then((value) {
-            _projectsDateBase = value;
-          });
-        }
+        ProjectModel.fromJsonListToProject(datas).then((value) {
+          _projectsDateBase = value;
+        });
       } else {
         print("fail");
         print(response.body);

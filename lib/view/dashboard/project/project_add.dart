@@ -201,7 +201,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           onKey: (x) {
                                             if (x.isKeyPressed(
                                                 LogicalKeyboardKey.tab)) {
-                                              _desc.requestFocus();
+                                              _desc.nextFocus();
                                             }
                                           },
                                           focusNode: _nom,
@@ -239,8 +239,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                         ),
                                         RawKeyboardListener(
                                           focusNode: _desc,
-                                          onKey: (x) {
-                                            if (x.isKeyPressed(
+                                          onKey: (y) {
+                                            if (y.isKeyPressed(
                                                 LogicalKeyboardKey.tab)) {
                                               _address.requestFocus();
                                             }
