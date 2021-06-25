@@ -72,7 +72,7 @@ class CustomerService extends ChangeNotifier {
       while (_paginationLoad.isNext) {
         _paginationLoad.page += 1;
         _paginationLoad.isNext = false;
-        load();
+        load(false);
         _customersLoad = _customersLoad
             .where((element) =>
                 "${element.fname!} ${element.lname!}"
@@ -117,7 +117,7 @@ class CustomerService extends ChangeNotifier {
   void loadMore() {
     if (_paginationLoad.isNext) {
       _paginationLoad.page += 1;
-      load();
+      load(false);
     }
   }
 
@@ -125,7 +125,7 @@ class CustomerService extends ChangeNotifier {
     _customersLoad = [];
     _tempCustomersLoad = [];
     _paginationLoad.page = 1;
-    load();
+    load(true);
   }
 
   setPage({required Widget page}) {
@@ -297,7 +297,7 @@ class CustomerService extends ChangeNotifier {
     }
   }
 
-  Future load() async {
+  Future load(bool init) async {
     var url = Uri.parse(
         "$customer_api${_paginationLoad.perPage}?page=${_paginationLoad.page}");
     try {
@@ -335,6 +335,8 @@ class CustomerService extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    notifyListeners();
+    if (init == false) {
+      notifyListeners();
+    }
   }
 }

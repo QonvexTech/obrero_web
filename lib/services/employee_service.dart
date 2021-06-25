@@ -70,13 +70,13 @@ class EmployeeSevice extends ChangeNotifier {
     _tempUsersload = [];
     _paginationload.page = 1;
     _paginationload.perPage = 15;
-    loadUser();
+    loadUser(true);
   }
 
   void loadMore() {
     if (_paginationload.isNext) {
       _paginationload.page += 1;
-      loadUser();
+      loadUser(false);
     }
   }
 
@@ -159,8 +159,12 @@ class EmployeeSevice extends ChangeNotifier {
         var data = json.decode(response.body);
         print(data);
         value = "All users are now time-out";
-        this._firestoreService.collectionReference.get().then((QuerySnapshot querySnapshot) {
-          for(DocumentSnapshot documentSnapshot in querySnapshot.docs){
+        this
+            ._firestoreService
+            .collectionReference
+            .get()
+            .then((QuerySnapshot querySnapshot) {
+          for (DocumentSnapshot documentSnapshot in querySnapshot.docs) {
             documentSnapshot.reference.delete();
           }
         });
@@ -292,7 +296,7 @@ class EmployeeSevice extends ChangeNotifier {
     }
   }
 
-  Future loadUser() async {
+  Future loadUser(bool init) async {
     var url = Uri.parse(
         "$user_api${_paginationload.perPage}?page=${_paginationload.page}");
     try {
@@ -313,7 +317,7 @@ class EmployeeSevice extends ChangeNotifier {
         if (json.decode(response.body)["last_page"] != null) {
           _paginationload.lastPage = json.decode(response.body)["last_page"];
         }
-        notifyListeners();
+
         print(data);
 
         var listOfUsers = EmployeesModel.fromJsonListToUsers(data);
@@ -334,7 +338,9 @@ class EmployeeSevice extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    notifyListeners();
+    if (init == false) {
+      notifyListeners();
+    }
   }
 
   // Future loadLastPage(perPage, int page) async {

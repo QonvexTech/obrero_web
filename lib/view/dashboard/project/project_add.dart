@@ -52,9 +52,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).initLoad();
     Provider.of<CustomerService>(context, listen: false).initLoad();
-    Provider.of<ProjectAddService>(context, listen: false)
-        .projectImages
-        .clear();
 
     selectedStatus = colorsSettings[0];
 
@@ -63,18 +60,21 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     }
 
     if (widget.projectToEdit != null) {
-      var projectAddService =
-          Provider.of<ProjectAddService>(context, listen: false);
+      Provider.of<ProjectAddService>(context, listen: false);
       nameController.text = widget.projectToEdit!.name ?? "";
       descriptionController.text = widget.projectToEdit!.description ?? "";
-      projectAddService.startDate = widget.projectToEdit!.startDate ?? "";
-      projectAddService.endDate = widget.projectToEdit!.endDate ?? "";
+      Provider.of<ProjectAddService>(context, listen: false).startDate =
+          widget.projectToEdit!.startDate ?? "";
+      Provider.of<ProjectAddService>(context, listen: false).endDate =
+          widget.projectToEdit!.endDate ?? "";
 
       print("image length ${widget.projectToEdit!.images!.length}");
 
-      projectAddService.userToAssignIds(widget.projectToEdit!.assignees!);
+      Provider.of<ProjectAddService>(context, listen: false)
+          .userToAssignIds(widget.projectToEdit!.assignees!);
       if (widget.projectToEdit!.owner!.id != null) {
-        projectAddService.activeOwnerIndex = widget.projectToEdit!.owner!.id;
+        Provider.of<ProjectAddService>(context, listen: false)
+            .activeOwnerIndex = widget.projectToEdit!.owner!.id;
       }
 
       if (widget.projectToEdit!.address != null) {
@@ -680,22 +680,32 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                   max: 1000,
                                                   divisions: 50,
                                                   onChangeStart: (value) {
-                                                    projectAddService
-                                                        .addBodyEdit({
-                                                      "area_size":
-                                                          value.toString()
+                                                    setState(() {
+                                                      projectAddService
+                                                          .addBodyEdit({
+                                                        "area_size":
+                                                            value.toString()
+                                                      });
                                                     });
                                                   },
                                                   onChanged: (newValue) {
-                                                    projectAddService.areaSize =
-                                                        newValue;
+                                                    setState(() {
+                                                      projectAddService
+                                                          .areaSize = newValue;
 
-                                                    mapService.changeAreaSize(
-                                                        newValue,
-                                                        Provider.of<MapService>(
-                                                                context,
-                                                                listen: false)
-                                                            .coordinates);
+                                                      projectAddService
+                                                          .addBodyEdit({
+                                                        "area_size":
+                                                            newValue.toString()
+                                                      });
+
+                                                      mapService.changeAreaSize(
+                                                          newValue,
+                                                          Provider.of<MapService>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .coordinates);
+                                                    });
                                                   }),
                                             ),
                                             Positioned(

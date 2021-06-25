@@ -37,11 +37,6 @@ class ProjectProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // set startDate(value) {
-  //   _selectedDate = value;
-  //   notifyListeners();
-  // }
-
   void nextDate(BuildContext context, MapService mapService) {
     _selectedDate = _selectedDate.add(Duration(days: 5));
     dateController.animateToDate(_selectedDate);
@@ -269,11 +264,14 @@ class ProjectProvider extends ChangeNotifier {
       }).then((response) {
         var data = json.decode(response.body);
         projectOnDetails = ProjectModel.fromJson(data["data"]);
-        // print("THIS PROJECT : $data");
-        fetchProjectsBaseOnDates();
-        fetchProjects();
 
-        notifyListeners();
+        print("THIS PROJECT : $data");
+        // fetchProjectsBaseOnDates().whenComplete(() {
+        //   notifyListeners();
+        // });
+        fetchProjects().whenComplete(() {
+          notifyListeners();
+        });
       });
     } catch (e) {
       print(e);
