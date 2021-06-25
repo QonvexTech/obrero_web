@@ -3,6 +3,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
@@ -37,6 +38,16 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   TextEditingController descriptionController = TextEditingController();
   TextEditingController searchController = TextEditingController();
 
+  final _nom = FocusNode();
+  final _desc = FocusNode();
+
+  final _startDate = FocusNode();
+  final _endDate = FocusNode();
+  final _address = FocusNode();
+  final _delete = FocusNode();
+  final _submit = FocusNode();
+  final _cancel = FocusNode();
+
   ColorModels? selectedStatus;
 
   final _formKey = GlobalKey<FormState>();
@@ -45,8 +56,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   bool loader = false;
 
   CustomerModel? customerSelected;
-
-  bool hovering = false;
 
   @override
   void initState() {
@@ -104,11 +113,18 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     nameController.dispose();
     descriptionController.dispose();
 
-    Provider.of<ProjectAddService>(context, listen: false)
-        .clear()
-        .Provider
-        .of<MapService>(context)
-        .gesture = false;
+    _nom.dispose();
+    _desc.dispose();
+    _address.dispose();
+    _startDate.dispose();
+    _endDate.dispose();
+    _delete.dispose();
+
+    // Provider.of<ProjectAddService>(context, listen: false)
+    //     .clear()
+    //     .Provider
+    //     .of<MapService>(context)
+    //     .gesture = false;
     super.dispose();
   }
 
@@ -172,9 +188,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       : SizedBox(),
                                   Expanded(
                                     child: ListView(
-                                      physics: hovering
-                                          ? NeverScrollableScrollPhysics()
-                                          : AlwaysScrollableScrollPhysics(),
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -184,22 +197,35 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             style: boldText,
                                           ),
                                         ),
-                                        TextFormField(
-                                          onChanged: (value) {
-                                            projectAddService
-                                                .addBodyEdit({"name": value});
-                                          },
-                                          validator: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'Nom obligatoire!';
+                                        RawKeyboardListener(
+                                          onKey: (x) {
+                                            if (x.isKeyPressed(
+                                                LogicalKeyboardKey.tab)) {
+                                              _desc.requestFocus();
                                             }
                                           },
-                                          controller: nameController,
-                                          decoration: InputDecoration(
-                                            hintText: "Nom du Chantier",
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
+                                          focusNode: _nom,
+                                          child: TextFormField(
+                                            autofocus: true,
+                                            onChanged: (value) {
+                                              projectAddService
+                                                  .addBodyEdit({"name": value});
+                                            },
+                                            onFieldSubmitted: (z) {
+                                              _desc.requestFocus();
+                                            },
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return 'Nom obligatoire!';
+                                              }
+                                            },
+                                            controller: nameController,
+                                            decoration: InputDecoration(
+                                              hintText: "Nom du Chantier",
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                            ),
                                           ),
                                         ),
 
@@ -211,24 +237,68 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             style: boldText,
                                           ),
                                         ),
-                                        TextFormField(
-                                          validator: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'La description obligatoire!';
+                                        RawKeyboardListener(
+                                          focusNode: _desc,
+                                          onKey: (x) {
+                                            if (x.isKeyPressed(
+                                                LogicalKeyboardKey.tab)) {
+                                              _address.requestFocus();
                                             }
                                           },
-                                          onChanged: (value) {
-                                            projectAddService.addBodyEdit(
-                                                {"description": value});
-                                          },
-                                          maxLines: 5,
-                                          decoration: InputDecoration(
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5)),
-                                            hintText: "La description",
+                                          child: TextFormField(
+                                            onFieldSubmitted: (z) {
+                                              _address.requestFocus();
+                                            },
+                                            validator: (value) {
+                                              if (value!.isEmpty) {
+                                                return 'La description obligatoire!';
+                                              }
+                                            },
+                                            onChanged: (value) {
+                                              projectAddService.addBodyEdit(
+                                                  {"description": value});
+                                            },
+                                            maxLines: 5,
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              hintText: "La description",
+                                            ),
+                                            controller: descriptionController,
                                           ),
-                                          controller: descriptionController,
+                                        ),
+
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Adresse",
+                                              style: boldText,
+                                            ),
+                                            Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 5),
+                                                child: RawKeyboardListener(
+                                                  focusNode: _address,
+                                                  onKey: (x) {
+                                                    if (x.isKeyPressed(
+                                                        LogicalKeyboardKey
+                                                            .tab)) {
+                                                      _address.requestFocus();
+                                                    }
+                                                  },
+                                                  child: TextField(
+                                                    controller:
+                                                        mapService.address,
+                                                  ),
+                                                )),
+                                          ],
                                         ),
 
                                         Padding(
@@ -246,6 +316,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                       style: boldText,
                                                     ),
                                                     MaterialButton(
+                                                      focusNode: _startDate,
+                                                      enableFeedback: false,
                                                       onPressed: () =>
                                                           projectAddService
                                                               .selectStartDate(
@@ -266,6 +338,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                       style: boldText,
                                                     ),
                                                     MaterialButton(
+                                                      enableFeedback: false,
+                                                      focusNode: _endDate,
                                                       onPressed: () =>
                                                           projectAddService
                                                               .selectEndDate(
@@ -400,26 +474,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                         //     )
                                         //   ],
                                         // ),
-                                        SizedBox(
-                                          height: MySpacer.small,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Adresse",
-                                              style: boldText,
-                                            ),
-                                            Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 5),
-                                                child: TextField(
-                                                  controller:
-                                                      mapService.address,
-                                                )),
-                                          ],
-                                        ),
 
                                         isEdit
                                             ? SizedBox()
@@ -675,6 +729,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             Container(
                                               height: 60,
                                               child: Slider(
+                                                  autofocus: false,
                                                   value: projectAddService
                                                       .areaSize,
                                                   max: 1000,
@@ -733,7 +788,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           height: 10,
                                         ),
 
-                                        //PICTURES
+                                        // PICTURES
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -744,6 +799,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             ),
                                             SizedBox(height: MySpacer.small),
                                             MaterialButton(
+                                              focusNode: null,
                                               onPressed: () async {
                                                 await FilePicker.platform
                                                     .pickFiles(
@@ -778,6 +834,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                               .center,
                                                       children: [
                                                         IconButton(
+                                                          focusNode: null,
                                                           onPressed: () async {
                                                             await FilePicker
                                                                 .platform
@@ -816,9 +873,12 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             ),
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: MySpacer.medium,
-                                        ),
+                                        widget.projectToEdit != null
+                                            ? SizedBox(
+                                                height: MySpacer.medium,
+                                              )
+                                            : SizedBox(),
+
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
@@ -826,7 +886,12 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             widget.projectToEdit == null
                                                 ? Container(
                                                     width: _scrw,
-                                                    height: _scrh * .3,
+                                                    height: projectAddService
+                                                                .projectImages
+                                                                .length >
+                                                            0
+                                                        ? _scrh * .3
+                                                        : 0,
                                                     child: GridView.count(
                                                       crossAxisCount: 3,
                                                       mainAxisSpacing: 5,
@@ -879,20 +944,21 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                               100),
                                                                       color: Colors
                                                                           .white38),
-                                                                  child:
-                                                                      IconButton(
-                                                                          icon:
-                                                                              Icon(
-                                                                            Icons.delete_forever,
-                                                                            color:
-                                                                                Colors.red[600],
-                                                                          ),
-                                                                          onPressed:
-                                                                              () {
-                                                                            print("DELETE");
+                                                                  child: IconButton(
+                                                                      focusNode: _delete,
+                                                                      icon: Icon(
+                                                                        Icons
+                                                                            .delete_forever,
+                                                                        color: Colors
+                                                                            .red[600],
+                                                                      ),
+                                                                      onPressed: () {
+                                                                        print(
+                                                                            "DELETE");
 
-                                                                            projectAddService.removeImage(image);
-                                                                          }),
+                                                                        projectAddService
+                                                                            .removeImage(image);
+                                                                      }),
                                                                 ),
                                                               )
                                                             ],
@@ -959,6 +1025,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                       color: Colors
                                                                           .white38),
                                                                   child: IconButton(
+                                                                      focusNode: _delete,
                                                                       icon: Icon(
                                                                         Icons
                                                                             .delete_forever,
@@ -1027,20 +1094,21 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                               100),
                                                                       color: Colors
                                                                           .white38),
-                                                                  child:
-                                                                      IconButton(
-                                                                          icon:
-                                                                              Icon(
-                                                                            Icons.delete_forever,
-                                                                            color:
-                                                                                Colors.red[600],
-                                                                          ),
-                                                                          onPressed:
-                                                                              () {
-                                                                            print("DELETE");
+                                                                  child: IconButton(
+                                                                      focusNode: _delete,
+                                                                      icon: Icon(
+                                                                        Icons
+                                                                            .delete_forever,
+                                                                        color: Colors
+                                                                            .red[600],
+                                                                      ),
+                                                                      onPressed: () {
+                                                                        print(
+                                                                            "DELETE");
 
-                                                                            projectAddService.removeImage(image);
-                                                                          }),
+                                                                        projectAddService
+                                                                            .removeImage(image);
+                                                                      }),
                                                                 ),
                                                               )
                                                             ],
@@ -1084,6 +1152,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                         children: [
                           Expanded(
                             child: MaterialButton(
+                              focusNode: _cancel,
                               height: 50,
                               color: Colors.grey[200],
                               onPressed: () {
@@ -1099,6 +1168,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                           Expanded(
                             flex: 3,
                             child: MaterialButton(
+                              focusNode: _submit,
                               height: 50,
                               color: Palette.drawerColor,
                               minWidth: double.infinity,

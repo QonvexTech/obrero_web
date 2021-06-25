@@ -220,9 +220,11 @@ class ProjectProvider extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         List datas = json.decode(response.body);
 
-        ProjectModel.fromJsonListToProject(datas).then((value) {
-          _projectsDateBase = value;
-        });
+        if (datas.length > 0) {
+          ProjectModel.fromJsonListToProject(datas).then((value) {
+            _projectsDateBase = value;
+          });
+        }
       } else {
         print("fail");
         print(response.body);

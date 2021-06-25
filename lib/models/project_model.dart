@@ -103,12 +103,15 @@ class ProjectModel extends ChangeNotifier {
 
   static Future<List<ProjectModel>> fromJsonListToProject(List projects) async {
     List<ProjectModel> newProjects = [];
-    for (var project in projects) {
-      ProjectModel newProject = ProjectModel.fromJson(project);
-      newProjects.add(newProject);
+    if (projects != null) {
+      for (var project in projects) {
+        ProjectModel newProject = ProjectModel.fromJson(project);
+        newProjects.add(newProject);
+      }
+
+      newProjects.reversed;
     }
 
-    newProjects.reversed;
     return newProjects;
   }
 }

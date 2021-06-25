@@ -184,6 +184,7 @@ class ProjectAddService extends ChangeNotifier {
         initialDate: startDate,
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
+
     if (picked != null && picked != startDate) {
       _startDate = picked;
     }
