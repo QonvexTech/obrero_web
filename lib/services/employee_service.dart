@@ -65,12 +65,12 @@ class EmployeeSevice extends ChangeNotifier {
     return projects;
   }
 
-  void initLoad() {
+  void initLoad(bool init) {
     _usersload = [];
     _tempUsersload = [];
     _paginationload.page = 1;
     _paginationload.perPage = 15;
-    loadUser(true);
+    loadUser(init);
   }
 
   void loadMore() {
@@ -338,9 +338,8 @@ class EmployeeSevice extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    if (init == false) {
-      notifyListeners();
-    }
+
+    notifyListeners();
   }
 
   // Future loadLastPage(perPage, int page) async {

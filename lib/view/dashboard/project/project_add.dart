@@ -61,7 +61,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
 
   @override
   void initState() {
-    Provider.of<EmployeeSevice>(context, listen: false).initLoad();
+    Provider.of<EmployeeSevice>(context, listen: false).initLoad(true);
     Provider.of<CustomerService>(context, listen: false).initLoad();
 
     selectedStatus = colorsSettings[0];
@@ -595,129 +595,138 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             style: boldText,
                                           ),
                                         ),
-                                        employeeSevice.userload == null
-                                            ? Center(
-                                                child:
-                                                    CircularProgressIndicator())
-                                            : employeeSevice.userload!.length ==
-                                                    0
-                                                ? Text("No employee to assign")
-                                                : Container(
-                                                    height: 60,
-                                                    width: double.infinity,
-                                                    child: LazyLoadScrollView(
-                                                      scrollDirection:
-                                                          Axis.horizontal,
-                                                      onEndOfPage: () {
-                                                        employeeSevice
-                                                            .loadMore();
-                                                      },
-                                                      child: ListView.builder(
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          itemCount:
+                                        Container(
+                                          height: 60,
+                                          width: double.infinity,
+                                          child: LazyLoadScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            onEndOfPage: () {
+                                              employeeSevice.loadMore();
+                                            },
+                                            child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: employeeSevice
+                                                    .userload!.length,
+                                                itemBuilder: (context, index) {
+                                                  return projectAddService
+                                                          .assignIds
+                                                          .contains(
                                                               employeeSevice
-                                                                  .userload!
-                                                                  .length,
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            return projectAddService
-                                                                    .assignIds
-                                                                    .contains(employeeSevice
+                                                                  .userload![
+                                                                      index]
+                                                                  .id)
+                                                      ? GestureDetector(
+                                                          onTap: () {
+                                                            projectAddService
+                                                                .removeAssigne(
+                                                                    employeeSevice
                                                                         .userload![
                                                                             index]
-                                                                        .id)
-                                                                ? GestureDetector(
-                                                                    onTap: () {
-                                                                      projectAddService.removeAssigne(employeeSevice
-                                                                          .userload![
-                                                                              index]
-                                                                          .id!);
-                                                                    },
-                                                                    child:
-                                                                        Container(
-                                                                      margin: EdgeInsets
-                                                                          .all(
-                                                                              5),
-                                                                      height:
-                                                                          60,
-                                                                      width:
-                                                                          200,
-                                                                      child:
-                                                                          Card(
-                                                                        color: Palette
-                                                                            .drawerColor,
-                                                                        child: Center(
-                                                                            child: Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.all(8.0),
-                                                                          child:
-                                                                              Row(
-                                                                            children: [
-                                                                              CircleAvatar(
-                                                                                backgroundColor: Colors.transparent,
-                                                                                maxRadius: 15,
-                                                                                backgroundImage: fetchImage(netWorkImage: employeeSevice.userload![index].picture),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: MySpacer.small,
-                                                                              ),
-                                                                              Text(
-                                                                                "${employeeSevice.userload![index].fname!} ${employeeSevice.userload![index].lname!}",
-                                                                                style: TextStyle(color: Colors.white),
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        )),
-                                                                      ),
+                                                                        .id!);
+                                                          },
+                                                          child: Container(
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5),
+                                                            height: 60,
+                                                            width: 200,
+                                                            child: Card(
+                                                              color: Palette
+                                                                  .drawerColor,
+                                                              child: Center(
+                                                                  child:
+                                                                      Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child: Row(
+                                                                  children: [
+                                                                    CircleAvatar(
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      maxRadius:
+                                                                          15,
+                                                                      backgroundImage: fetchImage(
+                                                                          netWorkImage: employeeSevice
+                                                                              .userload![index]
+                                                                              .picture),
                                                                     ),
-                                                                  )
-                                                                : GestureDetector(
-                                                                    onTap: () {
-                                                                      projectAddService.asignUser(employeeSevice
-                                                                          .userload![
-                                                                              index]
-                                                                          .id!);
-                                                                    },
-                                                                    child:
-                                                                        Container(
-                                                                      margin: EdgeInsets
-                                                                          .all(
-                                                                              5),
-                                                                      height:
-                                                                          60,
-                                                                      width:
-                                                                          200,
-                                                                      child:
-                                                                          Card(
-                                                                        child: Center(
-                                                                            child: Padding(
-                                                                          padding:
-                                                                              const EdgeInsets.all(8.0),
-                                                                          child:
-                                                                              Row(
-                                                                            children: [
-                                                                              CircleAvatar(
-                                                                                backgroundColor: Colors.transparent,
-                                                                                maxRadius: 15,
-                                                                                backgroundImage: fetchImage(netWorkImage: employeeSevice.userload![index].picture),
-                                                                              ),
-                                                                              SizedBox(
-                                                                                width: MySpacer.small,
-                                                                              ),
-                                                                              Text(
-                                                                                "${employeeSevice.userload![index].fname!} ${employeeSevice.userload![index].lname!}",
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        )),
-                                                                      ),
-                                                                    ));
-                                                          }),
-                                                    ),
-                                                  ),
+                                                                    SizedBox(
+                                                                      width: MySpacer
+                                                                          .small,
+                                                                    ),
+                                                                    Text(
+                                                                      "${employeeSevice.userload![index].fname!} ${employeeSevice.userload![index].lname!}",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.white),
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              )),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : GestureDetector(
+                                                          onTap: () {
+                                                            projectAddService
+                                                                .asignUser(
+                                                                    employeeSevice
+                                                                        .userload![
+                                                                            index]
+                                                                        .id!);
+                                                          },
+                                                          child: Container(
+                                                            margin:
+                                                                EdgeInsets.all(
+                                                                    5),
+                                                            height: 60,
+                                                            width: 200,
+                                                            child: Card(
+                                                              child: Center(
+                                                                  child:
+                                                                      Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child: Row(
+                                                                  children: [
+                                                                    CircleAvatar(
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      maxRadius:
+                                                                          15,
+                                                                      backgroundImage: fetchImage(
+                                                                          netWorkImage: employeeSevice
+                                                                              .userload![index]
+                                                                              .picture),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: MySpacer
+                                                                          .small,
+                                                                    ),
+                                                                    Text(
+                                                                      "${employeeSevice.userload![index].fname!} ${employeeSevice.userload![index].lname!}",
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              )),
+                                                            ),
+                                                          ));
+                                                }),
+                                          ),
+                                        ),
                                         SizedBox(
                                           height: MySpacer.small,
                                         ),
