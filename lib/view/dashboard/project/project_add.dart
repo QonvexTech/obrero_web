@@ -104,8 +104,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         initialPositon = widget.projectToEdit!.coordinates!;
       });
 
-      // print(widget.projectToEdit!.coordinates!);
-
       if (widget.projectToEdit!.owner != null) {
         customerSelected = widget.projectToEdit!.owner;
       }
@@ -127,12 +125,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     _startDate.dispose();
     _endDate.dispose();
     _delete.dispose();
-
-    // Provider.of<ProjectAddService>(context, listen: false)
-    //     .clear()
-    //     .Provider
-    //     .of<MapService>(context)
-    //     .gesture = false;
     super.dispose();
   }
 
