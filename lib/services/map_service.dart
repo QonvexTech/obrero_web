@@ -20,6 +20,15 @@ class MapService extends ChangeNotifier {
   TextEditingController location = TextEditingController();
   TextEditingController address = TextEditingController();
 
+  void focusMap({required LatLng coordinates, required markerId}) {
+    mapController!.showMarkerInfoWindow(MarkerId(markerId));
+    mapController!
+        .moveCamera(CameraUpdate.newLatLng(coordinates))
+        .whenComplete(() {});
+
+    // notifyListeners();
+  }
+
   int statusDefault = 0;
   void setLocation(value) {
     location.text = value;

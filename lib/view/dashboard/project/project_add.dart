@@ -97,7 +97,12 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       if (widget.projectToEdit!.coordinates != null) {
         Provider.of<MapService>(context, listen: false).coordinates =
             widget.projectToEdit!.coordinates!;
+        setState(() {
+          initialPositon = widget.projectToEdit!.coordinates!;
+        });
       }
+
+      // print(widget.projectToEdit!.coordinates!);
 
       if (widget.projectToEdit!.owner != null) {
         customerSelected = widget.projectToEdit!.owner;
@@ -1034,16 +1039,15 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        setState(
-                                                                            () {
-                                                                          projectAddService
-                                                                              .addImageToDelete(image);
+                                                                        projectAddService
+                                                                            .addImageToDelete(image);
 
-                                                                          widget
-                                                                              .projectToEdit!
-                                                                              .images!
-                                                                              .remove(image);
-                                                                        });
+                                                                        widget
+                                                                            .projectToEdit!
+                                                                            .images!
+                                                                            .remove(image);
+                                                                        projectAddService
+                                                                            .deleteAllImage();
                                                                       }),
                                                                 ),
                                                               )
@@ -1175,7 +1179,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                               color: Palette.drawerColor,
                               minWidth: double.infinity,
                               onPressed: () {
-                                projectAddService.deleteAllImage();
+                                // projectAddService.deleteAllImage();
                                 if (_formKey.currentState!.validate()) {
                                   if (customerSelected != null) {
                                     setState(() {
@@ -1188,6 +1192,16 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       projectAddService.addBodyEdit({
                                         "project_id":
                                             widget.projectToEdit!.id.toString()
+                                      });
+
+                                      projectAddService.addBodyEdit({
+                                        "start_date": projectAddService
+                                            .startDate
+                                            .toString()
+                                      });
+                                      projectAddService.addBodyEdit({
+                                        "end_date":
+                                            projectAddService.endDate.toString()
                                       });
 
                                       if (projectAddService
