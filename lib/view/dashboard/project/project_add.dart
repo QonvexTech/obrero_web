@@ -206,9 +206,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                         RawKeyboardListener(
                                           onKey: (x) {
                                             if (x.isKeyPressed(
-                                                LogicalKeyboardKey.tab)) {
-                                              _desc.nextFocus();
-                                            }
+                                                LogicalKeyboardKey.tab)) {}
                                           },
                                           focusNode: _nom,
                                           child: TextFormField(
