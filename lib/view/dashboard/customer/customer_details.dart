@@ -30,6 +30,8 @@ class CustomerDetails extends StatefulWidget {
 }
 
 class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
+  bool loader = true;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +43,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
       customerService
           .workingProjectsCustomer(widget.customer!.id!)
           .whenComplete(() {
+        setState(() {
+          loader = false;
+        });
         Provider.of<MapService>(context, listen: false)
             .mapInit(customerService.customerProject!, context);
 
@@ -190,7 +195,7 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                       SizedBox(
                         height: MySpacer.small,
                       ),
-                      customerService.customerProject == null
+                      loader
                           ? Container(
                               child: Center(
                                 child: CircularProgressIndicator(),

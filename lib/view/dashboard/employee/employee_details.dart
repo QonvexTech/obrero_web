@@ -29,6 +29,7 @@ class EmployeeDetails extends StatefulWidget {
 }
 
 class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
+  bool loader = true;
   @override
   void initState() {
     super.initState();
@@ -37,6 +38,9 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
         Provider.of<EmployeeSevice>(context, listen: false)
             .workingProjects(widget.employeesModel!.id!)
             .whenComplete(() {
+          setState(() {
+            loader = false;
+          });
           Provider.of<MapService>(context, listen: false).mapInit(
             Provider.of<EmployeeSevice>(context, listen: false)
                 .getEmployeeProjects(),
@@ -270,7 +274,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                             SizedBox(
                               height: MySpacer.small,
                             ),
-                            employeeSevice.employeeProjects == null
+                            loader
                                 ? Center(
                                     child: CircularProgressIndicator(),
                                   )

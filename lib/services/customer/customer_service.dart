@@ -157,6 +157,9 @@ class CustomerService extends ChangeNotifier {
           ProjectModel.fromJsonListToProject(data["projects"]).then((value) {
             customerProject = value;
           });
+          if (customerProject == null) {
+            customerProject = [];
+          }
         } else {
           customerProject = [];
         }
