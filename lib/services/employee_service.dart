@@ -65,18 +65,18 @@ class EmployeeSevice extends ChangeNotifier {
     return projects;
   }
 
-  void initLoad(bool init) {
+  void initLoad() {
     _usersload = [];
     _tempUsersload = [];
     _paginationload.page = 1;
     _paginationload.perPage = 15;
-    loadUser(init);
+    loadUser();
   }
 
   void loadMore() {
     if (_paginationload.isNext) {
       _paginationload.page += 1;
-      loadUser(false);
+      loadUser();
     }
   }
 
@@ -296,7 +296,7 @@ class EmployeeSevice extends ChangeNotifier {
     }
   }
 
-  Future loadUser(bool init) async {
+  Future loadUser() async {
     var url = Uri.parse(
         "$user_api${_paginationload.perPage}?page=${_paginationload.page}");
     try {

@@ -39,7 +39,7 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
 
   @override
   void initState() {
-    Provider.of<EmployeeSevice>(context, listen: false).initLoad(true);
+    Provider.of<EmployeeSevice>(context, listen: false).initLoad();
     super.initState();
   }
 

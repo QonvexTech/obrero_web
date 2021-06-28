@@ -61,7 +61,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
 
   @override
   void initState() {
-    Provider.of<EmployeeSevice>(context, listen: false).initLoad(true);
+    Provider.of<EmployeeSevice>(context, listen: false).initLoad();
     Provider.of<CustomerService>(context, listen: false).initLoad();
 
     selectedStatus = colorsSettings[0];
@@ -69,6 +69,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     if (widget.customer != null) {
       customerSelected = widget.customer;
     }
+
+    Provider.of<ProjectAddService>(context, listen: false).assignIds.clear();
+    Provider.of<MapService>(context, listen: false).circles.clear();
 
     if (widget.projectToEdit != null) {
       Provider.of<ProjectAddService>(context, listen: false);
@@ -95,13 +98,11 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
             widget.projectToEdit!.address!;
       }
 
-      if (widget.projectToEdit!.coordinates != null) {
-        Provider.of<MapService>(context, listen: false).coordinates =
-            widget.projectToEdit!.coordinates!;
-        setState(() {
-          initialPositon = widget.projectToEdit!.coordinates!;
-        });
-      }
+      Provider.of<MapService>(context, listen: false).coordinates =
+          widget.projectToEdit!.coordinates!;
+      setState(() {
+        initialPositon = widget.projectToEdit!.coordinates!;
+      });
 
       // print(widget.projectToEdit!.coordinates!);
 
