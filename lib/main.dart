@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/splash': (context) => SplashScreen(),
         '/login': (context) => Login(),
-        "home": (context) => ResponsiveScaffold(),
+        "/home": (context) => ResponsiveScaffold(),
         '/project/add': (context) => ProjectAddScreen(),
         'dashboard': (context) => DashBoardScreen(),
       },
