@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
+import 'package:uitemplate/services/add_warning_service.dart';
 import 'package:uitemplate/services/history_service.dart';
 import 'package:uitemplate/services/log_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/view_model/logs/log_api_call.dart';
 
 class LogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,

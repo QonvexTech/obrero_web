@@ -24,8 +24,6 @@ class ProjectAddService extends ChangeNotifier {
 
   void addImageToDelete(var image) {
     _imagesToDelete.add(image.id);
-    print("IMAGES ID: ${image.id}");
-
     notifyListeners();
   }
 
@@ -106,15 +104,14 @@ class ProjectAddService extends ChangeNotifier {
 
   removeImage(var image) {
     _projectImages!.remove(image);
+    _imagesToDelete.add(image.id);
     notifyListeners();
   }
 
   Future removeImageFromApi(id) async {
-    var url = Uri.parse("$api/project/remove_image");
+    var url = Uri.parse("$api/project/remove_image/$id");
     try {
-      await http.delete(url, body: {
-        "id": id.toString()
-      }, headers: {
+      await http.delete(url, headers: {
         "Accept": "application/json",
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"

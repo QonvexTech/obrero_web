@@ -389,13 +389,17 @@ List<TableRow> rowWidget(
               // ),
               IconButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                          backgroundColor: Palette.contentBackground,
-                          content: ProjectAddScreen(
-                            projectToEdit: data,
-                          )));
+                  Provider.of<ProjectProvider>(context, listen: false)
+                      .fetchProjects()
+                      .whenComplete(() {
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                            backgroundColor: Palette.contentBackground,
+                            content: ProjectAddScreen(
+                              projectToEdit: data,
+                            )));
+                  });
                 },
                 icon: Icon(
                   Icons.edit,

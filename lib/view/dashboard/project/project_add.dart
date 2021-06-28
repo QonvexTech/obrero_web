@@ -24,6 +24,7 @@ import 'package:uitemplate/widgets/map.dart';
 //TODO: add more status colors;
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
+
   final CustomerModel? customer;
 
   const ProjectAddScreen({Key? key, this.projectToEdit, this.customer})
@@ -958,9 +959,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                       ),
                                                                       onPressed: () {
                                                                         projectAddService
-                                                                            .addImageToDelete(image);
-
-                                                                        projectAddService
                                                                             .removeImage(image);
                                                                       }),
                                                                 ),
@@ -1044,8 +1042,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .projectToEdit!
                                                                             .images!
                                                                             .remove(image);
-                                                                        projectAddService
-                                                                            .deleteAllImage();
                                                                       }),
                                                                 ),
                                                               )
@@ -1108,8 +1104,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        projectAddService
-                                                                            .addImageToDelete(image);
                                                                         projectAddService
                                                                             .removeImage(image);
                                                                       }),
@@ -1177,7 +1171,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                               color: Palette.drawerColor,
                               minWidth: double.infinity,
                               onPressed: () {
-                                // projectAddService.deleteAllImage();
+                                projectAddService.deleteAllImage();
                                 if (_formKey.currentState!.validate()) {
                                   if (customerSelected != null) {
                                     setState(() {

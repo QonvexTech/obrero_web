@@ -5,6 +5,9 @@ import 'package:uitemplate/models/color_model.dart';
 
 const String api = "https://obrero.checkmy.dev/api";
 
+//WARNING
+const String remove_warning = "$api/project/warning/remove/";
+
 //ADMIN
 const String login_api = "$api/admin-login";
 const String message_history = "$api/messaging/my_sentbox";

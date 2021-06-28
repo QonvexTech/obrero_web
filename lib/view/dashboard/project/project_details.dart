@@ -1,12 +1,12 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/models/log_model.dart';
-import 'package:uitemplate/services/log_service.dart';
+import 'package:uitemplate/services/add_warning_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/scaffold_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
@@ -14,7 +14,6 @@ import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/view/dashboard/project/project_list.dart';
-import 'package:uitemplate/view_model/logs/loader.dart';
 import 'package:uitemplate/widgets/add_warning_screen.dart';
 import 'package:uitemplate/widgets/back_button.dart';
 
@@ -482,79 +481,100 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             children: List.generate(
                                 projectProvider.projectOnDetails!.warnings
                                     .length, (index) {
-                              return Stack(
-                                children: [
-                                  Card(
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 20),
-                                      decoration: BoxDecoration(
-                                          border: Border(
-                                              left: BorderSide(
-                                                  color: colorsSettings[
-                                                          projectProvider
-                                                              .projectOnDetails!
-                                                              .warnings[index]
-                                                              .type]
-                                                      .color!,
-                                                  width: 7))),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 20),
-                                            child: Icon(
-                                              Icons
-                                                  .notification_important_rounded,
-                                              color: Colors.grey,
-                                            ),
+                              return Slidable(
+                                actionPane: SlidableDrawerActionPane(),
+                                secondaryActions: [
+                                  IconSlideAction(
+                                      caption: 'Delete',
+                                      color: Colors.transparent,
+                                      foregroundColor: Colors.red,
+                                      icon: Icons.delete,
+                                      onTap: () {
+                                        AddWarning()
+                                            .removeWarning(projectProvider
+                                                .projectOnDetails!
+                                                .warnings[index]
+                                                .id)
+                                            .whenComplete(() {
+                                          setState(() {
+                                            projectProvider
+                                                .projectOnDetails!.warnings!
+                                                .remove(projectProvider
+                                                    .projectOnDetails!
+                                                    .warnings[index]);
+                                          });
+                                        });
+                                      }),
+                                ],
+                                child: Card(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            left: BorderSide(
+                                                color: colorsSettings[
+                                                        projectProvider
+                                                            .projectOnDetails!
+                                                            .warnings[index]
+                                                            .type]
+                                                    .color!,
+                                                width: 7))),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Icon(
+                                            Icons
+                                                .notification_important_rounded,
+                                            color: Colors.grey,
                                           ),
-                                          const SizedBox(
-                                            width: 5,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: ListTile(
+                                                title: Text(
+                                                    "${projectProvider.projectOnDetails!.warnings[index].title}"),
+                                                subtitle: ReadMoreText(
+                                                  projectProvider
+                                                      .projectOnDetails!
+                                                      .warnings[index]
+                                                      .description,
+                                                  trimLines: 1,
+                                                  trimLength: 120,
+                                                  trimMode: TrimMode.Length,
+                                                  trimCollapsedText:
+                                                      'Montre plus',
+                                                  trimExpandedText:
+                                                      'Montrer moins',
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                  moreStyle: TextStyle(
+                                                      color:
+                                                          Palette.drawerColor,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  lessStyle: TextStyle(
+                                                      color:
+                                                          Palette.drawerColor,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )),
                                           ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(5.0),
-                                              child: ListTile(
-                                                  title: Text(
-                                                      "${projectProvider.projectOnDetails!.warnings[index].title}"),
-                                                  subtitle: ReadMoreText(
-                                                    projectProvider
-                                                        .projectOnDetails!
-                                                        .warnings[index]
-                                                        .description,
-                                                    trimLines: 1,
-                                                    trimLength: 120,
-                                                    trimMode: TrimMode.Length,
-                                                    trimCollapsedText:
-                                                        'Montre plus',
-                                                    trimExpandedText:
-                                                        'Montrer moins',
-                                                    style: TextStyle(
-                                                        color: Colors.black),
-                                                    moreStyle: TextStyle(
-                                                        color:
-                                                            Palette.drawerColor,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                    lessStyle: TextStyle(
-                                                        color:
-                                                            Palette.drawerColor,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  )),
-                                            ),
-                                          )
-                                        ],
-                                      ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                ],
+                                ),
                               );
                             }),
                           ),
