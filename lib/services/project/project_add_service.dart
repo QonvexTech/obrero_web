@@ -20,6 +20,15 @@ class ProjectAddService extends ChangeNotifier {
   Map<dynamic, dynamic> _bodyToEdit = {};
   bool justScroll = true;
 
+  List<int> _imagesToDelete = [];
+
+  void addImageToDelete(var image) {
+    _imagesToDelete.add(image.id);
+    print("IMAGES ID: ${image.id}");
+
+    notifyListeners();
+  }
+
   setProjectImages(value) {
     _projectImages = value;
     notifyListeners();
@@ -58,6 +67,13 @@ class ProjectAddService extends ChangeNotifier {
       ids.add(user.id!);
     }
     _assignIds = ids;
+  }
+
+  Future deleteAllImage() async {
+    for (var image in _imagesToDelete) {
+      removeImageFromApi(image);
+    }
+    _imagesToDelete = [];
   }
 
   List<int> get assignIds => _assignIds;
@@ -103,14 +119,6 @@ class ProjectAddService extends ChangeNotifier {
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
-        // _projects!.removeWhere((element) => element.id == id);
-        // projectsDateBase!.removeWhere((element) => element.id == id);
-        // notifyListeners();
-        // if (_projects!.length == 0) {
-        //   if (_pagination.isPrev) {
-        //     paginationService.prevPage(_pagination);
-        //   }
-        // }
         var data = json.decode(response.body);
         print(data);
         print("deleteSucc");

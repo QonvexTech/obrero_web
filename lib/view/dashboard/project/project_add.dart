@@ -25,6 +25,7 @@ import 'package:uitemplate/widgets/map.dart';
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
   final CustomerModel? customer;
+
   const ProjectAddScreen({Key? key, this.projectToEdit, this.customer})
       : super(key: key);
 
@@ -953,8 +954,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        print(
-                                                                            "DELETE");
+                                                                        projectAddService
+                                                                            .addImageToDelete(image);
 
                                                                         projectAddService
                                                                             .removeImage(image);
@@ -1033,13 +1034,15 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        projectAddService
-                                                                            .removeImageFromApi(image.id)
-                                                                            .whenComplete(() {
-                                                                          setState(
-                                                                              () {
-                                                                            widget.projectToEdit!.images!.remove(image);
-                                                                          });
+                                                                        setState(
+                                                                            () {
+                                                                          projectAddService
+                                                                              .addImageToDelete(image);
+
+                                                                          widget
+                                                                              .projectToEdit!
+                                                                              .images!
+                                                                              .remove(image);
                                                                         });
                                                                       }),
                                                                 ),
@@ -1103,9 +1106,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        print(
-                                                                            "DELETE");
-
+                                                                        projectAddService
+                                                                            .addImageToDelete(image);
                                                                         projectAddService
                                                                             .removeImage(image);
                                                                       }),
@@ -1173,11 +1175,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                               color: Palette.drawerColor,
                               minWidth: double.infinity,
                               onPressed: () {
+                                projectAddService.deleteAllImage();
                                 if (_formKey.currentState!.validate()) {
                                   if (customerSelected != null) {
                                     setState(() {
                                       loader = true;
                                     });
+
                                     if (isEdit) {
                                       projectAddService.setOwner(
                                           customerSelected!.id, isEdit);
