@@ -493,6 +493,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                 setCoord: false,
                                 onCreate: () {},
                                 areaSize: 0,
+                                isEdit: false,
+                                projectId: "0",
                               ),
                             )),
                         SizedBox(

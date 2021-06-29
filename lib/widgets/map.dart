@@ -9,7 +9,11 @@ class MapScreen extends StatefulWidget {
   final bool? setCoord;
   final Function? onCreate;
   final double areaSize;
+  final bool isEdit;
+  final String projectId;
   const MapScreen({
+    required this.projectId,
+    required this.isEdit,
     required this.setCoord,
     required this.onCreate,
     required this.areaSize,
@@ -57,7 +61,9 @@ class _MapScreenState extends State<MapScreen> {
                       mapService.setCoordinates(
                           coord: coord,
                           context: context,
-                          areaSize: widget.areaSize);
+                          areaSize: widget.areaSize,
+                          isEdit: widget.isEdit,
+                          projectId: widget.projectId);
                     }
                   },
                 ),

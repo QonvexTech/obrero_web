@@ -61,17 +61,31 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeAreaSize(area, coord) {
-    _circles.removeWhere((element) => element.circleId.value == "temp");
-    _circles.add(Circle(
-        fillColor: Color.fromRGBO(60, 120, 225, 0.1),
-        circleId: CircleId(
-          "temp",
-        ),
-        radius: area,
-        strokeWidth: 1,
-        strokeColor: Colors.black12,
-        center: coord));
+  void changeAreaSize(area, coord, bool isEdit, String id) {
+    if (isEdit) {
+      _circles.removeWhere((element) => element.circleId.value == id);
+      _circles.add(Circle(
+          fillColor: Color.fromRGBO(60, 120, 225, 0.1),
+          circleId: CircleId(
+            id,
+          ),
+          radius: area,
+          strokeWidth: 1,
+          strokeColor: Colors.black12,
+          center: coord));
+    } else {
+      _circles.removeWhere((element) => element.circleId.value == "temp");
+      _circles.add(Circle(
+          fillColor: Color.fromRGBO(60, 120, 225, 0.1),
+          circleId: CircleId(
+            "temp",
+          ),
+          radius: area,
+          strokeWidth: 1,
+          strokeColor: Colors.black12,
+          center: coord));
+    }
+
     notifyListeners();
   }
 
@@ -146,18 +160,31 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCoordinates({
-    LatLng? coord,
-    BuildContext? context,
-    double? areaSize,
-  }) async {
-    Marker toRemove = _markers.firstWhere(
-        (element) => element.mapsId.value == "temp",
-        orElse: () => Marker(markerId: MarkerId("temp")));
+  void setCoordinates(
+      {LatLng? coord,
+      BuildContext? context,
+      double? areaSize,
+      bool? isEdit,
+      String? projectId}) async {
+    Marker? toRemove;
+    Circle? toRemoveCircle;
+    if (isEdit!) {
+      toRemove = _markers.firstWhere(
+          (element) => element.mapsId.value == projectId,
+          orElse: () => Marker(markerId: MarkerId(projectId!)));
 
-    Circle toRemoveCircle = _circles.firstWhere(
-        (element) => element.mapsId.value == "temp",
-        orElse: () => Circle(circleId: CircleId("temp")));
+      toRemoveCircle = _circles.firstWhere(
+          (element) => element.mapsId.value == projectId,
+          orElse: () => Circle(circleId: CircleId(projectId!)));
+    } else {
+      toRemove = _markers.firstWhere(
+          (element) => element.mapsId.value == "temp",
+          orElse: () => Marker(markerId: MarkerId("temp")));
+
+      toRemoveCircle = _circles.firstWhere(
+          (element) => element.mapsId.value == "temp",
+          orElse: () => Circle(circleId: CircleId("temp")));
+    }
 
     if (_markers.contains(toRemove)) {
       _markers.remove(toRemove);
@@ -172,23 +199,46 @@ class MapService extends ChangeNotifier {
       }
 
       //TODO: always color green
-      Marker defMarker = Marker(
-          onTap: () {},
-          zIndex: 20,
-          icon: await BitmapDescriptor.fromAssetImage(
-              ImageConfiguration(), colorsSettings[statusDefault].circleAsset!),
-          markerId: MarkerId("temp"),
-          position: coord!);
+      Marker defMarker;
+      Circle defCircle;
 
-      Circle defCircle = Circle(
-          fillColor: Color.fromRGBO(60, 120, 225, 0.1),
-          circleId: CircleId(
-            "temp",
-          ),
-          radius: areaSize!,
-          strokeWidth: 1,
-          strokeColor: Colors.black12,
-          center: coord);
+      if (isEdit) {
+        defMarker = Marker(
+            onTap: () {},
+            zIndex: 20,
+            icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
+                colorsSettings[statusDefault].circleAsset!),
+            markerId: MarkerId(projectId!),
+            position: coord!);
+
+        defCircle = Circle(
+            fillColor: Color.fromRGBO(60, 120, 225, 0.1),
+            circleId: CircleId(
+              projectId,
+            ),
+            radius: areaSize!,
+            strokeWidth: 1,
+            strokeColor: Colors.black12,
+            center: coord);
+      } else {
+        defMarker = Marker(
+            onTap: () {},
+            zIndex: 20,
+            icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
+                colorsSettings[statusDefault].circleAsset!),
+            markerId: MarkerId("temp"),
+            position: coord!);
+
+        defCircle = Circle(
+            fillColor: Color.fromRGBO(60, 120, 225, 0.1),
+            circleId: CircleId(
+              "temp",
+            ),
+            radius: areaSize!,
+            strokeWidth: 1,
+            strokeColor: Colors.black12,
+            center: coord);
+      }
 
       _markers.add(defMarker);
       _circles.add(defCircle);

@@ -266,9 +266,7 @@ class ProjectProvider extends ChangeNotifier {
         projectOnDetails = ProjectModel.fromJson(data["data"]);
 
         print("THIS PROJECT : $data");
-        // fetchProjectsBaseOnDates().whenComplete(() {
-        //   notifyListeners();
-        // });
+        notifyListeners();
         fetchProjects().whenComplete(() {
           notifyListeners();
         });

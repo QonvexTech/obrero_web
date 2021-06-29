@@ -402,6 +402,8 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                 //TODO: add
                               },
                               areaSize: 0,
+                              isEdit: false,
+                              projectId: "0",
                             ),
                           ),
                         ],

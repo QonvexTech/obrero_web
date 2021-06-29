@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
+import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/tableHelper.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';

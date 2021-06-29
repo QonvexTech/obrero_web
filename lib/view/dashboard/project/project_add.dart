@@ -24,7 +24,6 @@ import 'package:uitemplate/widgets/map.dart';
 //TODO: add more status colors;
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
-
   final CustomerModel? customer;
 
   const ProjectAddScreen({Key? key, this.projectToEdit, this.customer})
@@ -38,7 +37,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     with SettingsHelper {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController searchController = TextEditingController();
+  TextEditingController address = TextEditingController();
 
   final _nom = FocusNode();
   final _desc = FocusNode();
@@ -56,6 +55,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   bool isEdit = false;
   bool checked = false;
   bool loader = false;
+  String projectId = "0";
 
   CustomerModel? customerSelected;
 
@@ -71,10 +71,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     }
 
     Provider.of<ProjectAddService>(context, listen: false).assignIds.clear();
-    Provider.of<MapService>(context, listen: false).circles.clear();
 
     if (widget.projectToEdit != null) {
       Provider.of<ProjectAddService>(context, listen: false);
+      projectId = widget.projectToEdit!.id.toString();
+
+      Provider.of<ProjectAddService>(context, listen: false).areaSize =
+          widget.projectToEdit!.areaSize!;
       nameController.text = widget.projectToEdit!.name ?? "";
       descriptionController.text = widget.projectToEdit!.description ?? "";
       Provider.of<ProjectAddService>(context, listen: false).startDate =
@@ -91,13 +94,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
             .activeOwnerIndex = widget.projectToEdit!.owner!.id;
       }
 
-      if (widget.projectToEdit!.address != null) {
-        Provider.of<MapService>(context, listen: false).addressGeo =
-            widget.projectToEdit!.address!;
-        Provider.of<MapService>(context, listen: false).address.text =
-            widget.projectToEdit!.address!;
-      }
-
+      Provider.of<MapService>(context, listen: false).addressGeo =
+          widget.projectToEdit!.address!;
+      address.text = widget.projectToEdit!.address!;
       Provider.of<MapService>(context, listen: false).coordinates =
           widget.projectToEdit!.coordinates!;
       setState(() {
@@ -109,6 +108,12 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       }
 
       isEdit = true;
+
+      // Provider.of<MapService>(context, listen: false).mapInit(
+      //     Provider.of<ProjectProvider>(context, listen: false).projects,
+      //     context);
+    } else {
+      Provider.of<MapService>(context, listen: false).circles.clear();
     }
 
     super.initState();
@@ -118,6 +123,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   void dispose() {
     nameController.dispose();
     descriptionController.dispose();
+    address.dispose();
 
     _nom.dispose();
     _desc.dispose();
@@ -184,6 +190,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             onCreate: () {},
                                             areaSize:
                                                 projectAddService.areaSize,
+                                            isEdit: isEdit,
+                                            projectId: projectId,
                                           ))
                                       : SizedBox(),
                                   Expanded(
@@ -292,8 +300,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                     }
                                                   },
                                                   child: TextField(
-                                                    controller:
-                                                        mapService.address,
+                                                    controller: address,
                                                   ),
                                                 )),
                                           ],
@@ -766,7 +773,16 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                           Provider.of<MapService>(
                                                                   context,
                                                                   listen: false)
-                                                              .coordinates);
+                                                              .coordinates,
+                                                          isEdit,
+                                                          widget.projectToEdit!
+                                                                      .id !=
+                                                                  null
+                                                              ? widget
+                                                                  .projectToEdit!
+                                                                  .id
+                                                                  .toString()
+                                                              : "0");
                                                     });
                                                   }),
                                             ),
@@ -1139,6 +1155,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       setCoord: true,
                                       onCreate: () {},
                                       areaSize: projectAddService.areaSize,
+                                      isEdit: isEdit,
+                                      projectId: projectId,
                                     ))),
                           ]),
                     ),
@@ -1237,7 +1255,16 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       });
 
                                       projectAddService.addBodyEdit({
-                                        "address": mapService.address.text,
+                                        "address": address.text,
+                                      });
+
+                                      projectAddService.addBodyEdit({
+                                        "coordinates": (mapService
+                                                .coordinates.latitude
+                                                .toString() +
+                                            "," +
+                                            mapService.coordinates.longitude
+                                                .toString()),
                                       });
 
                                       projectProvider
@@ -1268,7 +1295,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           startDate:
                                               projectAddService.startDate,
                                           endDate: projectAddService.endDate,
-                                          address: mapService.address.text,
+                                          address: address.text,
                                           areaSize: projectAddService.areaSize);
 
                                       projectProvider

@@ -19,6 +19,7 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
+  bool maploader = true;
   @override
   void initState() {
     var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
@@ -27,10 +28,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
         projectProvider.projectsDateBase,
         context,
       );
-    });
-
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
-      projectProvider.dateController.jumpToSelection(DateTime.now());
+      setState(() {
+        maploader = false;
+      });
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        projectProvider.dateController.jumpToSelection(DateTime.now());
+      });
     });
 
     print("DASHBOARD SCREEN");
@@ -196,9 +199,9 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     child: Stack(
                       children: [
-                        initialPositon == null
+                        maploader
                             ? Center(
-                                child: CircularProgressIndicator(),
+                                child: Text("Connecting..."),
                               )
                             : GestureDetector(
                                 onVerticalDragDown: (x) {

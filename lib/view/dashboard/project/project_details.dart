@@ -485,7 +485,7 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                 actionPane: SlidableDrawerActionPane(),
                                 secondaryActions: [
                                   IconSlideAction(
-                                      caption: 'Delete',
+                                      caption: 'Supprimer',
                                       color: Colors.transparent,
                                       foregroundColor: Colors.red,
                                       icon: Icons.delete,
