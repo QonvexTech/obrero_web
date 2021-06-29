@@ -323,10 +323,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                     MaterialButton(
                                                       focusNode: _startDate,
                                                       enableFeedback: false,
-                                                      onPressed: () =>
-                                                          projectAddService
-                                                              .selectStartDate(
-                                                                  context),
+                                                      onPressed: () {
+                                                        mapService.gesture =
+                                                            false;
+                                                        projectAddService
+                                                            .selectStartDate(
+                                                                context);
+                                                      },
                                                       child: Text(
                                                           "${months[projectAddService.startDate.month]} ${projectAddService.startDate.day}, ${DateFormat.y().format(projectAddService.startDate)}"),
                                                     ),
@@ -345,10 +348,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                     MaterialButton(
                                                       enableFeedback: false,
                                                       focusNode: _endDate,
-                                                      onPressed: () =>
-                                                          projectAddService
-                                                              .selectEndDate(
-                                                                  context),
+                                                      onPressed: () {
+                                                        mapService.gesture =
+                                                            false;
+                                                        projectAddService
+                                                            .selectEndDate(
+                                                                context);
+                                                      },
                                                       child: Text(
                                                           "${months[projectAddService.endDate.month]} ${projectAddService.endDate.day}, ${DateFormat.y().format(projectAddService.endDate)}"),
                                                     ),
@@ -1148,12 +1154,19 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             ? MediaQuery.of(context).size.height
                                             : MediaQuery.of(context).size.width,
                                     width: double.infinity,
-                                    child: MapScreen(
-                                      setCoord: true,
-                                      onCreate: () {},
-                                      areaSize: projectAddService.areaSize,
-                                      isEdit: isEdit,
-                                      projectId: projectId,
+                                    child: GestureDetector(
+                                      onVerticalDragDown: (x) {
+                                        if (mapService.gesture == false) {
+                                          mapService.gesture = true;
+                                        }
+                                      },
+                                      child: MapScreen(
+                                        setCoord: true,
+                                        onCreate: () {},
+                                        areaSize: projectAddService.areaSize,
+                                        isEdit: isEdit,
+                                        projectId: projectId,
+                                      ),
                                     ))),
                           ]),
                     ),
