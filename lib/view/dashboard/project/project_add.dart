@@ -37,7 +37,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     with SettingsHelper {
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController address = TextEditingController();
 
   final _nom = FocusNode();
   final _desc = FocusNode();
@@ -96,7 +95,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
 
       Provider.of<MapService>(context, listen: false).addressGeo =
           widget.projectToEdit!.address!;
-      address.text = widget.projectToEdit!.address!;
+      Provider.of<MapService>(context, listen: false).address.text =
+          widget.projectToEdit!.address!;
       Provider.of<MapService>(context, listen: false).coordinates =
           widget.projectToEdit!.coordinates!;
       setState(() {
@@ -123,7 +123,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   void dispose() {
     nameController.dispose();
     descriptionController.dispose();
-    address.dispose();
+    Provider.of<MapService>(context, listen: false).address.dispose();
 
     _nom.dispose();
     _desc.dispose();
@@ -300,7 +300,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                     }
                                                   },
                                                   child: TextField(
-                                                    controller: address,
+                                                    controller:
+                                                        mapService.address,
                                                   ),
                                                 )),
                                           ],
@@ -1255,7 +1256,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       });
 
                                       projectAddService.addBodyEdit({
-                                        "address": address.text,
+                                        "address": mapService.address.text,
                                       });
 
                                       projectAddService.addBodyEdit({
@@ -1295,7 +1296,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           startDate:
                                               projectAddService.startDate,
                                           endDate: projectAddService.endDate,
-                                          address: address.text,
+                                          address: mapService.address.text,
                                           areaSize: projectAddService.areaSize);
 
                                       projectProvider

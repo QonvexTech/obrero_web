@@ -18,7 +18,9 @@ class MapService extends ChangeNotifier {
   GoogleMapController? mapController;
   bool _gesture = true;
   TextEditingController location = TextEditingController();
-  TextEditingController address = TextEditingController();
+  TextEditingController _address = TextEditingController();
+
+  get address => _address;
 
   void focusMap({required LatLng coordinates, required markerId}) {
     mapController!.showMarkerInfoWindow(MarkerId(markerId));
@@ -40,7 +42,8 @@ class MapService extends ChangeNotifier {
   }
 
   void setAddress(value) {
-    address.text = value;
+    _address.text = value;
+    notifyListeners();
   }
 
   get gesture => _gesture;
@@ -306,7 +309,7 @@ class MapService extends ChangeNotifier {
         splitAdd.forEach((item) {
           concatenate.write(item + " ");
         });
-        address.text = concatenate.toString();
+        setAddress(concatenate.toString());
 
         notifyListeners();
       } else {
