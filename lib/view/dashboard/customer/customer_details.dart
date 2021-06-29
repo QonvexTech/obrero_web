@@ -43,20 +43,15 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
       customerService
           .workingProjectsCustomer(widget.customer!.id!)
           .whenComplete(() {
+        // Provider.of<MapService>(context, listen: false).removeDefaultMarker();
+
+        print("customer project : ${customerService.customerProject!.length}");
+
+        Provider.of<MapService>(context, listen: false)
+            .mapInit(customerService.customerProject!, context);
         setState(() {
           loader = false;
         });
-        Provider.of<MapService>(context, listen: false)
-            .mapInit(customerService.customerProject!, context);
-
-        // if (Provider.of<CustomerService>(context, listen: false)
-        //         .customerProject!
-        //         .length >
-        //     0) {
-        //   activeProject = Provider.of<CustomerService>(context, listen: false)
-        //       .customerProject![0]
-        //       .id!;
-        // }
       });
     });
   }

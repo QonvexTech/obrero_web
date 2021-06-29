@@ -154,8 +154,11 @@ class CustomerService extends ChangeNotifier {
       if (response.statusCode == 200 || response.statusCode == 201) {
         var data = json.decode(response.body);
         if (data["projects"] != null) {
-          ProjectModel.fromJsonListToProject(data["projects"]).then((value) {
+          await ProjectModel.fromJsonListToProject(data["projects"])
+              .then((value) {
             customerProject = value;
+
+            notifyListeners();
           });
           if (customerProject == null) {
             customerProject = [];
@@ -164,7 +167,6 @@ class CustomerService extends ChangeNotifier {
           customerProject = [];
         }
         print("customerproject: ${customerProject!.length}");
-        notifyListeners();
       }
     } catch (e) {
       print(e);
