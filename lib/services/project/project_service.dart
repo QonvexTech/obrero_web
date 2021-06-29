@@ -267,9 +267,8 @@ class ProjectProvider extends ChangeNotifier {
 
         print("THIS PROJECT : $data");
         notifyListeners();
-        fetchProjects().whenComplete(() {
-          notifyListeners();
-        });
+        fetchProjects();
+        fetchProjectsBaseOnDates();
       });
     } catch (e) {
       print(e);
