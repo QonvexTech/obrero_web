@@ -192,6 +192,7 @@ class ProjectAddService extends ChangeNotifier {
 
     if (picked != null && picked != startDate) {
       _startDate = picked;
+      notifyListeners();
     }
   }
 
@@ -203,6 +204,7 @@ class ProjectAddService extends ChangeNotifier {
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
     if (picked != null && picked != endDate) _endDate = picked;
+    notifyListeners();
   }
 
   Future removeAssign(

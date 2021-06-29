@@ -56,13 +56,14 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   bool loader = false;
   String projectId = "0";
 
+  var tempMarker;
+
   CustomerModel? customerSelected;
 
   @override
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).initLoad();
     Provider.of<CustomerService>(context, listen: false).initLoad();
-
     selectedStatus = colorsSettings[0];
 
     if (widget.customer != null) {
@@ -112,9 +113,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       // Provider.of<MapService>(context, listen: false).mapInit(
       //     Provider.of<ProjectProvider>(context, listen: false).projects,
       //     context);
-    } else {
-      Provider.of<MapService>(context, listen: false).circles.clear();
     }
+    Provider.of<MapService>(context, listen: false).circles.clear();
 
     super.initState();
   }
@@ -123,7 +123,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   void dispose() {
     nameController.dispose();
     descriptionController.dispose();
-    Provider.of<MapService>(context, listen: false).address.dispose();
 
     _nom.dispose();
     _desc.dispose();
@@ -771,13 +770,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
 
                                                       mapService.changeAreaSize(
                                                           newValue,
-                                                          Provider.of<MapService>(
-                                                                  context,
-                                                                  listen: false)
+                                                          mapService
                                                               .coordinates,
                                                           isEdit,
-                                                          widget.projectToEdit!
-                                                                      .id !=
+                                                          widget.projectToEdit !=
                                                                   null
                                                               ? widget
                                                                   .projectToEdit!

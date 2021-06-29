@@ -28,7 +28,13 @@ class ProjectList extends StatefulWidget {
 class _ProjectListState extends State<ProjectList> with TableHelper {
   @override
   void initState() {
-    Provider.of<ProjectProvider>(context, listen: false).fetchProjects();
+    Provider.of<ProjectProvider>(context, listen: false)
+        .fetchProjects()
+        .whenComplete(() {
+      Provider.of<MapService>(context, listen: false).mapInit(
+          Provider.of<ProjectProvider>(context, listen: false).projects,
+          context);
+    });
     super.initState();
   }
 
@@ -393,6 +399,10 @@ List<TableRow> rowWidget(
                   Provider.of<ProjectProvider>(context, listen: false)
                       .fetchProjects()
                       .whenComplete(() {
+                    Provider.of<MapService>(context, listen: false).mapInit(
+                        Provider.of<ProjectProvider>(context, listen: false)
+                            .projects,
+                        context);
                     showDialog(
                         context: context,
                         builder: (_) => AlertDialog(
