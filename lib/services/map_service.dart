@@ -5,8 +5,11 @@ import 'package:location/location.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:uitemplate/view_model/project_add_view_model.dart';
 
 class MapService extends ChangeNotifier {
+  static final ProjectAddViewModel _projectAddViewModel =
+      ProjectAddViewModel.instance;
   final containerKey = GlobalKey();
   double _zoom = 15.0;
   LatLng coordinates = LatLng(48.864716, 2.349014);
@@ -18,9 +21,9 @@ class MapService extends ChangeNotifier {
   GoogleMapController? mapController;
   bool _gesture = true;
   TextEditingController location = TextEditingController();
-  TextEditingController _address = TextEditingController();
+  //
 
-  get address => _address;
+  // TextEditingController get address => _address;
 
   void focusMap({required LatLng coordinates, required markerId}) {
     mapController!.showMarkerInfoWindow(MarkerId(markerId));
@@ -42,7 +45,8 @@ class MapService extends ChangeNotifier {
   }
 
   void setAddress(value) {
-    _address.text = value;
+    _projectAddViewModel.addressField.text = value;
+    // _address.text = value;
     notifyListeners();
   }
 
@@ -115,15 +119,16 @@ class MapService extends ChangeNotifier {
   //       .asUint8List();
   // }
 
-  mapInit(List<ProjectModel> projects, context) async {
+  Future mapInit(List<ProjectModel> projects, context) async {
+    print("project length: ${projects.length}");
+    _markers.clear();
+    _circles.clear();
     if (_markers.length > 0) {
       coordinates = _markers.first.position;
       location.text =
           "${coordinates.latitude.toString()}, ${coordinates.longitude.toString()}";
       findLocalByCoordinates(
           coordinates.latitude.toString(), coordinates.longitude.toString());
-      _markers.clear();
-      _circles.clear();
     }
 
     try {

@@ -19,24 +19,25 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
-  bool maploader = true;
+  bool listCardloader = true;
   @override
   void initState() {
-    var projectProvider = Provider.of<ProjectProvider>(context, listen: false);
-    projectProvider.fetchProjectsBaseOnDates(context: context).whenComplete(() {
-      Provider.of<MapService>(context, listen: false).mapInit(
-        projectProvider.projectsDateBase,
-        context,
-      );
+    Provider.of<ProjectProvider>(context, listen: false)
+        .fetchProjectsBaseOnDates(context: context)
+        .whenComplete(() {
       setState(() {
-        maploader = false;
+        listCardloader = false;
       });
       WidgetsBinding.instance!.addPostFrameCallback((_) {
-        projectProvider.dateController.jumpToSelection(DateTime.now());
+        Provider.of<MapService>(context, listen: false).mapInit(
+          Provider.of<ProjectProvider>(context, listen: false).projectsDateBase,
+          context,
+        );
+        Provider.of<ProjectProvider>(context, listen: false)
+            .dateController
+            .jumpToSelection(DateTime.now());
       });
     });
-
-    print("DASHBOARD SCREEN");
     super.initState();
   }
 
@@ -52,7 +53,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
       context,
     );
 
-    return GestureDetector(
+    return Container(
       child: AdaptiveContainer(
           physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
           children: [
@@ -142,7 +143,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             Expanded(
                               child: DatePicker2(
                                 DateTime(2021, 1, 1),
-                                // initialSelectedDate: projectProvider.selectedDate,
                                 selectionColor: Palette.drawerColor,
                                 selectedTextColor: Colors.white,
                                 deactivatedColor: Palette.contentBackground,
@@ -199,49 +199,42 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 5),
                     child: Stack(
                       children: [
-                        maploader
-                            ? Center(
-                                child: Text("Connecting..."),
-                              )
-                            : GestureDetector(
-                                onVerticalDragDown: (x) {
-                                  if (mapService.gesture == false) {
-                                    mapService.gesture = true;
+                        GestureDetector(
+                          onVerticalDragDown: (x) {
+                            if (mapService.gesture == false) {
+                              mapService.gesture = true;
+                            }
+                          },
+                          child: GoogleMap(
+                            scrollGesturesEnabled: mapService.gesture,
+                            onMapCreated: (controller) {
+                              setState(() {
+                                dashboardService.mapController = controller;
+                                if (projectProvider.projectsDateBase != null) {
+                                  if (projectProvider.projectsDateBase.length >
+                                      0) {
+                                    dashboardService.mapController!
+                                        .showMarkerInfoWindow(MarkerId(
+                                            projectProvider
+                                                .projectsDateBase[0].id
+                                                .toString()));
                                   }
-                                },
-                                child: GoogleMap(
-                                  scrollGesturesEnabled: mapService.gesture,
-                                  onMapCreated: (controller) {
-                                    setState(() {
-                                      dashboardService.mapController =
-                                          controller;
-                                      if (projectProvider.projectsDateBase !=
-                                          null) {
-                                        if (projectProvider
-                                                .projectsDateBase.length >
-                                            0) {
-                                          dashboardService.mapController!
-                                              .showMarkerInfoWindow(MarkerId(
-                                                  projectProvider
-                                                      .projectsDateBase[0].id
-                                                      .toString()));
-                                        }
-                                      }
-                                    });
-                                  },
-                                  myLocationButtonEnabled: true,
-                                  rotateGesturesEnabled: true,
-                                  initialCameraPosition: CameraPosition(
-                                    target: initialPositon,
-                                    zoom: mapService.zoom,
-                                  ),
-                                  buildingsEnabled: true,
-                                  mapType: MapType.none,
-                                  myLocationEnabled: true,
-                                  markers: mapService.markers,
-                                  circles: mapService.circles,
-                                ),
-                              ),
+                                }
+                              });
+                            },
+                            myLocationButtonEnabled: true,
+                            rotateGesturesEnabled: true,
+                            initialCameraPosition: CameraPosition(
+                              target: initialPositon,
+                              zoom: mapService.zoom,
+                            ),
+                            buildingsEnabled: true,
+                            mapType: MapType.none,
+                            myLocationEnabled: true,
+                            markers: mapService.markers,
+                            circles: mapService.circles,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -271,7 +264,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   Widget listProjects(projectProvider) {
     return Container(
       color: Palette.contentBackground,
-      child: projectProvider.projectsDateBase == null
+      child: listCardloader
           ? Center(
               child: CircularProgressIndicator(),
             )
