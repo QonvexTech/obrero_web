@@ -136,6 +136,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     }
 
     Provider.of<ProjectAddService>(context, listen: false).assignIds.clear();
+    Provider.of<ProjectAddService>(context, listen: false)
+        .projectImages
+        .clear();
 
     if (widget.projectToEdit != null) {
       Provider.of<ProjectAddService>(context, listen: false);
