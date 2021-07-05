@@ -251,6 +251,9 @@ class MapService extends ChangeNotifier {
       _markers.add(defMarker);
       _circles.add(defCircle);
     }
+
+    mapController!.showMarkerInfoWindow(MarkerId(projectId!));
+    mapController!.moveCamera(CameraUpdate.newLatLng(coordinates));
     notifyListeners();
   }
 
