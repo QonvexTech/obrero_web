@@ -62,6 +62,7 @@ class ResponsiveScaffold extends StatefulWidget {
 
 class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   Future initializeFirebase() async {
+    print("INIT FIREBASE");
     await FireBase().init(context: context);
   }
 

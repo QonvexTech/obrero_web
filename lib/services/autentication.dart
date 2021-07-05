@@ -12,17 +12,19 @@ class Authentication {
   Future<bool> login(String email, String password) async {
     try {
       bool success = false;
-      Map body = {'email': email, 'password': password};
-
       print("LOGGING IN");
       var url = Uri.parse(login_api);
-      var response = await http.post(url, body: body, headers: {
+      var response = await http.post(url, body: {
+        'email': email,
+        'password': password
+      }, headers: {
         "Accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
         profileData = Admin.fromJson(json.decode(response.body)["data"]);
         print("login success");
+        print(profileData);
         DataCacher().saveCredentials(email, password);
 
         authToken = jsonDecode(response.body)['data']['token'];
