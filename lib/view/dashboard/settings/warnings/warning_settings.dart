@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/color_model.dart';
-import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/status_service.dart';
 import 'package:uitemplate/view/dashboard/settings/warnings/color_change.dart';
 

@@ -12,7 +12,7 @@ class MessageHistory extends StatelessWidget {
       color: Palette.contentBackground,
       child: ListView(
         children: [
-          for (var mess in historyMessages)
+          for (var mess in historyMessages.reversed)
             Container(
               color: Colors.white,
               padding: EdgeInsets.all(8),

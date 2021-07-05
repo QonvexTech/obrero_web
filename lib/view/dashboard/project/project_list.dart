@@ -119,7 +119,8 @@ class _ProjectListState extends State<ProjectList> with TableHelper {
                               "Nom du site",
                               "Propriétaire",
                               "Adresse",
-                              "Actions"
+                              "Statut",
+                              "Actions",
                             ],
                             headers: [
                               "Nom du site",
@@ -128,6 +129,7 @@ class _ProjectListState extends State<ProjectList> with TableHelper {
                               "Surface",
                               "Date de début",
                               "Date de fin",
+                              "Statut",
                               "Actions"
                             ],
                             assignUser: widget.assignUser,
@@ -210,6 +212,16 @@ List<TableRow> rowWidgetMobile(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
                 "${data.address}",
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                "${data.status}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -378,6 +390,16 @@ List<TableRow> rowWidget(
                 DateFormat('MMM dd, yyyy', 'fr_FR')
                     .format(data.endDate!)
                     .inCaps,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                "${colorsSettings[data.status!].name}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
