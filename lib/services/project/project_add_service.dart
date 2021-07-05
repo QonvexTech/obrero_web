@@ -102,9 +102,12 @@ class ProjectAddService extends ChangeNotifier {
         .substring(1, encodedImagetoString.length - 1);
   }
 
-  removeImage(var image) {
+  removeImage(var image, bool isEdit) {
     _projectImages!.remove(image);
-    _imagesToDelete.add(image.id);
+    if (isEdit) {
+      _imagesToDelete.add(image.id);
+    }
+
     notifyListeners();
   }
 

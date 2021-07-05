@@ -1056,8 +1056,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        projectAddService
-                                                                            .removeImage(image);
+                                                                        projectAddService.removeImage(
+                                                                            image,
+                                                                            isEdit);
                                                                       }),
                                                                 ),
                                                               )
@@ -1133,13 +1134,15 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        projectAddService
-                                                                            .addImageToDelete(image);
-
                                                                         widget
                                                                             .projectToEdit!
                                                                             .images!
                                                                             .remove(image);
+
+                                                                        if (isEdit) {
+                                                                          projectAddService
+                                                                              .addImageToDelete(image);
+                                                                        }
                                                                       }),
                                                                 ),
                                                               )
@@ -1202,8 +1205,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        projectAddService
-                                                                            .removeImage(image);
+                                                                        widget
+                                                                            .projectToEdit!
+                                                                            .images!
+                                                                            .remove(image);
                                                                       }),
                                                                 ),
                                                               )
