@@ -10,7 +10,6 @@ import 'package:geocode/geocode.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/geocoding.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +27,6 @@ import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view_model/project_add_view_model.dart';
 import 'package:uitemplate/widgets/map.dart';
 
-//TODO: add more status colors;
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
   final CustomerModel? customer;
@@ -48,17 +46,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   // final places = GoogleMapsPlaces(
   //   apiKey: "AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI",
   // );
+  bool findingLocation = false;
   final GeoCode geoCode = GeoCode();
-  Future<void> _showPrediction(
-    MapService mapService,
-    context,
-    projectId,
-    areaSize,
-  ) async {
-    // GoogleMapsPlaces _places = GoogleMapsPlaces(
-    //     apiKey: kGoogleApiKey,
-    //     baseUrl:
-    //         "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api");
+  Future<void> _showPrediction(MapService mapService, context, projectId,
+      areaSize, projectAddViewModel) async {
+    setState(() {
+      findingLocation = true;
+    });
     Prediction? p = await PlacesAutocomplete.show(
         proxyBaseUrl:
             "https://obscure-peak-25575.herokuapp.com/https://maps.googleapis.com/maps/api",
@@ -72,24 +66,40 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         mode: Mode.overlay, // Mode.fullscreen
         language: "fr",
         components: [Component(Component.country, "fr")]);
+
     if (p != null && p.description != null) {
       try {
-        Coordinates coordinates = await geoCode
-            .forwardGeocoding(address: p.description!)
-            .whenComplete(() {});
+        geoCode.forwardGeocoding(address: p.description!).then((coord) {
+          print("Latitude: ${coord.latitude}");
+          print("Longitude: ${coord.longitude}");
 
-        print("Latitude: ${coordinates.latitude}");
-        print("Longitude: ${coordinates.longitude}");
+          setState(() {
+            mapService.setCoordinates(
+                coord: LatLng(coord.latitude!, coord.longitude!),
+                context: context,
+                areaSize: areaSize,
+                isEdit: isEdit,
+                projectId: projectId);
 
-        mapService.setCoordinates(
-            coord: LatLng(coordinates.latitude!, coordinates.longitude!),
-            context: context,
-            areaSize: areaSize,
-            isEdit: isEdit,
-            projectId: projectId);
+            findingLocation = false;
+
+            projectAddViewModel.addressField = p.description!;
+          });
+        });
+        Fluttertoast.showToast(
+            webBgColor: "linear-gradient(to right, #E21010, #ED9393)",
+            msg: "Location found",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 2,
+            fontSize: 16.0);
       } catch (e) {
         print(e);
       }
+    } else {
+      setState(() {
+        findingLocation = false;
+      });
     }
   }
 
@@ -348,43 +358,54 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           height: 10,
                                         ),
 
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Adresse",
-                                              style: boldText,
-                                            ),
-                                            Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 5),
-                                                child: RawKeyboardListener(
-                                                  focusNode: _address,
-                                                  onKey: (x) {
-                                                    if (x.isKeyPressed(
-                                                        LogicalKeyboardKey
-                                                            .tab)) {
-                                                      _address.requestFocus();
-                                                    }
-                                                  },
-                                                  child: TextField(
-                                                    onTap: () async {
-                                                      //TODO: search map
-                                                      _showPrediction(
-                                                          mapService,
-                                                          context,
-                                                          projectId,
-                                                          projectAddService
-                                                              .areaSize);
-                                                    },
-                                                    controller:
-                                                        _projectAddViewModel
-                                                            .addressField,
+                                        findingLocation
+                                            ? Center(
+                                                child:
+                                                    CircularProgressIndicator())
+                                            : Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Adresse",
+                                                    style: boldText,
                                                   ),
-                                                )),
-                                          ],
-                                        ),
+                                                  Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 5),
+                                                      child:
+                                                          RawKeyboardListener(
+                                                        focusNode: _address,
+                                                        onKey: (x) {
+                                                          if (x.isKeyPressed(
+                                                              LogicalKeyboardKey
+                                                                  .tab)) {
+                                                            _address
+                                                                .requestFocus();
+                                                          }
+                                                        },
+                                                        child: TextField(
+                                                          onTap: () async {
+                                                            //TODO: search map
+
+                                                            mapService
+                                                                .removeDefaultMarker();
+                                                            _showPrediction(
+                                                                mapService,
+                                                                context,
+                                                                projectId,
+                                                                projectAddService
+                                                                    .areaSize,
+                                                                _projectAddViewModel);
+                                                          },
+                                                          controller:
+                                                              _projectAddViewModel
+                                                                  .addressField,
+                                                        ),
+                                                      )),
+                                                ],
+                                              ),
 
                                         Padding(
                                           padding: const EdgeInsets.symmetric(

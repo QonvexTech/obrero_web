@@ -116,20 +116,20 @@ class _ProjectListState extends State<ProjectList> with TableHelper {
                               widget.assignUser!,
                             ),
                             headersMobile: [
+                              "Statut",
                               "Nom du site",
                               "Propriétaire",
                               "Adresse",
-                              "Statut",
                               "Actions",
                             ],
                             headers: [
+                              "Statut",
                               "Nom du site",
                               "Propriétaire",
                               "Adresse",
                               "Surface",
                               "Date de début",
                               "Date de fin",
-                              "Statut",
                               "Actions"
                             ],
                             assignUser: widget.assignUser,
@@ -165,6 +165,17 @@ List<TableRow> rowWidgetMobile(
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Icon(
+                Icons.circle,
+                color: colorsSettings[data.status!].color,
+                size: 15,
+              ),
+            ))),
         GestureDetector(
           child: TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
@@ -212,16 +223,6 @@ List<TableRow> rowWidgetMobile(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
                 "${data.address}",
-                overflow: TextOverflow.ellipsis,
-              ),
-            ))),
-        TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                "${data.status}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
@@ -314,6 +315,15 @@ List<TableRow> rowWidget(
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(
+              child: Icon(
+                Icons.circle,
+                color: colorsSettings[data.status!].color,
+                size: 15,
+              ),
+            )),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
                 child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: TextButton(
@@ -390,16 +400,6 @@ List<TableRow> rowWidget(
                 DateFormat('MMM dd, yyyy', 'fr_FR')
                     .format(data.endDate!)
                     .inCaps,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ))),
-        TableCell(
-            verticalAlignment: TableCellVerticalAlignment.middle,
-            child: Center(
-                child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                "${colorsSettings[data.status!].name}",
                 overflow: TextOverflow.ellipsis,
               ),
             ))),
