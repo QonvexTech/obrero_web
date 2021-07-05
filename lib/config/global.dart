@@ -12,6 +12,7 @@ const String remove_warning = "$api/project/warning/remove/";
 
 //ADMIN
 const String login_api = "$api/admin-login";
+const String add_token = "$api/add_my_token";
 const String message_history = "$api/messaging/my_sentbox";
 const String add_warning = "$api/project/warning/create";
 const String update_color_name = "$api/colors/update_name";

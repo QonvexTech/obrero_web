@@ -4,7 +4,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
+import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
@@ -20,6 +22,7 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
   bool listCardloader = true;
+
   @override
   void initState() {
     Provider.of<ProjectProvider>(context, listen: false)

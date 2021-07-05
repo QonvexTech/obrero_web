@@ -12,19 +12,14 @@ class Authentication {
   Future<bool> login(String email, String password) async {
     try {
       bool success = false;
-      String? fcmToken;
       Map body = {'email': email, 'password': password};
-      try {
-        fcmToken = await FireBase().fcmToken;
-        if (fcmToken != null) {
-          body.addAll({"fcm_token": fcmToken});
-        }
-      } catch (e) {
-        print(e);
-      }
+
       print("LOGGING IN");
       var url = Uri.parse(login_api);
-      var response = await http.post(url, body: body);
+      var response = await http.post(url, body: body, headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
       if (response.statusCode == 200 || response.statusCode == 201) {
         profileData = Admin.fromJson(json.decode(response.body)["data"]);
         print("login success");
@@ -35,6 +30,37 @@ class Authentication {
 
         await logApiCall.fetchServer();
 
+        success = true;
+        return success;
+      } else {
+        print(response.statusCode);
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> addToken() async {
+    try {
+      bool success = false;
+      String? fcmToken;
+      try {
+        fcmToken = await FireBase().fcmToken;
+      } catch (e) {
+        print(e);
+      }
+      var url = Uri.parse(add_token);
+      var response = await http.post(url, body: {
+        "token": fcmToken
+      }, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print(json.decode(response.body));
         success = true;
         return success;
       } else {

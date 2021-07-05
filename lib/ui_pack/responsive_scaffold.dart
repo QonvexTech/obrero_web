@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
+import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/log_service.dart';
@@ -60,14 +61,16 @@ class ResponsiveScaffold extends StatefulWidget {
 }
 
 class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
-  void initializeFirebase() async {
+  Future initializeFirebase() async {
     await FireBase().init(context: context);
   }
 
   @override
   void initState() {
     init();
-    this.initializeFirebase();
+    this.initializeFirebase().whenComplete(() {
+      Authentication().addToken();
+    });
     super.initState();
   }
 
