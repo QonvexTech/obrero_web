@@ -70,8 +70,9 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   void initState() {
     init();
     this.initializeFirebase().whenComplete(() {
-      Authentication().addToken();
+      auth.addToken();
     });
+
     super.initState();
   }
 

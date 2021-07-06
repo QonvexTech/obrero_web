@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uitemplate/ui_pack/children/drawer_item.dart';
 
 class ScaffoldService extends ChangeNotifier {
   Widget? _selectedContent;
