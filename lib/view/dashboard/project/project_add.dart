@@ -47,6 +47,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   // final places = GoogleMapsPlaces(
   //   apiKey: "AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI",
   // );
+  bool searchMap = false;
   final GeoCode geoCode = GeoCode();
   Future<void> _showPrediction(
     MapService mapService,
@@ -54,6 +55,10 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     projectId,
     areaSize,
   ) async {
+    setState(() {
+      searchMap = true;
+    });
+    mapService.removeDefaultMarker();
     // GoogleMapsPlaces _places = GoogleMapsPlaces(
     //     apiKey: kGoogleApiKey,
     //     baseUrl:
@@ -86,9 +91,16 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
             areaSize: areaSize,
             isEdit: isEdit,
             projectId: projectId);
+        setState(() {
+          searchMap = false;
+        });
       } catch (e) {
         print(e);
       }
+    } else {
+      setState(() {
+        searchMap = false;
+      });
     }
   }
 
@@ -352,33 +364,39 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                               "Adresse",
                                               style: boldText,
                                             ),
-                                            Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 5),
-                                                child: RawKeyboardListener(
-                                                  focusNode: _address,
-                                                  onKey: (x) {
-                                                    if (x.isKeyPressed(
-                                                        LogicalKeyboardKey
-                                                            .tab)) {
-                                                      _address.requestFocus();
-                                                    }
-                                                  },
-                                                  child: TextField(
-                                                    onTap: () async {
-                                                      //TODO: search map
-                                                      _showPrediction(
-                                                          mapService,
-                                                          context,
-                                                          projectId,
-                                                          projectAddService
-                                                              .areaSize);
-                                                    },
-                                                    controller:
-                                                        _projectAddViewModel
-                                                            .addressField,
-                                                  ),
-                                                )),
+                                            searchMap
+                                                ? Center(
+                                                    child:
+                                                        CircularProgressIndicator())
+                                                : Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 5),
+                                                    child: RawKeyboardListener(
+                                                      focusNode: _address,
+                                                      onKey: (x) {
+                                                        if (x.isKeyPressed(
+                                                            LogicalKeyboardKey
+                                                                .tab)) {
+                                                          _address
+                                                              .requestFocus();
+                                                        }
+                                                      },
+                                                      child: TextField(
+                                                        onTap: () async {
+                                                          //TODO: search map
+                                                          _showPrediction(
+                                                              mapService,
+                                                              context,
+                                                              projectId,
+                                                              projectAddService
+                                                                  .areaSize);
+                                                        },
+                                                        controller:
+                                                            _projectAddViewModel
+                                                                .addressField,
+                                                      ),
+                                                    )),
                                           ],
                                         ),
 
