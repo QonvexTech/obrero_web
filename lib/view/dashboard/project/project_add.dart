@@ -59,10 +59,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       searchMap = true;
     });
     mapService.removeDefaultMarker();
-    // GoogleMapsPlaces _places = GoogleMapsPlaces(
-    //     apiKey: kGoogleApiKey,
-    //     baseUrl:
-    //         "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api");
     Prediction? p = await PlacesAutocomplete.show(
         proxyBaseUrl:
             "https://obscure-peak-25575.herokuapp.com/https://maps.googleapis.com/maps/api",
@@ -75,7 +71,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         apiKey: kGoogleApiKey,
         mode: Mode.overlay, // Mode.fullscreen
         language: "fr",
-        components: [Component(Component.country, "fr")]);
+        components: [
+          Component(Component.country, "fr")
+        ]).onError((error, stackTrace) {
+      setState(() {
+        searchMap = false;
+      });
+    });
     if (p != null && p.description != null) {
       try {
         Coordinates coordinates = await geoCode
@@ -365,9 +367,16 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                               style: boldText,
                                             ),
                                             searchMap
-                                                ? Center(
-                                                    child:
-                                                        CircularProgressIndicator())
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      CircularProgressIndicator(),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      )
+                                                    ],
+                                                  )
                                                 : Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -383,6 +392,15 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                         }
                                                       },
                                                       child: TextField(
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5)),
+                                                          hintText: "Adresse",
+                                                        ),
                                                         onTap: () async {
                                                           //TODO: search map
                                                           _showPrediction(

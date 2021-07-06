@@ -89,7 +89,7 @@ Widget pageControll(PaginationService pageService,
                 height: 50,
                 width: MediaQuery.of(context).size.width <= 500
                     ? 80
-                    : 50 * double.parse(paginationModel.lastPage.toString()) -
+                    : 60 * double.parse(paginationModel.lastPage.toString()) -
                         1,
                 child: ListView.builder(
                   controller: pageService.scrollController,
