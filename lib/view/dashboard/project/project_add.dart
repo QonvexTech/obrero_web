@@ -44,9 +44,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   final GlobalKey<ScaffoldState> homeScaffoldKey =
       new GlobalKey<ScaffoldState>();
   final kGoogleApiKey = "AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI";
-  // final places = GoogleMapsPlaces(
-  //   apiKey: "AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI",
-  // );
   bool searchMap = false;
   final GeoCode geoCode = GeoCode();
   Future<void> _showPrediction(
@@ -372,9 +369,20 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             searchMap
                                                 ? Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.end,
+                                                        MainAxisAlignment.start,
                                                     children: [
-                                                      CircularProgressIndicator(),
+                                                      Text("Searching ..."),
+                                                      Expanded(
+                                                          child: Container()),
+                                                      MaterialButton(
+                                                        onPressed: () async {
+                                                          setState(() {
+                                                            searchMap = false;
+                                                          });
+                                                        },
+                                                        child: Text(
+                                                            "Cancel Search"),
+                                                      ),
                                                       SizedBox(
                                                         width: 10,
                                                       )
