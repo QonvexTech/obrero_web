@@ -20,24 +20,20 @@ class MapService extends ChangeNotifier {
   LocationData? _locationData;
   GoogleMapController? mapController;
   bool _gesture = true;
-  TextEditingController location = TextEditingController();
-  //
-
-  // TextEditingController get address => _address;
+  // TextEditingController location = TextEditingController();
 
   void focusMap({required LatLng coordinates, required markerId}) {
     mapController!.showMarkerInfoWindow(MarkerId(markerId));
     mapController!
         .moveCamera(CameraUpdate.newLatLng(coordinates))
         .whenComplete(() {});
-
     // notifyListeners();
   }
 
   int statusDefault = 0;
-  void setLocation(value) {
-    location.text = value;
-  }
+  // void setLocation(value) {
+  //   // location.text = value;
+  // }
 
   void setStatus(value) {
     statusDefault = value;
@@ -125,8 +121,6 @@ class MapService extends ChangeNotifier {
     _circles.clear();
     if (_markers.length > 0) {
       coordinates = _markers.first.position;
-      location.text =
-          "${coordinates.latitude.toString()}, ${coordinates.longitude.toString()}";
       findLocalByCoordinates(
           coordinates.latitude.toString(), coordinates.longitude.toString());
     }
@@ -168,7 +162,7 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCoordinates(
+  Future<void> setCoordinates(
       {LatLng? coord,
       BuildContext? context,
       double? areaSize,
@@ -195,13 +189,10 @@ class MapService extends ChangeNotifier {
     }
 
     if (_markers.contains(toRemove)) {
-      _markers.remove(toRemove);
-      _circles.remove(toRemoveCircle);
+      removeDefaultMarker();
     } else {
       if (coord != null) {
         coordinates = coord;
-        location.text =
-            "${coord.latitude.toString()}, ${coord.longitude.toString()}";
         findLocalByCoordinates(
             coord.latitude.toString(), coord.longitude.toString());
       }

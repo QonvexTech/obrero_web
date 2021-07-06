@@ -116,12 +116,14 @@ class _ProjectListState extends State<ProjectList> with TableHelper {
                               widget.assignUser!,
                             ),
                             headersMobile: [
+                              "Statut",
                               "Nom du site",
                               "Propriétaire",
                               "Adresse",
-                              "Actions"
+                              "Actions",
                             ],
                             headers: [
+                              "Statut",
                               "Nom du site",
                               "Propriétaire",
                               "Adresse",
@@ -163,6 +165,17 @@ List<TableRow> rowWidgetMobile(
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Icon(
+                Icons.circle,
+                color: colorsSettings[data.status!].color,
+                size: 15,
+              ),
+            ))),
         GestureDetector(
           child: TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
@@ -299,6 +312,15 @@ List<TableRow> rowWidget(
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+              child: Icon(
+                Icons.circle,
+                color: colorsSettings[data.status!].color,
+                size: 15,
+              ),
+            )),
         TableCell(
             verticalAlignment: TableCellVerticalAlignment.middle,
             child: Center(

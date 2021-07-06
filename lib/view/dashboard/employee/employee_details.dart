@@ -293,10 +293,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                   .employeeProjects!)
                                             GestureDetector(
                                               onTap: () {
-                                                print("Click");
                                                 mapService.mapController!
                                                     .showMarkerInfoWindow(
-                                                        MarkerId(project.id
+                                                        MarkerId(project
+                                                            .userProject!.id
                                                             .toString()));
                                                 mapService.mapController!
                                                     .moveCamera(
@@ -305,7 +305,8 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                                 .coordinates!));
 
                                                 setState(() {
-                                                  activeProject = project.id!;
+                                                  activeProject =
+                                                      project.userProject!.id!;
                                                 });
                                               },
                                               child: Container(
@@ -313,7 +314,9 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                     color: Colors.white,
                                                     border: Border.all(
                                                         color: activeProject ==
-                                                                project.id
+                                                                project
+                                                                    .userProject!
+                                                                    .id!
                                                             ? Palette
                                                                 .drawerColor
                                                             : Colors

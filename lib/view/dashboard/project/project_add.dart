@@ -27,7 +27,6 @@ import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/view_model/project_add_view_model.dart';
 import 'package:uitemplate/widgets/map.dart';
 
-//TODO: add more status colors;
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
   final CustomerModel? customer;
@@ -47,6 +46,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   // final places = GoogleMapsPlaces(
   //   apiKey: "AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI",
   // );
+<<<<<<< HEAD
   final GeoCode geoCode = GeoCode();
   Future<void> _showPrediction(
     MapService mapService,
@@ -58,6 +58,15 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     //     apiKey: kGoogleApiKey,
     //     baseUrl:
     //         "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api");
+=======
+  bool findingLocation = false;
+  final GeoCode geoCode = GeoCode();
+  Future<void> _showPrediction(MapService mapService, context, projectId,
+      areaSize, projectAddViewModel) async {
+    setState(() {
+      findingLocation = true;
+    });
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
     Prediction? p = await PlacesAutocomplete.show(
         proxyBaseUrl:
             "https://obscure-peak-25575.herokuapp.com/https://maps.googleapis.com/maps/api",
@@ -71,6 +80,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         mode: Mode.overlay, // Mode.fullscreen
         language: "fr",
         components: [Component(Component.country, "fr")]);
+<<<<<<< HEAD
     if (p != null && p.description != null) {
       try {
         Coordinates coordinates = await geoCode
@@ -89,6 +99,42 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       } catch (e) {
         print(e);
       }
+=======
+
+    if (p != null && p.description != null) {
+      try {
+        geoCode.forwardGeocoding(address: p.description!).then((coord) {
+          print("Latitude: ${coord.latitude}");
+          print("Longitude: ${coord.longitude}");
+
+          setState(() {
+            mapService.setCoordinates(
+                coord: LatLng(coord.latitude!, coord.longitude!),
+                context: context,
+                areaSize: areaSize,
+                isEdit: isEdit,
+                projectId: projectId);
+
+            findingLocation = false;
+
+            projectAddViewModel.addressField = p.description!;
+          });
+        });
+        Fluttertoast.showToast(
+            webBgColor: "linear-gradient(to right, #E21010, #ED9393)",
+            msg: "Location found",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 2,
+            fontSize: 16.0);
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      setState(() {
+        findingLocation = false;
+      });
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
     }
   }
 
@@ -135,6 +181,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     }
 
     Provider.of<ProjectAddService>(context, listen: false).assignIds.clear();
+    Provider.of<ProjectAddService>(context, listen: false)
+        .projectImages
+        .clear();
 
     if (widget.projectToEdit != null) {
       Provider.of<ProjectAddService>(context, listen: false);
@@ -344,6 +393,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           height: 10,
                                         ),
 
+<<<<<<< HEAD
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -381,6 +431,56 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                 )),
                                           ],
                                         ),
+=======
+                                        findingLocation
+                                            ? Center(
+                                                child:
+                                                    CircularProgressIndicator())
+                                            : Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "Adresse",
+                                                    style: boldText,
+                                                  ),
+                                                  Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 5),
+                                                      child:
+                                                          RawKeyboardListener(
+                                                        focusNode: _address,
+                                                        onKey: (x) {
+                                                          if (x.isKeyPressed(
+                                                              LogicalKeyboardKey
+                                                                  .tab)) {
+                                                            _address
+                                                                .requestFocus();
+                                                          }
+                                                        },
+                                                        child: TextField(
+                                                          onTap: () async {
+                                                            //TODO: search map
+
+                                                            mapService
+                                                                .removeDefaultMarker();
+                                                            _showPrediction(
+                                                                mapService,
+                                                                context,
+                                                                projectId,
+                                                                projectAddService
+                                                                    .areaSize,
+                                                                _projectAddViewModel);
+                                                          },
+                                                          controller:
+                                                              _projectAddViewModel
+                                                                  .addressField,
+                                                        ),
+                                                      )),
+                                                ],
+                                              ),
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
 
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -389,6 +489,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             children: [
                                               Expanded(
                                                 child: Column(
+<<<<<<< HEAD
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
@@ -414,6 +515,52 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                               ),
                                               Expanded(
                                                 child: Column(
+=======
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+<<<<<<< HEAD
+                                                      "Date de fin",
+                                                      style: boldText,
+                                                    ),
+                                                    MaterialButton(
+                                                      enableFeedback: false,
+                                                      focusNode: _endDate,
+=======
+                                                      "Date de début",
+                                                      style: boldText,
+                                                    ),
+                                                    MaterialButton(
+                                                      focusNode: _startDate,
+                                                      enableFeedback: false,
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
+                                                      onPressed: () {
+                                                        mapService.gesture =
+                                                            false;
+                                                        projectAddService
+<<<<<<< HEAD
+                                                            .selectEndDate(
+                                                                context);
+                                                      },
+                                                      child: Text(
+                                                          "${months[projectAddService.endDate.month]} ${projectAddService.endDate.day}, ${DateFormat.y().format(projectAddService.endDate)}"),
+=======
+                                                            .selectStartDate(
+                                                                context);
+                                                      },
+                                                      child: Text(
+                                                          "${months[projectAddService.startDate.month]} ${projectAddService.startDate.day}, ${DateFormat.y().format(projectAddService.startDate)}"),
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+<<<<<<< HEAD
+=======
+                                              Expanded(
+                                                child: Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
@@ -437,6 +584,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                   ],
                                                 ),
                                               ),
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
                                             ],
                                           ),
                                         ),
@@ -1055,8 +1203,14 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
+<<<<<<< HEAD
                                                                         projectAddService
                                                                             .removeImage(image);
+=======
+                                                                        projectAddService.removeImage(
+                                                                            image,
+                                                                            isEdit);
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
                                                                       }),
                                                                 ),
                                                               )
@@ -1132,13 +1286,24 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
+<<<<<<< HEAD
                                                                         projectAddService
                                                                             .addImageToDelete(image);
 
+=======
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
                                                                         widget
                                                                             .projectToEdit!
                                                                             .images!
                                                                             .remove(image);
+<<<<<<< HEAD
+=======
+
+                                                                        if (isEdit) {
+                                                                          projectAddService
+                                                                              .addImageToDelete(image);
+                                                                        }
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
                                                                       }),
                                                                 ),
                                                               )
@@ -1201,8 +1366,15 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
+<<<<<<< HEAD
                                                                         projectAddService
                                                                             .removeImage(image);
+=======
+                                                                        widget
+                                                                            .projectToEdit!
+                                                                            .images!
+                                                                            .remove(image);
+>>>>>>> fc672a1f03ff9d6fad74ccb5792b020e5f12e6bf
                                                                       }),
                                                                 ),
                                                               )

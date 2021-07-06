@@ -307,15 +307,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                           employeeService
                               .updateUser(body: bodyToUpdate)
                               .whenComplete(() {
-                            setState(() {
-                              widget.userToEdit!.fname = fnameController.text;
-                              widget.userToEdit!.lname = lnameController.text;
-                              widget.userToEdit!.email = emailController.text;
-                              widget.userToEdit!.address =
-                                  addressController.text;
-                              widget.userToEdit!.contactNumber =
-                                  contactNumberController.text;
-                            });
+                            employeeService.fetchUsers();
                             Navigator.pop(context);
                           });
                         } else {
