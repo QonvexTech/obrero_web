@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/services/customer/customer_service.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/employee_service.dart';

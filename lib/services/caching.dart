@@ -16,7 +16,7 @@ class DataCacher {
       var password = _prefs.getString('password');
 
       if (email != null && password != null) {
-        await Authentication().login(email, password).then((value) {
+        await Authentication().login(email, password, context).then((value) {
           if (value) {
             Navigator.pushReplacementNamed(context, "/home");
             return true;

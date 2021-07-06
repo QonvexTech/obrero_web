@@ -14,21 +14,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   void init() async {
-    await DataCacher().getCredentials(context).then((value) {
-      if (value) {
-        colorsService.getColors.then((va) {
-          colorsSettings = va!;
-          print("Lengh Is ${colorsSettings.length}");
-        }).whenComplete(() {
-          var projectProvider =
-              Provider.of<ProjectProvider>(context, listen: false);
-          if (projectProvider.projects != null) {
-            Provider.of<DashboardService>(context, listen: false)
-                .initGetId(projectProvider.projectsDateBase);
-          }
-        });
-      }
-    });
+    await DataCacher().getCredentials(context);
   }
 
   @override

@@ -55,7 +55,9 @@ class _LoginFormState extends State<LoginForm> {
 
     if (_formKey.currentState!.validate()) {
       print("login");
-      auth.login(_emailController.text, _passwordController.text).then((value) {
+      auth
+          .login(_emailController.text, _passwordController.text, context)
+          .then((value) {
         if (value) {
           setState(() {
             loader = false;

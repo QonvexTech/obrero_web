@@ -1,15 +1,19 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/admin_model.dart';
 import 'package:uitemplate/services/caching.dart';
+import 'package:uitemplate/services/colors_service.dart';
+import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/firebase_message.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view_model/logs/log_api_call.dart';
 import '../config/global.dart';
 
 class Authentication {
   var error;
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String email, String password, context) async {
     try {
       bool success = false;
       print("LOGGING IN");
@@ -29,6 +33,17 @@ class Authentication {
 
         authToken = jsonDecode(response.body)['data']['token'];
         print("This is the TOken $authToken");
+        colorsService.getColors.then((va) {
+          colorsSettings = va!;
+          print("Lengh Is ${colorsSettings.length}");
+        }).whenComplete(() {
+          var projectProvider =
+              Provider.of<ProjectProvider>(context, listen: false);
+          if (projectProvider.projects != null) {
+            Provider.of<DashboardService>(context, listen: false)
+                .initGetId(projectProvider.projectsDateBase);
+          }
+        });
 
         await logApiCall.fetchServer();
 

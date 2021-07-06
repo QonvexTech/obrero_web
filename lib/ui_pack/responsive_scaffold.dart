@@ -69,8 +69,15 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   @override
   void initState() {
     init();
-    this.initializeFirebase().whenComplete(() {
-      auth.addToken();
+    this.initializeFirebase().whenComplete(() async {
+      try {
+        var fcmToken = await FireBase().fcmToken;
+        if (fcmToken != null) {
+          auth.addToken();
+        }
+      } catch (e) {
+        print(e);
+      }
     });
 
     super.initState();
