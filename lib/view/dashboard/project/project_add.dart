@@ -149,6 +149,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     }
 
     Provider.of<ProjectAddService>(context, listen: false).assignIds.clear();
+    Provider.of<ProjectAddService>(context, listen: false)
+        .projectImages
+        .clear();
 
     if (widget.projectToEdit != null) {
       Provider.of<ProjectAddService>(context, listen: false);
@@ -1011,12 +1014,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             ),
                                           ],
                                         ),
-                                        widget.projectToEdit != null
-                                            ? SizedBox(
-                                                height: MySpacer.medium,
-                                              )
-                                            : SizedBox(),
-
+                                        SizedBox(
+                                          height: MySpacer.medium,
+                                        ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
@@ -1091,8 +1091,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        projectAddService
-                                                                            .removeImage(image);
+                                                                        projectAddService.removeImage(
+                                                                            image,
+                                                                            isEdit);
                                                                       }),
                                                                 ),
                                                               )
@@ -1181,6 +1182,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                             ],
                                                           ),
                                                         },
+                                                        SizedBox(
+                                                          height: 20,
+                                                        ),
                                                         for (var image
                                                             in projectAddService
                                                                 .projectImages)
@@ -1237,8 +1241,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        projectAddService
-                                                                            .removeImage(image);
+                                                                        projectAddService.removeImage(
+                                                                            image,
+                                                                            isEdit);
                                                                       }),
                                                                 ),
                                                               )
