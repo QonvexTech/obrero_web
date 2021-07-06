@@ -44,9 +44,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   final GlobalKey<ScaffoldState> homeScaffoldKey =
       new GlobalKey<ScaffoldState>();
   final kGoogleApiKey = "AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI";
-  // final places = GoogleMapsPlaces(
-  //   apiKey: "AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI",
-  // );
   bool searchMap = false;
   final GeoCode geoCode = GeoCode();
   Future<void> _showPrediction(
@@ -59,10 +56,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       searchMap = true;
     });
     mapService.removeDefaultMarker();
-    // GoogleMapsPlaces _places = GoogleMapsPlaces(
-    //     apiKey: kGoogleApiKey,
-    //     baseUrl:
-    //         "https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api");
     Prediction? p = await PlacesAutocomplete.show(
         proxyBaseUrl:
             "https://obscure-peak-25575.herokuapp.com/https://maps.googleapis.com/maps/api",
@@ -75,7 +68,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         apiKey: kGoogleApiKey,
         mode: Mode.overlay, // Mode.fullscreen
         language: "fr",
-        components: [Component(Component.country, "fr")]);
+        components: [
+          Component(Component.country, "fr")
+        ]).onError((error, stackTrace) {
+      setState(() {
+        searchMap = false;
+      });
+    });
     if (p != null && p.description != null) {
       try {
         Coordinates coordinates = await geoCode
@@ -147,6 +146,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     }
 
     Provider.of<ProjectAddService>(context, listen: false).assignIds.clear();
+    Provider.of<ProjectAddService>(context, listen: false)
+        .projectImages
+        .clear();
 
     if (widget.projectToEdit != null) {
       Provider.of<ProjectAddService>(context, listen: false);
@@ -365,9 +367,27 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                               style: boldText,
                                             ),
                                             searchMap
-                                                ? Center(
-                                                    child:
-                                                        CircularProgressIndicator())
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Text("Searching ..."),
+                                                      Expanded(
+                                                          child: Container()),
+                                                      MaterialButton(
+                                                        onPressed: () async {
+                                                          setState(() {
+                                                            searchMap = false;
+                                                          });
+                                                        },
+                                                        child: Text(
+                                                            "Cancel Search"),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10,
+                                                      )
+                                                    ],
+                                                  )
                                                 : Padding(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -383,6 +403,15 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                         }
                                                       },
                                                       child: TextField(
+                                                        decoration:
+                                                            InputDecoration(
+                                                          border: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5)),
+                                                          hintText: "Adresse",
+                                                        ),
                                                         onTap: () async {
                                                           //TODO: search map
                                                           _showPrediction(
@@ -993,12 +1022,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                             ),
                                           ],
                                         ),
-                                        widget.projectToEdit != null
-                                            ? SizedBox(
-                                                height: MySpacer.medium,
-                                              )
-                                            : SizedBox(),
-
+                                        SizedBox(
+                                          height: MySpacer.medium,
+                                        ),
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
@@ -1073,8 +1099,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        projectAddService
-                                                                            .removeImage(image);
+                                                                        projectAddService.removeImage(
+                                                                            image,
+                                                                            isEdit);
                                                                       }),
                                                                 ),
                                                               )
@@ -1163,6 +1190,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                             ],
                                                           ),
                                                         },
+                                                        SizedBox(
+                                                          height: 20,
+                                                        ),
                                                         for (var image
                                                             in projectAddService
                                                                 .projectImages)
@@ -1219,8 +1249,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             .red[600],
                                                                       ),
                                                                       onPressed: () {
-                                                                        projectAddService
-                                                                            .removeImage(image);
+                                                                        projectAddService.removeImage(
+                                                                            image,
+                                                                            isEdit);
                                                                       }),
                                                                 ),
                                                               )
