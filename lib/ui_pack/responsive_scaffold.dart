@@ -1,67 +1,100 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/log_model.dart';
+import 'package:uitemplate/services/autentication.dart';
+import 'package:uitemplate/services/caching.dart';
 import 'package:uitemplate/services/firebase_message.dart';
+import 'package:uitemplate/services/log_service.dart';
+import 'package:uitemplate/services/notification_services.dart';
+import 'package:uitemplate/services/scaffold_service.dart';
 import 'package:uitemplate/ui_pack/children/drawer_item.dart';
-import 'package:uitemplate/widgets/notifications.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
+import 'package:uitemplate/view/dashboard/dashboard_screen.dart';
+import 'package:uitemplate/view/dashboard/employee/employee_screen.dart';
+import 'package:uitemplate/view/dashboard/logs/log_screen.dart';
+import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
+import 'package:uitemplate/view/dashboard/project/project_screen.dart';
+import 'package:uitemplate/view/dashboard/settings/change_password_settings.dart';
+import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
+import 'package:uitemplate/view/dashboard/settings/warnings/warning_settings.dart';
+import 'children/sub_drawer_item.dart';
 
 class ResponsiveScaffold extends StatefulWidget {
-  final BuildContext? context;
-  final Widget? title;
-  final Color backgroundColor;
-  final Color? drawerBackgroundColor;
-  final List<DrawerItem>? drawerItems;
-  late Widget? body;
-
-  final OverlayState? overlayState;
-
-  ResponsiveScaffold(
-      {this.context,
-      this.overlayState,
-      this.title,
-      this.drawerItems,
-      this.body,
-      this.backgroundColor = Colors.white,
-      this.drawerBackgroundColor});
+  final List<DrawerItem> drawerItems = [
+    DrawerItem(
+        icon: Icons.dashboard,
+        text: "Tableau de bord",
+        content: DashBoardScreen()),
+    DrawerItem(icon: Icons.people, text: "Clients", content: CustomerScreen()),
+    DrawerItem(
+        icon: Icons.pin_drop_outlined,
+        text: "Chantiers",
+        content: ProjectScreen()),
+    DrawerItem(
+        icon: Icons.person_pin_circle_outlined,
+        text: "Employés",
+        content: EmployeeScreen()),
+    DrawerItem(icon: Icons.list, text: "Pointage", content: LogScreen()),
+    DrawerItem(
+        icon: Icons.message,
+        text: "Pushs",
+        content: MessageScreen(
+          recepients: [],
+        )),
+    DrawerItem(
+        icon: Icons.settings,
+        text: "Préférences",
+        subItems: [
+          SubDrawerItems(
+              icon: Icons.warning, title: "Alerte", content: WarningSettings()),
+          SubDrawerItems(
+              icon: Icons.all_out, title: "General", content: GeneralSettings())
+        ],
+        content: null),
+  ];
 
   @override
   _ResponsiveScaffoldState createState() => _ResponsiveScaffoldState();
 }
 
 class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
-  void initializeFirebase() async {
+  Future initializeFirebase() async {
+    print("INIT FIREBASE");
     await FireBase().init(context: context);
   }
 
   @override
   void initState() {
     init();
-    this.initializeFirebase();
+    this.initializeFirebase().whenComplete(() async {
+      try {
+        var fcmToken = await FireBase().fcmToken;
+        if (fcmToken != null) {
+          auth.addToken();
+        }
+      } catch (e) {
+        print(e);
+      }
+    });
+
     super.initState();
   }
 
-  void init() async {
-    if (widget.body == null) {
-      widget.body = Container(
-        color: Colors.white,
-      );
-    }
-    if (mounted) {
-      setState(() {
-        showDrawerText = drawerWidth == maximumDrawerWidth;
-        if (widget.drawerItems != null) {
-          for (var item in widget.drawerItems!) {
-            if (item.content != null && item.subItems == null) {
-              _selectedContent = item.content;
-              break;
-            }
-          }
-        }
-      });
+  void init() {
+    showDrawerText = drawerWidth == maximumDrawerWidth;
+
+    for (var item in widget.drawerItems) {
+      if (item.content != null && item.subItems == null) {
+        Provider.of<ScaffoldService>(context, listen: false).init(item.content);
+        break;
+      }
     }
   }
 
-  double drawerWidth = 0.0;
+  double drawerWidth = 60;
   double maximumDrawerWidth = 300;
   bool showTextField = false;
   double minimumDrawerWidth = 0.0;
@@ -69,9 +102,10 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
   double dragStartAt = 0.0;
   bool showDrawerText = true;
   bool _showDrawer = false;
+  bool activeSettings = false;
   DrawerItem? _selectedDrawerItem;
-  dynamic _selectedContent;
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
+
   void onUpdate(DragUpdateDetails details) {
     setState(() {
       if (details.localPosition.dx <= maximumDrawerWidth &&
@@ -82,572 +116,776 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
     });
   }
 
-  void onDragEnd(DragEndDetails details) {
-    if (dragStartAt > maximumDrawerWidth - 100) {
-      if (dragStartAt > dragEndAt) {
-        setState(() {
-          drawerWidth = minimumDrawerWidth;
-        });
-      } else {
-        setState(() {
-          drawerWidth = maximumDrawerWidth;
-        });
-      }
+  ImageProvider fetchImage({required var netWorkImage}) {
+    if (netWorkImage == null || netWorkImage == "") {
+      return AssetImage('icons/admin_icon.png');
     } else {
-      if (dragEndAt > maximumDrawerWidth - 100) {
-        setState(() {
-          drawerWidth = maximumDrawerWidth;
-        });
-      } else {
-        setState(() {
-          drawerWidth = minimumDrawerWidth;
-        });
-      }
+      return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
     }
-    setState(() {
-      dragStartAt = minimumDrawerWidth;
-    });
-  }
-
-  void onDragStart(DragStartDetails details) {
-    setState(() {
-      dragStartAt = details.localPosition.dx;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // PushNotification pushNotification = Provider.of<PushNotification>(context, listen: false);
-
-    return OrientationBuilder(builder: (context, orientation) {
-      // if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      //   DesktopWindow.setMinWindowSize(Size(500, 700));
-      // }
-      //check if tablet or not
-      if (MediaQuery.of(context).size.width > 900 &&
-          MediaQuery.of(context).size.width < 1600) {
-        minimumDrawerWidth = 60;
-        if (!_showDrawer) {
-          drawerWidth = minimumDrawerWidth;
-          showDrawerText = false;
-          _showDrawer = true;
-        }
-      } else if (MediaQuery.of(context).size.width > 1600) {
-        minimumDrawerWidth = 60;
-        if (_showDrawer) {
-          _showDrawer = false;
-          drawerWidth = maximumDrawerWidth;
-          showDrawerText = true;
-        }
-      } else {
-        minimumDrawerWidth = 0;
-        if (_showDrawer) {
-          drawerWidth = minimumDrawerWidth;
-        }
-        _showDrawer = false;
-//          drawerWidth = maximumDrawerWidth;
+    if (MediaQuery.of(context).size.width > 900 &&
+        MediaQuery.of(context).size.width < 1600) {
+      minimumDrawerWidth = 60;
+      if (!_showDrawer) {
+        drawerWidth = minimumDrawerWidth;
+        showDrawerText = false;
+        _showDrawer = true;
       }
-      return Scaffold(
-        key: _key,
-        drawer: MediaQuery.of(context).size.width > 900
-            ? null
-            : Drawer(
-                child: Container(
-                  color: Palette.drawerColor,
-                  width: 500,
-                  height: MediaQuery.of(context).size.height,
-                  child: Column(
-                    children: [
-                      Container(
-                          width: double.infinity,
-                          height: 60,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          alignment: AlignmentDirectional.centerStart,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.menu),
-                                onPressed: () {
-                                  Navigator.of(context).pop(null);
-                                },
-                              ),
-                              if (widget.title != null) ...{
-                                Container(
-                                  height: 60,
-                                  alignment: AlignmentDirectional.centerStart,
-                                  margin: const EdgeInsets.only(left: 15),
-                                  child: widget.title,
-                                )
+    } else if (MediaQuery.of(context).size.width > 1600) {
+      minimumDrawerWidth = 60;
+      if (_showDrawer) {
+        _showDrawer = false;
+        drawerWidth = maximumDrawerWidth;
+        showDrawerText = true;
+      }
+    } else {
+      minimumDrawerWidth = 0;
+      if (_showDrawer) {
+        drawerWidth = minimumDrawerWidth;
+      }
+      _showDrawer = false;
+//          drawerWidth = maximumDrawerWidth;
+    }
+
+    ScaffoldService scaffoldService = Provider.of<ScaffoldService>(context);
+
+    return Scaffold(
+      key: _key,
+      drawer: MediaQuery.of(context).size.width > 900
+          ? null
+          : Drawer(
+              // MOBILE
+              child: Container(
+                color: Palette.drawerColor,
+                width: 500,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  children: [
+                    Container(
+                        width: double.infinity,
+                        height: 60,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.menu),
+                              onPressed: () {
+                                Navigator.of(context).pop(null);
                               },
-                            ],
-                          )),
-                      Expanded(
-                          child: ListView(
-                        children: [
-                          if (widget.drawerItems != null) ...{
-                            for (var item in widget.drawerItems!) ...{
-                              Container(
-                                width: double.infinity,
-                                color: Palette.drawerColor,
+                            ),
+                            Container(
                                 height: 60,
-                                child: MaterialButton(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 25),
-                                  onPressed: item.subItems != null &&
-                                          item.subItems!.length > 0
+                                alignment: AlignmentDirectional.centerStart,
+                                margin: const EdgeInsets.only(left: 15),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Image.asset(
+                                    'assets/icons/logo.png',
+                                    height: 50,
+                                  ),
+                                ))
+                          ],
+                        )),
+                    Expanded(
+                        child: ListView(
+                      children: [
+                        for (var item in widget.drawerItems) ...{
+                          Container(
+                            width: double.infinity,
+                            color: Palette.drawerColor,
+                            height: 60,
+                            child: MaterialButton(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 25),
+                              onPressed: item.subItems != null &&
+                                      item.subItems!.length > 0
+                                  ? () {
+                                      setState(() {
+                                        if (_selectedDrawerItem == item) {
+                                          _selectedDrawerItem = null;
+                                          activeSettings = true;
+                                        } else {}
+                                      });
+                                    }
+                                  : item.content != null
                                       ? () {
+                                          activeSettings = false;
                                           Navigator.of(context).pop(null);
-                                          setState(() {
-                                            if (_selectedDrawerItem == item) {
-                                              _selectedDrawerItem = null;
-                                            } else {
-                                              _selectedDrawerItem = item;
-                                            }
-                                          });
+
+                                          scaffoldService.selectedContent =
+                                              item.content;
                                         }
-                                      : item.content != null
-                                          ? () {
-                                              Navigator.of(context).pop(null);
-                                              setState(() {
-                                                _selectedContent = item.content;
-                                              });
-                                            }
-                                          : null,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        item.icon,
+                                      : null,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    item.icon,
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      "${item.text}",
+                                      style: TextStyle(
                                         color: Colors.white,
                                       ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          "${item.text}",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                      if ((item.subItems != null &&
-                                          item.subItems!.length > 0)) ...{
-                                        Icon(_selectedDrawerItem == item
-                                            ? Icons.keyboard_arrow_up
-                                            : Icons.keyboard_arrow_down)
-                                      }
-                                    ],
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
+                                  if ((item.subItems != null &&
+                                      item.subItems!.length > 0)) ...{
+                                    Icon(
+                                        _selectedDrawerItem == item
+                                            ? Icons.keyboard_arrow_up
+                                            : Icons.keyboard_arrow_down,
+                                        color: Colors.white),
+                                  }
+                                ],
                               ),
-                              if ((item.subItems != null &&
-                                  item.subItems!.length > 0)) ...{
-                                for (var sub_items in item.subItems!) ...{
-                                  AnimatedContainer(
-                                      width: double.infinity,
-                                      color: Palette.contentBackground,
-                                      height:
-                                          _selectedDrawerItem == item ? 60 : 0,
-                                      duration: Duration(
-                                          milliseconds: 100 *
-                                              (item.subItems!
-                                                      .indexOf(sub_items) +
-                                                  1)),
-                                      child: MaterialButton(
-                                        onPressed: sub_items.content != null
-                                            ? () {
-                                                Navigator.of(context).pop(null);
-                                                setState(() {
-                                                  _selectedContent =
-                                                      sub_items.content;
-                                                });
-                                              }
-                                            : null,
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 35),
-                                        child: Row(
-                                          children: [
-                                            if (_selectedDrawerItem ==
-                                                item) ...{
-                                              Icon(sub_items.icon),
-                                            },
-                                            if (sub_items.title != null) ...{
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: Text(sub_items.title!),
-                                              )
-                                            }
-                                          ],
-                                        ),
-                                      ))
-                                }
-                              }
-                            }
-                          }
-                        ],
-                      ))
-                    ],
-                  ),
-                ),
-              ),
-        body: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            setState(() {
-              showTextField = false;
-            });
-          },
-          // onHorizontalDragStart:
-          //     MediaQuery.of(context).size.width > 900 ? onDragStart : null,
-          // onHorizontalDragUpdate:
-          //     MediaQuery.of(context).size.width > 900 ? onUpdate : null,
-          // onHorizontalDragEnd:
-          //     MediaQuery.of(context).size.width > 900 ? onDragEnd : null,
-          child: Container(
-            constraints: BoxConstraints(minWidth: 350.0, minHeight: 400.0),
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height,
-            color: Palette.contentBackground,
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  width: double.infinity,
-                  height: 60,
-                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                    BoxShadow(
-                        color: Colors.black54,
-                        blurRadius: 2,
-                        offset: Offset(0, 3))
-                  ]),
-                  child: Row(
-                    children: [
-                      //leading
-                      if (widget.drawerItems != null) ...{
-                        IconButton(
-                          icon: Icon(Icons.menu),
-                          onPressed: () {
-                            if (MediaQuery.of(context).size.width > 900) {
-                              setState(() {
-                                drawerWidth = drawerWidth == minimumDrawerWidth
-                                    ? maximumDrawerWidth
-                                    : minimumDrawerWidth;
-                              });
-                            } else {
-                              _key.currentState!.openDrawer();
-                            }
-                          },
-                        ),
-                      },
-                      if (widget.title != null) ...{
-                        Container(
-                          margin: const EdgeInsets.only(left: 15),
-                          alignment: AlignmentDirectional.centerStart,
-                          child: widget.title,
-                        ),
-                      },
-                      Spacer(),
-                      NotificationCard(),
-                      PopupMenuButton(
-                          offset: Offset(0, 50),
-                          icon: FittedBox(
-                            child: Row(
-                              children: [
-                                CircleAvatar(),
-                              ],
                             ),
                           ),
-                          itemBuilder: (context) => [
-                                PopupMenuItem(
-                                  // value: sub_items.content,
-                                  child: Container(
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          CircleAvatar(
-                                            backgroundColor: Colors.red,
+                          if ((item.subItems != null &&
+                              item.subItems!.length > 0)) ...{
+                            for (var sub_items in item.subItems!) ...{
+                              AnimatedContainer(
+                                  width: double.infinity,
+                                  color: Palette.drawerColor,
+                                  height: _selectedDrawerItem == item ? 60 : 0,
+                                  duration: Duration(
+                                      milliseconds: 100 *
+                                          (item.subItems!.indexOf(sub_items) +
+                                              1)),
+                                  child: MaterialButton(
+                                    onPressed: sub_items.content != null
+                                        ? () {
+                                            Navigator.of(context).pop(null);
+                                            setState(() {
+                                              scaffoldService.selectedContent =
+                                                  sub_items.content;
+                                              _selectedDrawerItem = item;
+                                              activeSettings = true;
+                                            });
+                                          }
+                                        : null,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 35),
+                                    child: Row(
+                                      children: [
+                                        if (_selectedDrawerItem == item) ...{
+                                          Icon(sub_items.icon,
+                                              color: scaffoldService
+                                                              .selectedContent ==
+                                                          null &&
+                                                      activeSettings
+                                                  ? Palette.drawerColor
+                                                  : Colors.white)
+                                        },
+                                        if (sub_items.title != null) ...{
+                                          const SizedBox(
+                                            width: 10,
                                           ),
-                                          SizedBox(
-                                            height: MySpacer.medium,
-                                          ),
-                                          Text("admin.firstName!"),
-                                          Text("admin.email!"),
-                                          SizedBox(
-                                            height: MySpacer.medium,
-                                          ),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                border: Border.all(
-                                                  color: Colors.black38,
-                                                )),
-                                            child: MaterialButton(
-                                                onPressed: () {},
-                                                child: Text("Manage Account")),
-                                          ),
-                                          SizedBox(
-                                            height: MySpacer.medium,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator
-                                                      .pushReplacementNamed(
-                                                          context, "/login");
-                                                },
-                                                child: Text("logout"),
-                                              )
-                                            ],
+                                          Expanded(
+                                            child: Text(sub_items.title!,
+                                                style: TextStyle(
+                                                    color: Colors.white)),
                                           )
-                                        ],
+                                        }
+                                      ],
+                                    ),
+                                  ))
+                            }
+                          }
+                        }
+                      ],
+                    ))
+                  ],
+                ),
+              ),
+            ),
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+          setState(() {
+            showTextField = false;
+          });
+        },
+        child: Container(
+          constraints: BoxConstraints(minWidth: 350.0, minHeight: 400.0),
+          width: double.infinity,
+          height: MediaQuery.of(context).size.height,
+          color: Palette.contentBackground,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                width: double.infinity,
+                height: 60,
+                decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                  BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 2,
+                      offset: Offset(0, 3))
+                ]),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    //leading
+
+                    IconButton(
+                      icon: Icon(Icons.menu),
+                      onPressed: () {
+                        if (MediaQuery.of(context).size.width > 900) {
+                          setState(() {
+                            drawerWidth = drawerWidth == minimumDrawerWidth
+                                ? maximumDrawerWidth
+                                : minimumDrawerWidth;
+                          });
+                        } else {
+                          _key.currentState!.openDrawer();
+                        }
+                      },
+                    ),
+
+                    Container(
+                      margin: const EdgeInsets.only(left: 15),
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Image.asset(
+                          'assets/icons/logo.png',
+                          height: 50,
+                        ),
+                      ),
+                    ),
+
+                    Spacer(),
+
+                    //NOTIFICATIONS
+                    PopupMenuButton(
+                      tooltip: "Notifications",
+                      offset: Offset(50, 50),
+                      icon: StreamBuilder<bool>(
+                          stream: rxNotificationService.streamNewMessage$,
+                          builder: (context, result) {
+                            if (result.hasError) {
+                              return Center(
+                                child: Text(
+                                  "${result.error}",
+                                ),
+                              );
+                            }
+                            if (result.hasData) {
+                              return Stack(
+                                children: [
+                                  Icon(Icons.notifications),
+                                  result.data! == true
+                                      ? Positioned(
+                                          // draw a red marble
+                                          top: 0.0,
+                                          right: 0.0,
+                                          child: new Icon(Icons.brightness_1,
+                                              size: 8.0,
+                                              color: Colors.redAccent),
+                                        )
+                                      : Container()
+                                ],
+                              );
+                            } else {
+                              return Icon(Icons.notifications);
+                            }
+                          }),
+                      itemBuilder: (BuildContext context) {
+                        rxNotificationService.openMessage();
+                        return [
+                          PopupMenuItem(
+                            child: Container(
+                              width: 650,
+                              child: StreamBuilder<List<LogModel>>(
+                                  stream: logService.stream$,
+                                  builder: (context, result) {
+                                    if (result.hasError) {
+                                      return Center(
+                                        child: Text(
+                                          "${result.error}",
+                                        ),
+                                      );
+                                    }
+
+                                    if (result.hasData &&
+                                        result.data!.length > 0) {
+                                      return Container(
+                                        width: 650,
+                                        height:
+                                            MediaQuery.of(context).size.height -
+                                                100,
+                                        child: ListView(
+                                          children: List.generate(
+                                              result.data!.length,
+                                              (index) => GestureDetector(
+                                                    onTap: () {
+                                                      scaffoldService
+                                                              .selectedContent =
+                                                          LogScreen();
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Stack(
+                                                      children: [
+                                                        Card(
+                                                          margin: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal: 0,
+                                                                  vertical: 3),
+                                                          child: Column(
+                                                            children: [
+                                                              Container(
+                                                                constraints:
+                                                                    BoxConstraints(
+                                                                        maxHeight:
+                                                                            90),
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                      horizontal:
+                                                                          8),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons
+                                                                            .notification_important_rounded,
+                                                                        color: Colors
+                                                                            .grey,
+                                                                      ),
+                                                                      Expanded(
+                                                                        child:
+                                                                            ListTile(
+                                                                          title:
+                                                                              Text(
+                                                                            "${result.data![index].title}",
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                          ),
+                                                                          subtitle:
+                                                                              Text(
+                                                                            "${result.data![index].body}",
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: MySpacer
+                                                                    .small,
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Positioned(
+                                                          bottom: 10,
+                                                          right: 10,
+                                                          child: Text(
+                                                            "${months[DateTime.parse(result.data![index].created_at!).month]} ${DateTime.parse(result.data![index].created_at!).day}, ${DateTime.parse(result.data![index].created_at!).year}",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black26,
+                                                                fontSize: 13),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        width: 650,
+                                        child: Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                height: MySpacer.small,
+                                              ),
+                                              Image.asset(
+                                                "assets/images/emptynotification.png",
+                                                width: 50,
+                                              ),
+                                              SizedBox(
+                                                height: MySpacer.small,
+                                              ),
+                                              Text("Pas encore de notification")
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  }),
+                            ),
+                          )
+                        ];
+                      },
+                    ),
+                    profileData == null
+                        ? CircleAvatar(
+                            radius: 5,
+                            backgroundColor: Colors.grey.shade100,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ))
+                        : PopupMenuButton(
+                            tooltip: "Admin Profile",
+                            onSelected: (val) async {
+                              activeSettings = true;
+                              if (val == 1) {
+                                scaffoldService.selectedContent =
+                                    GeneralSettings();
+                              } else if (val == 2) {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                        backgroundColor:
+                                            Palette.contentBackground,
+                                        content: ChangePassword()));
+                              } else {
+                                await DataCacher().removeCredentials(context);
+                              }
+                            },
+                            offset: Offset(0, 50),
+                            icon: FittedBox(
+                              child: CircleAvatar(
+                                  backgroundColor: Colors.grey.shade100,
+                                  backgroundImage: fetchImage(
+                                      netWorkImage: profileData!.picture)),
+                            ),
+                            itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    value: 1,
+                                    child: Container(
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.grey.shade100,
+                                              backgroundImage: fetchImage(
+                                                netWorkImage:
+                                                    profileData!.picture,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: MySpacer.medium,
+                                            ),
+                                            Text("${profileData!.firstName!}"),
+                                            Text("${profileData!.email!}"),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                )
-                              ]),
-                    ],
-                  ),
+                                  PopupMenuItem(
+                                    value: 2,
+                                    child: Center(
+                                      child: Text("Changer le mot de passe",
+                                          textAlign: TextAlign.center),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 3,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          "Déconnexion",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ])
+                  ],
                 ),
-                Expanded(
-                  child: Stack(
-                    children: [
-                      Row(
-                        children: [
-                          if (MediaQuery.of(context).size.width > 900) ...{
-                            GestureDetector(
-                              child: AnimatedContainer(
-                                onEnd: () {
-                                  setState(() {
-                                    showDrawerText =
-                                        drawerWidth == maximumDrawerWidth;
-                                  });
-                                  print(showDrawerText);
-                                },
-                                duration: Duration(milliseconds: 100),
-                                width: drawerWidth,
-                                height: MediaQuery.of(context).size.height,
-                                color: widget.drawerBackgroundColor,
-                                child: ListView(
-                                  children: [
-                                    for (DrawerItem item
-                                        in widget.drawerItems!) ...{
-                                      Container(
-                                        color: _selectedContent == item.content
-                                            ? Colors.white
-                                            : Palette.drawerColor,
-                                        width: double.infinity,
-                                        height: 60,
-                                        child: item.subItems != null &&
-                                                item.subItems!.length > 0 &&
-                                                (!showDrawerText)
-                                            ? PopupMenuButton(
-                                                icon: Icon(
-                                                  item.icon,
-                                                  color: _selectedContent ==
-                                                          item.content
-                                                      ? Palette.drawerColor
-                                                      : Colors.white,
-                                                ),
-                                                onSelected: (value) {
-                                                  setState(() {
-                                                    _selectedContent = value;
-                                                  });
-                                                },
-                                                offset: Offset(60, 0),
-                                                itemBuilder: (_) => [
-                                                  for (var sub_items
-                                                      in item.subItems!) ...{
-                                                    PopupMenuItem(
-                                                      value: sub_items.content,
-                                                      child: Row(
-                                                        children: [
-                                                          Icon(
-                                                            sub_items.icon,
+              ),
+              Expanded(
+                child: Stack(
+                  children: [
+                    Row(
+                      children: [
+                        if (MediaQuery.of(context).size.width > 900) ...{
+                          GestureDetector(
+                            child: AnimatedContainer(
+                              onEnd: () {
+                                setState(() {
+                                  showDrawerText =
+                                      drawerWidth == maximumDrawerWidth;
+                                });
+                              },
+                              duration: Duration(milliseconds: 100),
+                              width: drawerWidth,
+                              height: MediaQuery.of(context).size.height,
+                              color: Palette.drawerColor,
+                              child: ListView(
+                                children: [
+                                  for (DrawerItem item
+                                      in widget.drawerItems) ...{
+                                    Container(
+                                      color: scaffoldService.selectedContent ==
+                                              item.content
+                                          ? Colors.white
+                                          : item.subItems != null
+                                              ? item.content == null &&
+                                                      activeSettings
+                                                  ? Colors.white
+                                                  : Palette.drawerColor
+                                              : Palette.drawerColor,
+                                      width: double.infinity,
+                                      height: 60,
+                                      child: item.subItems != null &&
+                                              item.subItems!.length > 0 &&
+                                              (!showDrawerText)
+                                          ? PopupMenuButton(
+                                              tooltip: "Settings",
+                                              icon: Icon(
+                                                item.icon,
+                                                color: item.content == null &&
+                                                        activeSettings
+                                                    ? Palette.drawerColor
+                                                    : Colors.white,
+                                              ),
+                                              onSelected: (value) {
+                                                setState(() {
+                                                  activeSettings = true;
+                                                });
+                                                scaffoldService
+                                                    .selectedContent = value;
+                                              },
+                                              offset: Offset(60, 0),
+                                              itemBuilder: (_) => [
+                                                for (var sub_items
+                                                    in item.subItems!) ...{
+                                                  PopupMenuItem(
+                                                    value: sub_items.content,
+                                                    child: Row(
+                                                      children: [
+                                                        Icon(
+                                                          sub_items.icon,
+                                                        ),
+                                                        if (sub_items.title !=
+                                                            null) ...{
+                                                          const SizedBox(
+                                                            width: 10,
                                                           ),
-                                                          if (sub_items.title !=
-                                                              null) ...{
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                  sub_items
-                                                                      .title!),
-                                                            )
-                                                          }
-                                                        ],
-                                                      ),
-                                                    )
-                                                  }
-                                                ],
-                                              )
-                                            : MaterialButton(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 25),
-                                                onPressed: item.subItems !=
-                                                            null &&
-                                                        item.subItems!.length >
-                                                            0
-                                                    ? () {
-                                                        setState(() {
-                                                          if (_selectedDrawerItem ==
-                                                              item) {
-                                                            _selectedDrawerItem =
-                                                                null;
-                                                          } else {
-                                                            _selectedDrawerItem =
-                                                                item;
-                                                          }
-                                                        });
-                                                      }
-                                                    : item.content != null
-                                                        ? () {
-                                                            setState(() {
-                                                              _selectedContent =
-                                                                  item.content;
-                                                            });
-                                                          }
-                                                        : null,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Icon(item.icon,
-                                                        color:
-                                                            _selectedContent ==
+                                                          Expanded(
+                                                            child: Text(
+                                                                sub_items
+                                                                    .title!),
+                                                          )
+                                                        }
+                                                      ],
+                                                    ),
+                                                  )
+                                                }
+                                              ],
+                                            )
+                                          : MaterialButton(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 25),
+                                              onPressed: item.subItems !=
+                                                          null &&
+                                                      item.subItems!.length > 0
+                                                  ? () {
+                                                      setState(() {
+                                                        if (_selectedDrawerItem ==
+                                                            item) {
+                                                          _selectedDrawerItem =
+                                                              null;
+                                                        } else {
+                                                          _selectedDrawerItem =
+                                                              item;
+                                                        }
+                                                      });
+                                                    }
+                                                  : item.content != null
+                                                      ? () {
+                                                          scaffoldService
+                                                                  .selectedContent =
+                                                              item.content;
+                                                          setState(() {
+                                                            activeSettings =
+                                                                false;
+                                                          });
+                                                        }
+                                                      : null,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Icon(item.icon,
+                                                      color: scaffoldService
+                                                                  .selectedContent ==
+                                                              item.content
+                                                          ? Palette.drawerColor
+                                                          : item.content ==
+                                                                      null &&
+                                                                  activeSettings
+                                                              ? Palette
+                                                                  .drawerColor
+                                                              : Colors.white),
+                                                  if (showDrawerText) ...{
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Expanded(
+                                                      child: Text(
+                                                        "${item.text}",
+                                                        style: TextStyle(
+                                                            color: scaffoldService
+                                                                        .selectedContent ==
                                                                     item.content
                                                                 ? Palette
                                                                     .drawerColor
-                                                                : Colors.white),
-                                                    if (showDrawerText) ...{
-                                                      const SizedBox(
-                                                        width: 10,
+                                                                : item.content ==
+                                                                            null &&
+                                                                        activeSettings
+                                                                    ? Palette
+                                                                        .drawerColor
+                                                                    : Colors
+                                                                        .white),
                                                       ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          "${item.text}",
-                                                          style: TextStyle(
-                                                              color: _selectedContent ==
-                                                                      item
-                                                                          .content
-                                                                  ? Palette
-                                                                      .drawerColor
-                                                                  : Colors
-                                                                      .white),
-                                                        ),
-                                                      )
-                                                    },
-                                                    Spacer(),
-                                                    if ((item.subItems !=
-                                                                null &&
-                                                            item.subItems!
-                                                                    .length >
-                                                                0) &&
-                                                        showDrawerText) ...{
-                                                      Icon(_selectedDrawerItem ==
+                                                    )
+                                                  },
+                                                  Spacer(),
+                                                  if ((item.subItems != null &&
+                                                          item.subItems!
+                                                                  .length >
+                                                              0) &&
+                                                      showDrawerText) ...{
+                                                    Icon(
+                                                      _selectedDrawerItem ==
                                                               item
                                                           ? Icons
                                                               .keyboard_arrow_up
                                                           : Icons
-                                                              .keyboard_arrow_down)
-                                                    }
-                                                  ],
-                                                ),
+                                                              .keyboard_arrow_down,
+                                                      color: item.content ==
+                                                                  null &&
+                                                              activeSettings
+                                                          ? Palette.drawerColor
+                                                          : Colors.white,
+                                                    )
+                                                  }
+                                                ],
                                               ),
-                                      ),
-                                      if ((item.subItems != null &&
-                                              item.subItems!.length > 0) &&
-                                          showDrawerText) ...{
-                                        for (var sub_items
-                                            in item.subItems!) ...{
-                                          AnimatedContainer(
-                                              width: double.infinity,
-                                              color: _selectedContent ==
-                                                      sub_items.content
-                                                  ? Colors.grey[200]
-                                                  : Colors.transparent,
-                                              height:
-                                                  _selectedDrawerItem == item
-                                                      ? 60
-                                                      : 0,
-                                              duration: Duration(
-                                                  milliseconds: 100 *
-                                                      (item.subItems!.indexOf(
-                                                              sub_items) +
-                                                          1)),
-                                              child: MaterialButton(
-                                                onPressed: sub_items.content !=
-                                                        null
-                                                    ? () {
-                                                        setState(() {
-                                                          _selectedContent =
-                                                              sub_items.content;
-                                                        });
-                                                      }
-                                                    : null,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 35),
-                                                child: Row(
-                                                  children: [
-                                                    if (_selectedDrawerItem ==
-                                                        item) ...{
-                                                      Icon(
-                                                        sub_items.icon,
-                                                        color: Colors.white,
-                                                      ),
-                                                    },
-                                                    if (sub_items.title !=
-                                                        null) ...{
-                                                      const SizedBox(
-                                                        width: 10,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          sub_items.title!,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      )
+                                            ),
+                                    ),
+                                    if ((item.subItems != null &&
+                                            item.subItems!.length > 0) &&
+                                        showDrawerText) ...{
+                                      for (var sub_items in item.subItems!) ...{
+                                        AnimatedContainer(
+                                            width: double.infinity,
+                                            color: scaffoldService
+                                                        .selectedContent ==
+                                                    sub_items.content
+                                                ? Colors.white38
+                                                : Colors.transparent,
+                                            height: _selectedDrawerItem == item
+                                                ? 60
+                                                : 0,
+                                            duration: Duration(
+                                                milliseconds: 100 *
+                                                    (item.subItems!.indexOf(
+                                                            sub_items) +
+                                                        1)),
+                                            child: MaterialButton(
+                                              onPressed: sub_items.content !=
+                                                      null
+                                                  ? () {
+                                                      scaffoldService
+                                                              .selectedContent =
+                                                          sub_items.content;
+                                                      setState(() {
+                                                        activeSettings = true;
+                                                      });
                                                     }
-                                                  ],
-                                                ),
-                                              ))
-                                        }
+                                                  : null,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 35),
+                                              child: Row(
+                                                children: [
+                                                  if (_selectedDrawerItem ==
+                                                      item) ...{
+                                                    Icon(
+                                                      sub_items.icon,
+                                                      color: scaffoldService
+                                                                  .selectedContent ==
+                                                              sub_items.content
+                                                          ? Palette.drawerColor
+                                                          : Colors.white,
+                                                    ),
+                                                  },
+                                                  if (sub_items.title !=
+                                                      null) ...{
+                                                    const SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Expanded(
+                                                      child: Text(
+                                                        sub_items.title!,
+                                                        style: TextStyle(
+                                                            color: scaffoldService
+                                                                        .selectedContent ==
+                                                                    sub_items
+                                                                        .content
+                                                                ? Palette
+                                                                    .drawerColor
+                                                                : Colors.white),
+                                                      ),
+                                                    )
+                                                  }
+                                                ],
+                                              ),
+                                            ))
                                       }
                                     }
-                                  ],
-                                ),
+                                  }
+                                ],
                               ),
-                            )
-                          },
-                          Expanded(child: _selectedContent)
-                        ],
-                      ),
-                    ],
-                  ),
+                            ),
+                          )
+                        },
+                        Expanded(child: scaffoldService.selectedContent)
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 }

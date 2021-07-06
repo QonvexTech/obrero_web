@@ -4,16 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/firebase_message.dart';
-
 import '../config/global.dart';
 import '../models/employes_model.dart';
 
 class MessageService extends ChangeNotifier {
   List<EmployeesModel> _usersToMessage = [];
   TextEditingController messageController = TextEditingController();
-
   List<EmployeesModel> get userToMessage => _usersToMessage;
 
   void messageUpdate() {
@@ -25,25 +22,28 @@ class MessageService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> sendMessage(
-      {required String ids, String? message, String? base64File}) async {
-    //ids = 1,2,3
-    //
+  void removeUser(EmployeesModel user) {
+    _usersToMessage.remove(user);
+    notifyListeners();
+  }
 
+  Future<bool> sendMessage(
+      {required String ids, String? message, String? base64File}) async {
+    bool successSend = false;
     try {
       Map body = {
         "to": ids,
       };
       String mess = '';
       if (message != null) {
-        body['message'] = message;
+        body.addAll({"message": message});
         mess = message;
       }
+
       if (base64File != null) {
-        body['file'] = base64File;
+        body.addAll({"file": "data:image/jpg;base64,$base64File"});
         mess = "Sent an attachment";
       }
-      print(ids);
 
       var url = Uri.parse(message_send_api);
       await http.post(url, body: body, headers: {
@@ -51,7 +51,7 @@ class MessageService extends ChangeNotifier {
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) async {
         var data = json.decode(response.body);
-        print(data);
+
         if (data['data'] is List) {
           for (var item in data['data']) {
             Map<String, dynamic> nBody = Map<String, dynamic>();
@@ -68,7 +68,27 @@ class MessageService extends ChangeNotifier {
           await FireBase().sendNotification(
               data['data']['fcm_tokens'], nBody, data['data']);
         }
+        print(data);
       });
-    } catch (e) {}
+      return true;
+    } catch (e) {
+      return successSend;
+    }
+  }
+
+  Future showHistory() async {
+    try {
+      var url = Uri.parse(message_history);
+      await http.get(url, headers: {
+        "accept": "application/json",
+        HttpHeaders.authorizationHeader: "Bearer $authToken"
+      }).then((response) {
+        var data = json.decode(response.body);
+        print("HISTORY MESSAGES");
+        historyMessages = data["data"];
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 }

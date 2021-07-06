@@ -4,6 +4,7 @@ import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/employes_model.dart';
 import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/services/settings/helper.dart';
 
 class EmployeeAdd extends StatefulWidget {
   final EmployeesModel? userToEdit;
@@ -12,18 +13,14 @@ class EmployeeAdd extends StatefulWidget {
   _CustomerAddState createState() => _CustomerAddState();
 }
 
-class _CustomerAddState extends State<EmployeeAdd> {
+class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
+  Map<dynamic, dynamic>? countryValue = countries[66];
   bool isEdit = false;
   Map<String, dynamic> bodyToUpdate = {};
-  //TODO: complete the fields
-  // String? picture;
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  // TextEditingController countryController = TextEditingController();
-  // TextEditingController stateController = TextEditingController();
-  // TextEditingController cityController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -42,28 +39,60 @@ class _CustomerAddState extends State<EmployeeAdd> {
 
   @override
   Widget build(BuildContext context) {
-    // Admin admin = Provider.of<Authentication>(context, listen: false).data;s
+    EmployeeSevice employeeService = Provider.of<EmployeeSevice>(context);
 
-    EmployeeSevice employeeService =
-        Provider.of<EmployeeSevice>(context, listen: false);
     final Size size = MediaQuery.of(context).size;
     return Container(
-      width: size.width - (size.width * .5),
-      height: size.height / 2,
+      width: size.width,
+      height: size.height,
+      constraints:
+          BoxConstraints(maxWidth: 800, maxHeight: (size.height * 0.7) + 15),
+      padding: EdgeInsets.all(10),
       child: Form(
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            "Ajouter un employé",
+            style: Theme.of(context)
+                .textTheme
+                .headline5!
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: MySpacer.large,
+          ),
           Expanded(
               child: Scrollbar(
                   child: ListView(
             children: [
-              Text(
-                "Ajouter un Employee",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5!
-                    .copyWith(fontWeight: FontWeight.bold),
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.height * .15,
+                      height: MediaQuery.of(context).size.height * .15,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10000),
+                          color: Colors.grey.shade100,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.shade400,
+                              offset: Offset(3, 3),
+                              blurRadius: 2,
+                            )
+                          ],
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              alignment: AlignmentDirectional.center,
+                              image: tempImageProvider(
+                                  file: employeeService.base64Image,
+                                  netWorkImage: widget.userToEdit?.picture,
+                                  defaultImage: 'icons/admin_icon.png'),
+                              scale: 1)),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: MySpacer.large,
@@ -84,7 +113,7 @@ class _CustomerAddState extends State<EmployeeAdd> {
               ),
               TextField(
                 decoration: InputDecoration(
-                  hintText: "Nom de famillie",
+                  hintText: "Nom de famille",
                   hintStyle: transHeader,
                   border: OutlineInputBorder(),
                 ),
@@ -99,6 +128,7 @@ class _CustomerAddState extends State<EmployeeAdd> {
               TextField(
                 decoration: InputDecoration(
                   hintText: "Email",
+                  hintStyle: transHeader,
                   border: OutlineInputBorder(),
                 ),
                 controller: emailController,
@@ -106,11 +136,15 @@ class _CustomerAddState extends State<EmployeeAdd> {
                   bodyToUpdate.addAll({"email": value});
                 },
               ),
+              SizedBox(
+                height: MySpacer.small,
+              ),
               isEdit
                   ? SizedBox()
                   : TextField(
                       decoration: InputDecoration(
-                        hintText: "Password",
+                        hintText: "Mot de passe",
+                        hintStyle: transHeader,
                         border: OutlineInputBorder(),
                       ),
                       controller: passwordController,
@@ -121,6 +155,7 @@ class _CustomerAddState extends State<EmployeeAdd> {
               TextField(
                 decoration: InputDecoration(
                   hintText: "Téléphone",
+                  hintStyle: transHeader,
                   border: OutlineInputBorder(),
                 ),
                 controller: contactNumberController,
@@ -131,127 +166,184 @@ class _CustomerAddState extends State<EmployeeAdd> {
               SizedBox(
                 height: MySpacer.small,
               ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Address",
-                  border: OutlineInputBorder(),
-                ),
-                controller: addressController,
-                onChanged: (value) {
-                  bodyToUpdate.addAll({"address": value});
-                },
-              ),
+              MediaQuery.of(context).size.width > 800
+                  ? Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: DropdownButton<Map<dynamic, dynamic>>(
+                            underline: null,
+                            hint: Text("Pays"),
+                            value: countryValue,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Palette.drawerColor),
+                            onChanged: (Map<dynamic, dynamic>? newValue) {
+                              setState(() {
+                                countryValue = newValue!;
+                              });
+                            },
+                            items: countries
+                                .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                    (value) {
+                              return DropdownMenuItem<Map<dynamic, dynamic>>(
+                                value: value,
+                                child: Text(
+                                  value["name"],
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        SizedBox(
+                          width: MySpacer.small,
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: TextField(
+                            onChanged: (value) {
+                              bodyToUpdate.addAll({"address": value});
+                            },
+                            decoration: InputDecoration(
+                              hintStyle: transHeader,
+                              hintText: "Adresse",
+                              border: OutlineInputBorder(),
+                            ),
+                            controller: addressController,
+                          ),
+                        ),
+                      ],
+                    )
+                  : SizedBox(),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      child: DropdownButton<Map<dynamic, dynamic>>(
+                        underline: null,
+                        hint: Text("Pays"),
+                        value: countryValue,
+                        icon: Icon(Icons.arrow_drop_down),
+                        iconSize: 24,
+                        elevation: 16,
+                        style: TextStyle(color: Palette.drawerColor),
+                        onChanged: (Map<dynamic, dynamic>? newValue) {
+                          setState(() {
+                            countryValue = newValue!;
+                          });
+                        },
+                        items: countries
+                            .map<DropdownMenuItem<Map<dynamic, dynamic>>>(
+                                (value) {
+                          return DropdownMenuItem<Map<dynamic, dynamic>>(
+                            value: value,
+                            child: Text(
+                              value["name"],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    )
+                  : SizedBox(),
               SizedBox(
-                height: MySpacer.small,
-              ),
-
-              // Row(
-              //   children: [
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "State",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "City",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // SizedBox(
-              //   height: MySpacer.large,
-              // ),
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "Démarrer",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //     SizedBox(
-              //       width: MySpacer.large,
-              //     ),
-              //     Expanded(
-              //       child: TextField(
-              //         decoration: InputDecoration(
-              //           hintText: "Terminer",
-              //           border: OutlineInputBorder(),
-              //         ),
-              //         controller: addressController,
-              //       ),
-              //     ),
-              //   ],
-              // ),
+                  width: MediaQuery.of(context).size.width < 800
+                      ? 0
+                      : MySpacer.small),
+              MediaQuery.of(context).size.width < 800
+                  ? Expanded(
+                      flex: 3,
+                      child: TextField(
+                        onChanged: (value) {
+                          bodyToUpdate.addAll({"address": value});
+                        },
+                        decoration: InputDecoration(
+                          hintStyle: transHeader,
+                          hintText: "Adresse",
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: addressController,
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ))),
-          // const SizedBox(
-          //   height: MySpacer.small,
-          // ),
-
-          MaterialButton(
+          const SizedBox(
+            height: MySpacer.small,
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
             height: 60,
-            minWidth: double.infinity,
-            color: Palette.drawerColor,
-            onPressed: () {
-              if (isEdit) {
-                bodyToUpdate
-                    .addAll({"user_id": widget.userToEdit!.id.toString()});
-                print(bodyToUpdate);
-                employeeService.updateUser(body: bodyToUpdate).whenComplete(() {
-                  setState(() {
-                    widget.userToEdit!.fname = fnameController.text;
-                    widget.userToEdit!.lname = lnameController.text;
-                    widget.userToEdit!.email = emailController.text;
-                    widget.userToEdit!.address = addressController.text;
-                    widget.userToEdit!.contactNumber =
-                        contactNumberController.text;
-                  });
-                  Navigator.pop(context);
-                });
-              } else {
-                EmployeesModel newEmployee = EmployeesModel(
-                  fname: fnameController.text,
-                  lname: lnameController.text,
-                  email: emailController.text,
-                  password: passwordController.text,
-                  address: addressController.text,
-                  contactNumber: contactNumberController.text,
-                );
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    child: MaterialButton(
+                      color: Colors.grey[200],
+                      height: 60,
+                      minWidth: double.infinity,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Annuler",
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: MySpacer.medium),
+                Expanded(
+                    flex: 2,
+                    child: MaterialButton(
+                      height: 60,
+                      minWidth: double.infinity,
+                      color: Palette.drawerColor,
+                      onPressed: () {
+                        if (isEdit) {
+                          bodyToUpdate.addAll(
+                              {"user_id": widget.userToEdit!.id.toString()});
+                          print("bodytoedit: $bodyToUpdate");
+                          employeeService
+                              .updateUser(body: bodyToUpdate)
+                              .whenComplete(() {
+                            setState(() {
+                              widget.userToEdit!.fname = fnameController.text;
+                              widget.userToEdit!.lname = lnameController.text;
+                              widget.userToEdit!.email = emailController.text;
+                              widget.userToEdit!.address =
+                                  addressController.text;
+                              widget.userToEdit!.contactNumber =
+                                  contactNumberController.text;
+                            });
+                            Navigator.pop(context);
+                          });
+                        } else {
+                          EmployeesModel newEmployee = EmployeesModel(
+                            fname: fnameController.text,
+                            lname: lnameController.text,
+                            email: emailController.text,
+                            password: passwordController.text,
+                            address: addressController.text +
+                                ", ${countryValue!["name"]}",
+                            contactNumber: contactNumberController.text,
+                          );
 
-                employeeService
-                    .createUser(newEmployee)
-                    .whenComplete(() => Navigator.pop(context));
-              }
-            },
-            child: Text(
-              isEdit ? "Save Edit" : "Caréer",
-              style: TextStyle(color: Colors.white),
+                          employeeService
+                              .createUser(newEmployee)
+                              .whenComplete(() {
+                            Navigator.pop(context);
+                          });
+                        }
+                      },
+                      child: Text(
+                        isEdit ? "Sauvegarder" : "Créer",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )),
+              ],
             ),
           )
-
-          //TODO: dropdown client
-          //TODO: map or coordinates
-          // TODO: warnigs
-          // TODO:Start date/end
         ],
       )),
     );

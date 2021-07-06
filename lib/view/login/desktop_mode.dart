@@ -36,12 +36,10 @@ class _DesktopModeState extends State<DesktopMode> {
                           flex: 1,
                           child: Container(
                               padding: EdgeInsets.only(top: 20),
-                              color: Color.fromRGBO(41, 187, 255, 1),
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Image.network(
-                                        'https://raw.githubusercontent.com/RonaldoMurakamiK/flutter-web-login-ui/master/assets/images/login-form.png',
+                                    Image.asset('assets/icons/logo.png',
                                         height: heightSize * 0.2,
                                         width: widthSize * 0.15),
                                     SizedBox(height: 20),

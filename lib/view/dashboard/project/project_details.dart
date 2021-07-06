@@ -1,420 +1,795 @@
+import 'package:adaptive_container/adaptive_container.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/widgets/basicButton.dart';
+import 'package:uitemplate/services/add_warning_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/scaffold_service.dart';
+import 'package:uitemplate/services/settings/helper.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
+import 'package:uitemplate/view/dashboard/messages/message_screen.dart';
+import 'package:uitemplate/view/dashboard/project/project_add.dart';
+import 'package:uitemplate/view/dashboard/project/project_list.dart';
+import 'package:uitemplate/widgets/add_warning_screen.dart';
+import 'package:uitemplate/widgets/back_button.dart';
 
-class ProjectDetails extends StatelessWidget {
+class ProjectDetails extends StatefulWidget {
+  final String fromPage;
+
+  const ProjectDetails({Key? key, required this.fromPage}) : super(key: key);
+
+  @override
+  _ProjectDetailsState createState() => _ProjectDetailsState();
+}
+
+class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
+  @override
+  void initState() {
+    Provider.of<ProjectProvider>(context, listen: false).initHours(
+        Provider.of<ProjectProvider>(context, listen: false)
+            .projectOnDetails
+            .id!);
+    super.initState();
+  }
+
+  bool showWarning = true;
+  double warningHeight = 200;
+
   @override
   Widget build(BuildContext context) {
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+
+    var scaff = Provider.of<ScaffoldService>(context);
     return Container(
-      child: Row(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      color: Palette.contentBackground,
+      child: Stack(
         children: [
-          Expanded(
-            flex: 2,
-            child: Container(
-              color: Palette.contentBackground,
-              padding: EdgeInsets.all(50),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Chantier XYZ",
-                            style: Theme.of(context).textTheme.headline5,
-                          ),
-                          Text(
-                            "Planifié du 03/05/20 au 06/07/20",
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                        ],
-                      ),
-                      Spacer(),
-                      BasicButton(buttonText: "Planning"),
-                      SizedBox(
-                        width: MySpacer.medium,
-                      ),
-                      BasicButton(buttonText: "Logs")
-                    ],
-                  ),
-                  SizedBox(
-                    height: MySpacer.large,
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
+          AdaptiveContainer(children: [
+            AdaptiveItem(
+              content: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    widget.fromPage == "dashboard"
+                        ? Container()
+                        : backButton(
+                            context,
+                            projectProvider.setPage,
+                            widget.fromPage == "project"
+                                ? ProjectList(
+                                    assignUser: false,
+                                  )
+                                : CustomerList()),
+                    Text(
+                      projectProvider.projectOnDetails!.name!,
+                      style: Theme.of(context).textTheme.headline5,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      "Planifié du ${months[projectProvider.projectOnDetails!.startDate.month]} ${projectProvider.projectOnDetails!.startDate.day}, ${projectProvider.projectOnDetails!.startDate.year} au ${months[projectProvider.projectOnDetails!.endDate.month]} ${projectProvider.projectOnDetails!.endDate.day}, ${projectProvider.projectOnDetails!.endDate.year} ",
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(
+                      height: MySpacer.large,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Téléphone", style: transHeader),
-                            SizedBox(
-                              height: MySpacer.small,
-                            ),
-                            Text("1234-678-899", style: boldText)
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Email", style: transHeader),
+                            Text("Surface", style: transHeader),
                             SizedBox(
                               height: MySpacer.small,
                             ),
                             Text(
-                              "Johndoe@gmail.com",
-                              style: boldText,
-                            )
+                                projectProvider.projectOnDetails!.areaSize
+                                    .toString(),
+                                style: boldText)
                           ],
                         ),
-                      ),
-                      Expanded(
-                        child: Column(
+                        Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("Adresse", style: transHeader),
                             SizedBox(
                               height: MySpacer.small,
                             ),
-                            Text("LOREM IPSUM", style: boldText)
+                            Text(
+                              projectProvider.projectOnDetails!.address != null
+                                  ? "${projectProvider.projectOnDetails!.address}"
+                                  : "${projectProvider.projectOnDetails!.coordinates!.latitude},${projectProvider.projectOnDetails!.coordinates!.longitude}",
+                              style: boldText,
+                            )
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: MySpacer.large,
-                  ),
-                  Text(
-                    "Description",
-                    style: transHeader,
-                  ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Propriétaire", style: transHeader),
+                            SizedBox(
+                              height: MySpacer.small,
+                            ),
+                            Text(
+                                "${projectProvider.projectOnDetails!.owner!.fname!} ${projectProvider.projectOnDetails!.owner!.lname!}",
+                                style: boldText)
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: MySpacer.large,
+                    ),
+                    Text(
+                      "Description",
+                      style: transHeader,
+                    ),
+                    SizedBox(
+                      height: MySpacer.small,
+                    ),
+                    Text(projectProvider.projectOnDetails!.description!),
+                    SizedBox(
+                      height: MySpacer.large,
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Personnes intervenant sur le chantier",
+                          style: transHeader,
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              scaff.selectedContent = MessageScreen(
+                                  recepients: projectProvider
+                                      .projectOnDetails!.assignees!);
+                              if (widget.fromPage == "dashboard") {
+                                Navigator.pop(context);
+                              }
+                            },
+                            icon: Icon(
+                              Icons.message_rounded,
+                              color: Palette.drawerColor,
+                            ))
+                      ],
+                    ),
+                    projectProvider.projectOnDetails!.assignees!.length <= 0
+                        ? DottedBorder(
+                            color: Colors.black12,
+                            strokeWidth: 2,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height * 0.1,
+                              child: Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                                backgroundColor:
+                                                    Palette.contentBackground,
+                                                content: ProjectAddScreen(
+                                                  projectToEdit: projectProvider
+                                                      .projectOnDetails,
+                                                )));
+                                      },
+                                      icon: Icon(
+                                        Icons.add_circle,
+                                        color: Palette.drawerColor,
+                                      ),
+                                    ),
+                                    Text("Assign Employees"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: MediaQuery.of(context).size.height * 0.09,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                for (var x in projectProvider
+                                    .projectOnDetails!.assignees!)
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    height: 80,
+                                    child: Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 30,
+                                          backgroundColor:
+                                              Palette.contentBackground,
+                                          backgroundImage: fetchImage(
+                                              netWorkImage: x.picture),
+                                        ),
+                                        SizedBox(
+                                          width: MySpacer.small,
+                                        ),
+                                        Text(
+                                          "${x.fname!} ${x.lname!}",
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                              ],
+                            ),
+                          ),
+                    SizedBox(
+                      height: MySpacer.medium,
+                    ),
+                    projectProvider.projectOnDetails!.images!.length == 0
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Photos",
+                                style: transHeader,
+                              ),
+                              SizedBox(height: MySpacer.small),
+                              DottedBorder(
+                                color: Colors.black12,
+                                strokeWidth: 2,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.2,
+                                  child: Center(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                    backgroundColor: Palette
+                                                        .contentBackground,
+                                                    content: ProjectAddScreen(
+                                                      projectToEdit:
+                                                          projectProvider
+                                                              .projectOnDetails,
+                                                    )));
+                                          },
+                                          icon: Icon(
+                                            Icons.upload_rounded,
+                                            color: Palette.drawerColor,
+                                          ),
+                                        ),
+                                        Text("Importer image")
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: MySpacer.small),
+                            ],
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Images",
+                                style: transHeader,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                height: projectProvider
+                                            .projectOnDetails!.images!.length >=
+                                        3
+                                    ? projectProvider
+                                            .projectOnDetails!.images!.length /
+                                        3 *
+                                        200
+                                    : 200,
+                                width: MediaQuery.of(context).size.width,
+                                child: GridView.count(
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                  shrinkWrap: true,
+                                  childAspectRatio: 1.5,
+                                  crossAxisCount: 3,
+                                  children: [
+                                    for (var image in projectProvider
+                                        .projectOnDetails!.images!.reversed)
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: tempImageProvider(
+                                                  netWorkImage: image.url,
+                                                  defaultImage:
+                                                      "images/emptyImage.jpg")),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                  ],
+                ),
+              ),
+            ),
+            AdaptiveItem(
+                content: Container(
+              color: Palette.contentBackground,
+              padding: EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   SizedBox(
                     height: MySpacer.small,
                   ),
                   Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscingaadadfbv elit, sed do eius  mod tempor incididunt ut labore et dolore magnmagnaaliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+                    "Statistics",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            "Heures Totales",
+                            style: transHeader.copyWith(fontSize: 10),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                projectProvider.hours,
+                                style: Theme.of(context).textTheme.headline3,
+                              ),
+                              Text(
+                                "/hrs",
+                                style: TextStyle(fontSize: 10),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      // Column(
+                      //   children: [
+                      //     Text(
+                      //       "Progres Totales",
+                      //       style: transHeader.copyWith(fontSize: 10),
+                      //     ),
+                      //     Row(
+                      //       crossAxisAlignment: CrossAxisAlignment.end,
+                      //       children: [
+                      //         Text(
+                      //           "60%",
+                      //           style: Theme.of(context).textTheme.headline3,
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ],
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Divider(
+                          thickness: 4,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            "Avertissement Total",
+                            style: transHeader.copyWith(fontSize: 10),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "${projectProvider.projectOnDetails!.warnings!.length}",
+                                style: Theme.of(context).textTheme.headline3,
+                              ),
+                              Text(
+                                "Alerte",
+                                style: TextStyle(fontSize: 10),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                   SizedBox(
                     height: MySpacer.large,
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                          child: Container(
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                            ),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text(
-                              "JOHN DOE",
-                            ),
-                          ],
-                        ),
-                      )),
-                      Expanded(
-                          child: Container(
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                            ),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text(
-                              "JANE DOE",
-                            ),
-                          ],
-                        ),
-                      )),
-                      Expanded(
-                          child: Container(
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 30,
-                            ),
-                            SizedBox(
-                              width: MySpacer.small,
-                            ),
-                            Text(
-                              "JOHN DOE",
-                            ),
-                          ],
-                        ),
-                      )),
+                      Text(
+                        "Alertes",
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.add_circle),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                    backgroundColor: Palette.contentBackground,
+                                    content: AddWaringScreen(
+                                      projectId:
+                                          projectProvider.projectOnDetails!.id!,
+                                    )));
+                          })
                     ],
-                  ),
-                  SizedBox(
-                    height: MySpacer.large,
-                  ),
-                  Text(
-                    "Photo",
-                    style: transHeader,
                   ),
                   SizedBox(
                     height: MySpacer.small,
                   ),
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      shrinkWrap: true,
-                      crossAxisCount: 3,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                  child: Container(
-                                color: Colors.red,
-                              )),
-                              Text("Title")
-                            ],
-                          ),
-                        ),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                  child: Container(
-                                color: Colors.red,
-                              )),
-                              Text("Title")
-                            ],
-                          ),
-                        ),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                  child: Container(
-                                color: Colors.red,
-                              )),
-                              Text("Title")
-                            ],
-                          ),
-                        ),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                  child: Container(
-                                color: Colors.red,
-                              )),
-                              Text("Title")
-                            ],
-                          ),
-                        ),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                  child: Container(
-                                color: Colors.red,
-                              )),
-                              Text("Title")
-                            ],
-                          ),
-                        ),
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                  child: Container(
-                                color: Colors.red,
-                              )),
-                              Text("Title")
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-              child: Container(
-            color: Palette.contentBackground,
-            padding: EdgeInsets.all(50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Statistics",
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                SizedBox(
-                  height: MySpacer.large,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          "Heures Totales",
-                          style: transHeader.copyWith(fontSize: 10),
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "126",
-                              style: Theme.of(context).textTheme.headline3,
-                            ),
-                            Text(
-                              "/hrs",
-                              style: TextStyle(fontSize: 10),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    Divider(
-                      thickness: 3,
-                      color: Colors.grey,
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          "Heures Totales",
-                          style: transHeader.copyWith(fontSize: 10),
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "126",
-                              style: Theme.of(context).textTheme.headline3,
-                            ),
-                            Text(
-                              "/hrs",
-                              style: TextStyle(fontSize: 10),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    Divider(
-                      thickness: 3,
-                      color: Colors.grey,
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          "Heures Totales",
-                          style: transHeader.copyWith(fontSize: 10),
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              "126",
-                              style: Theme.of(context).textTheme.headline3,
-                            ),
-                            Text(
-                              "/hrs",
-                              style: TextStyle(fontSize: 10),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: MySpacer.large,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Statistics",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    BasicButton(buttonText: "Warning")
-                  ],
-                ),
-                SizedBox(
-                  height: MySpacer.small,
-                ),
-                Expanded(
-                  child: Container(
-                    child: ListView(
-                      children: [
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.notification_important),
-                            title: Row(
+                  projectProvider.projectOnDetails!.warnings.length == 0
+                      ? Container(
+                          height: 200,
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text("Chantier"),
-                                SizedBox(
-                                  width: MySpacer.small,
+                                Card(
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 150,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.notifications_none_sharp,
+                                              size: 50, color: Colors.grey),
+                                          Text("Pas encore d'alertes")
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                Text("Avril")
                               ],
                             ),
-                            subtitle: Text(
-                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                          ),
-                        ),
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.notification_important),
-                            title: Row(
-                              children: [
-                                Text("Chantier"),
-                                SizedBox(
-                                  width: MySpacer.small,
-                                ),
-                                Text("Avril")
-                              ],
-                            ),
-                            subtitle: Text(
-                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                          ),
-                        ),
-                        Card(
-                          child: ListTile(
-                            leading: Icon(Icons.notification_important),
-                            title: Row(
-                              children: [
-                                Text("Chantier"),
-                                SizedBox(
-                                  width: MySpacer.small,
-                                ),
-                                Text("Avril")
-                              ],
-                            ),
-                            subtitle: Text(
-                                "Attention, il nous manque les plaques pour le toit de la terrasse"),
                           ),
                         )
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ))
+                      : Container(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          width: MediaQuery.of(context).size.width / 2,
+                          // constraints: BoxConstraints(minw),
+                          child: ListView(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            children: List.generate(
+                                projectProvider.projectOnDetails!.warnings
+                                    .length, (index) {
+                              return Slidable(
+                                actionPane: SlidableDrawerActionPane(),
+                                secondaryActions: [
+                                  IconSlideAction(
+                                      caption: 'Supprimer',
+                                      color: Colors.transparent,
+                                      foregroundColor: Colors.red,
+                                      icon: Icons.delete,
+                                      onTap: () {
+                                        AddWarning()
+                                            .removeWarning(projectProvider
+                                                .projectOnDetails!
+                                                .warnings[index]
+                                                .id)
+                                            .whenComplete(() {
+                                          setState(() {
+                                            projectProvider
+                                                .projectOnDetails!.warnings!
+                                                .remove(projectProvider
+                                                    .projectOnDetails!
+                                                    .warnings[index]);
+                                          });
+                                        });
+                                      }),
+                                ],
+                                child: Card(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            left: BorderSide(
+                                                color: colorsSettings[
+                                                        projectProvider
+                                                            .projectOnDetails!
+                                                            .warnings[index]
+                                                            .type]
+                                                    .color!,
+                                                width: 7))),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20),
+                                          child: Icon(
+                                            Icons
+                                                .notification_important_rounded,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: ListTile(
+                                                title: Text(
+                                                    "${projectProvider.projectOnDetails!.warnings[index].title}"),
+                                                subtitle: ReadMoreText(
+                                                  projectProvider
+                                                      .projectOnDetails!
+                                                      .warnings[index]
+                                                      .description,
+                                                  trimLines: 1,
+                                                  trimLength: 120,
+                                                  trimMode: TrimMode.Length,
+                                                  trimCollapsedText:
+                                                      'Montre plus',
+                                                  trimExpandedText:
+                                                      'Montrer moins',
+                                                  style: TextStyle(
+                                                      color: Colors.black),
+                                                  moreStyle: TextStyle(
+                                                      color:
+                                                          Palette.drawerColor,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  lessStyle: TextStyle(
+                                                      color:
+                                                          Palette.drawerColor,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ),
+                  // Container(
+                  //   width: MediaQuery.of(context).size.width,
+                  //   height: warningHeight,
+                  //   child: StreamBuilder<List<LogModel>>(
+                  //     builder: (context, result) {
+                  //       if (result.hasError) {
+                  //         return Center(
+                  //           child: Text(
+                  //             "${result.error}",
+                  //           ),
+                  //         );
+                  //       }
+
+                  //       if (result.hasData && result.data!.length > 0) {
+                  //         List<LogModel>? warnings() {
+                  //           List<LogModel> newWarnings = [];
+                  //           for (LogModel log in result.data!) {
+                  //             if (log.type == "project_warning" &&
+                  //                 log.data_id ==
+                  //                     projectProvider.projectOnDetails!.id) {
+                  //               newWarnings.add(log);
+                  //             }
+                  //           }
+
+                  //           return newWarnings;
+                  //         }
+
+                  //         if (warnings()!.length <= 0) {
+                  //           showWarning = false;
+                  //           return Container(
+                  //             height: 50,
+                  //             child: Center(
+                  //               child: Column(
+                  //                 mainAxisAlignment: MainAxisAlignment.start,
+                  //                 children: [
+                  //                   Card(
+                  //                     child: Container(
+                  //                       width:
+                  //                           MediaQuery.of(context).size.width,
+                  //                       height: 150,
+                  //                       child: Center(
+                  //                         child: Column(
+                  //                           mainAxisAlignment:
+                  //                               MainAxisAlignment.center,
+                  //                           children: [
+                  //                             Icon(
+                  //                                 Icons
+                  //                                     .notifications_none_sharp,
+                  //                                 size: 50,
+                  //                                 color: Colors.grey),
+                  //                             Text(
+                  //                                 "Pas encore d'avertissements!")
+                  //                           ],
+                  //                         ),
+                  //                       ),
+                  //                     ),
+                  //                   ),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           );
+                  //         } else {
+                  //           warningHeight = 0;
+                  //         }
+
+                  //         return SizedBox();
+                  //       } else {
+                  //         return Container(
+                  //           child: LogsLoader.load(),
+                  //         );
+                  //       }
+                  //     },
+                  //     stream: logService.stream$,
+                  //   ),
+                  // ),
+                  // showWarning
+                  //     ? Container(
+                  //         width: MediaQuery.of(context).size.width,
+                  //         height: MediaQuery.of(context).size.height * 0.7,
+                  //         child: StreamBuilder<List<LogModel>>(
+                  //           builder: (context, result) {
+                  //             if (result.hasError) {
+                  //               return Center(
+                  //                 child: Text(
+                  //                   "${result.error}",
+                  //                 ),
+                  //               );
+                  //             }
+
+                  //             if (result.hasData && result.data!.length > 0) {
+                  //               List<LogModel>? warnings() {
+                  //                 List<LogModel> newWarnings = [];
+                  //                 for (LogModel log in result.data!) {
+                  //                   if (log.type == "project_warning" &&
+                  //                       log.data_id ==
+                  //                           projectProvider
+                  //                               .projectOnDetails!.id) {
+                  //                     newWarnings.add(log);
+                  //                   }
+                  //                 }
+
+                  //                 return newWarnings;
+                  //               }
+
+                  //               if (warnings()!.length <= 0) {
+                  //                 return Container(
+                  //                   height: 50,
+                  //                   child: Center(
+                  //                     child: Column(
+                  //                       mainAxisAlignment:
+                  //                           MainAxisAlignment.start,
+                  //                       children: [
+                  //                         Card(
+                  //                           child: Container(
+                  //                             width: MediaQuery.of(context)
+                  //                                 .size
+                  //                                 .width,
+                  //                             height: 150,
+                  //                             child: Center(
+                  //                               child: Column(
+                  //                                 mainAxisAlignment:
+                  //                                     MainAxisAlignment.center,
+                  //                                 children: [
+                  //                                   Icon(
+                  //                                       Icons
+                  //                                           .notifications_none_sharp,
+                  //                                       size: 50,
+                  //                                       color: Colors.grey),
+                  //                                   Text(
+                  //                                       "Pas encore d'avertissements!")
+                  //                                 ],
+                  //                               ),
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ],
+                  //                     ),
+                  //                   ),
+                  //                 );
+                  //               }
+
+                  //               return Scrollbar(
+                  //                 child: ListView(
+                  //                   padding: const EdgeInsets.symmetric(
+                  //                       horizontal: 10),
+                  //                   children: List.generate(warnings()!.length,
+                  //                       (index) {
+                  //                     return Stack(
+                  //                       children: [
+                  //                         Card(
+                  //                           child: Container(
+                  //                             padding:
+                  //                                 const EdgeInsets.symmetric(
+                  //                                     horizontal: 20),
+                  //                             decoration: BoxDecoration(
+                  //                                 border: Border(
+                  //                                     left: BorderSide(
+                  //                                         color: Colors.grey,
+                  //                                         width: 7))),
+                  //                             child: Row(
+                  //                               children: [
+                  //                                 Icon(
+                  //                                   Icons
+                  //                                       .notification_important_rounded,
+                  //                                   color: Colors.grey,
+                  //                                 ),
+                  //                                 const SizedBox(
+                  //                                   width: 10,
+                  //                                 ),
+                  //                                 Expanded(
+                  //                                   child: ListTile(
+                  //                                     title: Text(
+                  //                                         "${warnings()![index].title}"),
+                  //                                     subtitle: Text(
+                  //                                         "${warnings()![index].body}"),
+                  //                                   ),
+                  //                                 )
+                  //                               ],
+                  //                             ),
+                  //                           ),
+                  //                         ),
+                  //                       ],
+                  //                     );
+                  //                   }),
+                  //                 ),
+                  //               );
+                  //             } else {
+                  //               return Container(
+                  //                 child: LogsLoader.load(),
+                  //               );
+                  //             }
+                  //           },
+                  //           stream: logService.stream$,
+                  //         ),
+                  //       )
+                  //     : SizedBox(),
+                ],
+              ),
+            ))
+          ]),
+          widget.fromPage == "dashboard"
+              ? Positioned(
+                  top: 0,
+                  right: 0,
+                  child: IconButton(
+                      splashRadius: 5,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(Icons.close, color: Colors.red)))
+              : SizedBox(),
         ],
       ),
     );

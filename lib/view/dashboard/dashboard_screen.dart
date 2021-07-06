@@ -1,171 +1,298 @@
 import 'package:adaptive_container/adaptive_container.dart';
-import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/autentication.dart';
 import 'package:uitemplate/services/dashboard_service.dart';
-import 'package:uitemplate/services/employee_service.dart';
 import 'package:uitemplate/services/firebase_message.dart';
 import 'package:uitemplate/services/map_service.dart';
-import 'package:uitemplate/services/project_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
-import 'package:uitemplate/widgets/adding_button.dart';
-import 'package:uitemplate/widgets/map.dart';
-import 'package:uitemplate/widgets/map_details.dart';
+import 'package:uitemplate/widgets/mypicker.dart';
 import 'package:uitemplate/widgets/project_card.dart';
+import 'package:uitemplate/widgets/empty_container.dart';
+import 'package:universal_html/html.dart';
 
-class DashBoard extends StatefulWidget {
+class DashBoardScreen extends StatefulWidget {
   @override
-  _DashBoardState createState() => _DashBoardState();
+  _DashBoardScreenState createState() => _DashBoardScreenState();
 }
 
-class _DashBoardState extends State<DashBoard> {
+class _DashBoardScreenState extends State<DashBoardScreen> {
+  bool listCardloader = true;
+
   @override
   void initState() {
-    var projectsService = Provider.of<ProjectProvider>(context, listen: false);
-    projectsService.fetchProjects().whenComplete(() =>
-        Provider.of<MapService>(context, listen: false)
-            .mapInit(projectsService.projects));
-
-    Provider.of<CustomerService>(context, listen: false).fetchCustomers();
-    Provider.of<EmployeeSevice>(context, listen: false).fetchUsers();
+    Provider.of<ProjectProvider>(context, listen: false)
+        .fetchProjectsBaseOnDates(context: context)
+        .whenComplete(() {
+      setState(() {
+        listCardloader = false;
+      });
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        Provider.of<MapService>(context, listen: false).mapInit(
+          Provider.of<ProjectProvider>(context, listen: false).projectsDateBase,
+          context,
+        );
+        Provider.of<ProjectProvider>(context, listen: false)
+            .dateController
+            .jumpToSelection(DateTime.now());
+      });
+    });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    try {
-      ProjectProvider projectProvider =
-          Provider.of<ProjectProvider>(context, listen: false);
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(
+      context,
+    );
+    DashboardService dashboardService = Provider.of<DashboardService>(
+      context,
+    );
+    MapService mapService = Provider.of<MapService>(
+      context,
+    );
 
-      DashboardService dashboardService =
-          Provider.of<DashboardService>(context);
-
-      return AdaptiveContainer(children: [
-        AdaptiveItem(
-            height: MediaQuery.of(context).size.height,
-            content: Container(
+    return Container(
+      child: AdaptiveContainer(
+          physics: ScrollPhysics(parent: NeverScrollableScrollPhysics()),
+          children: [
+            AdaptiveItem(
+                content: Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.all(20),
               color: Palette.contentBackground,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      MaterialButton(
+                        onPressed: () {
+                          projectProvider
+                              .selectDate(
+                                  context: context,
+                                  mapService: mapService,
+                                  isNow: false,
+                                  controllerDate:
+                                      projectProvider.dateController)
+                              .then((date) {
+                            projectProvider.setSelectedDate(date);
+                          });
+                        },
+                        child: Text(
+                          "${months[projectProvider.selectedDate.month]} ${projectProvider.selectedDate.day}, ${projectProvider.selectedDate.year} ",
+                          style: boldText,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: MaterialButton(
+                          onPressed: () {
+                            projectProvider
+                                .selectDate(
+                                    context: context,
+                                    mapService: mapService,
+                                    isNow: true,
+                                    controllerDate:
+                                        projectProvider.dateController)
+                                .then((date) {
+                              projectProvider.setSelectedDate(date);
+                            });
+                          },
+                          child: Text(
+                            "Aujourd'hui",
+                            style: TextStyle(color: Palette.drawerColor),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                   Container(
                     color: Palette.contentBackground,
                     child: Card(
-                      child: Row(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                dashboardService.prevDate();
-                              },
-                              icon: Icon(Icons.arrow_back_ios_rounded)),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Expanded(
-                            child: DatePicker(
-                              dashboardService.startDate,
-                              initialSelectedDate: DateTime.now(),
-                              selectionColor: Palette.drawerColor,
-                              selectedTextColor: Colors.white,
-                              locale: "fr_FR",
-                              controller: dashboardService.dateController,
-                              onDateChange: (date) {
-                                //New Date
-
-                                print("selected date");
-                                Provider.of<FireBase>(context, listen: false)
-                                    .newMessage = true;
-                              },
-                              width: 75,
+                      child: Container(
+                        padding: EdgeInsets.all(20),
+                        child: Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Palette.drawerColor,
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: IconButton(
+                                  padding: EdgeInsets.all(5),
+                                  constraints: BoxConstraints(
+                                      minWidth: 15, minHeight: 15),
+                                  iconSize: 20,
+                                  onPressed: () {
+                                    projectProvider.prevDate(
+                                        context, mapService);
+                                  },
+                                  icon: Icon(
+                                    Icons.arrow_back_ios_rounded,
+                                    color: Colors.white,
+                                    size: 15,
+                                  )),
                             ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          IconButton(
-                              onPressed: () {
-                                dashboardService.nextDate();
-                              },
-                              icon: Icon(Icons.arrow_forward_ios_rounded))
-                        ],
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: DatePicker2(
+                                DateTime(2021, 1, 1),
+                                selectionColor: Palette.drawerColor,
+                                selectedTextColor: Colors.white,
+                                deactivatedColor: Palette.contentBackground,
+                                locale: "fr_FR",
+                                controller: projectProvider.dateController,
+                                onDateChange: (date) {
+                                  print(date);
+
+                                  projectProvider.fetchOnDates(
+                                      context: context, mapService: mapService);
+                                },
+                                width: 75,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      color: Palette.drawerColor,
+                                      borderRadius: BorderRadius.circular(100)),
+                                  child: IconButton(
+                                      padding: EdgeInsets.all(5),
+                                      constraints: BoxConstraints(
+                                          minWidth: 15, minHeight: 15),
+                                      iconSize: 20,
+                                      onPressed: () {
+                                        projectProvider.nextDate(
+                                            context, mapService);
+                                      },
+                                      icon: Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 15,
+                                        color: Colors.white,
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  projectProvider.projects.length > 0
-                      ? Container(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          child: MapDetails(
-                            project: projectProvider.projects,
-                          ))
-                      : SizedBox(),
-                  Expanded(
-                    child: MapScreen(
-                      projects: projectProvider.projects,
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width > 800
+                        ? MediaQuery.of(context).size.height * 0.7
+                        : MediaQuery.of(context).size.height * 0.4,
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Stack(
+                      children: [
+                        GestureDetector(
+                          onVerticalDragDown: (x) {
+                            if (mapService.gesture == false) {
+                              mapService.gesture = true;
+                            }
+                          },
+                          child: GoogleMap(
+                            scrollGesturesEnabled: mapService.gesture,
+                            onMapCreated: (controller) {
+                              setState(() {
+                                dashboardService.mapController = controller;
+                                if (projectProvider.projectsDateBase != null) {
+                                  if (projectProvider.projectsDateBase.length >
+                                      0) {
+                                    dashboardService.mapController!
+                                        .showMarkerInfoWindow(MarkerId(
+                                            projectProvider
+                                                .projectsDateBase[0].id
+                                                .toString()));
+                                  }
+                                }
+                              });
+                            },
+                            myLocationButtonEnabled: true,
+                            rotateGesturesEnabled: true,
+                            initialCameraPosition: CameraPosition(
+                              target: initialPositon,
+                              zoom: mapService.zoom,
+                            ),
+                            buildingsEnabled: true,
+                            mapType: MapType.none,
+                            myLocationEnabled: true,
+                            markers: mapService.markers,
+                            circles: mapService.circles,
+                          ),
+                        ),
+                      ],
                     ),
-                  )
+                  ),
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
+                  MediaQuery.of(context).size.width > 800
+                      ? SizedBox()
+                      : Expanded(child: listProjects(projectProvider))
                 ],
               ),
             )),
-        AdaptiveItem(
-          height: MediaQuery.of(context).size.width > 800
-              ? MediaQuery.of(context).size.height
-              : MediaQuery.of(context).size.height * .5,
-          content: projectProvider.projects.length <= 0
+            AdaptiveItem(
+                bgColor: Palette.contentBackground,
+                height: MediaQuery.of(context).size.width > 900
+                    ? MediaQuery.of(context).size.height
+                    : MediaQuery.of(context).size.height * .7,
+                content: Padding(
+                  padding:
+                      const EdgeInsets.only(top: 50, right: 20, bottom: 100),
+                  child: listProjects(projectProvider),
+                ))
+          ]),
+    );
+  }
+
+  Widget listProjects(projectProvider) {
+    return Container(
+      color: Palette.contentBackground,
+      child: listCardloader
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : projectProvider.projectsDateBase.length <= 0
               ? Container(
-                  padding: EdgeInsets.all(20),
-                  color: Palette.contentBackground,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "No projects yet",
-                        style: boldText,
-                      ),
-                      SizedBox(
-                        height: MySpacer.large,
-                      ),
-                      Icon(Icons.file_present),
-                      SizedBox(
-                        height: MySpacer.small,
-                      ),
-                      Text(
-                          "Its time to create a project \n choose the right client and location for your project"),
-                      AddingButton(
-                          addingPage: ProjectAddScreen(),
-                          buttonText: "Add Project")
-                    ],
-                  ))
+                  child: EmptyContainer(
+                  addingFunc: ProjectAddScreen(),
+                  title: "Aucun projet cette fois",
+                  description:
+                      "Il est temps de créer un projet\n choisissez le bon client et le bon emplacement pour votre projet.",
+                  buttonText: "Créer",
+                  showButton: true,
+                ))
               : Container(
                   color: Palette.contentBackground,
-                  padding: EdgeInsets.all(20),
                   child: ListView.builder(
-                      itemCount: projectProvider.projects.length,
+                      itemCount: projectProvider.projectsDateBase.length,
                       itemBuilder: (context, index) {
                         return ProjectCard(
-                          startDate:
-                              projectProvider.projects[index].startDate == null
-                                  ? DateTime.now()
-                                  : projectProvider.projects[index].startDate!,
-                          name: projectProvider.projects[index].name!,
-                          description: projectProvider
-                                      .projects[index].description ==
-                                  null
-                              ? ""
-                              : projectProvider.projects[index].description!,
+                          project: projectProvider.projectsDateBase[index],
+                          lastIndex: index ==
+                              projectProvider.projectsDateBase.length - 1,
                         );
                       }),
                 ),
-        )
-      ]);
-    } catch (e) {
-      return Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Palette.drawerColor),
-        ),
-      );
-    }
+    );
   }
 }

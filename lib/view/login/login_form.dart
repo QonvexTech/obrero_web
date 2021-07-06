@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/autentication.dart';
 
@@ -53,27 +54,34 @@ class _LoginFormState extends State<LoginForm> {
     });
 
     if (_formKey.currentState!.validate()) {
-      auth.login(_emailController.text, _passwordController.text).then((value) {
+      print("login");
+      auth
+          .login(_emailController.text, _passwordController.text, context)
+          .then((value) {
         if (value) {
           setState(() {
             loader = false;
             Navigator.pushReplacementNamed(context, "/home");
           });
         } else {
+          Fluttertoast.showToast(
+              webBgColor: "linear-gradient(to right, #E21010, #ED9393)",
+              msg: "Invalid Account",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 2,
+              fontSize: 16.0);
           setState(() {
             loader = false;
           });
           print("Login fail");
         }
       });
+    } else {
+      setState(() {
+        loader = false;
+      });
     }
-  }
-
-  @override
-  void initState() {
-    _emailController.text = "super@admin.com";
-    _passwordController.text = "super_password";
-    super.initState();
   }
 
   @override
@@ -103,50 +111,51 @@ class _LoginFormState extends State<LoginForm> {
                           style: TextStyle(
                               fontSize: widthSize * widget.fontSizeTextField,
                               fontFamily: 'Poppins',
-                              color: Colors.white))),
-                  TextFormField(
-                      autofocus: true,
-                      focusNode: _emailFocus,
-                      onFieldSubmitted: (value) {
-                        _passwordFocus.requestFocus();
-                      },
-                      controller: _emailController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Email Required!';
-                        }
-                        if (!EmailValidator.validate(value)) {
-                          return 'Invalid Email!';
-                        }
-                      },
-                      cursorColor: Colors.white,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        // hintText: "Email",
-                        fillColor: Colors.white,
-                        border: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.red, width: 2)),
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white30, width: 2)),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.white, width: 2)),
-                        labelStyle: TextStyle(color: Colors.white),
-                        errorStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: widthSize * widget.errorFormMessage),
-                        prefixIcon: Icon(
-                          Icons.person,
-                          size: widthSize * widget.iconFormSize,
-                          color: Colors.white,
+                              color: Colors.black))),
+                  RawKeyboardListener(
+                    focusNode: _emailFocus,
+                    child: TextFormField(
+                        autofocus: true,
+                        onFieldSubmitted: (value) {
+                          _passwordFocus.requestFocus();
+                        },
+                        controller: _emailController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Email Required!';
+                          }
+                          if (!EmailValidator.validate(value)) {
+                            return 'Invalid Email!';
+                          }
+                        },
+                        cursorColor: Colors.black,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          fillColor: Colors.black,
+                          border: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.red, width: 2)),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Palette.drawerColorLight, width: 2)),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Palette.drawerColor, width: 2)),
+                          labelStyle: TextStyle(color: Colors.black),
+                          errorStyle: TextStyle(
+                              color: Colors.red,
+                              fontSize: widthSize * widget.errorFormMessage),
+                          prefixIcon: Icon(
+                            Icons.person,
+                            size: widthSize * widget.iconFormSize,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: widget.fontSizeTextFormField)),
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: widget.fontSizeTextFormField)),
+                  ),
                   SizedBox(height: heightSize * widget.spaceBetweenFields),
                   Align(
                       alignment: Alignment.centerLeft,
@@ -154,7 +163,7 @@ class _LoginFormState extends State<LoginForm> {
                           style: TextStyle(
                               fontSize: widthSize * widget.fontSizeTextField,
                               fontFamily: 'Poppins',
-                              color: Colors.white))),
+                              color: Colors.black))),
                   TextFormField(
                       focusNode: _passwordFocus,
                       onFieldSubmitted: (value) {
@@ -166,28 +175,28 @@ class _LoginFormState extends State<LoginForm> {
                           return 'Mot de passe Required!';
                         }
                       },
-                      cursorColor: Colors.white,
+                      cursorColor: Colors.black,
                       keyboardType: TextInputType.text,
                       obscureText: _passwordVisible,
                       decoration: InputDecoration(
-                          fillColor: Colors.white,
+                          fillColor: Colors.black,
                           border: UnderlineInputBorder(
                               borderSide:
                                   BorderSide(color: Colors.red, width: 2)),
                           enabledBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white30, width: 2)),
+                              borderSide: BorderSide(
+                                  color: Palette.drawerColorLight, width: 2)),
                           focusedBorder: UnderlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 2)),
-                          labelStyle: TextStyle(color: Colors.white),
+                              borderSide: BorderSide(
+                                  color: Palette.drawerColor, width: 2)),
+                          labelStyle: TextStyle(color: Colors.black),
                           errorStyle: TextStyle(
-                              color: Colors.white,
+                              color: Colors.red,
                               fontSize: widthSize * widget.errorFormMessage),
                           prefixIcon: Icon(
                             Icons.lock,
                             size: widthSize * widget.iconFormSize,
-                            color: Colors.white,
+                            color: Colors.black,
                           ),
                           suffixIcon: IconButton(
                             onPressed: () {
@@ -200,12 +209,12 @@ class _LoginFormState extends State<LoginForm> {
                                   ? Icons.visibility_off
                                   : Icons.visibility,
                               size: widthSize * widget.iconFormSize,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           )),
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                           fontSize: widget.fontSizeTextFormField)),
                   SizedBox(
                       height: heightSize * widget.spaceBetweenFieldAndButton),
@@ -218,11 +227,12 @@ class _LoginFormState extends State<LoginForm> {
                       onPressed: () {
                         login(auth, context);
                       },
-                      child: Text('Login',
+                      child: Text('Connexion',
                           style: TextStyle(
                               fontSize: widthSize * widget.fontSizeButton,
                               fontFamily: 'Poppins',
-                              color: Color.fromRGBO(41, 187, 255, 1)))),
+                              fontWeight: FontWeight.bold,
+                              color: Palette.drawerColor))),
                   SizedBox(height: heightSize * 0.01),
                 ])));
   }

@@ -38,6 +38,15 @@ class Admin {
         ? DateTime.parse(json["details"]["updated_at"])
         : null;
   }
+  Admin.fromJsonUpdate(Map<String, dynamic> json) {
+    this.id = json["id"];
+    this.firstName = json["first_name"];
+    this.lastName = json["last_name"];
+    this.contacNumber = json["contact_number"];
+    this.address = json["address"];
+    this.email = json["email"];
+    this.picture = json["picture"];
+  }
 
   //   Map<String, dynamic> toJson() {
   //   final Map<String, dynamic> data = new Map<String, dynamic>();

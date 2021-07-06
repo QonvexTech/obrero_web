@@ -1,19 +1,28 @@
 import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/services/customer_service.dart';
+import 'package:uitemplate/services/employee_service.dart';
+import 'package:uitemplate/view/dashboard/tracker.dart';
 import 'package:uitemplate/widgets/adding_button.dart';
 
 class HeaderList extends StatelessWidget {
   final Widget? toPage;
   final String? title;
-
-  const HeaderList({Key? key, required this.toPage, required this.title})
+  final Function? search;
+  final TextEditingController? searchController;
+  HeaderList(
+      {Key? key,
+      required this.search,
+      required this.searchController,
+      required this.toPage,
+      required this.title})
       : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    var searchProvider = Provider.of<CustomerService>(context, listen: false);
+    var employeeService = Provider.of<EmployeeSevice>(context);
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -39,12 +48,9 @@ class HeaderList extends StatelessWidget {
                       primaryColor: Palette.drawerColor,
                     ),
                     child: TextField(
-                      controller: searchProvider.searchController,
-                      onSubmitted: (value) {
-                        searchProvider.search(value);
-                      },
+                      controller: searchController,
                       onChanged: (value) {
-                        searchProvider.search(value);
+                        search!(value);
                       },
                       cursorColor: Palette.drawerColor,
                       decoration: InputDecoration(
@@ -56,9 +62,102 @@ class HeaderList extends StatelessWidget {
                   )),
                 ),
                 Expanded(child: Container()),
+                title == "Employee"
+                    ? Container(
+                        height: 40,
+                        child: MaterialButton(
+                          color: Palette.drawerColor,
+                          onPressed: () {
+                            //SHOW MAP MONITOR
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                    backgroundColor: Palette.contentBackground,
+                                    content: Stack(
+                                      children: [
+                                        Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2,
+                                            child: Column(
+                                              children: [
+                                                MaterialButton(
+                                                  color: Palette.drawerColor,
+                                                  onPressed: () {
+                                                    employeeService
+                                                        .timeOutAllUser()
+                                                        .then((value) {
+                                                      Fluttertoast.showToast(
+                                                          webBgColor:
+                                                              "linear-gradient(to right, #5585E5, #5585E5)",
+                                                          msg: value,
+                                                          toastLength: Toast
+                                                              .LENGTH_SHORT,
+                                                          gravity: ToastGravity
+                                                              .CENTER,
+                                                          timeInSecForIosWeb: 2,
+                                                          fontSize: 16.0);
+                                                    });
+                                                  },
+                                                  child: Text(
+                                                    "Time Out All Users",
+                                                    style: TextStyle(
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: MySpacer.medium,
+                                                ),
+                                                Expanded(child: TrackerPage()),
+                                              ],
+                                            )),
+                                        Positioned(
+                                          right: 0,
+                                          top: 0,
+                                          child: IconButton(
+                                            splashRadius: 15,
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    )));
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.monitor,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: MySpacer.small,
+                              ),
+                              Text(
+                                "Monitor All Users",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : SizedBox(),
+                SizedBox(
+                  width: MySpacer.medium,
+                ),
                 Container(
                   height: 40,
-                  color: Colors.red,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
                   child: AddingButton(addingPage: toPage, buttonText: "Créer"),
                 ),
               ],

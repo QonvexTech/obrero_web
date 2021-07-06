@@ -1,4 +1,5 @@
 import 'package:uitemplate/models/payment_model.dart';
+import 'package:uitemplate/models/project_model.dart';
 
 class CustomerModel {
   int? id;
@@ -12,6 +13,7 @@ class CustomerModel {
   List? customerProjects;
   double? amount;
   bool isSelected = false;
+  String? createdAt;
 
   CustomerModel(
       {this.id,
@@ -23,7 +25,20 @@ class CustomerModel {
       this.contactNumber,
       this.customerProjects,
       this.amount,
-      this.status});
+      this.status,
+      this.createdAt});
+
+  String userAsString() {
+    return '#${this.id} ${this.fname}';
+  }
+
+  ///custom comparing function to check if two users are equal
+  bool isEqual(CustomerModel? model) {
+    return this.id == model?.id;
+  }
+
+  @override
+  String toString() => fname!;
 
   CustomerModel.fromJson(Map<String, dynamic> json) {
     this.id = json["id"];
@@ -37,6 +52,7 @@ class CustomerModel {
         : PaymentModel();
     this.contactNumber = json["contact_number"];
     this.customerProjects = json["projects"];
+    this.createdAt = json["created_at"];
   }
 
   Map<String, dynamic> toJson() {
@@ -48,7 +64,9 @@ class CustomerModel {
     data["picture"] = this.picture.toString();
     data["status"] = this.status.toString();
     data["contact_number"] = this.contactNumber;
-    data["projects"] = this.customerProjects.toString();
+    data["projects"] =
+        ProjectModel.fromJsonListToProject(this.customerProjects!);
+
     return data;
   }
 
@@ -59,10 +77,9 @@ class CustomerModel {
     data["last_name"] = this.lname;
     data["email"] = this.email;
     data["address"] = this.adress;
-    // data["picture"] = this.picture;
+    data["picture"] = "data:image/jpg;base64,${this.picture}";
     // data["status"] = this.status.toString();
     data["contact_number"] = this.contactNumber;
-    // data["projects"] = this.customerProjects.toString();
     return data;
   }
 
@@ -72,7 +89,8 @@ class CustomerModel {
     data["last_name"] = this.lname;
     data["email"] = this.email;
     data["address"] = this.adress;
-    data["picture"] = this.picture;
+    data["picture"] =
+        this.picture != null ? "data:image/jpg;base64,${this.picture}" : "";
     // data["status"] = this.status;
     data["contact_number"] = this.contactNumber;
     data["amount"] = this.amount.toString();

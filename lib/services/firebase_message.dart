@@ -3,9 +3,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
-import 'package:uitemplate/services/notification_services.dart';
+import 'package:uitemplate/models/log_model.dart';
+import 'package:uitemplate/services/log_service.dart';
 
 class FireBase extends ChangeNotifier {
   final String serverToken =
@@ -14,64 +14,57 @@ class FireBase extends ChangeNotifier {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   Future<String?> get fcmToken async => await _firebaseMessaging.getToken();
 
-  List messages = [];
-  bool _newMessage = false;
-
-  get newMessage => _newMessage;
-  set newMessage(value) {
-    _newMessage = value;
-    notifyListeners();
-  }
-
   // Future<void> subscribe(String subscription) async {
   //   await _firebaseMessaging.subscribeToTopic("$subscription}").then(print);
   // }
 
   Future<void> initialize({required context}) async {
-    await _firebaseMessaging.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-    NotificationSettings settings = await _firebaseMessaging.requestPermission(
-      alert: true,
-      announcement: true,
-      badge: true,
-      carPlay: true,
-      criticalAlert: true,
-      provisional: true,
-      sound: true,
-    );
+    try {
+      await _firebaseMessaging.setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+      NotificationSettings settings =
+          await _firebaseMessaging.requestPermission(
+        alert: true,
+        announcement: true,
+        badge: true,
+        carPlay: true,
+        criticalAlert: true,
+        provisional: true,
+        sound: true,
+      );
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+        // rxNotificationService
+        //     .append(json.decode(message.data['notification_data']));
 
-    print("Notification Settings : ${settings.announcement}");
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      if (message.data['notification_data'] != null) {
-        // messages.add(message.data['notification_data']);
-        rxNotificationService
-            .append(json.decode(message.data['notification_data']));
-        print(rxNotificationService.current);
+        if (message.data['notification_data'] != null) {
+          // messages.add(message.data['notification_data']);
+          logService.append(
+              data: LogModel.fromJson(
+                  json.decode(message.data['notification_data'])));
+          print(message.data['notification_data']);
+
+          // print(messages);
+        }
+
+        return;
         // print(messages);
-      } else {
-        //chat
+      });
 
-      }
-      return;
-      // print(messages);
-    });
+      // // on open
+      // FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      //   print("MESSAGE OPENED :${event.notification!.title}");
+      // });
 
-    // on open
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      print("MESSAGE OPENED :${event.notification!.title}");
-    });
-
-    //background
-    FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-      // If you're going to use other Firebase services in the background, such as Firestore,
-      // make sure you call `initializeApp` before using other Firebase services.
-      // await Firebase.initializeApp();
-      print('Handling a background message ${message.messageId}');
-    });
-    print("lisening");
+      // //background
+      // FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
+      //   print('Handling a background message ${message.messageId}');
+      // });
+    } catch (e) {
+      print(e);
+    }
   }
 
   init({required context}) async {

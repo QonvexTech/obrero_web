@@ -1,16 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/project_model.dart';
-import 'package:uitemplate/services/project_service.dart';
+import 'package:uitemplate/services/map_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/settings/tableHelper.dart';
+import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
+import 'package:uitemplate/view/dashboard/customer/customer_details.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
+import 'package:uitemplate/view/dashboard/project/project_details.dart';
 import 'package:uitemplate/widgets/headerList.dart';
+import 'package:uitemplate/widgets/sample_table.dart';
 import 'package:uitemplate/widgets/tablePagination.dart';
 
-class ProjectList extends StatelessWidget {
+class ProjectList extends StatefulWidget {
+  final bool? assignUser;
+  final int? owner;
+
+  const ProjectList({Key? key, required this.assignUser, this.owner = 00})
+      : super(key: key);
+  @override
+  _ProjectListState createState() => _ProjectListState();
+}
+
+class _ProjectListState extends State<ProjectList> with TableHelper {
+  @override
+  void initState() {
+    Provider.of<ProjectProvider>(context, listen: false)
+        .fetchProjects()
+        .whenComplete(() {
+      Provider.of<MapService>(context, listen: false).mapInit(
+          Provider.of<ProjectProvider>(context, listen: false).projects,
+          context);
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+    PaginationService pageService = Provider.of<PaginationService>(context);
+
+    if (projectProvider.projects == null) {
+      return Container(
+        width: double.infinity,
+        height: double.infinity,
+        color: Palette.contentBackground,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Container(
       color: Palette.contentBackground,
       child: Column(
@@ -18,70 +61,87 @@ class ProjectList extends StatelessWidget {
           SizedBox(
             height: MySpacer.medium,
           ),
-          HeaderList(toPage: ProjectAddScreen(), title: "Project"),
+          HeaderList(
+            toPage: ProjectAddScreen(),
+            title: "Project",
+            search: projectProvider.search,
+            searchController: projectProvider.searchController,
+          ),
           SizedBox(
             height: MySpacer.large,
           ),
-          Expanded(
-              child: Container(
-                  child: ListView(
-            children: [
-              Consumer<ProjectProvider>(
-                builder: (context, data, child) {
-                  if (data.projects.length <= 0) {
-                    return Container(
-                        width: 200,
-                        height: 200,
-                        child: Column(
-                          children: [
-                            Icon(Icons.now_widgets),
-                            Text("No project Yet")
-                          ],
-                        ));
-                  }
-                  return DataTable(
-                      headingTextStyle: TextStyle(color: Colors.white),
-                      headingRowColor:
-                          MaterialStateProperty.resolveWith((states) {
-                        if (states.contains(MaterialState.hovered)) {
-                          return Palette.drawerColor.withOpacity(0.5);
-                        } else {
-                          return Palette.drawerColor;
-                        }
-                      }),
-                      showCheckboxColumn: true,
-                      columns: [
-                        DataColumn(
-                            label: Text('NOM DU SITE',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('OWNER',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('LOCATION',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('AREA SIZE',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('START DATE',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                            label: Text('END DATE',
-                                style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(label: Container()),
-                      ],
-                      rows: [
-                        for (ProjectModel project in data.projects)
-                          ...widgetRows(context, data, project)
-                      ]);
-                },
-              )
-            ],
-          ))),
-          TablePagination(
-            paginationModel: projectProvider.pagination,
-          ),
+          projectProvider.projects.length == 0
+              ? Expanded(
+                  child: Container(
+                  color: Palette.contentBackground,
+                  child: Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Stack(
+                        children: [
+                          Icon(
+                            Icons.search,
+                            size: MediaQuery.of(context).size.width * 0.1,
+                            color: Colors.grey,
+                          )
+                        ],
+                      ),
+                      Text("Projet introuvable")
+                    ],
+                  )),
+                ))
+              : Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        children: [
+                          AllTable(
+                            datas: projectProvider.projects,
+                            rowWidget: rowWidget(
+                              context,
+                              projectProvider.projects,
+                              projectProvider.removeProject,
+                              projectProvider.setPage,
+                              projectProvider,
+                            ),
+                            rowWidgetMobile: rowWidgetMobile(
+                              context,
+                              projectProvider.projects,
+                              projectProvider.removeProject,
+                              projectProvider.setPage,
+                              projectProvider,
+                              widget.owner!,
+                              widget.assignUser!,
+                            ),
+                            headersMobile: [
+                              "Nom du site",
+                              "Propriétaire",
+                              "Adresse",
+                              "Actions"
+                            ],
+                            headers: [
+                              "Nom du site",
+                              "Propriétaire",
+                              "Adresse",
+                              "Surface",
+                              "Date de début",
+                              "Date de fin",
+                              "Actions"
+                            ],
+                            assignUser: widget.assignUser,
+                          ),
+                          SizedBox(
+                            height: MySpacer.small,
+                          ),
+                          pageControll(pageService, projectProvider.pagination,
+                              context, projectProvider.projects.length)
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
           SizedBox(
             height: MySpacer.large,
           )
@@ -91,47 +151,276 @@ class ProjectList extends StatelessWidget {
   }
 }
 
-List<DataRow> widgetRows(
-    context, ProjectProvider projectProvider, ProjectModel projectModel) {
+List<TableRow> rowWidgetMobile(
+  BuildContext context,
+  List<ProjectModel> datas,
+  Function remove,
+  Function setPage,
+  ProjectProvider projectProvider,
+  int owner,
+  bool assignUser,
+) {
   return [
-    DataRow(
-        onSelectChanged: (value) {
-          print("selec");
-          // projectProvider.setProjectScreen(ProjectDetails());
-        },
-        cells: [
-          DataCell(
-            Text(projectModel.name!),
-          ),
-          DataCell(Text(projectModel.customerId!.toString())),
-          DataCell(Text(projectModel.coordinates.toString())),
-          DataCell(Text(projectModel.areaSize.toString())),
-          DataCell(Text(projectModel.startDate.toString())),
-          DataCell(Text(projectModel.endDate.toString())),
-          DataCell(Row(
+    for (ProjectModel data in datas)
+      TableRow(children: [
+        GestureDetector(
+          child: TableCell(
+              verticalAlignment: TableCellVerticalAlignment.middle,
+              child: Center(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: TextButton(
+                  onPressed: () {
+                    projectProvider.projectOnDetails = data;
+                    setPage(
+                        page: ProjectDetails(
+                      fromPage: "project",
+                    ));
+                  },
+                  child: Text(
+                    data.name!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ))),
+        ),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: TextButton(
+                onPressed: () {
+                  setPage(
+                      page: CustomerDetails(
+                    customer: data.owner,
+                    fromPage: "project",
+                  ));
+                },
+                child: Text(
+                  "${data.owner!.fname} ${data.owner!.lname}",
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                "${data.address}",
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+          verticalAlignment: TableCellVerticalAlignment.middle,
+          child: assignUser
+              ? Center(
+                  child: Container(
+                      child: MaterialButton(
+                          child: Center(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(child: Container()),
+                                data.assigneeIds!.contains(owner)
+                                    ? Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      )
+                                    : Icon(
+                                        Icons.add_circle_outlined,
+                                        color: Colors.green,
+                                      ),
+                                SizedBox(width: MySpacer.small),
+                                Text(data.assigneeIds!.contains(owner)
+                                    ? "Resign"
+                                    : "Assign"),
+                                Expanded(child: Container()),
+                              ],
+                            ),
+                          ),
+                          onPressed: () {})))
+              : PopupMenuButton(
+                  padding: EdgeInsets.all(0),
+                  offset: Offset(0, 40),
+                  icon: Icon(
+                    Icons.more_horiz_rounded,
+                    color: Palette.drawerColor,
+                  ),
+                  itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Palette.drawerColor,
+                                ),
+                                onPressed: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => AlertDialog(
+                                          backgroundColor:
+                                              Palette.contentBackground,
+                                          content: ProjectAddScreen(
+                                            projectToEdit: data,
+                                          )));
+                                },
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  TableHelper.showDeleteCard(
+                                      context, data.name, remove, data.id);
+                                },
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: Palette.drawerColor,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ]),
+        ),
+      ])
+  ];
+}
+
+List<TableRow> rowWidget(
+  BuildContext context,
+  List<ProjectModel> datas,
+  Function remove,
+  Function setPage,
+  ProjectProvider projectProvider,
+) {
+  return [
+    for (ProjectModel data in datas)
+      TableRow(children: [
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: TextButton(
+                onPressed: () {
+                  projectProvider.projectOnDetails = data;
+                  setPage(
+                      page: ProjectDetails(
+                    fromPage: "project",
+                  ));
+                },
+                child: Text(
+                  data.name!,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: TextButton(
+                onPressed: () {
+                  setPage(
+                      page: CustomerDetails(
+                    customer: data.owner,
+                    fromPage: "project",
+                  ));
+                },
+                child: Text(
+                  "${data.owner!.fname} ${data.owner!.lname}",
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                "${data.address}",
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                data.areaSize.toString(),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                DateFormat('MMM dd, yyyy', 'fr_FR')
+                    .format(data.startDate!)
+                    .inCaps,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                DateFormat('MMM dd, yyyy', 'fr_FR')
+                    .format(data.endDate!)
+                    .inCaps,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // IconButton(
+              //   onPressed: () {
+              //     print("Assign");
+              //   },
+              //   icon: Icon(
+              //     Icons.add_circle_outlined,
+              //     color: Palette.drawerColor,
+              //   ),
+              // ),
               IconButton(
                 onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                          backgroundColor: Palette.contentBackground,
-                          content: ProjectAddScreen(
-                            projectToEdit: projectModel,
-                          )));
+                  Provider.of<ProjectProvider>(context, listen: false)
+                      .fetchProjects()
+                      .whenComplete(() {
+                    Provider.of<MapService>(context, listen: false).mapInit(
+                        Provider.of<ProjectProvider>(context, listen: false)
+                            .projects,
+                        context);
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                            backgroundColor: Palette.contentBackground,
+                            content: ProjectAddScreen(
+                              projectToEdit: data,
+                            )));
+                  });
                 },
                 icon: Icon(
                   Icons.edit,
                   color: Palette.drawerColor,
                 ),
               ),
-              SizedBox(
-                width: 50,
-              ),
               IconButton(
                 onPressed: () {
-                  print("pressdelete");
-                  projectProvider.removeProject(id: projectModel.id!);
+                  TableHelper.showDeleteCard(
+                      context, data.name, remove, data.id);
                 },
                 icon: Icon(
                   Icons.delete,
@@ -139,7 +428,8 @@ List<DataRow> widgetRows(
                 ),
               )
             ],
-          ))
-        ])
+          ),
+        ),
+      ])
   ];
 }

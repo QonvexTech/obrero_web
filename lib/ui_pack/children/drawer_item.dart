@@ -5,10 +5,12 @@ class DrawerItem {
   final IconData? icon;
   final String? text;
   final Widget? content;
+  bool? selected = false;
   final List<SubDrawerItems>? subItems;
   DrawerItem(
       {@required this.icon,
       @required this.text,
       this.subItems,
+      this.selected,
       @required this.content});
 }

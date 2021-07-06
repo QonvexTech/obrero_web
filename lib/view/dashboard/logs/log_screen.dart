@@ -1,175 +1,156 @@
-import 'package:adaptive_container/adaptive_container.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/widgets/basicButton.dart';
-import 'package:uitemplate/widgets/map.dart';
+import 'package:uitemplate/models/log_model.dart';
+import 'package:uitemplate/services/add_warning_service.dart';
+import 'package:uitemplate/services/history_service.dart';
+import 'package:uitemplate/services/log_service.dart';
+import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/view_model/logs/loader.dart';
+import 'package:uitemplate/view_model/logs/log_api_call.dart';
 
 class LogScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // EmployeeSevice customerService = Provider.of<EmployeeSevice>(context);
-    return AdaptiveContainer(children: [
-      AdaptiveItem(
-          content: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Détails du"),
-            Text(
-              "LOG DE XYZ LE 24/10/20",
+    ProjectProvider projectProvider = Provider.of<ProjectProvider>(context);
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      color: Palette.contentBackground,
+      padding: EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text("Les détails de"),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20),
+            child: Text(
+              "Tous bûches",
               style: Theme.of(context).textTheme.headline6,
             ),
-            SizedBox(
-              height: MySpacer.large,
-            ),
-            Container(
-              color: Colors.red,
-              height: 150,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 10),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Heures Début",
-                            style: transHeader.copyWith(fontSize: 10),
-                          ),
-                          Text(
-                            "7:30",
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                          Text(
-                            "AM",
-                            style: TextStyle(fontSize: 10),
-                          )
-                        ],
+          ),
+          SizedBox(
+            height: MySpacer.large,
+          ),
+          Expanded(
+            child: Container(
+              child: StreamBuilder<List<LogModel>>(
+                builder: (context, result) {
+                  if (result.hasError) {
+                    return Center(
+                      child: Text(
+                        "${result.error}",
                       ),
-                    ),
-                  ),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 10),
-                      child: Column(
-                        children: [
-                          Text(
-                            "Heures Début",
-                            style: transHeader.copyWith(fontSize: 10),
+                    );
+                  }
+                  if (result.hasData && result.data!.length > 0) {
+                    return Scrollbar(
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        children: List.generate(
+                          result.data!.length,
+                          (index) => Slidable(
+                            actionExtentRatio: 0.05,
+                            child: Stack(
+                              children: [
+                                Card(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.notification_important_rounded,
+                                          color: Colors.grey,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: ListTile(
+                                              title: Text(
+                                                  "${result.data![index].title}"),
+                                              subtitle: ReadMoreText(
+                                                result.data![index].body
+                                                    .toString(),
+                                                trimLines: 2,
+                                                trimLength: 390,
+                                                trimMode: TrimMode.Length,
+                                                trimCollapsedText:
+                                                    'Montre plus',
+                                                trimExpandedText:
+                                                    'Montrer moins',
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                                moreStyle: TextStyle(
+                                                    color: Palette.drawerColor,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                lessStyle: TextStyle(
+                                                    color: Palette.drawerColor,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )),
+                                        ),
+                                        SizedBox(
+                                          width: MySpacer.large,
+                                        ),
+                                        SizedBox(
+                                          width: MySpacer.small,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                    bottom: 10,
+                                    right: 10,
+                                    child: Text(
+                                      "${months[DateTime.parse(result.data![index].created_at!).month]} ${DateTime.parse(result.data![index].created_at!).day}, ${DateTime.parse(result.data![index].created_at!).year}",
+                                      style: TextStyle(color: Colors.black26),
+                                    ))
+                              ],
+                            ),
+                            actionPane: SlidableDrawerActionPane(),
+                            secondaryActions: [
+                              IconSlideAction(
+                                  caption: 'Supprimer',
+                                  color: Colors.transparent,
+                                  foregroundColor: Colors.red,
+                                  icon: Icons.delete,
+                                  onTap: () {
+                                    History()
+                                        .removeNotification(
+                                            id: result.data![index].id!)
+                                        .whenComplete(() {
+                                      logApiCall.fetchServer();
+                                    });
+                                  }),
+                            ],
                           ),
-                          Text(
-                            "7:30",
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
-                          Text(
-                            "AM",
-                            style: TextStyle(fontSize: 10),
-                          )
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ],
+                    );
+                  } else {
+                    return Container(
+                      child: LogsLoader.load(),
+                    );
+                  }
+                },
+                stream: logService.stream$,
               ),
             ),
-            Container(
-              color: Colors.blue,
-              height: 300,
-              child: Expanded(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
-                    Text(
-                      "Description",
-                      style: transHeader,
-                    ),
-                    SizedBox(
-                      height: MySpacer.small,
-                    ),
-                    Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscingaadadfbv elit, sed do eius  mod tempor incididunt ut labore et dolore magnmagnaaliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-                    SizedBox(
-                      height: MySpacer.large,
-                    ),
-                    Text(
-                      "DÉTAILS DU LOG",
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                children: [
-                  Card(
-                    child: ListTile(
-                      leading: Icon(Icons.notification_important),
-                      title: Row(
-                        children: [
-                          Text("Chantier"),
-                          SizedBox(
-                            width: MySpacer.small,
-                          ),
-                          Text("Avril")
-                        ],
-                      ),
-                      subtitle: Text(
-                          "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                    ),
-                  ),
-                  Card(
-                    child: ListTile(
-                      leading: Icon(Icons.notification_important),
-                      title: Row(
-                        children: [
-                          Text("Chantier"),
-                          SizedBox(
-                            width: MySpacer.small,
-                          ),
-                          Text("Avril")
-                        ],
-                      ),
-                      subtitle: Text(
-                          "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                    ),
-                  ),
-                  Card(
-                    child: ListTile(
-                      leading: Icon(Icons.notification_important),
-                      title: Row(
-                        children: [
-                          Text("Chantier"),
-                          SizedBox(
-                            width: MySpacer.small,
-                          ),
-                          Text("Avril")
-                        ],
-                      ),
-                      subtitle: Text(
-                          "Attention, il nous manque les plaques pour le toit de la terrasse"),
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      )),
-      AdaptiveItem(
-          content: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: MapScreen(),
-      ))
-    ]);
+          )
+        ],
+      ),
+    );
   }
 }

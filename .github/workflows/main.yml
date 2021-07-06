@@ -1,5 +1,5 @@
 name: Build & Deploy Website
-on: 
+on:
   push:
     branches:
       - master
@@ -22,7 +22,7 @@ jobs:
           flutter upgrade
           flutter config --enable-web
           flutter pub get
-          flutter build web --release
+          flutter build web --release --web-renderer html
         working-directory: ./
 
       # Deploy Firebase Hosting

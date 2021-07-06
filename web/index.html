@@ -41,7 +41,7 @@
   <title>Obrero Admin</title>
   <link rel="manifest" href="manifest.json">
 </head>
-<body>
+<body id="app-container">
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI"></script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
@@ -54,8 +54,9 @@
     }
   </script>
 
-  <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.2.10/firebase-messaging.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
   <script>
   var firebaseConfig = {
   apiKey: "AIzaSyC8f6R5OPRRCXHmHCi2bZ30fTn04okdFoI",
@@ -67,8 +68,12 @@
   measurementId: "G-YQRRGCF8WR"
   };
   firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
+  if (firebase.messaging.isSupported()){
+	const messaging = firebase.messaging();
+	messaging.usePublicVapidKey("BNL0PFNdVX9Io5bSuXde__RrOLib39TqyW-6h_ubUHq7gYFbswQaH_T7ZG3MmmO2P5m18Gw4T9n3cYPHGbS1hSM");
+  }
 </script>
   <script src="main.dart.js" type="application/javascript"></script>
+ 
 </body>
 </html>

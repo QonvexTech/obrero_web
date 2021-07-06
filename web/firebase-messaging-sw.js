@@ -1,6 +1,6 @@
-importScripts('https://www.gstatic.com/firebasejs/8.2.10/firebase-app.js');
-importScripts('https://www.gstatic.com/firebasejs/8.2.10/firebase-messaging.js');
-
+importScripts('https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/8.6.1/firebase-messaging.js');
+importScripts('https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js');
 
 firebase.initializeApp({
      apiKey: "AIzaSyC8f6R5OPRRCXHmHCi2bZ30fTn04okdFoI",
@@ -12,4 +12,7 @@ firebase.initializeApp({
      measurementId: "G-YQRRGCF8WR"
 });
 
-const messaging = firebase.messaging();
+if (firebase.messaging.isSupported()){
+	const messaging = firebase.messaging();
+	messaging.usePublicVapidKey("BNL0PFNdVX9Io5bSuXde__RrOLib39TqyW-6h_ubUHq7gYFbswQaH_T7ZG3MmmO2P5m18Gw4T9n3cYPHGbS1hSM");
+}

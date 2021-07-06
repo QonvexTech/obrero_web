@@ -1,77 +1,144 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/pagination_model.dart';
 import 'package:uitemplate/services/widgetService/table_pagination_service.dart';
 
-class TablePagination extends StatelessWidget {
-  final PaginationModel paginationModel;
-  const TablePagination({
-    Key? key,
-    required this.paginationModel,
-  }) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    PaginationService pageService = Provider.of<PaginationService>(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [Text("Showing 10 of ${paginationModel.page} entries")],
+Widget pageControll(PaginationService pageService,
+    PaginationModel paginationModel, context, int viewingEntries) {
+  return Container(
+    width: MediaQuery.of(context).size.width,
+    height: 50,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Text("Affichage"),
+              SizedBox(
+                width: MySpacer.small,
+              ),
+              PopupMenuButton(
+                  padding: EdgeInsets.symmetric(horizontal: 0),
+                  offset: Offset(0, 40),
+                  child: Row(
+                    children: [
+                      Text(viewingEntries.toString()),
+                      Icon(Icons.arrow_drop_down_sharp)
+                    ],
+                  ),
+                  itemBuilder: (context) => [
+                        for (var x = 10;
+                            x < paginationModel.totalEntries + 1;
+                            x += 10)
+                          PopupMenuItem(
+                            child: GestureDetector(
+                                onTap: () {
+                                  pageService.updatePerPage(x, paginationModel);
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                    color: Colors.transparent,
+                                    width: double.infinity,
+                                    height: 40,
+                                    child: Center(child: Text("$x")))),
+                          ),
+                        PopupMenuItem(
+                          child: GestureDetector(
+                              onTap: () {
+                                pageService.updatePerPage(
+                                    paginationModel.totalEntries,
+                                    paginationModel);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                  color: Colors.transparent,
+                                  width: double.infinity,
+                                  height: 40,
+                                  child: Center(child: Text("All")))),
+                        ),
+                      ]),
+              Text("sur ${paginationModel.totalEntries} enregistrements")
+            ],
           ),
-          Row(
+        ),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               MaterialButton(
-                minWidth: 100,
-                onPressed: this.paginationModel.isPrev
+                textColor: Palette.drawerColor,
+                onPressed: paginationModel.isPrev
                     ? () {
                         pageService.prevPage(paginationModel);
                       }
                     : null,
-                child: Text(
-                  "Previous",
-                  style: TextStyle(
-                      color: this.paginationModel.isPrev
-                          ? Palette.drawerColor
-                          : Colors.grey),
+                child: MediaQuery.of(context).size.width <= 500
+                    ? Icon(
+                        Icons.arrow_back_ios,
+                      )
+                    : Text(
+                        "Préc.",
+                        style: TextStyle(
+                            color: paginationModel.isPrev
+                                ? Palette.drawerColor
+                                : Colors.grey),
+                      ),
+              ),
+              Container(
+                height: 50,
+                width: MediaQuery.of(context).size.width <= 500
+                    ? 80
+                    : 50 * double.parse(paginationModel.lastPage.toString()) -
+                        1,
+                child: ListView.builder(
+                  controller: pageService.scrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: paginationModel.lastPage,
+                  itemBuilder: (_, index) {
+                    return Container(
+                      margin: EdgeInsets.all(5),
+                      child: MaterialButton(
+                        textColor: paginationModel.page == (index + 1)
+                            ? Colors.white
+                            : Colors.black,
+                        padding: EdgeInsets.all(8),
+                        minWidth: 50,
+                        color: paginationModel.page == (index + 1)
+                            ? Palette.drawerColor
+                            : Palette.contentBackground,
+                        onPressed: () {
+                          pageService.setTablePage(
+                              (index + 1), paginationModel);
+                          print("set");
+                        },
+                        child: Text((index + 1).toString()),
+                      ),
+                    );
+                  },
                 ),
               ),
-              for (var index = 1;
-                  index <= this.paginationModel.lastPage;
-                  index++)
-                MaterialButton(
-                  minWidth: 50,
-                  color: this.paginationModel.page == index
-                      ? Palette.drawerColor
-                      : Palette.contentBackground,
-                  onPressed: () {
-                    pageService.setTablePage(index, paginationModel);
-                  },
-                  child: Text((index).toString()),
-                ),
               MaterialButton(
-                minWidth: 100,
+                textColor: Palette.drawerColor,
                 onPressed: paginationModel.isNext
                     ? () {
                         pageService.nextPage(paginationModel);
                       }
                     : null,
-                child: MediaQuery.of(context).size.width <= 400
+                child: MediaQuery.of(context).size.width <= 500
                     ? Icon(Icons.arrow_forward_ios)
                     : Text(
-                        "Next",
+                        "Suiv.",
                         style: TextStyle(
                             color: paginationModel.isNext
                                 ? Palette.drawerColor
                                 : Colors.grey),
                       ),
-              )
+              ),
             ],
-          )
-        ],
-      ),
-    );
-  }
+          ),
+        )
+      ],
+    ),
+  );
 }

@@ -6,6 +6,7 @@ class Palette {
   static const Color buttonsColor1 = Colors.blue;
   static const Color loaderColor = Colors.white;
   static const Color drawerColor = Color.fromRGBO(85, 133, 229, 1);
+  static const Color drawerColorLight = Color.fromRGBO(85, 133, 229, 0.5);
   static const Color contentBackground = Color.fromRGBO(243, 247, 255, 1);
 }
 
