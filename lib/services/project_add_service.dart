@@ -78,7 +78,7 @@ class ProjectAddService extends ChangeNotifier {
     } else {
       print("Submit");
       ProjectModel newProject = ProjectModel(
-          assignee: assignee,
+          assigneeIds: assignee,
           customerId: customers[activeOwnerIndex].id,
           description: descriptionController.text,
           name: nameController.text,
