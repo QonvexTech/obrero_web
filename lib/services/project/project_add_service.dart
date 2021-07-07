@@ -27,10 +27,10 @@ class ProjectAddService extends ChangeNotifier {
     notifyListeners();
   }
 
-  setProjectImages(value) {
-    _projectImages = value;
-    notifyListeners();
-  }
+  // setProjectImages(value) {
+  //   _projectImages = value;
+  //   notifyListeners();
+  // }
 
   get bodyToEdit => _bodyToEdit;
   set bodyToEdit(value) => _bodyToEdit = value;
@@ -95,7 +95,7 @@ class ProjectAddService extends ChangeNotifier {
           .add("data:image/jpg;base64,${base64.encode(image.toList())}");
     }
     String encodedImagetoString = encodedImages.toString();
-
+    print(_projectImages!.length);
     return encodedImagetoString
         .replaceAll(",", ".!.")
         .replaceAll("4.!.", "4,")
@@ -109,6 +109,11 @@ class ProjectAddService extends ChangeNotifier {
       _imagesToDelete.add(image.id);
     }
 
+    notifyListeners();
+  }
+
+  removeNewImage(var image) {
+    _projectImages!.remove(image);
     notifyListeners();
   }
 
