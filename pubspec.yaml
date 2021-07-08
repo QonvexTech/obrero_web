@@ -38,6 +38,8 @@ dependencies:
   cloud_firestore: ^2.2.2
   firebase_core: ^1.3.0
 
+  jumping_dot: ^0.0.4
+
 
 
 

@@ -16,7 +16,6 @@ const String add_token = "$api/add_my_token";
 const String message_history = "$api/messaging/my_sentbox";
 const String add_warning = "$api/project/warning/create";
 const String update_color_name = "$api/colors/update_name";
-
 const String delete_notification = "$api/notification/delete";
 
 //PROJECT or CHANTIER
@@ -66,9 +65,7 @@ const TextStyle boldText = TextStyle(fontWeight: FontWeight.bold);
 //GLOBAL
 String? authToken;
 Admin? profileData;
-
 List<ColorModels> colorsSettings = [];
-
 List historyMessages = [];
 
 Map<String, String> defaultImageTag = {

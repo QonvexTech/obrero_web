@@ -373,6 +373,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
+  jumping_dot:
+    dependency: "direct main"
+    description:
+      name: jumping_dot
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.4"
   lazy_load_scrollview:
     dependency: "direct main"
     description:
