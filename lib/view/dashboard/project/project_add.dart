@@ -1344,6 +1344,14 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       });
 
                                       Navigator.pop(context);
+                                      Fluttertoast.showToast(
+                                          webBgColor:
+                                              "linear-gradient(to right, #5585E5, #5585E5)",
+                                          msg: "Created Successfully",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 2,
+                                          fontSize: 16.0);
                                     } else {
                                       ProjectModel newProject = ProjectModel(
                                           status: colorsSettings
@@ -1381,6 +1389,14 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           });
                                         });
                                         Navigator.pop(context);
+                                        Fluttertoast.showToast(
+                                            webBgColor:
+                                                "linear-gradient(to right, #5585E5, #5585E5)",
+                                            msg: "Updated Successfully",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER,
+                                            timeInSecForIosWeb: 2,
+                                            fontSize: 16.0);
                                       });
                                     }
                                   } else {

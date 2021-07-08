@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -385,7 +386,17 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                               print("BODY TO EDIT $bodyToEdit");
                               customerService
                                   .updateCustomer(bodyToEdit: bodyToEdit)
-                                  .whenComplete(() => Navigator.pop(context));
+                                  .whenComplete(() {
+                                Fluttertoast.showToast(
+                                    webBgColor:
+                                        "linear-gradient(to right, #5585E5, #5585E5)",
+                                    msg: "Upadated Successfully",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 3,
+                                    fontSize: 16.0);
+                                Navigator.pop(context);
+                              });
                             });
                           } else {
                             if (_formKey.currentState!.validate()) {
@@ -403,7 +414,17 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
 
                               customerService
                                   .createCustomer(newCustomer: newCustomer)
-                                  .whenComplete(() => Navigator.pop(context));
+                                  .whenComplete(() {
+                                Navigator.pop(context);
+                                Fluttertoast.showToast(
+                                    webBgColor:
+                                        "linear-gradient(to right, #5585E5, #5585E5)",
+                                    msg: "Created Successfully",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 2,
+                                    fontSize: 16.0);
+                              });
                             }
                           }
                         },

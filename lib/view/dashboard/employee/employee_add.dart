@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -316,6 +317,15 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                               widget.userToEdit!.contactNumber =
                                   contactNumberController.text;
                             });
+
+                            Fluttertoast.showToast(
+                                webBgColor:
+                                    "linear-gradient(to right, #5585E5, #5585E5)",
+                                msg: "Upadated Successfully",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 3,
+                                fontSize: 16.0);
                             Navigator.pop(context);
                           });
                         } else {
@@ -332,6 +342,14 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                           employeeService
                               .createUser(newEmployee)
                               .whenComplete(() {
+                            Fluttertoast.showToast(
+                                webBgColor:
+                                    "linear-gradient(to right, #5585E5, #5585E5)",
+                                msg: "Created Successfully",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 2,
+                                fontSize: 16.0);
                             Navigator.pop(context);
                           });
                         }
