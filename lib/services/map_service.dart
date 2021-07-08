@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/view_model/project_add_view_model.dart';
+import 'package:uitemplate/services/project/project_add_service.dart';
 
 class MapService extends ChangeNotifier {
-  static final ProjectAddViewModel _projectAddViewModel =
-      ProjectAddViewModel.instance;
   final containerKey = GlobalKey();
   double _zoom = 15.0;
   LatLng coordinates = LatLng(48.864716, 2.349014);
@@ -44,8 +43,8 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setAddress(value) {
-    _projectAddViewModel.addressField.text = value;
+  void setAddress(value, ProjectAddService projectAddService) {
+    projectAddService.addressController.text = value;
     // _address.text = value;
     notifyListeners();
   }
@@ -120,7 +119,6 @@ class MapService extends ChangeNotifier {
   // }
 
   Future mapInit(List<ProjectModel> projects, context) async {
-    print("project length: ${projects.length}");
     _markers.clear();
     _circles.clear();
     if (_markers.length > 0) {
@@ -128,42 +126,45 @@ class MapService extends ChangeNotifier {
       location.text =
           "${coordinates.latitude.toString()}, ${coordinates.longitude.toString()}";
       findLocalByCoordinates(
-          coordinates.latitude.toString(), coordinates.longitude.toString());
+          coordinates.latitude.toString(),
+          coordinates.longitude.toString(),
+          Provider.of<ProjectAddService>(context));
     }
 
-    try {
-      for (ProjectModel project in projects) {
-        _markers.add(Marker(
-            onTap: () {
-              try {
-                mapController!
-                    .showMarkerInfoWindow(MarkerId(project.id.toString()));
-              } catch (e) {
-                print(e);
-              }
-            },
-            infoWindow: InfoWindow(
-                title: project.name, snippet: project.address.toString()),
-            icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
-                colorsSettings[project.status!].circleAsset!),
-            markerId: MarkerId(project.id.toString()),
-            position: project.coordinates!));
+    if (projects.length > 0) {
+      try {
+        for (ProjectModel project in projects) {
+          _markers.add(Marker(
+              onTap: () {
+                try {
+                  mapController!
+                      .showMarkerInfoWindow(MarkerId(project.id.toString()));
+                } catch (e) {
+                  print(e);
+                }
+              },
+              infoWindow: InfoWindow(
+                  title: project.name, snippet: project.address.toString()),
+              icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
+                  colorsSettings[project.status!].circleAsset!),
+              markerId: MarkerId(project.id.toString()),
+              position: project.coordinates!));
 
-        _circles.add(Circle(
-            fillColor: Color.fromRGBO(60, 120, 225, 0.1),
-            circleId: CircleId(
-              project.id.toString(),
-            ),
-            radius: project.areaSize!,
-            strokeWidth: 1,
-            strokeColor: Colors.black12,
-            center: project.coordinates!));
+          _circles.add(Circle(
+              fillColor: Color.fromRGBO(60, 120, 225, 0.1),
+              circleId: CircleId(
+                project.id.toString(),
+              ),
+              radius: project.areaSize!,
+              strokeWidth: 1,
+              strokeColor: Colors.black12,
+              center: project.coordinates!));
+        }
+        print("CIRCLE: ${_circles.length}");
+      } catch (e) {
+        print(e);
       }
-      print("CIRCLE: ${_circles.length}");
-    } catch (e) {
-      print(e);
     }
-    print("markers : ${_markers.length}");
 
     notifyListeners();
   }
@@ -173,7 +174,8 @@ class MapService extends ChangeNotifier {
       BuildContext? context,
       double? areaSize,
       bool? isEdit,
-      String? projectId}) async {
+      String? projectId,
+      ProjectAddService? projectAddService}) async {
     Marker? toRemove;
     Circle? toRemoveCircle;
     if (isEdit!) {
@@ -202,8 +204,8 @@ class MapService extends ChangeNotifier {
         coordinates = coord;
         location.text =
             "${coord.latitude.toString()}, ${coord.longitude.toString()}";
-        findLocalByCoordinates(
-            coord.latitude.toString(), coord.longitude.toString());
+        findLocalByCoordinates(coord.latitude.toString(),
+            coord.longitude.toString(), projectAddService!);
       }
 
       //TODO: always color green
@@ -298,7 +300,8 @@ class MapService extends ChangeNotifier {
     _locationData = await _location.getLocation();
   }
 
-  Future findLocalByCoordinates(String lat, String lang) async {
+  Future findLocalByCoordinates(
+      String lat, String lang, ProjectAddService projectAddService) async {
     var url = Uri.parse(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lang&location_type=ROOFTOP&result_type=street_address&key=AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI");
     try {
@@ -317,7 +320,7 @@ class MapService extends ChangeNotifier {
         splitAdd.forEach((item) {
           concatenate.write(item + " ");
         });
-        setAddress(concatenate.toString());
+        setAddress(concatenate.toString(), projectAddService);
 
         notifyListeners();
       } else {

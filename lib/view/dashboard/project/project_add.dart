@@ -25,7 +25,6 @@ import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_add_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
-import 'package:uitemplate/view_model/project_add_view_model.dart';
 import 'package:uitemplate/widgets/map.dart';
 
 //TODO: add more status colors;
@@ -104,19 +103,11 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     }
   }
 
-  // void onError(PlacesAutocompleteResponse response) {
-  //   // ignore: deprecated_member_use
-  //   homeScaffoldKey.currentState!.showSnackBar(
-  //     SnackBar(content: Text(response.errorMessage!)),
-  //   );
-  // }
-
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
   final _nom = FocusNode();
   final _desc = FocusNode();
-
   final _startDate = FocusNode();
   final _endDate = FocusNode();
   final _address = FocusNode();
@@ -140,22 +131,20 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).initLoad();
     Provider.of<CustomerService>(context, listen: false).initLoad();
+    Provider.of<MapService>(context, listen: false).circles.clear();
+    Provider.of<ProjectAddService>(context, listen: false).assignIds.clear();
+    Provider.of<ProjectAddService>(context, listen: false)
+        .projectImages
+        .clear();
     selectedStatus = colorsSettings[0];
 
     if (widget.customer != null) {
       customerSelected = widget.customer;
     }
-
-    Provider.of<ProjectAddService>(context, listen: false).assignIds.clear();
-    Provider.of<ProjectAddService>(context, listen: false)
-        .projectImages
-        .clear();
-
     if (widget.projectToEdit != null) {
-      Provider.of<ProjectAddService>(context, listen: false);
       projectId = widget.projectToEdit!.id.toString();
 
-      Provider.of<ProjectAddService>(context, listen: false).areaSize =
+      Provider.of<ProjectAddService>(context, listen: false).initArea =
           widget.projectToEdit!.areaSize!;
       nameController.text = widget.projectToEdit!.name ?? "";
       descriptionController.text = widget.projectToEdit!.description ?? "";
@@ -164,41 +153,29 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       Provider.of<ProjectAddService>(context, listen: false).endDate =
           widget.projectToEdit!.endDate ?? "";
 
-      print("image length ${widget.projectToEdit!.images!.length}");
-
       Provider.of<ProjectAddService>(context, listen: false)
           .userToAssignIds(widget.projectToEdit!.assignees!);
       if (widget.projectToEdit!.owner!.id != null) {
         Provider.of<ProjectAddService>(context, listen: false)
-            .activeOwnerIndex = widget.projectToEdit!.owner!.id;
+            .setInitActiveOwner = widget.projectToEdit!.owner!.id;
       }
 
       Provider.of<MapService>(context, listen: false).addressGeo =
           widget.projectToEdit!.address!;
-      // Provider.of<MapService>(context, listen: false).address.text =
-      //     widget.projectToEdit!.address!;
       Provider.of<MapService>(context, listen: false).coordinates =
           widget.projectToEdit!.coordinates!;
-      setState(() {
-        initialPositon = widget.projectToEdit!.coordinates!;
-      });
+
+      initialPositon = widget.projectToEdit!.coordinates!;
 
       if (widget.projectToEdit!.owner != null) {
         customerSelected = widget.projectToEdit!.owner;
       }
-
       isEdit = true;
-
-      // Provider.of<MapService>(context, listen: false).mapInit(
-      //     Provider.of<ProjectProvider>(context, listen: false).projects,
-      //     context);
     }
-    Provider.of<MapService>(context, listen: false).circles.clear();
 
     super.initState();
   }
 
-  final ProjectAddViewModel _projectAddViewModel = ProjectAddViewModel.instance;
   @override
   void dispose() {
     nameController.dispose();
@@ -210,7 +187,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     _startDate.dispose();
     _endDate.dispose();
     _delete.dispose();
-    _projectAddViewModel.addressField.clear();
     super.dispose();
   }
 
@@ -438,8 +414,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                   .areaSize);
                                                         },
                                                         controller:
-                                                            _projectAddViewModel
-                                                                .addressField,
+                                                            projectAddService
+                                                                .addressController,
                                                       ),
                                                     )),
                                           ],
@@ -1320,8 +1296,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       });
 
                                       projectAddService.addBodyEdit({
-                                        "address": _projectAddViewModel
-                                            .addressField.text
+                                        "address": projectAddService
+                                            .addressController.text
                                       });
 
                                       projectAddService.addBodyEdit({
@@ -1369,8 +1345,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           startDate:
                                               projectAddService.startDate,
                                           endDate: projectAddService.endDate,
-                                          address: _projectAddViewModel
-                                              .addressField.text,
+                                          address: projectAddService
+                                              .addressController.text,
                                           areaSize: projectAddService.areaSize);
 
                                       projectProvider

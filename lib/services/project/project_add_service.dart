@@ -18,6 +18,8 @@ class ProjectAddService extends ChangeNotifier {
   List<Uint8List>? _projectImages = [];
   Uint8List? _base64Image;
   Map<dynamic, dynamic> _bodyToEdit = {};
+
+  TextEditingController addressController = TextEditingController();
   bool justScroll = true;
 
   List<int> _imagesToDelete = [];
@@ -39,6 +41,10 @@ class ProjectAddService extends ChangeNotifier {
   set areaSize(value) {
     _areaSize = value;
     notifyListeners();
+  }
+
+  set initArea(value) {
+    _areaSize = value;
   }
 
   //assigns api
@@ -80,6 +86,10 @@ class ProjectAddService extends ChangeNotifier {
   set activeOwnerIndex(value) {
     _activeOwnerIndex = value;
     notifyListeners();
+  }
+
+  set setInitActiveOwner(value) {
+    _activeOwnerIndex = value;
   }
 
   get activeOwnerIndex => _activeOwnerIndex;
@@ -186,7 +196,6 @@ class ProjectAddService extends ChangeNotifier {
       _startDate = projectToEdit!.startDate!;
       _endDate = projectToEdit!.endDate!;
     }
-    notifyListeners();
   }
 
   Future<void> selectStartDate(BuildContext context) async {

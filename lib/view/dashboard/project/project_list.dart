@@ -32,7 +32,9 @@ class _ProjectListState extends State<ProjectList> with TableHelper {
         .fetchProjects()
         .whenComplete(() {
       Provider.of<MapService>(context, listen: false).mapInit(
-          Provider.of<ProjectProvider>(context, listen: false).projects,
+          Provider.of<ProjectProvider>(context, listen: false).projects == null
+              ? []
+              : Provider.of<ProjectProvider>(context, listen: false).projects,
           context);
     });
     super.initState();

@@ -29,10 +29,14 @@ class ProjectDetails extends StatefulWidget {
 class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
   @override
   void initState() {
-    Provider.of<ProjectProvider>(context, listen: false).initHours(
-        Provider.of<ProjectProvider>(context, listen: false)
-            .projectOnDetails
-            .id!);
+    if (Provider.of<ProjectProvider>(context, listen: false).projectOnDetails !=
+        null) {
+      Provider.of<ProjectProvider>(context, listen: false).initHours(
+          Provider.of<ProjectProvider>(context, listen: false)
+              .projectOnDetails
+              .id!);
+    }
+
     super.initState();
   }
 
@@ -334,112 +338,96 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: MySpacer.small,
-                  ),
-                  Text(
-                    "Statistics",
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  SizedBox(
-                    height: MySpacer.small,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            "Heures Totales",
-                            style: transHeader.copyWith(fontSize: 10),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                projectProvider.hours,
-                                style: Theme.of(context).textTheme.headline3,
-                              ),
-                              Text(
-                                "/hrs",
-                                style: TextStyle(fontSize: 10),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-
-                      // Column(
-                      //   children: [
-                      //     Text(
-                      //       "Progres Totales",
-                      //       style: transHeader.copyWith(fontSize: 10),
-                      //     ),
-                      //     Row(
-                      //       crossAxisAlignment: CrossAxisAlignment.end,
-                      //       children: [
-                      //         Text(
-                      //           "60%",
-                      //           style: Theme.of(context).textTheme.headline3,
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ],
-                      // ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Divider(
-                          thickness: 4,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Text(
-                            "Avertissement Total",
-                            style: transHeader.copyWith(fontSize: 10),
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                "${projectProvider.projectOnDetails!.warnings!.length}",
-                                style: Theme.of(context).textTheme.headline3,
-                              ),
-                              Text(
-                                "Alerte",
-                                style: TextStyle(fontSize: 10),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                  // SizedBox(
+                  //   height: MySpacer.small,
+                  // ),
+                  // Text(
+                  //   "Statistics",
+                  //   style: Theme.of(context).textTheme.headline6,
+                  // ),
+                  // SizedBox(
+                  //   height: MySpacer.small,
+                  // ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.start,
+                  //   children: [
+                  //     Column(
+                  //       children: [
+                  //         Text(
+                  //           "Heures Totales",
+                  //           style: transHeader.copyWith(fontSize: 10),
+                  //         ),
+                  //         Row(
+                  //           crossAxisAlignment: CrossAxisAlignment.end,
+                  //           children: [
+                  //             Text(
+                  //               projectProvider.hours.isEmpty
+                  //                   ? ""
+                  //                   : projectProvider.hours,
+                  //               style: Theme.of(context).textTheme.headline3,
+                  //             ),
+                  //             Text(
+                  //               "/hrs",
+                  //               style: TextStyle(fontSize: 10),
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                  //       child: Divider(
+                  //         thickness: 4,
+                  //         color: Colors.grey,
+                  //       ),
+                  //     ),
+                  //     Column(
+                  //       children: [
+                  //         Text(
+                  //           "Avertissement Total",
+                  //           style: transHeader.copyWith(fontSize: 10),
+                  //         ),
+                  //         Row(
+                  //           crossAxisAlignment: CrossAxisAlignment.end,
+                  //           children: [
+                  //             Text(
+                  //               "${projectProvider.projectOnDetails!.warnings!.length}",
+                  //               style: Theme.of(context).textTheme.headline3,
+                  //             ),
+                  //             Text(
+                  //               "Alerte",
+                  //               style: TextStyle(fontSize: 10),
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ],
+                  // ),
                   SizedBox(
                     height: MySpacer.large,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Alertes",
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      IconButton(
-                          icon: Icon(Icons.add_circle),
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog(
-                                    backgroundColor: Palette.contentBackground,
-                                    content: AddWaringScreen(
-                                      projectId:
-                                          projectProvider.projectOnDetails!.id!,
-                                    )));
-                          })
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       "Alertes",
+                  //       style: Theme.of(context).textTheme.headline6,
+                  //     ),
+                  //     IconButton(
+                  //         icon: Icon(Icons.add_circle),
+                  //         onPressed: () {
+                  //           showDialog(
+                  //               context: context,
+                  //               builder: (_) => AlertDialog(
+                  //                   backgroundColor: Palette.contentBackground,
+                  //                   content: AddWaringScreen(
+                  //                     projectId:
+                  //                         projectProvider.projectOnDetails!.id!,
+                  //                   )));
+                  //         })
+                  //   ],
+                  // ),
                   SizedBox(
                     height: MySpacer.small,
                   ),
@@ -541,12 +529,18 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                                             padding: const EdgeInsets.all(5.0),
                                             child: ListTile(
                                                 title: Text(
-                                                    "${projectProvider.projectOnDetails!.warnings[index].title}"),
+                                                    "${projectProvider.projectOnDetails!.warnings == null ? "" : projectProvider.projectOnDetails!.warnings[index].title}"),
                                                 subtitle: ReadMoreText(
                                                   projectProvider
-                                                      .projectOnDetails!
-                                                      .warnings[index]
-                                                      .description,
+                                                              .projectOnDetails!
+                                                              .warnings[index]
+                                                              .description ==
+                                                          null
+                                                      ? ""
+                                                      : projectProvider
+                                                          .projectOnDetails!
+                                                          .warnings[index]
+                                                          .description,
                                                   trimLines: 1,
                                                   trimLength: 120,
                                                   trimMode: TrimMode.Length,
@@ -579,202 +573,6 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             }),
                           ),
                         ),
-                  // Container(
-                  //   width: MediaQuery.of(context).size.width,
-                  //   height: warningHeight,
-                  //   child: StreamBuilder<List<LogModel>>(
-                  //     builder: (context, result) {
-                  //       if (result.hasError) {
-                  //         return Center(
-                  //           child: Text(
-                  //             "${result.error}",
-                  //           ),
-                  //         );
-                  //       }
-
-                  //       if (result.hasData && result.data!.length > 0) {
-                  //         List<LogModel>? warnings() {
-                  //           List<LogModel> newWarnings = [];
-                  //           for (LogModel log in result.data!) {
-                  //             if (log.type == "project_warning" &&
-                  //                 log.data_id ==
-                  //                     projectProvider.projectOnDetails!.id) {
-                  //               newWarnings.add(log);
-                  //             }
-                  //           }
-
-                  //           return newWarnings;
-                  //         }
-
-                  //         if (warnings()!.length <= 0) {
-                  //           showWarning = false;
-                  //           return Container(
-                  //             height: 50,
-                  //             child: Center(
-                  //               child: Column(
-                  //                 mainAxisAlignment: MainAxisAlignment.start,
-                  //                 children: [
-                  //                   Card(
-                  //                     child: Container(
-                  //                       width:
-                  //                           MediaQuery.of(context).size.width,
-                  //                       height: 150,
-                  //                       child: Center(
-                  //                         child: Column(
-                  //                           mainAxisAlignment:
-                  //                               MainAxisAlignment.center,
-                  //                           children: [
-                  //                             Icon(
-                  //                                 Icons
-                  //                                     .notifications_none_sharp,
-                  //                                 size: 50,
-                  //                                 color: Colors.grey),
-                  //                             Text(
-                  //                                 "Pas encore d'avertissements!")
-                  //                           ],
-                  //                         ),
-                  //                       ),
-                  //                     ),
-                  //                   ),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //           );
-                  //         } else {
-                  //           warningHeight = 0;
-                  //         }
-
-                  //         return SizedBox();
-                  //       } else {
-                  //         return Container(
-                  //           child: LogsLoader.load(),
-                  //         );
-                  //       }
-                  //     },
-                  //     stream: logService.stream$,
-                  //   ),
-                  // ),
-                  // showWarning
-                  //     ? Container(
-                  //         width: MediaQuery.of(context).size.width,
-                  //         height: MediaQuery.of(context).size.height * 0.7,
-                  //         child: StreamBuilder<List<LogModel>>(
-                  //           builder: (context, result) {
-                  //             if (result.hasError) {
-                  //               return Center(
-                  //                 child: Text(
-                  //                   "${result.error}",
-                  //                 ),
-                  //               );
-                  //             }
-
-                  //             if (result.hasData && result.data!.length > 0) {
-                  //               List<LogModel>? warnings() {
-                  //                 List<LogModel> newWarnings = [];
-                  //                 for (LogModel log in result.data!) {
-                  //                   if (log.type == "project_warning" &&
-                  //                       log.data_id ==
-                  //                           projectProvider
-                  //                               .projectOnDetails!.id) {
-                  //                     newWarnings.add(log);
-                  //                   }
-                  //                 }
-
-                  //                 return newWarnings;
-                  //               }
-
-                  //               if (warnings()!.length <= 0) {
-                  //                 return Container(
-                  //                   height: 50,
-                  //                   child: Center(
-                  //                     child: Column(
-                  //                       mainAxisAlignment:
-                  //                           MainAxisAlignment.start,
-                  //                       children: [
-                  //                         Card(
-                  //                           child: Container(
-                  //                             width: MediaQuery.of(context)
-                  //                                 .size
-                  //                                 .width,
-                  //                             height: 150,
-                  //                             child: Center(
-                  //                               child: Column(
-                  //                                 mainAxisAlignment:
-                  //                                     MainAxisAlignment.center,
-                  //                                 children: [
-                  //                                   Icon(
-                  //                                       Icons
-                  //                                           .notifications_none_sharp,
-                  //                                       size: 50,
-                  //                                       color: Colors.grey),
-                  //                                   Text(
-                  //                                       "Pas encore d'avertissements!")
-                  //                                 ],
-                  //                               ),
-                  //                             ),
-                  //                           ),
-                  //                         ),
-                  //                       ],
-                  //                     ),
-                  //                   ),
-                  //                 );
-                  //               }
-
-                  //               return Scrollbar(
-                  //                 child: ListView(
-                  //                   padding: const EdgeInsets.symmetric(
-                  //                       horizontal: 10),
-                  //                   children: List.generate(warnings()!.length,
-                  //                       (index) {
-                  //                     return Stack(
-                  //                       children: [
-                  //                         Card(
-                  //                           child: Container(
-                  //                             padding:
-                  //                                 const EdgeInsets.symmetric(
-                  //                                     horizontal: 20),
-                  //                             decoration: BoxDecoration(
-                  //                                 border: Border(
-                  //                                     left: BorderSide(
-                  //                                         color: Colors.grey,
-                  //                                         width: 7))),
-                  //                             child: Row(
-                  //                               children: [
-                  //                                 Icon(
-                  //                                   Icons
-                  //                                       .notification_important_rounded,
-                  //                                   color: Colors.grey,
-                  //                                 ),
-                  //                                 const SizedBox(
-                  //                                   width: 10,
-                  //                                 ),
-                  //                                 Expanded(
-                  //                                   child: ListTile(
-                  //                                     title: Text(
-                  //                                         "${warnings()![index].title}"),
-                  //                                     subtitle: Text(
-                  //                                         "${warnings()![index].body}"),
-                  //                                   ),
-                  //                                 )
-                  //                               ],
-                  //                             ),
-                  //                           ),
-                  //                         ),
-                  //                       ],
-                  //                     );
-                  //                   }),
-                  //                 ),
-                  //               );
-                  //             } else {
-                  //               return Container(
-                  //                 child: LogsLoader.load(),
-                  //               );
-                  //             }
-                  //           },
-                  //           stream: logService.stream$,
-                  //         ),
-                  //       )
-                  //     : SizedBox(),
                 ],
               ),
             ))
