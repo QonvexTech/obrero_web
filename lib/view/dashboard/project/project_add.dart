@@ -74,6 +74,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         components: [
           Component(Component.country, "fr")
         ]).onError((error, stackTrace) {
+      Fluttertoast.showToast(
+          webBgColor: "linear-gradient(to right, #E21010, #ED9393)",
+          msg: "Something wrong in searching.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 2,
+          fontSize: 16.0);
       setState(() {
         searchMap = false;
       });
@@ -99,6 +106,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         });
       } catch (e) {
         print(e);
+        Fluttertoast.showToast(
+            webBgColor: "linear-gradient(to right, #E21010, #ED9393)",
+            msg: "Something wrong in searching.",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 2,
+            fontSize: 16.0);
         setState(() {
           searchMap = false;
         });
