@@ -27,7 +27,6 @@ import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
 
-//TODO: add more status colors;
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
   final CustomerModel? customer;
@@ -48,6 +47,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   final GeoCode geoCode = GeoCode();
   Future<void> _showPrediction(
     MapService mapService,
+    ProjectAddService projectAddService,
     context,
     projectId,
     areaSize,
@@ -56,6 +56,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       searchMap = true;
     });
     mapService.removeDefaultMarker();
+    if (isEdit) {
+      mapService.mapClear(projectId);
+    }
     Prediction? p = await PlacesAutocomplete.show(
         proxyBaseUrl:
             "https://obscure-peak-25575.herokuapp.com/https://maps.googleapis.com/maps/api",
@@ -77,24 +80,28 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     });
     if (p != null && p.description != null) {
       try {
-        Coordinates coordinates = await geoCode
-            .forwardGeocoding(address: p.description!)
-            .whenComplete(() {});
+        Coordinates coordinates =
+            await geoCode.forwardGeocoding(address: p.description!);
 
         print("Latitude: ${coordinates.latitude}");
         print("Longitude: ${coordinates.longitude}");
+        projectAddService.setaddressController = "${p.description!}";
 
         mapService.setCoordinates(
             coord: LatLng(coordinates.latitude!, coordinates.longitude!),
             context: context,
             areaSize: areaSize,
             isEdit: isEdit,
-            projectId: projectId);
+            projectId: projectId,
+            isClick: false);
         setState(() {
           searchMap = false;
         });
       } catch (e) {
         print(e);
+        setState(() {
+          searchMap = false;
+        });
       }
     } else {
       setState(() {
@@ -127,6 +134,21 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
 
   CustomerModel? customerSelected;
 
+  void focusmap() {
+    Future.delayed(Duration(seconds: 1), () {
+      if (isEdit) {
+        projectId = widget.projectToEdit!.id.toString();
+        Provider.of<MapService>(context, listen: false)
+            .mapController!
+            .moveCamera(
+                CameraUpdate.newLatLng(widget.projectToEdit!.coordinates!));
+        Provider.of<MapService>(context, listen: false)
+            .mapController!
+            .showMarkerInfoWindow(MarkerId("$projectId"));
+      }
+    });
+  }
+
   @override
   void initState() {
     Provider.of<EmployeeSevice>(context, listen: false).initLoad();
@@ -142,7 +164,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       customerSelected = widget.customer;
     }
     if (widget.projectToEdit != null) {
-      projectId = widget.projectToEdit!.id.toString();
+      Provider.of<ProjectAddService>(context, listen: false).initAdress =
+          widget.projectToEdit!.address!;
 
       Provider.of<ProjectAddService>(context, listen: false).initArea =
           widget.projectToEdit!.areaSize!;
@@ -171,6 +194,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         customerSelected = widget.projectToEdit!.owner;
       }
       isEdit = true;
+      focusmap();
     }
 
     super.initState();
@@ -180,7 +204,6 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
   void dispose() {
     nameController.dispose();
     descriptionController.dispose();
-
     _nom.dispose();
     _desc.dispose();
     _address.dispose();
@@ -407,11 +430,13 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                         onTap: () async {
                                                           //TODO: search map
                                                           _showPrediction(
-                                                              mapService,
-                                                              context,
-                                                              projectId,
-                                                              projectAddService
-                                                                  .areaSize);
+                                                            mapService,
+                                                            projectAddService,
+                                                            context,
+                                                            projectId,
+                                                            projectAddService
+                                                                .areaSize,
+                                                          );
                                                         },
                                                         controller:
                                                             projectAddService

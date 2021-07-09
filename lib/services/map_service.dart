@@ -2,11 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/services/project/project_add_service.dart';
 
 class MapService extends ChangeNotifier {
   final containerKey = GlobalKey();
@@ -19,6 +17,8 @@ class MapService extends ChangeNotifier {
   LocationData? _locationData;
   GoogleMapController? mapController;
   bool _gesture = true;
+
+  String _address = "";
   TextEditingController location = TextEditingController();
   //
 
@@ -33,6 +33,8 @@ class MapService extends ChangeNotifier {
     // notifyListeners();
   }
 
+  get address => _address;
+
   int statusDefault = 0;
   void setLocation(value) {
     location.text = value;
@@ -40,12 +42,6 @@ class MapService extends ChangeNotifier {
 
   void setStatus(value) {
     statusDefault = value;
-    notifyListeners();
-  }
-
-  void setAddress(value, ProjectAddService projectAddService) {
-    projectAddService.addressController.text = value;
-    // _address.text = value;
     notifyListeners();
   }
 
@@ -64,6 +60,12 @@ class MapService extends ChangeNotifier {
 
   markersAdd(value) {
     _markers.add(value);
+    notifyListeners();
+  }
+
+  mapClear(String projectId) {
+    _circles.removeWhere((element) => element.circleId.value == projectId);
+    _markers.removeWhere((element) => element.markerId.value == projectId);
     notifyListeners();
   }
 
@@ -101,23 +103,6 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future setAddress(latitude, longitude) async {
-  //   var address =
-  //       await Geocoder.google("AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI")
-  //           .findAddressesFromCoordinates(Coordinates(latitude, longitude));
-  //   _addressGeo = address.first.toString();
-  // }
-
-  // static Future<Uint8List> getBytesFromAsset(String path, int width) async {
-  //   ByteData data = await rootBundle.load(path);
-  //   ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-  //       targetWidth: width);
-  //   ui.FrameInfo fi = await codec.getNextFrame();
-  //   return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
-  //       .buffer
-  //       .asUint8List();
-  // }
-
   Future mapInit(List<ProjectModel> projects, context) async {
     _markers.clear();
     _circles.clear();
@@ -126,9 +111,9 @@ class MapService extends ChangeNotifier {
       location.text =
           "${coordinates.latitude.toString()}, ${coordinates.longitude.toString()}";
       findLocalByCoordinates(
-          coordinates.latitude.toString(),
-          coordinates.longitude.toString(),
-          Provider.of<ProjectAddService>(context));
+        coordinates.latitude.toString(),
+        coordinates.longitude.toString(),
+      );
     }
 
     if (projects.length > 0) {
@@ -169,13 +154,13 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCoordinates(
+  Future setCoordinates(
       {LatLng? coord,
       BuildContext? context,
       double? areaSize,
       bool? isEdit,
       String? projectId,
-      ProjectAddService? projectAddService}) async {
+      required bool? isClick}) async {
     Marker? toRemove;
     Circle? toRemoveCircle;
     if (isEdit!) {
@@ -195,6 +180,8 @@ class MapService extends ChangeNotifier {
           (element) => element.mapsId.value == "temp",
           orElse: () => Circle(circleId: CircleId("temp")));
     }
+    Marker defMarker;
+    Circle defCircle;
 
     if (_markers.contains(toRemove)) {
       _markers.remove(toRemove);
@@ -204,13 +191,11 @@ class MapService extends ChangeNotifier {
         coordinates = coord;
         location.text =
             "${coord.latitude.toString()}, ${coord.longitude.toString()}";
-        findLocalByCoordinates(coord.latitude.toString(),
-            coord.longitude.toString(), projectAddService!);
+        findLocalByCoordinates(
+            coord.latitude.toString(), coord.longitude.toString());
       }
 
       //TODO: always color green
-      Marker defMarker;
-      Circle defCircle;
 
       if (isEdit) {
         defMarker = Marker(
@@ -254,33 +239,12 @@ class MapService extends ChangeNotifier {
       _circles.add(defCircle);
     }
 
-    mapController!.showMarkerInfoWindow(MarkerId(projectId!));
-    mapController!.moveCamera(CameraUpdate.newLatLng(coordinates));
+    if (!isClick!) {
+      mapController!.moveCamera(CameraUpdate.newLatLng(coordinates));
+    }
+
     notifyListeners();
   }
-
-  // void addNewMarker(LatLng coord) {
-  //   Marker newMarker = Marker(markerId: MarkerId("value"), position: coord);
-  //   _markers.add(newMarker);
-  //   notifyListeners();
-  // }
-
-  // void changePosition(MarkerId markerId) {
-  //   final Marker marker = markers[markerId]!;
-  //   final LatLng current = marker.position;
-  //   final Offset offset = Offset(
-  //     coordinates.latitude - current.latitude,
-  //     coordinates.longitude - current.longitude,
-  //   );
-
-  //   markers[markerId] = marker.copyWith(
-  //     positionParam: LatLng(
-  //       coordinates.latitude + offset.dy,
-  //       coordinates.longitude + offset.dx,
-  //     ),
-  //   );
-  //   notifyListeners();
-  // }
 
   checkLocationPermission() async {
     _serviceEnabled = await _location.serviceEnabled();
@@ -300,8 +264,7 @@ class MapService extends ChangeNotifier {
     _locationData = await _location.getLocation();
   }
 
-  Future findLocalByCoordinates(
-      String lat, String lang, ProjectAddService projectAddService) async {
+  findLocalByCoordinates(String lat, String lang) async {
     var url = Uri.parse(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lang&location_type=ROOFTOP&result_type=street_address&key=AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI");
     try {
@@ -320,7 +283,8 @@ class MapService extends ChangeNotifier {
         splitAdd.forEach((item) {
           concatenate.write(item + " ");
         });
-        setAddress(concatenate.toString(), projectAddService);
+
+        _address = concatenate.toString();
 
         notifyListeners();
       } else {
@@ -330,6 +294,6 @@ class MapService extends ChangeNotifier {
       print(e);
     }
 
-    // return
+    return "";
   }
 }

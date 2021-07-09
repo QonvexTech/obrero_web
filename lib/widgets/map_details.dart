@@ -31,8 +31,7 @@ class MapDetails extends StatelessWidget {
           onTap: () {
             print("Locate Map");
             mapService.setCoordinates(
-              coord: project![index].coordinates!,
-            );
+                coord: project![index].coordinates!, isClick: true);
           },
           child: Container(
               child: Center(
