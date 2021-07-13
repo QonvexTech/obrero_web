@@ -29,6 +29,8 @@ class ProjectAddService extends ChangeNotifier {
     notifyListeners();
   }
 
+  get isAddressEmpty => _addressController.text.isEmpty;
+
   get addressController => _addressController;
 
   get bodyToEdit => _bodyToEdit;

@@ -1194,9 +1194,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                                             onPressed: () {
                                                                               print("Delete image new");
                                                                               projectAddService.addImageToDelete(image);
-
                                                                               projectAddService.removeNewImage(image);
-                                                                              // projectAddService.removeImage(image, isEdit);
                                                                             }),
                                                                       ),
                                                                     )
@@ -1273,6 +1271,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                               onPressed: () {
                                 projectAddService.deleteAllImage();
                                 if (_formKey.currentState!.validate()) {
+                                  print(projectAddService.isAddressEmpty);
                                   if (customerSelected != null) {
                                     setState(() {
                                       loader = true;
@@ -1362,7 +1361,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                       Fluttertoast.showToast(
                                           webBgColor:
                                               "linear-gradient(to right, #5585E5, #5585E5)",
-                                          msg: "Created Successfully",
+                                          msg: "Updated Successfully",
                                           toastLength: Toast.LENGTH_SHORT,
                                           gravity: ToastGravity.CENTER,
                                           timeInSecForIosWeb: 2,
@@ -1388,31 +1387,61 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                               .addressController.text,
                                           areaSize: projectAddService.areaSize);
 
-                                      projectProvider
-                                          .createProjects(
-                                        newProject: newProject,
-                                      )
-                                          .whenComplete(() {
-                                        Provider.of<CustomerService>(context,
-                                                listen: false)
-                                            .workingProjectsCustomer(
-                                                projectAddService
-                                                    .activeOwnerIndex)
-                                            .whenComplete(() {
-                                          setState(() {
-                                            loader = false;
-                                          });
+                                      if (projectAddService
+                                                  .addressController.text !=
+                                              null ||
+                                          projectAddService.addressController
+                                              .text!.isNotEmpty) {
+                                        projectProvider
+                                            .createProjects(
+                                          newProject: newProject,
+                                        )
+                                            .then((x) {
+                                          if (x) {
+                                            Provider.of<CustomerService>(
+                                                    context,
+                                                    listen: false)
+                                                .workingProjectsCustomer(
+                                                    projectAddService
+                                                        .activeOwnerIndex)
+                                                .whenComplete(() {
+                                              setState(() {
+                                                loader = false;
+                                              });
+                                            });
+                                            Navigator.pop(context);
+                                            Fluttertoast.showToast(
+                                                webBgColor:
+                                                    "linear-gradient(to right, #5585E5, #5585E5)",
+                                                msg: "Created Successfully",
+                                                toastLength: Toast.LENGTH_SHORT,
+                                                gravity: ToastGravity.CENTER,
+                                                timeInSecForIosWeb: 2,
+                                                fontSize: 16.0);
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                webBgColor:
+                                                    "linear-gradient(to right, #5585E5, #5585E5)",
+                                                msg: "Please provide address",
+                                                toastLength: Toast.LENGTH_SHORT,
+                                                gravity: ToastGravity.CENTER,
+                                                timeInSecForIosWeb: 2,
+                                                fontSize: 16.0);
+                                            setState(() {
+                                              loader = false;
+                                            });
+                                          }
                                         });
-                                        Navigator.pop(context);
+                                      } else {
                                         Fluttertoast.showToast(
                                             webBgColor:
                                                 "linear-gradient(to right, #5585E5, #5585E5)",
-                                            msg: "Updated Successfully",
+                                            msg: "Please provide address",
                                             toastLength: Toast.LENGTH_SHORT,
                                             gravity: ToastGravity.CENTER,
                                             timeInSecForIosWeb: 2,
                                             fontSize: 16.0);
-                                      });
+                                      }
                                     }
                                   } else {
                                     Fluttertoast.showToast(

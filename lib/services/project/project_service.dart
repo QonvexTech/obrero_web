@@ -231,8 +231,9 @@ class ProjectProvider extends ChangeNotifier {
     return projectsDateBase;
   }
 
-  Future createProjects({required ProjectModel newProject}) async {
+  Future<bool> createProjects({required ProjectModel newProject}) async {
     var url = Uri.parse("$project_create_api");
+
     try {
       var response = await http.post(url, body: newProject.toJson(), headers: {
         "Accept": "application/json",
@@ -243,14 +244,18 @@ class ProjectProvider extends ChangeNotifier {
         fetchProjectsBaseOnDates();
         fetchProjects();
         print("success to add");
+        return true;
       } else {
         print(response.body);
         print("fail to add");
       }
     } catch (e) {
       print(e);
+      return false;
     }
+
     notifyListeners();
+    return false;
   }
 
   Future updateProject({required Map bodyToEdit}) async {
