@@ -126,20 +126,24 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               SizedBox(
                 height: MySpacer.small,
               ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Email",
-                  hintStyle: transHeader,
-                  border: OutlineInputBorder(),
-                ),
-                controller: emailController,
-                onChanged: (value) {
-                  bodyToUpdate.addAll({"email": value});
-                },
-              ),
-              SizedBox(
-                height: MySpacer.small,
-              ),
+              isEdit
+                  ? SizedBox()
+                  : TextField(
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        hintStyle: transHeader,
+                        border: OutlineInputBorder(),
+                      ),
+                      controller: emailController,
+                      onChanged: (value) {
+                        bodyToUpdate.addAll({"email": value});
+                      },
+                    ),
+              isEdit
+                  ? SizedBox()
+                  : SizedBox(
+                      height: MySpacer.small,
+                    ),
               isEdit
                   ? SizedBox()
                   : TextField(
@@ -304,7 +308,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                         if (isEdit) {
                           bodyToUpdate.addAll(
                               {"user_id": widget.userToEdit!.id.toString()});
-                          print("bodytoedit: $bodyToUpdate");
+
                           employeeService
                               .updateUser(body: bodyToUpdate)
                               .whenComplete(() {

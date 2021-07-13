@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
+import 'package:uitemplate/models/color_model.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
@@ -118,6 +119,7 @@ class _ProjectListState extends State<ProjectList> with TableHelper {
                               widget.assignUser!,
                             ),
                             headersMobile: [
+                              "Statut",
                               "Nom du site",
                               "Propriétaire",
                               "Adresse",
@@ -130,6 +132,7 @@ class _ProjectListState extends State<ProjectList> with TableHelper {
                               "Surface",
                               "Date de début",
                               "Date de fin",
+                              "Statut",
                               "Actions"
                             ],
                             assignUser: widget.assignUser,
@@ -165,6 +168,38 @@ List<TableRow> rowWidgetMobile(
   return [
     for (ProjectModel data in datas)
       TableRow(children: [
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Flexible(
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<ColorModels>(
+                          underline: null,
+                          hint: Text("Pays"),
+                          value: colorsSettings[data.status!],
+                          icon: Icon(Icons.arrow_drop_down),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(color: Palette.drawerColor),
+                          onChanged: (ColorModels? newValue) {},
+                          items: colorsSettings
+                              .map<DropdownMenuItem<ColorModels>>(
+                                  (ColorModels value) {
+                            return DropdownMenuItem<ColorModels>(
+                              value: value,
+                              child: Flexible(
+                                  child: Icon(
+                                Icons.circle,
+                                color: value.color,
+                                size: 15,
+                              )),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    )))),
         GestureDetector(
           child: TableCell(
               verticalAlignment: TableCellVerticalAlignment.middle,
@@ -381,6 +416,48 @@ List<TableRow> rowWidget(
                     .format(data.endDate!)
                     .inCaps,
                 overflow: TextOverflow.ellipsis,
+              ),
+            ))),
+        TableCell(
+            verticalAlignment: TableCellVerticalAlignment.middle,
+            child: Center(
+                child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: FittedBox(
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<ColorModels>(
+                    value: colorsSettings[data.status!],
+                    icon: Icon(Icons.arrow_drop_down),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: TextStyle(color: Palette.drawerColor),
+                    onChanged: (ColorModels? newValue) {
+                      projectProvider.updateProjectStatus(bodyToEdit: {
+                        "project_id": "${data.id}",
+                        "status": colorsSettings.indexOf(newValue!).toString()
+                      });
+                    },
+                    items: colorsSettings.map<DropdownMenuItem<ColorModels>>(
+                        (ColorModels value) {
+                      return DropdownMenuItem<ColorModels>(
+                        value: value,
+                        child: FittedBox(
+                          child: MediaQuery.of(context).size.width < 1200
+                              ? Icon(
+                                  Icons.circle,
+                                  color: value.color,
+                                  size: 15,
+                                )
+                              : Text(
+                                  value.name!,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(color: value.color),
+                                ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ),
             ))),
         TableCell(

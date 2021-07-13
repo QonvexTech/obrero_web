@@ -106,12 +106,17 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             SizedBox(
                               height: MySpacer.small,
                             ),
-                            Text(
-                              projectProvider.projectOnDetails!.address != null
-                                  ? "${projectProvider.projectOnDetails!.address}"
-                                  : "${projectProvider.projectOnDetails!.coordinates!.latitude},${projectProvider.projectOnDetails!.coordinates!.longitude}",
-                              style: boldText,
-                            )
+                            Container(
+                              width: 200,
+                              child: Text(
+                                projectProvider.projectOnDetails!.address !=
+                                        null
+                                    ? "${projectProvider.projectOnDetails!.address}"
+                                    : "${projectProvider.projectOnDetails!.coordinates!.latitude},${projectProvider.projectOnDetails!.coordinates!.longitude}",
+                                style: boldText,
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
                           ],
                         ),
                         Column(

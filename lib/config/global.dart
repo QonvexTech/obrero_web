@@ -21,6 +21,7 @@ const String delete_notification = "$api/notification/delete";
 //PROJECT or CHANTIER
 const String project_api = "$api/project/";
 const String project_create_api = "$api/project/create";
+const String project_status_update = "$api/project/update-status";
 const String project_update_api = "$api/project/update";
 const String project_delete_api = "$api/project/remove"; //id
 const String project_api_date = "$api/project/date-based";

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uitemplate/config/pallete.dart';
 
 class TableHelper {
@@ -81,6 +82,14 @@ class TableHelper {
                         onPressed: () {
                           removeFunc(id: id);
                           Navigator.pop(context);
+                          Fluttertoast.showToast(
+                              webBgColor:
+                                  "linear-gradient(to right, #5585E5, #5585E5)",
+                              msg: "Deleted Successfully",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 2,
+                              fontSize: 16.0);
                         },
                         child: Text(
                           "Confirm",
