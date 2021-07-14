@@ -466,8 +466,14 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                           ),
                         )
                       : Container(
-                          height: MediaQuery.of(context).size.height * 0.7,
-                          width: MediaQuery.of(context).size.width / 2,
+                          height: projectProvider
+                                      .projectOnDetails!.warnings.length ==
+                                  10
+                              ? MediaQuery.of(context).size.height / 2
+                              : projectProvider
+                                      .projectOnDetails!.warnings.length *
+                                  80,
+                          width: MediaQuery.of(context).size.height * 0.7,
                           child: ListView(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             children: List.generate(
