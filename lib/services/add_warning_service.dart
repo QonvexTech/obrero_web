@@ -22,12 +22,10 @@ class AddWarning {
       }).then((value) {
         if (value.statusCode == 200) {
           var data = json.decode(value.body)["data"];
-          print("add warnings");
           warning = data;
-
+          print("add warnings");
           return data;
         } else {
-          print(json.decode(value.body));
           print("fail api to add warning");
         }
       });
