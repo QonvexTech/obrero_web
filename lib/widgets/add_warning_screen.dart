@@ -241,7 +241,10 @@ class _AddWaringScreenState extends State<AddWaringScreen> {
                                           .indexOf(selectedStatus!)
                                           .toString())
                                   .then((val) {
-                                print("warneng");
+                                setState(() {
+                                  loader = false;
+                                });
+                                Navigator.pop(context);
 
                                 projectProvider.addWaring(WarningModel(
                                     val["id"],
@@ -254,13 +257,6 @@ class _AddWaringScreenState extends State<AddWaringScreen> {
                                     int.parse(val["type"]),
                                     val[""],
                                     val["created_at"]));
-
-                                print(val);
-
-                                setState(() {
-                                  loader = false;
-                                });
-                                Navigator.pop(context);
                               });
                             },
                             child: Text(
