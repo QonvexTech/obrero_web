@@ -386,15 +386,17 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                               print("BODY TO EDIT $bodyToEdit");
                               customerService
                                   .updateCustomer(bodyToEdit: bodyToEdit)
-                                  .whenComplete(() {
-                                Fluttertoast.showToast(
-                                    webBgColor:
-                                        "linear-gradient(to right, #5585E5, #5585E5)",
-                                    msg: "Upadated Successfully",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.CENTER,
-                                    timeInSecForIosWeb: 3,
-                                    fontSize: 16.0);
+                                  .then((x) {
+                                if (x) {
+                                  Fluttertoast.showToast(
+                                      webBgColor:
+                                          "linear-gradient(to right, #5585E5, #5585E5)",
+                                      msg: "Upadated Successfully",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 3,
+                                      fontSize: 16.0);
+                                }
                                 Navigator.pop(context);
                               });
                             });

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/customer_model.dart';
 import 'package:http/http.dart' as http;
@@ -283,7 +284,7 @@ class CustomerService extends ChangeNotifier {
     }
   }
 
-  Future updateCustomer({required Map bodyToEdit}) async {
+  Future<bool> updateCustomer({required Map bodyToEdit}) async {
     var url = Uri.parse("$customer_update_api");
     try {
       await http.put(url, body: bodyToEdit, headers: {
@@ -295,11 +296,25 @@ class CustomerService extends ChangeNotifier {
         fetchCustomers();
         print(data);
         print("update success");
+
+        if (data["data"]["original"] != null) {
+          Fluttertoast.showToast(
+              webBgColor: "linear-gradient(to right, #E21010, #ED9393)",
+              msg: "Email has already been taken",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 2,
+              fontSize: 16.0);
+          return false;
+        } else {
+          return true;
+        }
         notifyListeners();
       });
     } catch (e) {
       print(e);
     }
+    return false;
   }
 
   Future load(bool init) async {
