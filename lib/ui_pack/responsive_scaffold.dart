@@ -85,7 +85,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
 
   void init() {
     showDrawerText = drawerWidth == maximumDrawerWidth;
-
     for (var item in widget.drawerItems) {
       if (item.content != null && item.subItems == null) {
         Provider.of<ScaffoldService>(context, listen: false).init(item.content);
@@ -146,172 +145,260 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
       if (_showDrawer) {
         drawerWidth = minimumDrawerWidth;
       }
-      _showDrawer = false;
-//          drawerWidth = maximumDrawerWidth;
+      showDrawerText = true;
+
+      drawerWidth = maximumDrawerWidth;
     }
 
     ScaffoldService scaffoldService = Provider.of<ScaffoldService>(context);
 
     return Scaffold(
       key: _key,
-      drawer: MediaQuery.of(context).size.width > 900
-          ? null
-          : Drawer(
-              // MOBILE
-              child: Container(
-                color: Palette.drawerColor,
-                width: 500,
-                height: MediaQuery.of(context).size.height,
-                child: Column(
-                  children: [
-                    Container(
-                        width: double.infinity,
-                        height: 60,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.menu),
-                              onPressed: () {
-                                Navigator.of(context).pop(null);
-                              },
+      drawer: Drawer(
+        // MOBILE
+        child: Container(
+          color: Palette.drawerColor,
+          width: 500,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Container(
+                  width: double.infinity,
+                  height: 60,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.menu),
+                        onPressed: () {
+                          Navigator.of(context).pop(null);
+                        },
+                      ),
+                      Container(
+                          height: 60,
+                          alignment: AlignmentDirectional.centerStart,
+                          margin: const EdgeInsets.only(left: 15),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Image.asset(
+                              'assets/icons/logo.png',
+                              height: 50,
                             ),
-                            Container(
-                                height: 60,
-                                alignment: AlignmentDirectional.centerStart,
-                                margin: const EdgeInsets.only(left: 15),
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Image.asset(
-                                    'assets/icons/logo.png',
-                                    height: 50,
+                          ))
+                    ],
+                  )),
+              Expanded(
+                child: AnimatedContainer(
+                  onEnd: () {
+                    setState(() {
+                      showDrawerText = drawerWidth == maximumDrawerWidth;
+                    });
+                  },
+                  duration: Duration(milliseconds: 100),
+                  width: drawerWidth,
+                  height: MediaQuery.of(context).size.height,
+                  color: Palette.drawerColor,
+                  child: ListView(
+                    children: [
+                      for (DrawerItem item in widget.drawerItems) ...{
+                        Container(
+                          color: scaffoldService.selectedContent == item.content
+                              ? Colors.white
+                              : item.subItems != null
+                                  ? item.content == null && activeSettings
+                                      ? Colors.white
+                                      : Palette.drawerColor
+                                  : Palette.drawerColor,
+                          width: double.infinity,
+                          height: 60,
+                          child: item.subItems != null &&
+                                  item.subItems!.length > 0 &&
+                                  (!showDrawerText)
+                              ? PopupMenuButton(
+                                  tooltip: "Settings",
+                                  icon: Icon(
+                                    item.icon,
+                                    color:
+                                        item.content == null && activeSettings
+                                            ? Palette.drawerColor
+                                            : Colors.white,
                                   ),
-                                ))
-                          ],
-                        )),
-                    Expanded(
-                        child: ListView(
-                      children: [
-                        for (var item in widget.drawerItems) ...{
-                          Container(
-                            width: double.infinity,
-                            color: Palette.drawerColor,
-                            height: 60,
-                            child: MaterialButton(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 25),
-                              onPressed: item.subItems != null &&
-                                      item.subItems!.length > 0
-                                  ? () {
-                                      setState(() {
-                                        if (_selectedDrawerItem == item) {
-                                          _selectedDrawerItem = null;
-                                          activeSettings = true;
-                                        } else {}
-                                      });
+                                  onSelected: (value) {
+                                    setState(() {
+                                      activeSettings = true;
+                                    });
+                                    scaffoldService.selectedContent = value;
+                                  },
+                                  offset: Offset(60, 0),
+                                  itemBuilder: (_) => [
+                                    for (var sub_items in item.subItems!) ...{
+                                      PopupMenuItem(
+                                        value: sub_items.content,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              sub_items.icon,
+                                            ),
+                                            if (sub_items.title != null) ...{
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: Text(sub_items.title!),
+                                              )
+                                            }
+                                          ],
+                                        ),
+                                      )
                                     }
-                                  : item.content != null
+                                  ],
+                                )
+                              : MaterialButton(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 25),
+                                  onPressed: item.subItems != null &&
+                                          item.subItems!.length > 0
                                       ? () {
-                                          activeSettings = false;
-                                          Navigator.of(context).pop(null);
-
+                                          setState(() {
+                                            if (_selectedDrawerItem == item) {
+                                              _selectedDrawerItem = null;
+                                            } else {
+                                              _selectedDrawerItem = item;
+                                            }
+                                          });
+                                        }
+                                      : item.content != null
+                                          ? () {
+                                              scaffoldService.selectedContent =
+                                                  item.content;
+                                              setState(() {
+                                                activeSettings = false;
+                                              });
+                                              Navigator.pop(context);
+                                            }
+                                          : null,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(item.icon,
+                                          color:
+                                              scaffoldService.selectedContent ==
+                                                      item.content
+                                                  ? Palette.drawerColor
+                                                  : item.content == null &&
+                                                          activeSettings
+                                                      ? Palette.drawerColor
+                                                      : Colors.white),
+                                      if (showDrawerText) ...{
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            "${item.text}",
+                                            style: TextStyle(
+                                                color: scaffoldService
+                                                            .selectedContent ==
+                                                        item.content
+                                                    ? Palette.drawerColor
+                                                    : item.content == null &&
+                                                            activeSettings
+                                                        ? Palette.drawerColor
+                                                        : Colors.white),
+                                          ),
+                                        )
+                                      },
+                                      Spacer(),
+                                      if ((item.subItems != null &&
+                                              item.subItems!.length > 0) &&
+                                          showDrawerText) ...{
+                                        Icon(
+                                          _selectedDrawerItem == item
+                                              ? Icons.keyboard_arrow_up
+                                              : Icons.keyboard_arrow_down,
+                                          color: item.content == null &&
+                                                  activeSettings
+                                              ? Palette.drawerColor
+                                              : Colors.white,
+                                        )
+                                      }
+                                    ],
+                                  ),
+                                ),
+                        ),
+                        if ((item.subItems != null &&
+                            item.subItems!.length > 0)) ...{
+                          for (var sub_items in item.subItems!) ...{
+                            AnimatedContainer(
+                                width: double.infinity,
+                                color: scaffoldService.selectedContent ==
+                                        sub_items.content
+                                    ? Colors.white38
+                                    : Colors.transparent,
+                                height: _selectedDrawerItem == item ? 60 : 0,
+                                duration: Duration(
+                                    milliseconds: 100 *
+                                        (item.subItems!.indexOf(sub_items) +
+                                            1)),
+                                child: MaterialButton(
+                                  onPressed: sub_items.content != null
+                                      ? () {
                                           scaffoldService.selectedContent =
-                                              item.content;
+                                              sub_items.content;
+                                          setState(() {
+                                            activeSettings = true;
+                                            Navigator.pop(context);
+                                          });
                                         }
                                       : null,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    item.icon,
-                                    color: Colors.white,
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      "${item.text}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  if ((item.subItems != null &&
-                                      item.subItems!.length > 0)) ...{
-                                    Icon(
-                                        _selectedDrawerItem == item
-                                            ? Icons.keyboard_arrow_up
-                                            : Icons.keyboard_arrow_down,
-                                        color: Colors.white),
-                                  }
-                                ],
-                              ),
-                            ),
-                          ),
-                          if ((item.subItems != null &&
-                              item.subItems!.length > 0)) ...{
-                            for (var sub_items in item.subItems!) ...{
-                              AnimatedContainer(
-                                  width: double.infinity,
-                                  color: Palette.drawerColor,
-                                  height: _selectedDrawerItem == item ? 60 : 0,
-                                  duration: Duration(
-                                      milliseconds: 100 *
-                                          (item.subItems!.indexOf(sub_items) +
-                                              1)),
-                                  child: MaterialButton(
-                                    onPressed: sub_items.content != null
-                                        ? () {
-                                            Navigator.of(context).pop(null);
-                                            setState(() {
-                                              scaffoldService.selectedContent =
-                                                  sub_items.content;
-                                              _selectedDrawerItem = item;
-                                              activeSettings = true;
-                                            });
-                                          }
-                                        : null,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 35),
-                                    child: Row(
-                                      children: [
-                                        if (_selectedDrawerItem == item) ...{
-                                          Icon(sub_items.icon,
-                                              color: scaffoldService
-                                                              .selectedContent ==
-                                                          null &&
-                                                      activeSettings
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 35),
+                                  child: Row(
+                                    children: [
+                                      if (_selectedDrawerItem == item) ...{
+                                        Icon(
+                                          sub_items.icon,
+                                          color:
+                                              scaffoldService.selectedContent ==
+                                                      sub_items.content
                                                   ? Palette.drawerColor
-                                                  : Colors.white)
-                                        },
-                                        if (sub_items.title != null) ...{
-                                          const SizedBox(
-                                            width: 10,
+                                                  : Colors.white,
+                                        ),
+                                      },
+                                      if (sub_items.title != null) ...{
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            sub_items.title!,
+                                            style: TextStyle(
+                                                color: scaffoldService
+                                                            .selectedContent ==
+                                                        sub_items.content
+                                                    ? Palette.drawerColor
+                                                    : Colors.white),
                                           ),
-                                          Expanded(
-                                            child: Text(sub_items.title!,
-                                                style: TextStyle(
-                                                    color: Colors.white)),
-                                          )
-                                        }
-                                      ],
-                                    ),
-                                  ))
-                            }
+                                        )
+                                      }
+                                    ],
+                                  ),
+                                ))
                           }
                         }
-                      ],
-                    ))
-                  ],
+                      }
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              )
+            ],
+          ),
+        ),
+      ),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -630,251 +717,240 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                     Row(
                       children: [
                         if (MediaQuery.of(context).size.width > 900) ...{
-                          GestureDetector(
-                            child: AnimatedContainer(
-                              onEnd: () {
-                                setState(() {
-                                  showDrawerText =
-                                      drawerWidth == maximumDrawerWidth;
-                                });
-                              },
-                              duration: Duration(milliseconds: 100),
-                              width: drawerWidth,
-                              height: MediaQuery.of(context).size.height,
-                              color: Palette.drawerColor,
-                              child: ListView(
-                                children: [
-                                  for (DrawerItem item
-                                      in widget.drawerItems) ...{
-                                    Container(
-                                      color: scaffoldService.selectedContent ==
-                                              item.content
-                                          ? Colors.white
-                                          : item.subItems != null
-                                              ? item.content == null &&
+                          AnimatedContainer(
+                            onEnd: () {
+                              setState(() {
+                                showDrawerText =
+                                    drawerWidth == maximumDrawerWidth;
+                              });
+                            },
+                            duration: Duration(milliseconds: 100),
+                            width: drawerWidth,
+                            height: MediaQuery.of(context).size.height,
+                            color: Palette.drawerColor,
+                            child: ListView(
+                              children: [
+                                for (DrawerItem item in widget.drawerItems) ...{
+                                  Container(
+                                    color: scaffoldService.selectedContent ==
+                                            item.content
+                                        ? Colors.white
+                                        : item.subItems != null
+                                            ? item.content == null &&
+                                                    activeSettings
+                                                ? Colors.white
+                                                : Palette.drawerColor
+                                            : Palette.drawerColor,
+                                    width: double.infinity,
+                                    height: 60,
+                                    child: item.subItems != null &&
+                                            item.subItems!.length > 0 &&
+                                            (!showDrawerText)
+                                        ? PopupMenuButton(
+                                            tooltip: "Settings",
+                                            icon: Icon(
+                                              item.icon,
+                                              color: item.content == null &&
                                                       activeSettings
-                                                  ? Colors.white
-                                                  : Palette.drawerColor
-                                              : Palette.drawerColor,
-                                      width: double.infinity,
-                                      height: 60,
-                                      child: item.subItems != null &&
-                                              item.subItems!.length > 0 &&
-                                              (!showDrawerText)
-                                          ? PopupMenuButton(
-                                              tooltip: "Settings",
-                                              icon: Icon(
-                                                item.icon,
-                                                color: item.content == null &&
-                                                        activeSettings
-                                                    ? Palette.drawerColor
-                                                    : Colors.white,
-                                              ),
-                                              onSelected: (value) {
-                                                setState(() {
-                                                  activeSettings = true;
-                                                });
-                                                scaffoldService
-                                                    .selectedContent = value;
-                                              },
-                                              offset: Offset(60, 0),
-                                              itemBuilder: (_) => [
-                                                for (var sub_items
-                                                    in item.subItems!) ...{
-                                                  PopupMenuItem(
-                                                    value: sub_items.content,
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          sub_items.icon,
+                                                  ? Palette.drawerColor
+                                                  : Colors.white,
+                                            ),
+                                            onSelected: (value) {
+                                              setState(() {
+                                                activeSettings = true;
+                                              });
+                                              scaffoldService.selectedContent =
+                                                  value;
+                                            },
+                                            offset: Offset(60, 0),
+                                            itemBuilder: (_) => [
+                                              for (var sub_items
+                                                  in item.subItems!) ...{
+                                                PopupMenuItem(
+                                                  value: sub_items.content,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        sub_items.icon,
+                                                      ),
+                                                      if (sub_items.title !=
+                                                          null) ...{
+                                                        const SizedBox(
+                                                          width: 10,
                                                         ),
-                                                        if (sub_items.title !=
-                                                            null) ...{
-                                                          const SizedBox(
-                                                            width: 10,
-                                                          ),
-                                                          Expanded(
-                                                            child: Text(
-                                                                sub_items
-                                                                    .title!),
-                                                          )
-                                                        }
-                                                      ],
+                                                        Expanded(
+                                                          child: Text(
+                                                              sub_items.title!),
+                                                        )
+                                                      }
+                                                    ],
+                                                  ),
+                                                )
+                                              }
+                                            ],
+                                          )
+                                        : MaterialButton(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 25),
+                                            onPressed: item.subItems != null &&
+                                                    item.subItems!.length > 0
+                                                ? () {
+                                                    setState(() {
+                                                      if (_selectedDrawerItem ==
+                                                          item) {
+                                                        _selectedDrawerItem =
+                                                            null;
+                                                      } else {
+                                                        _selectedDrawerItem =
+                                                            item;
+                                                      }
+                                                    });
+                                                  }
+                                                : item.content != null
+                                                    ? () {
+                                                        scaffoldService
+                                                                .selectedContent =
+                                                            item.content;
+                                                        setState(() {
+                                                          activeSettings =
+                                                              false;
+                                                        });
+                                                      }
+                                                    : null,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(item.icon,
+                                                    color: scaffoldService
+                                                                .selectedContent ==
+                                                            item.content
+                                                        ? Palette.drawerColor
+                                                        : item.content ==
+                                                                    null &&
+                                                                activeSettings
+                                                            ? Palette
+                                                                .drawerColor
+                                                            : Colors.white),
+                                                if (showDrawerText) ...{
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      "${item.text}",
+                                                      style: TextStyle(
+                                                          color: scaffoldService
+                                                                      .selectedContent ==
+                                                                  item.content
+                                                              ? Palette
+                                                                  .drawerColor
+                                                              : item.content ==
+                                                                          null &&
+                                                                      activeSettings
+                                                                  ? Palette
+                                                                      .drawerColor
+                                                                  : Colors
+                                                                      .white),
+                                                    ),
+                                                  )
+                                                },
+                                                Spacer(),
+                                                if ((item.subItems != null &&
+                                                        item.subItems!.length >
+                                                            0) &&
+                                                    showDrawerText) ...{
+                                                  Icon(
+                                                    _selectedDrawerItem == item
+                                                        ? Icons
+                                                            .keyboard_arrow_up
+                                                        : Icons
+                                                            .keyboard_arrow_down,
+                                                    color: item.content ==
+                                                                null &&
+                                                            activeSettings
+                                                        ? Palette.drawerColor
+                                                        : Colors.white,
+                                                  )
+                                                }
+                                              ],
+                                            ),
+                                          ),
+                                  ),
+                                  if ((item.subItems != null &&
+                                      item.subItems!.length > 0)) ...{
+                                    for (var sub_items in item.subItems!) ...{
+                                      AnimatedContainer(
+                                          width: double.infinity,
+                                          color:
+                                              scaffoldService.selectedContent ==
+                                                      sub_items.content
+                                                  ? Colors.white38
+                                                  : Colors.transparent,
+                                          height: _selectedDrawerItem == item
+                                              ? 60
+                                              : 0,
+                                          duration: Duration(
+                                              milliseconds: 100 *
+                                                  (item.subItems!
+                                                          .indexOf(sub_items) +
+                                                      1)),
+                                          child: MaterialButton(
+                                            onPressed: sub_items.content != null
+                                                ? () {
+                                                    scaffoldService
+                                                            .selectedContent =
+                                                        sub_items.content;
+                                                    setState(() {
+                                                      activeSettings = true;
+                                                    });
+                                                  }
+                                                : null,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 35),
+                                            child: Row(
+                                              children: [
+                                                if (_selectedDrawerItem ==
+                                                    item) ...{
+                                                  Icon(
+                                                    sub_items.icon,
+                                                    color: scaffoldService
+                                                                .selectedContent ==
+                                                            sub_items.content
+                                                        ? Palette.drawerColor
+                                                        : Colors.white,
+                                                  ),
+                                                },
+                                                if (sub_items.title !=
+                                                    null) ...{
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      sub_items.title!,
+                                                      style: TextStyle(
+                                                          color: scaffoldService
+                                                                      .selectedContent ==
+                                                                  sub_items
+                                                                      .content
+                                                              ? Palette
+                                                                  .drawerColor
+                                                              : Colors.white),
                                                     ),
                                                   )
                                                 }
                                               ],
-                                            )
-                                          : MaterialButton(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 25),
-                                              onPressed: item.subItems !=
-                                                          null &&
-                                                      item.subItems!.length > 0
-                                                  ? () {
-                                                      setState(() {
-                                                        if (_selectedDrawerItem ==
-                                                            item) {
-                                                          _selectedDrawerItem =
-                                                              null;
-                                                        } else {
-                                                          _selectedDrawerItem =
-                                                              item;
-                                                        }
-                                                      });
-                                                    }
-                                                  : item.content != null
-                                                      ? () {
-                                                          scaffoldService
-                                                                  .selectedContent =
-                                                              item.content;
-                                                          setState(() {
-                                                            activeSettings =
-                                                                false;
-                                                          });
-                                                        }
-                                                      : null,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Icon(item.icon,
-                                                      color: scaffoldService
-                                                                  .selectedContent ==
-                                                              item.content
-                                                          ? Palette.drawerColor
-                                                          : item.content ==
-                                                                      null &&
-                                                                  activeSettings
-                                                              ? Palette
-                                                                  .drawerColor
-                                                              : Colors.white),
-                                                  if (showDrawerText) ...{
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Expanded(
-                                                      child: Text(
-                                                        "${item.text}",
-                                                        style: TextStyle(
-                                                            color: scaffoldService
-                                                                        .selectedContent ==
-                                                                    item.content
-                                                                ? Palette
-                                                                    .drawerColor
-                                                                : item.content ==
-                                                                            null &&
-                                                                        activeSettings
-                                                                    ? Palette
-                                                                        .drawerColor
-                                                                    : Colors
-                                                                        .white),
-                                                      ),
-                                                    )
-                                                  },
-                                                  Spacer(),
-                                                  if ((item.subItems != null &&
-                                                          item.subItems!
-                                                                  .length >
-                                                              0) &&
-                                                      showDrawerText) ...{
-                                                    Icon(
-                                                      _selectedDrawerItem ==
-                                                              item
-                                                          ? Icons
-                                                              .keyboard_arrow_up
-                                                          : Icons
-                                                              .keyboard_arrow_down,
-                                                      color: item.content ==
-                                                                  null &&
-                                                              activeSettings
-                                                          ? Palette.drawerColor
-                                                          : Colors.white,
-                                                    )
-                                                  }
-                                                ],
-                                              ),
                                             ),
-                                    ),
-                                    if ((item.subItems != null &&
-                                            item.subItems!.length > 0) &&
-                                        showDrawerText) ...{
-                                      for (var sub_items in item.subItems!) ...{
-                                        AnimatedContainer(
-                                            width: double.infinity,
-                                            color: scaffoldService
-                                                        .selectedContent ==
-                                                    sub_items.content
-                                                ? Colors.white38
-                                                : Colors.transparent,
-                                            height: _selectedDrawerItem == item
-                                                ? 60
-                                                : 0,
-                                            duration: Duration(
-                                                milliseconds: 100 *
-                                                    (item.subItems!.indexOf(
-                                                            sub_items) +
-                                                        1)),
-                                            child: MaterialButton(
-                                              onPressed: sub_items.content !=
-                                                      null
-                                                  ? () {
-                                                      scaffoldService
-                                                              .selectedContent =
-                                                          sub_items.content;
-                                                      setState(() {
-                                                        activeSettings = true;
-                                                      });
-                                                    }
-                                                  : null,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 35),
-                                              child: Row(
-                                                children: [
-                                                  if (_selectedDrawerItem ==
-                                                      item) ...{
-                                                    Icon(
-                                                      sub_items.icon,
-                                                      color: scaffoldService
-                                                                  .selectedContent ==
-                                                              sub_items.content
-                                                          ? Palette.drawerColor
-                                                          : Colors.white,
-                                                    ),
-                                                  },
-                                                  if (sub_items.title !=
-                                                      null) ...{
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Expanded(
-                                                      child: Text(
-                                                        sub_items.title!,
-                                                        style: TextStyle(
-                                                            color: scaffoldService
-                                                                        .selectedContent ==
-                                                                    sub_items
-                                                                        .content
-                                                                ? Palette
-                                                                    .drawerColor
-                                                                : Colors.white),
-                                                      ),
-                                                    )
-                                                  }
-                                                ],
-                                              ),
-                                            ))
-                                      }
+                                          ))
                                     }
                                   }
-                                ],
-                              ),
+                                }
+                              ],
                             ),
-                          )
+                          ),
                         },
                         Expanded(child: scaffoldService.selectedContent)
                       ],
