@@ -106,12 +106,17 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                             SizedBox(
                               height: MySpacer.small,
                             ),
-                            Text(
-                              projectProvider.projectOnDetails!.address != null
-                                  ? "${projectProvider.projectOnDetails!.address}"
-                                  : "${projectProvider.projectOnDetails!.coordinates!.latitude},${projectProvider.projectOnDetails!.coordinates!.longitude}",
-                              style: boldText,
-                            )
+                            Container(
+                              width: 200,
+                              child: Text(
+                                projectProvider.projectOnDetails!.address !=
+                                        null
+                                    ? "${projectProvider.projectOnDetails!.address}"
+                                    : "${projectProvider.projectOnDetails!.coordinates!.latitude},${projectProvider.projectOnDetails!.coordinates!.longitude}",
+                                style: boldText,
+                                overflow: TextOverflow.clip,
+                              ),
+                            ),
                           ],
                         ),
                         Column(
@@ -338,96 +343,96 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // SizedBox(
-                  //   height: MySpacer.small,
-                  // ),
-                  // Text(
-                  //   "Statistics",
-                  //   style: Theme.of(context).textTheme.headline6,
-                  // ),
-                  // SizedBox(
-                  //   height: MySpacer.small,
-                  // ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.start,
-                  //   children: [
-                  //     Column(
-                  //       children: [
-                  //         Text(
-                  //           "Heures Totales",
-                  //           style: transHeader.copyWith(fontSize: 10),
-                  //         ),
-                  //         Row(
-                  //           crossAxisAlignment: CrossAxisAlignment.end,
-                  //           children: [
-                  //             Text(
-                  //               projectProvider.hours.isEmpty
-                  //                   ? ""
-                  //                   : projectProvider.hours,
-                  //               style: Theme.of(context).textTheme.headline3,
-                  //             ),
-                  //             Text(
-                  //               "/hrs",
-                  //               style: TextStyle(fontSize: 10),
-                  //             )
-                  //           ],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     Padding(
-                  //       padding: const EdgeInsets.symmetric(horizontal: 10),
-                  //       child: Divider(
-                  //         thickness: 4,
-                  //         color: Colors.grey,
-                  //       ),
-                  //     ),
-                  //     Column(
-                  //       children: [
-                  //         Text(
-                  //           "Avertissement Total",
-                  //           style: transHeader.copyWith(fontSize: 10),
-                  //         ),
-                  //         Row(
-                  //           crossAxisAlignment: CrossAxisAlignment.end,
-                  //           children: [
-                  //             Text(
-                  //               "${projectProvider.projectOnDetails!.warnings!.length}",
-                  //               style: Theme.of(context).textTheme.headline3,
-                  //             ),
-                  //             Text(
-                  //               "Alerte",
-                  //               style: TextStyle(fontSize: 10),
-                  //             )
-                  //           ],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
+                  Text(
+                    "Statistics",
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  SizedBox(
+                    height: MySpacer.small,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            "Heures Totales",
+                            style: transHeader.copyWith(fontSize: 10),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                projectProvider.hours.isEmpty
+                                    ? ""
+                                    : projectProvider.hours,
+                                style: Theme.of(context).textTheme.headline3,
+                              ),
+                              Text(
+                                "/hrs",
+                                style: TextStyle(fontSize: 10),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Divider(
+                          thickness: 4,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            "Avertissement Total",
+                            style: transHeader.copyWith(fontSize: 10),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                "${projectProvider.projectOnDetails!.warnings!.length}",
+                                style: Theme.of(context).textTheme.headline3,
+                              ),
+                              Text(
+                                "Alerte",
+                                style: TextStyle(fontSize: 10),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                   SizedBox(
                     height: MySpacer.large,
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     Text(
-                  //       "Alertes",
-                  //       style: Theme.of(context).textTheme.headline6,
-                  //     ),
-                  //     IconButton(
-                  //         icon: Icon(Icons.add_circle),
-                  //         onPressed: () {
-                  //           showDialog(
-                  //               context: context,
-                  //               builder: (_) => AlertDialog(
-                  //                   backgroundColor: Palette.contentBackground,
-                  //                   content: AddWaringScreen(
-                  //                     projectId:
-                  //                         projectProvider.projectOnDetails!.id!,
-                  //                   )));
-                  //         })
-                  //   ],
-                  // ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Alertes",
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.add_circle),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                    backgroundColor: Palette.contentBackground,
+                                    content: AddWaringScreen(
+                                      projectId:
+                                          projectProvider.projectOnDetails!.id!,
+                                    )));
+                          })
+                    ],
+                  ),
                   SizedBox(
                     height: MySpacer.small,
                   ),
@@ -463,7 +468,6 @@ class _ProjectDetailsState extends State<ProjectDetails> with SettingsHelper {
                       : Container(
                           height: MediaQuery.of(context).size.height * 0.7,
                           width: MediaQuery.of(context).size.width / 2,
-                          // constraints: BoxConstraints(minw),
                           child: ListView(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             children: List.generate(

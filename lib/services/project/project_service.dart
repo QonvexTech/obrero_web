@@ -205,10 +205,8 @@ class ProjectProvider extends ChangeNotifier {
       // controller!.animateToDate(selectedDate);
     } else {
       _selectedDate = dateSelected;
-      // controller!.animateToDate(dateSelected);
     }
     var url = Uri.parse("$project_api_date");
-    // final prefs = await SharedPreferences.getInstance();
     try {
       var response = await http.post(url, body: {
         "date": dateSelected.toString().split(" ")[0]
@@ -233,8 +231,9 @@ class ProjectProvider extends ChangeNotifier {
     return projectsDateBase;
   }
 
-  Future createProjects({required ProjectModel newProject}) async {
+  Future<bool> createProjects({required ProjectModel newProject}) async {
     var url = Uri.parse("$project_create_api");
+
     try {
       var response = await http.post(url, body: newProject.toJson(), headers: {
         "Accept": "application/json",
@@ -245,14 +244,18 @@ class ProjectProvider extends ChangeNotifier {
         fetchProjectsBaseOnDates();
         fetchProjects();
         print("success to add");
+        return true;
       } else {
         print(response.body);
         print("fail to add");
       }
     } catch (e) {
       print(e);
+      return false;
     }
+
     notifyListeners();
+    return false;
   }
 
   Future updateProject({required Map bodyToEdit}) async {
@@ -265,6 +268,26 @@ class ProjectProvider extends ChangeNotifier {
       }).then((response) {
         var data = json.decode(response.body);
         projectOnDetails = ProjectModel.fromJson(data["data"]);
+
+        print("THIS PROJECT : $data");
+        notifyListeners();
+        fetchProjects();
+        fetchProjectsBaseOnDates();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future updateProjectStatus({required Map bodyToEdit}) async {
+    var url = Uri.parse("$project_status_update");
+    try {
+      await http.put(url, body: bodyToEdit, headers: {
+        "Accept": "application/json",
+        "Authorization": "Bearer $authToken",
+        "Content-Type": "application/x-www-form-urlencoded"
+      }).then((response) {
+        var data = json.decode(response.body);
 
         print("THIS PROJECT : $data");
         notifyListeners();

@@ -14,9 +14,7 @@ class DashboardService extends ChangeNotifier {
 
   void focusMap({required LatLng coordinates, required markerId}) {
     mapController!.showMarkerInfoWindow(MarkerId(markerId));
-    mapController!
-        .moveCamera(CameraUpdate.newLatLng(coordinates))
-        .whenComplete(() {});
+    mapController!.moveCamera(CameraUpdate.newLatLng(coordinates));
 
     // notifyListeners();
   }

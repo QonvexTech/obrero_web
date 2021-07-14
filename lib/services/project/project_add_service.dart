@@ -19,7 +19,7 @@ class ProjectAddService extends ChangeNotifier {
   Uint8List? _base64Image;
   Map<dynamic, dynamic> _bodyToEdit = {};
 
-  TextEditingController addressController = TextEditingController();
+  TextEditingController _addressController = TextEditingController();
   bool justScroll = true;
 
   List<int> _imagesToDelete = [];
@@ -29,10 +29,9 @@ class ProjectAddService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // setProjectImages(value) {
-  //   _projectImages = value;
-  //   notifyListeners();
-  // }
+  get isAddressEmpty => _addressController.text.isEmpty;
+
+  get addressController => _addressController;
 
   get bodyToEdit => _bodyToEdit;
   set bodyToEdit(value) => _bodyToEdit = value;
@@ -43,22 +42,21 @@ class ProjectAddService extends ChangeNotifier {
     notifyListeners();
   }
 
+  set setaddressController(value) {
+    _addressController.text = value;
+    notifyListeners();
+  }
+
   set initArea(value) {
     _areaSize = value;
   }
 
-  //assigns api
+  set initAdress(String value) {
+    _addressController.text = value;
+  }
+
   get assignIdsToRemove => _assignIdsToRemove;
   get assignIdsToAdd => _assignIdsToAdd;
-
-  // initUint8() {
-  //   _projectImages = [];
-  // }
-
-  // setProjectImages(value) {
-  //   _projectImages = value;
-  //   notifyListeners();
-  // }
 
   addBodyEdit(dynamic value) {
     _bodyToEdit.addAll(value);
@@ -237,14 +235,6 @@ class ProjectAddService extends ChangeNotifier {
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
-        // _projects!.removeWhere((element) => element.id == id);
-        // projectsDateBase!.removeWhere((element) => element.id == id);
-        // notifyListeners();
-        // if (_projects!.length == 0) {
-        //   if (_pagination.isPrev) {
-        //     paginationService.prevPage(_pagination);
-        //   }
-        // }
         var data = json.decode(response.body);
         print(data);
       });
@@ -264,14 +254,6 @@ class ProjectAddService extends ChangeNotifier {
         "Authorization": "Bearer $authToken",
         "Content-Type": "application/x-www-form-urlencoded"
       }).then((response) {
-        // _projects!.removeWhere((element) => element.id == id);
-        // projectsDateBase!.removeWhere((element) => element.id == id);
-        // notifyListeners();
-        // if (_projects!.length == 0) {
-        //   if (_pagination.isPrev) {
-        //     paginationService.prevPage(_pagination);
-        //   }
-        // }
         var data = json.decode(response.body);
         print("ASSIGN : $data");
       });
