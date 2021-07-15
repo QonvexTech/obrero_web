@@ -47,18 +47,4 @@ class Admin {
     this.email = json["email"];
     this.picture = json["picture"];
   }
-
-  //   Map<String, dynamic> toJson() {
-  //   final Map<String, dynamic> data = new Map<String, dynamic>();
-  //   data["name"] = budgetName.toString();
-  //   data["initial_budget"] = initialBudget.toString();
-  //   data["first_day_period"] = startDate.toString();
-  //   data["period_type"] = periodType.toString();
-  //   data["purpose"] = purpose.toString();
-  //   data["currency_id"] = currencyId.toString();
-  //   data["today_budget"] = dayBudget.toString();
-  //   data["week_budget"] = weekBudget.toString();
-  //   data["end_date"] = endDate.toString();
-  //   return data;
-  // }
 }

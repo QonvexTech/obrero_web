@@ -103,7 +103,7 @@ class _AddWaringScreenState extends State<AddWaringScreen> {
                       TextFormField(
                         focusNode: _desc,
                         validator: (value) {
-                          if (value!.isEmpty) {
+                          if (descController.text.isEmpty) {
                             return 'Description Required!';
                           }
                         },
@@ -229,35 +229,37 @@ class _AddWaringScreenState extends State<AddWaringScreen> {
                             minWidth: double.infinity,
                             color: Palette.drawerColor,
                             onPressed: () {
-                              setState(() {
-                                loader = true;
-                              });
-                              AddWarning()
-                                  .addWaring(
-                                      widget.projectId.toString(),
-                                      titleController.text,
-                                      descController.text,
-                                      colorsSettings
-                                          .indexOf(selectedStatus!)
-                                          .toString())
-                                  .then((val) {
+                              if (_formKey.currentState!.validate()) {
                                 setState(() {
-                                  loader = false;
+                                  loader = true;
                                 });
-                                Navigator.pop(context);
+                                AddWarning()
+                                    .addWaring(
+                                        widget.projectId.toString(),
+                                        titleController.text,
+                                        descController.text,
+                                        colorsSettings
+                                            .indexOf(selectedStatus!)
+                                            .toString())
+                                    .then((val) {
+                                  setState(() {
+                                    loader = false;
+                                  });
+                                  Navigator.pop(context);
 
-                                projectProvider.addWaring(WarningModel(
-                                    val["id"],
-                                    int.parse(val["user_id"]),
-                                    int.parse(
-                                      val["project_id"],
-                                    ),
-                                    val["title"],
-                                    val["description"],
-                                    int.parse(val["type"]),
-                                    val[""],
-                                    val["created_at"]));
-                              });
+                                  projectProvider.addWaring(WarningModel(
+                                      val["id"],
+                                      int.parse(val["user_id"]),
+                                      int.parse(
+                                        val["project_id"],
+                                      ),
+                                      val["title"],
+                                      val["description"],
+                                      int.parse(val["type"]),
+                                      val[""],
+                                      val["created_at"]));
+                                });
+                              }
                             },
                             child: Text(
                               "Créer",
