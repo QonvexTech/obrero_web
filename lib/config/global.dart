@@ -69,6 +69,33 @@ Admin? profileData;
 List<ColorModels> colorsSettings = [];
 List historyMessages = [];
 
+List<ColorModels> colorsSettingsStatus = [
+  ColorModels(
+      id: 00000,
+      color: Colors.green,
+      colorName: 'green',
+      name: "En cours",
+      circleAsset: ""),
+  ColorModels(
+      id: 00001,
+      color: Colors.blue,
+      colorName: 'blue',
+      name: "Compléter",
+      circleAsset: ""),
+  ColorModels(
+      id: 00002,
+      color: Colors.grey,
+      colorName: 'grey',
+      name: "Annulé",
+      circleAsset: ""),
+  ColorModels(
+      id: 00003,
+      color: Colors.red,
+      colorName: 'red',
+      name: "Arrêté",
+      circleAsset: "")
+];
+
 Map<String, String> defaultImageTag = {
   "red": "assets/icons/red.png",
   "pink": "assets/icons/pink.png",
