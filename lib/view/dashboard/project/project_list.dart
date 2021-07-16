@@ -178,13 +178,13 @@ List<TableRow> rowWidgetMobile(
                         child: DropdownButton<ColorModels>(
                           underline: null,
                           hint: Text("Pays"),
-                          value: colorsSettings[data.status!],
+                          value: colorsSettingsStatus[data.status!],
                           icon: Icon(Icons.arrow_drop_down),
                           iconSize: 24,
                           elevation: 16,
                           style: TextStyle(color: Palette.drawerColor),
                           onChanged: (ColorModels? newValue) {},
-                          items: colorsSettings
+                          items: colorsSettingsStatus
                               .map<DropdownMenuItem<ColorModels>>(
                                   (ColorModels value) {
                             return DropdownMenuItem<ColorModels>(
@@ -426,7 +426,7 @@ List<TableRow> rowWidget(
               child: FittedBox(
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<ColorModels>(
-                    value: colorsSettings[data.status!],
+                    value: colorsSettingsStatus[data.status!],
                     icon: Icon(Icons.arrow_drop_down),
                     iconSize: 24,
                     elevation: 16,
@@ -434,11 +434,13 @@ List<TableRow> rowWidget(
                     onChanged: (ColorModels? newValue) {
                       projectProvider.updateProjectStatus(bodyToEdit: {
                         "project_id": "${data.id}",
-                        "status": colorsSettings.indexOf(newValue!).toString()
+                        "status":
+                            colorsSettingsStatus.indexOf(newValue!).toString()
                       });
                     },
-                    items: colorsSettings.map<DropdownMenuItem<ColorModels>>(
-                        (ColorModels value) {
+                    items: colorsSettingsStatus
+                        .map<DropdownMenuItem<ColorModels>>(
+                            (ColorModels value) {
                       return DropdownMenuItem<ColorModels>(
                         value: value,
                         child: FittedBox(
