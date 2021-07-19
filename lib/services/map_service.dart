@@ -131,7 +131,7 @@ class MapService extends ChangeNotifier {
               infoWindow: InfoWindow(
                   title: project.name, snippet: project.address.toString()),
               icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
-                  colorsSettings[project.status!].circleAsset!),
+                  colorsSettingsStatus[project.status!].circleAsset!),
               markerId: MarkerId(project.id.toString()),
               position: project.coordinates!));
 
@@ -202,7 +202,7 @@ class MapService extends ChangeNotifier {
             onTap: () {},
             zIndex: 20,
             icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
-                colorsSettings[statusDefault].circleAsset!),
+                colorsSettingsStatus[statusDefault].circleAsset!),
             markerId: MarkerId(projectId!),
             position: coord!);
 
@@ -220,7 +220,7 @@ class MapService extends ChangeNotifier {
             onTap: () {},
             zIndex: 20,
             icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
-                colorsSettings[statusDefault].circleAsset!),
+                colorsSettingsStatus[statusDefault].circleAsset!),
             markerId: MarkerId("temp"),
             position: coord!);
 
