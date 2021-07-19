@@ -99,8 +99,10 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
               infoWindow: InfoWindow(
                   title: project.userProject!.name,
                   snippet: project.userProject!.address!.toString()),
-              icon: await BitmapDescriptor.fromAssetImage(ImageConfiguration(),
-                  colorsSettings[project.userProject!.status!].circleAsset!),
+              icon: await BitmapDescriptor.fromAssetImage(
+                  ImageConfiguration(),
+                  colorsSettingsStatus[project.userProject!.status!]
+                      .circleAsset!),
               markerId: MarkerId(project.id.toString()),
               position: project.userProject!.coordinates!));
         }
@@ -435,12 +437,12 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                                                     style:
                                                                         transHeader),
                                                                 Text(
-                                                                  colorsSettings[project
+                                                                  colorsSettingsStatus[project
                                                                           .userProject!
                                                                           .status!]
                                                                       .name!,
                                                                   style: TextStyle(
-                                                                      color: colorsSettings[project
+                                                                      color: colorsSettingsStatus[project
                                                                               .userProject!
                                                                               .status!]
                                                                           .color),

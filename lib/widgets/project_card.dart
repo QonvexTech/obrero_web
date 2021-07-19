@@ -271,7 +271,7 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                     left: 20,
                     child: colorsSettings.length > 0
                         ? Image.asset(
-                            colorsSettings[widget.project!.status!]
+                            colorsSettingsStatus[widget.project!.status!]
                                 .circleAsset!,
                             width: 20,
                           )

@@ -340,12 +340,12 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                                                 style:
                                                                     transHeader),
                                                             Text(
-                                                              colorsSettings[
+                                                              colorsSettingsStatus[
                                                                       project
                                                                           .status!]
                                                                   .name!,
                                                               style: TextStyle(
-                                                                  color: colorsSettings[
+                                                                  color: colorsSettingsStatus[
                                                                           project
                                                                               .status!]
                                                                       .color),

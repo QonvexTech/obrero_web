@@ -75,25 +75,25 @@ List<ColorModels> colorsSettingsStatus = [
       color: Colors.green,
       colorName: 'green',
       name: "En cours",
-      circleAsset: ""),
+      circleAsset: "assets/icons/green.png"),
   ColorModels(
       id: 00001,
       color: Colors.blue,
       colorName: 'blue',
       name: "Compléter",
-      circleAsset: ""),
+      circleAsset: "assets/icons/blue.png"),
   ColorModels(
       id: 00002,
       color: Colors.grey,
       colorName: 'grey',
       name: "Annulé",
-      circleAsset: ""),
+      circleAsset: "assets/icons/grey.png"),
   ColorModels(
       id: 00003,
       color: Colors.red,
       colorName: 'red',
       name: "Arrêté",
-      circleAsset: "")
+      circleAsset: "assets/icons/red.png")
 ];
 
 Map<String, String> defaultImageTag = {
