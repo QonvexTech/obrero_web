@@ -142,7 +142,7 @@ Map<String, Color> colorMap = {
   "black": Colors.black,
 };
 
-List countries = [
+List<Map<dynamic, dynamic>> countries = [
   {"name": 'Afghanistan', "code": 'AF'},
   {"name": 'Åland Islands', "code": 'AX'},
   {"name": 'Albania', "code": 'AL'},

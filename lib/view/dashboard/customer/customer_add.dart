@@ -25,6 +25,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
+
   Map<dynamic, dynamic>? countryValue = countries[66];
   final _formKey = GlobalKey<FormState>();
 
@@ -42,10 +43,16 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
       emailController.text = widget.customerToEdit!.email!;
       addressController.text = widget.customerToEdit!.adress!;
       contactNumberController.text = widget.customerToEdit!.contactNumber!;
-      // amountController.text = widget.customerToEdit!.status!.amount!.toString();
-      isEdit = true;
-    }
+      List lastWordCountry = widget.customerToEdit!.adress!.split(" ");
+      String country = lastWordCountry[lastWordCountry.length - 1];
 
+      try {
+        countryValue = countries
+            .firstWhere((element) => element.entries.first.value == country);
+      } catch (e) {
+        countryValue = countries[66];
+      }
+    }
     super.initState();
   }
 

@@ -43,8 +43,6 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
       customerService
           .workingProjectsCustomer(widget.customer!.id!)
           .whenComplete(() {
-        // Provider.of<MapService>(context, listen: false).removeDefaultMarker();
-
         print("customer project : ${customerService.customerProject!.length}");
 
         Provider.of<MapService>(context, listen: false)
@@ -81,7 +79,6 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                     bottom: 20,
                   ),
                   child: ListView(
-                    // crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       backButton(
                           context,
