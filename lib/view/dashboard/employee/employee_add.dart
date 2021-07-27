@@ -33,6 +33,15 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
       emailController.text = widget.userToEdit!.email!;
       addressController.text = widget.userToEdit!.address!;
       contactNumberController.text = widget.userToEdit!.contactNumber!;
+      List lastWordCountry = widget.userToEdit!.address!.split(",");
+      String country = lastWordCountry[lastWordCountry.length - 1];
+
+      try {
+        countryValue = countries.firstWhere((element) =>
+            element.entries.first.value == country.replaceFirst(" ", ""));
+      } catch (e) {
+        countryValue = countries[66];
+      }
       isEdit = true;
     }
     super.initState();
@@ -179,6 +188,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                         Expanded(
                           child: DropdownButton<Map<dynamic, dynamic>>(
                             underline: null,
+                            isExpanded: true,
                             hint: Text("Pays"),
                             value: countryValue,
                             icon: Icon(Icons.arrow_drop_down),
@@ -188,6 +198,17 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                             onChanged: (Map<dynamic, dynamic>? newValue) {
                               setState(() {
                                 countryValue = newValue!;
+                                print("country down");
+                                if (isEdit) {
+                                  var newAddress =
+                                      widget.userToEdit!.address!.split(",");
+
+                                  addressController.text = newAddress[0] +
+                                      ", ${countryValue!["name"]}";
+
+                                  bodyToUpdate.addAll(
+                                      {"address": addressController.text});
+                                }
                               });
                             },
                             items: countries
@@ -226,6 +247,7 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
               MediaQuery.of(context).size.width < 800
                   ? Expanded(
                       child: DropdownButton<Map<dynamic, dynamic>>(
+                        isExpanded: true,
                         underline: null,
                         hint: Text("Pays"),
                         value: countryValue,
@@ -236,6 +258,16 @@ class _CustomerAddState extends State<EmployeeAdd> with SettingsHelper {
                         onChanged: (Map<dynamic, dynamic>? newValue) {
                           setState(() {
                             countryValue = newValue!;
+                            if (isEdit) {
+                              var newAddress =
+                                  widget.userToEdit!.address!.split(",");
+
+                              addressController.text =
+                                  newAddress[0] + ", ${countryValue!["name"]}";
+
+                              bodyToUpdate
+                                  .addAll({"address": addressController.text});
+                            }
                           });
                         },
                         items: countries

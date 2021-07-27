@@ -262,9 +262,10 @@ class EmployeeSevice extends ChangeNotifier {
         var data = json.decode(response.body);
         if (isAdmin) {
           profileData = Admin.fromJsonUpdate(data['data']);
-          notifyListeners();
         }
+        fetchUsers();
         print(data);
+        notifyListeners();
       });
       updateSuccess = true;
       print("UPDATE SUCCESS");
