@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uitemplate/models/admin_model.dart';
@@ -68,6 +70,8 @@ String? authToken;
 Admin? profileData;
 List<ColorModels> colorsSettings = [];
 List historyMessages = [];
+
+// Base64Codec defaultImage = ""
 
 List<ColorModels> colorsSettingsStatus = [
   ColorModels(
