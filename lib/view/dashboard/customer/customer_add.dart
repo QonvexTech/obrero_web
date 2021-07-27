@@ -52,6 +52,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
       } catch (e) {
         countryValue = countries[66];
       }
+      isEdit = true;
     }
     super.initState();
   }
@@ -130,6 +131,15 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                                   if (pickedFile != null) {
                                     customerService.base64Image =
                                         pickedFile.files[0].bytes;
+                                  }
+
+                                  if (isEdit) {
+                                    if (customerService.base64Image != null) {
+                                      bodyToEdit.addAll({
+                                        "picture":
+                                            "data:image/jpg;base64,${customerService.base64ImageEncoded}"
+                                      });
+                                    }
                                   }
                                 });
                               },
@@ -252,6 +262,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                               child: DropdownButton<Map<dynamic, dynamic>>(
                                 underline: null,
                                 hint: Text("Country"),
+                                isExpanded: true,
                                 value: countryValue,
                                 icon: Icon(Icons.arrow_drop_down),
                                 iconSize: 24,
@@ -260,6 +271,18 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                                 onChanged: (Map<dynamic, dynamic>? newValue) {
                                   setState(() {
                                     countryValue = newValue!;
+                                    print("country down");
+                                    if (isEdit) {
+                                      var newAddress = widget
+                                          .customerToEdit!.adress!
+                                          .split(",");
+
+                                      addressController.text = newAddress[0] +
+                                          ", ${countryValue!["name"]}";
+
+                                      bodyToEdit.addAll(
+                                          {"address": addressController.text});
+                                    }
                                   });
                                 },
                                 items: countries.map<
@@ -306,6 +329,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                       ? Expanded(
                           child: DropdownButton<Map<dynamic, dynamic>>(
                             underline: null,
+                            isExpanded: true,
                             hint: Text("Country"),
                             value: countryValue,
                             icon: Icon(Icons.arrow_drop_down),
@@ -315,6 +339,18 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                             onChanged: (Map<dynamic, dynamic>? newValue) {
                               setState(() {
                                 countryValue = newValue!;
+
+                                print("country down");
+                                if (isEdit) {
+                                  var newAddress =
+                                      widget.customerToEdit!.adress!.split(",");
+
+                                  addressController.text = newAddress[0] +
+                                      ", ${countryValue!["name"]}";
+
+                                  bodyToEdit.addAll(
+                                      {"address": addressController.text});
+                                }
                               });
                             },
                             items: countries
@@ -385,11 +421,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                             setState(() {
                               bodyToEdit.addAll(
                                   {"id": widget.customerToEdit!.id.toString()});
-                              bodyToEdit.addAll({
-                                "picture": customerService.base64Image != null
-                                    ? customerService.base64ImageEncoded
-                                    : null,
-                              });
+
                               print("BODY TO EDIT $bodyToEdit");
                               customerService
                                   .updateCustomer(bodyToEdit: bodyToEdit)
@@ -404,6 +436,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                                       timeInSecForIosWeb: 3,
                                       fontSize: 16.0);
                                 }
+                                customerService.base64Image = null;
                                 Navigator.pop(context);
                               });
                             });
@@ -425,6 +458,7 @@ class _CustomerAddState extends State<CustomerAdd> with SettingsHelper {
                                   .createCustomer(newCustomer: newCustomer)
                                   .whenComplete(() {
                                 Navigator.pop(context);
+                                customerService.base64Image = null;
                                 Fluttertoast.showToast(
                                     webBgColor:
                                         "linear-gradient(to right, #5585E5, #5585E5)",
