@@ -27,6 +27,7 @@ import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
 
+
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
   final CustomerModel? customer;
@@ -76,7 +77,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         ]).onError((error, stackTrace) {
       Fluttertoast.showToast(
           webBgColor: "linear-gradient(to right, #E21010, #ED9393)",
-          msg: "Something wrong in searching.",
+          msg: "Something wrong in fetching.",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 2,
@@ -108,7 +109,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
         print(e);
         Fluttertoast.showToast(
             webBgColor: "linear-gradient(to right, #E21010, #ED9393)",
-            msg: "Something wrong in searching.",
+            msg: "Something wrong in fetching.",
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 2,
@@ -390,7 +391,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                             CrossAxisAlignment
                                                                 .end,
                                                         children: [
-                                                          Text("Searching"),
+                                                          Text("Fetching"),
                                                           SizedBox(
                                                             width: 10,
                                                           ),
