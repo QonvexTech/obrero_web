@@ -26,7 +26,7 @@ class SettingsHelper {
       required var netWorkImage,
       required String defaultImage}) {
     if (file == null) {
-      if (netWorkImage == null || netWorkImage == "") {
+      if (netWorkImage == null) {
         return AssetImage(defaultImage);
       } else {
         return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
@@ -37,8 +37,8 @@ class SettingsHelper {
   }
 
   ImageProvider fetchImage({required var netWorkImage}) {
-    if (netWorkImage == null || netWorkImage == "") {
-      return AssetImage('icons/admin_icon.png');
+    if (netWorkImage == null) {
+      return AssetImage('assets/icons/admin_icon.png');
     } else {
       return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
     }
@@ -46,7 +46,7 @@ class SettingsHelper {
 
   ImageProvider get imageProvider {
     if (profileData!.picture == null) {
-      return AssetImage('icons/admin_icon.png');
+      return AssetImage('assets/icons/admin_icon.png');
     } else {
       return NetworkImage("https://obrero.checkmy.dev${profileData!.picture}");
     }
