@@ -112,11 +112,9 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                     alignment: widget.customer!.picture == null
                                         ? AlignmentDirectional.bottomCenter
                                         : AlignmentDirectional.center,
-                                    image: widget.customer?.picture == null
-                                        ? AssetImage('icons/admin_icon.png')
-                                        : fetchImage(
-                                            netWorkImage:
-                                                widget.customer?.picture),
+                                    image: fetchImage(
+                                      netWorkImage: widget.customer?.picture,
+                                    ),
                                     scale: 1)),
                           ),
                           SizedBox(
