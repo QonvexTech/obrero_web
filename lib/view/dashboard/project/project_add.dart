@@ -27,7 +27,6 @@ import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
 
-
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
   final CustomerModel? customer;
@@ -88,21 +87,19 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     });
     if (p != null && p.description != null) {
       try {
-        Coordinates coordinates =
-            await geoCode.forwardGeocoding(address: p.description!);
+        setState(() async {
+          Coordinates coordinates =
+              await geoCode.forwardGeocoding(address: p.description!);
+          projectAddService.setaddressController = "${p.description!}";
 
-        print("Latitude: ${coordinates.latitude}");
-        print("Longitude: ${coordinates.longitude}");
-        projectAddService.setaddressController = "${p.description!}";
+          mapService.setCoordinates(
+              coord: LatLng(coordinates.latitude!, coordinates.longitude!),
+              context: context,
+              areaSize: areaSize,
+              isEdit: isEdit,
+              projectId: projectId,
+              isClick: false);
 
-        mapService.setCoordinates(
-            coord: LatLng(coordinates.latitude!, coordinates.longitude!),
-            context: context,
-            areaSize: areaSize,
-            isEdit: isEdit,
-            projectId: projectId,
-            isClick: false);
-        setState(() {
           searchMap = false;
         });
       } catch (e) {

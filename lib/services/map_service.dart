@@ -5,6 +5,7 @@ import 'package:location/location.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:uitemplate/services/project/project_add_service.dart';
 
 class MapService extends ChangeNotifier {
   final containerKey = GlobalKey();
@@ -156,6 +157,7 @@ class MapService extends ChangeNotifier {
 
   Future setCoordinates(
       {LatLng? coord,
+      var projectservice,
       BuildContext? context,
       double? areaSize,
       bool? isEdit,
@@ -186,13 +188,16 @@ class MapService extends ChangeNotifier {
     if (_markers.contains(toRemove)) {
       _markers.remove(toRemove);
       _circles.remove(toRemoveCircle);
+      notifyListeners();
     } else {
       if (coord != null) {
         coordinates = coord;
         location.text =
             "${coord.latitude.toString()}, ${coord.longitude.toString()}";
+
         findLocalByCoordinates(
-            coord.latitude.toString(), coord.longitude.toString());
+            coordinates.latitude.toString(), coordinates.longitude.toString(),
+            projectAddService: projectservice);
       }
 
       //TODO: always color green
@@ -237,6 +242,7 @@ class MapService extends ChangeNotifier {
 
       _markers.add(defMarker);
       _circles.add(defCircle);
+      notifyListeners();
     }
 
     if (!isClick!) {
@@ -264,7 +270,8 @@ class MapService extends ChangeNotifier {
     _locationData = await _location.getLocation();
   }
 
-  findLocalByCoordinates(String lat, String lang) async {
+  Future findLocalByCoordinates(String lat, String lang,
+      {var projectAddService}) async {
     var url = Uri.parse(
         "https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$lang&location_type=ROOFTOP&result_type=street_address&key=AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI");
     try {
@@ -285,7 +292,6 @@ class MapService extends ChangeNotifier {
         });
 
         _address = concatenate.toString();
-
         notifyListeners();
       } else {
         print(response.body);
@@ -293,7 +299,9 @@ class MapService extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-
+    projectAddService.setaddressController = _address;
+    notifyListeners();
+    notifyListeners();
     return "";
   }
 }

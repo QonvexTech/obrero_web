@@ -62,17 +62,16 @@ class _MapScreenState extends State<MapScreen> {
                   circles: mapService.circles,
                   onTap: (LatLng coord) {
                     if (widget.setCoord!) {
-                      mapService
-                          .setCoordinates(
-                              coord: coord,
-                              context: context,
-                              areaSize: widget.areaSize,
-                              isEdit: widget.isEdit,
-                              projectId: widget.projectId,
-                              isClick: true)
-                          .whenComplete(() {
-                        projectAddScreen.setaddressController =
-                            mapService.address;
+                      setState(() {
+                        mapService.setCoordinates(
+                            projectservice: projectAddScreen,
+                            coord: coord,
+                            context: context,
+                            areaSize: widget.areaSize,
+                            isEdit: widget.isEdit,
+                            projectId: widget.projectId,
+                            isClick: true);
+                        ;
                       });
                     }
                   },
