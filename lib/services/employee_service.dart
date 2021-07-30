@@ -147,7 +147,7 @@ class EmployeeSevice extends ChangeNotifier {
   }
 
   Future<String> timeOutAllUser() async {
-    String value = "Something Wrong";
+    String value = "Something wrong in network try again";
     try {
       var url = Uri.parse("$api/user/time_out_all");
       var response = await http.put(url, headers: {
