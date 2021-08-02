@@ -261,7 +261,9 @@ class _MessageScreenState extends State<MessageScreen> with SettingsHelper {
                                       messageService
                                           .sendMessage(
                                               ids: stringRecepients,
-                                              message: message,
+                                              message: message.length > 200
+                                                  ? "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception."
+                                                  : message,
                                               base64File: Views.b64Image)
                                           .then((value) {
                                         if (value) {
