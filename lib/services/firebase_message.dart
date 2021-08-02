@@ -75,8 +75,8 @@ class FireBase extends ChangeNotifier {
 
   Future sendNotification(
       ownerFcmToken, Map<String, dynamic>? notifBody, Map? message) async {
-    print(ownerFcmToken);
     print("Sending....");
+
     var url = Uri.parse(firebase_messaging);
     await http
         .post(
