@@ -36,8 +36,14 @@ class MessageService extends ChangeNotifier {
       };
       String mess = '';
       if (message != null) {
+        if (message.length > 150) {
+          mess =
+              "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception.";
+        } else {
+          mess = message;
+        }
+
         body.addAll({"message": message});
-        mess = message;
       }
 
       if (base64File != null) {
@@ -56,24 +62,14 @@ class MessageService extends ChangeNotifier {
           for (var item in data['data']) {
             Map<String, dynamic> nBody = Map<String, dynamic>();
             if (item['receiver_notify'] == 1) {
-              nBody = {
-                "title": "Admin",
-                "body": mess.length > 200
-                    ? "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception."
-                    : mess
-              };
+              nBody = {"title": "Admin", "body": mess};
             }
             await FireBase().sendNotification(item['fcm_tokens'], nBody, item);
           }
         } else {
           Map<String, dynamic> nBody = Map<String, dynamic>();
           if (data['data']['receiver_notify'] == 1) {
-            nBody = {
-              "title": "Admin",
-              "body": mess.length > 200
-                  ? "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception."
-                  : mess,
-            };
+            nBody = {"title": "Admin", "body": mess};
           }
           await FireBase().sendNotification(
               data['data']['fcm_tokens'], nBody, data['data']);
