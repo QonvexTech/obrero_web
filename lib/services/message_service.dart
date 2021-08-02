@@ -37,12 +37,13 @@ class MessageService extends ChangeNotifier {
       String mess = '';
       if (message != null) {
         body.addAll({"message": message});
-        mess = message;
+        mess = "Sent an attachment";
       }
 
       if (base64File != null) {
         body.addAll({"file": "data:image/jpg;base64,$base64File"});
-        mess = "Sent an attachment";
+        mess =
+            "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception";
       }
 
       var url = Uri.parse(message_send_api);
@@ -51,6 +52,8 @@ class MessageService extends ChangeNotifier {
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) async {
         var data = json.decode(response.body);
+        print("backoffice");
+        print(data);
 
         if (data['data'] is List) {
           for (var item in data['data']) {
@@ -58,17 +61,27 @@ class MessageService extends ChangeNotifier {
             if (item['receiver_notify'] == 1) {
               nBody = {"title": "Admin", "body": mess};
             }
+
+            if (item["message"].length > 200) {
+              item["message"] =
+                  "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception";
+            }
             await FireBase().sendNotification(item['fcm_tokens'], nBody, item);
           }
         } else {
+          print("one");
           Map<String, dynamic> nBody = Map<String, dynamic>();
           if (data['data']['receiver_notify'] == 1) {
             nBody = {"title": "Admin", "body": mess};
           }
+
+          if (data['data']["message"].length > 200) {
+            data['data']["message"] =
+                "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception";
+          }
           await FireBase().sendNotification(
               data['data']['fcm_tokens'], nBody, data['data']);
         }
-        print(data);
       });
       return true;
     } catch (e) {
