@@ -36,8 +36,14 @@ class MessageService extends ChangeNotifier {
       };
       String mess = '';
       if (message != null) {
+        if (message.length > 150) {
+          mess =
+              "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception.";
+        } else {
+          mess = message;
+        }
+
         body.addAll({"message": message});
-        mess = message;
       }
 
       if (base64File != null) {
