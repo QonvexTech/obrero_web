@@ -175,7 +175,9 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     if (widget.customer != null) {
       customerSelected = widget.customer;
     }
+
     if (widget.projectToEdit != null) {
+      Provider.of<ProjectAddService>(context, listen: false).initbodyToEdit();
       Provider.of<ProjectAddService>(context, listen: false).initAdress =
           widget.projectToEdit!.address!;
 
@@ -336,12 +338,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                         ),
                                         RawKeyboardListener(
                                           focusNode: _desc,
-                                          onKey: (y) {
-                                            if (y.isKeyPressed(
-                                                LogicalKeyboardKey.tab)) {
-                                              _address.requestFocus();
-                                            }
-                                          },
+                                          onKey: (y) {},
                                           child: TextFormField(
                                             onFieldSubmitted: (z) {
                                               _address.requestFocus();

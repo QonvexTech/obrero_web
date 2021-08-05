@@ -36,21 +36,14 @@ class MessageService extends ChangeNotifier {
       };
       String mess = '';
       if (message != null) {
-        if (message.length > 150) {
-          mess =
-              "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception.";
-        } else {
-          mess = message;
-        }
-
         body.addAll({"message": message});
-        mess = "Sent an attachment";
+        mess =
+            "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception.";
       }
 
       if (base64File != null) {
         body.addAll({"file": "data:image/jpg;base64,$base64File"});
-        mess =
-            "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception";
+        mess = "Sent an attachment";
       }
 
       var url = Uri.parse(message_send_api);
