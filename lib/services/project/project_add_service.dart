@@ -36,6 +36,7 @@ class ProjectAddService extends ChangeNotifier {
   get bodyToEdit => _bodyToEdit;
   set bodyToEdit(value) => _bodyToEdit = value;
 
+  void initbodyToEdit() => _bodyToEdit = {};
   get areaSize => _areaSize;
   set areaSize(value) {
     _areaSize = value;
