@@ -45,7 +45,6 @@ class FireBase extends ChangeNotifier {
               data: LogModel.fromJson(
                   json.decode(message.data['notification_data'])));
           print(message.data['notification_data']);
-
           // print(messages);
         }
 
