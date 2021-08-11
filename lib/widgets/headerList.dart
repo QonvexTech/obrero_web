@@ -88,8 +88,7 @@ class HeaderList extends StatelessWidget {
                                                     employeeService
                                                         .timeOutAllUser()
                                                         .then((value) {
-                                                      if (value ==
-                                                          "All users are now time-out") {
+                                                      if (value.isNotEmpty) {
                                                         Fluttertoast.showToast(
                                                             webBgColor:
                                                                 "linear-gradient(to right, #5585E5, #5585E5)",
