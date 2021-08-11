@@ -32,7 +32,6 @@ class CustomerModel {
     return '#${this.id} ${this.fname}';
   }
 
-  ///custom comparing function to check if two users are equal
   bool isEqual(CustomerModel? model) {
     return this.id == model?.id;
   }
@@ -91,7 +90,6 @@ class CustomerModel {
     data["address"] = this.adress;
     data["picture"] =
         this.picture != null ? "data:image/jpg;base64,${this.picture}" : "";
-    // data["status"] = this.status;
     data["contact_number"] = this.contactNumber;
     data["amount"] = this.amount.toString();
     return data;
