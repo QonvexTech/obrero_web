@@ -77,7 +77,6 @@ class CustomerModel {
     data["email"] = this.email;
     data["address"] = this.adress;
     data["picture"] = "data:image/jpg;base64,${this.picture}";
-    // data["status"] = this.status.toString();
     data["contact_number"] = this.contactNumber;
     return data;
   }

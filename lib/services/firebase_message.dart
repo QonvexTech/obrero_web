@@ -72,10 +72,12 @@ class FireBase extends ChangeNotifier {
     this.initialize(context: context);
   }
 
+  // Future sendNotif() async {
+
+  // }
   Future sendNotification(
       ownerFcmToken, Map<String, dynamic>? notifBody, Map? message) async {
-    print("Sending....");
-
+    print("Sending....here");
     var url = Uri.parse(firebase_messaging);
     await http
         .post(
@@ -99,8 +101,10 @@ class FireBase extends ChangeNotifier {
       ),
     )
         .then((response) {
+      print("response");
       var data = json.decode(response.body);
-      print(data);
+      print(data == null);
+      print(response.statusCode);
     });
   }
 }
