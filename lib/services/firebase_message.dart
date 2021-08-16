@@ -9,15 +9,10 @@ import 'package:uitemplate/services/log_service.dart';
 
 class FireBase extends ChangeNotifier {
   final String serverToken =
-      "AAAA-hFmhDQ:APA91bH1_ygbm_F46KflszWDkQCaY2MwVSltQw4itwkjBQoiOSnSam4BkhTiH5fBcV9sBjd52-d8bxc_00RO48_iaWZYsw20b7tilcKqIqDkIh-J_xv1y8TBxtoDAMlkroj7EcM8ayqO";
+      "AAAA-hFmhDQ:APA91bEtMWAdXM-GDjI4eYFa3CdVWs33rkqjPRXIaky1lYhrl1fTJXH968jzHEsB20Dn9KUlaCKCTe5C6pUpw--zTDvAJPfeRP3P51FZLagFjOML4QDqSxR-2jGMBaaGK9G_S6SNo1Mo";
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   Future<String?> get fcmToken async => await _firebaseMessaging.getToken();
-
-  // Future<void> subscribe(String subscription) async {
-  //   await _firebaseMessaging.subscribeToTopic("$subscription}").then(print);
-  // }
-
   Future<void> initialize({required context}) async {
     try {
       await _firebaseMessaging.setForegroundNotificationPresentationOptions(
@@ -36,31 +31,15 @@ class FireBase extends ChangeNotifier {
         sound: true,
       );
       FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-        // rxNotificationService
-        //     .append(json.decode(message.data['notification_data']));
-
         if (message.data['notification_data'] != null) {
-          // messages.add(message.data['notification_data']);
           logService.append(
               data: LogModel.fromJson(
                   json.decode(message.data['notification_data'])));
           print(message.data['notification_data']);
-          // print(messages);
         }
 
         return;
-        // print(messages);
       });
-
-      // // on open
-      // FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      //   print("MESSAGE OPENED :${event.notification!.title}");
-      // });
-
-      // //background
-      // FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-      //   print('Handling a background message ${message.messageId}');
-      // });
     } catch (e) {
       print(e);
     }
@@ -72,15 +51,11 @@ class FireBase extends ChangeNotifier {
     this.initialize(context: context);
   }
 
-  // Future sendNotif() async {
-
-  // }
   Future sendNotification(
       ownerFcmToken, Map<String, dynamic>? notifBody, Map? message) async {
     print("Sending....here");
     var url = Uri.parse(firebase_messaging);
-    await http
-        .post(
+    var response = await http.post(
       url,
       headers: <String, String>{
         'Content-Type': 'application/json',
@@ -99,12 +74,8 @@ class FireBase extends ChangeNotifier {
           'registration_ids': ownerFcmToken,
         },
       ),
-    )
-        .then((response) {
-      print("response");
-      var data = json.decode(response.body);
-      print(data == null);
-      print(response.statusCode);
-    });
+    );
+
+    print(response.body);
   }
 }

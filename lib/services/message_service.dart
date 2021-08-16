@@ -52,13 +52,11 @@ class MessageService extends ChangeNotifier {
         HttpHeaders.authorizationHeader: "Bearer $authToken"
       }).then((response) async {
         var data = json.decode(response.body);
-
         print("backoffice");
         print(data);
-
         if (data['data'] is List) {
           for (var item in data['data']) {
-            Map<String, dynamic> nBody = Map<String, dynamic>();
+            Map<String, dynamic>? nBody;
 
             print("item here");
             print(item);
@@ -70,11 +68,13 @@ class MessageService extends ChangeNotifier {
               item["message"] =
                   "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception";
             }
+
+            print('token');
+            print(item['fcm_tokens']);
             await FireBase().sendNotification(item['fcm_tokens'], nBody, item);
           }
           successSend = true;
         } else {
-          print("one");
           Map<String, dynamic> nBody = Map<String, dynamic>();
           if (data['data']['receiver_notify'] == 1) {
             nBody = {"title": "Admin", "body": mess};
@@ -84,8 +84,10 @@ class MessageService extends ChangeNotifier {
             data['data']["message"] =
                 "L'administrateur vous a envoyé un long message. veuillez vérifier votre boîte de réception";
           }
-          await FireBase()
-              .sendNotification(data['fcm_tokens'], nBody, data['data']);
+          print("ONE");
+          print(data['data']['fcm_tokens']);
+          await FireBase().sendNotification(
+              data['data']['fcm_tokens'], nBody, data['data']);
           successSend = true;
         }
       });
