@@ -156,8 +156,6 @@ class EmployeeSevice extends ChangeNotifier {
         "Content-Type": "application/x-www-form-urlencoded"
       });
       if (response.statusCode == 200 || response.statusCode == 201) {
-        var data = json.decode(response.body);
-        print(data);
         value = "All users are now time-out";
         this
             ._firestoreService
@@ -165,7 +163,7 @@ class EmployeeSevice extends ChangeNotifier {
             .get()
             .then((QuerySnapshot querySnapshot) {
           for (DocumentSnapshot documentSnapshot in querySnapshot.docs) {
-            documentSnapshot.reference.delete();
+            documentSnapshot.reference.update({"is_active": false});
           }
         });
       }
