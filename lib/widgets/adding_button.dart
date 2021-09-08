@@ -14,6 +14,7 @@ class AddingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     var mapService = Provider.of<MapService>(context);
     return MaterialButton(
+      height: 50,
       color: Palette.drawerColor,
       onPressed: () {
         mapService.gesture = false;
