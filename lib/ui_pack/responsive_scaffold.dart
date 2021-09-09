@@ -246,7 +246,9 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                         value: sub_items.content,
                                         child: Row(
                                           children: [
-                                            SvgPicture.asset(sub_items.icon!,
+                                            SvgPicture.asset(
+                                                sub_items.icon!.replaceAll(
+                                                    ".svg", "2.svg"),
                                                 semanticsLabel:
                                                     sub_items.title),
                                             if (sub_items.title != null) ...{
