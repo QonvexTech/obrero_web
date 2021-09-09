@@ -11,7 +11,6 @@ import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/mypicker.dart';
 import 'package:uitemplate/widgets/project_card.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
-import 'package:universal_html/html.dart';
 
 class DashBoardScreen extends StatefulWidget {
   @override

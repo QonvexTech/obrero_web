@@ -65,8 +65,7 @@ class HeaderList extends StatelessWidget {
                 title == "Employee"
                     ? Container(
                         height: 40,
-                        child: MaterialButton(
-                          color: Palette.drawerColor,
+                        child: ElevatedButton(
                           onPressed: () {
                             //SHOW MAP MONITOR
                             showDialog(

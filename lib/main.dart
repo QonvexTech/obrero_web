@@ -47,12 +47,17 @@ class MyApp extends StatelessWidget {
       title: 'Obrero Admin',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(backgroundColor: Palette.background),
-        scaffoldBackgroundColor: Palette.background,
-        primaryColor: Palette.drawerColor,
-        accentColor: Palette.buttonsColor1,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
+          appBarTheme: const AppBarTheme(backgroundColor: Palette.background),
+          scaffoldBackgroundColor: Palette.background,
+          primaryColor: Palette.drawerColor,
+          accentColor: Palette.buttonsColor1,
+          iconTheme: const IconThemeData(color: Colors.black),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              primary: Palette.drawerColor,
+            ),
+          ),
+          buttonColor: Palette.drawerColor),
       home: SplashScreen(),
       routes: {
         '/splash': (context) => SplashScreen(),

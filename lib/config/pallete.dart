@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Palette {
   static const Color background = Color(0xFFF0F0E4);
   static const Color secondaryBackground = Color(0xFFE7E4D3);
-  static const Color buttonsColor1 = Colors.blue;
+  static const Color buttonsColor1 = Color.fromRGBO(85, 133, 229, 1);
   static const Color loaderColor = Colors.white;
   static const Color drawerColor = Color.fromRGBO(85, 133, 229, 1);
   static const Color drawerColorLight = Color.fromRGBO(85, 133, 229, 0.5);

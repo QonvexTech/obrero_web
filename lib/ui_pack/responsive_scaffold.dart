@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
@@ -25,33 +26,41 @@ import 'children/sub_drawer_item.dart';
 class ResponsiveScaffold extends StatefulWidget {
   final List<DrawerItem> drawerItems = [
     DrawerItem(
-        icon: Icons.dashboard,
+        icon: "assets/icons/dashboard.svg",
         text: "Tableau de bord",
         content: DashBoardScreen()),
-    DrawerItem(icon: Icons.people, text: "Clients", content: CustomerScreen()),
     DrawerItem(
-        icon: Icons.pin_drop_outlined,
+        icon: "assets/icons/people.svg",
+        text: "Clients",
+        content: CustomerScreen()),
+    DrawerItem(
+        icon: "assets/icons/pin_drop.svg",
         text: "Chantiers",
         content: ProjectScreen()),
     DrawerItem(
-        icon: Icons.person_pin_circle_outlined,
+        icon: "assets/icons/person_pin.svg",
         text: "Employés",
         content: EmployeeScreen()),
-    DrawerItem(icon: Icons.list, text: "Pointage", content: LogScreen()),
     DrawerItem(
-        icon: Icons.message,
+        icon: "assets/icons/logs.svg", text: "Pointage", content: LogScreen()),
+    DrawerItem(
+        icon: "assets/icons/chat.svg",
         text: "Pushs",
         content: MessageScreen(
           recepients: [],
         )),
     DrawerItem(
-        icon: Icons.settings,
+        icon: "assets/icons/settings.svg",
         text: "Préférences",
         subItems: [
           SubDrawerItems(
-              icon: Icons.warning, title: "Alerte", content: WarningSettings()),
+              icon: "assets/icons/warning.svg",
+              title: "Alerte",
+              content: WarningSettings()),
           SubDrawerItems(
-              icon: Icons.all_out, title: "General", content: GeneralSettings())
+              icon: "assets/icons/admin_settings.svg",
+              title: "General",
+              content: GeneralSettings())
         ],
         content: null),
   ];
@@ -218,12 +227,11 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                   (!showDrawerText)
                               ? PopupMenuButton(
                                   tooltip: "Settings",
-                                  icon: Icon(
-                                    item.icon,
-                                    color:
-                                        item.content == null && activeSettings
-                                            ? Palette.drawerColor
-                                            : Colors.white,
+                                  icon: SvgPicture.asset(
+                                    item.content == null && activeSettings
+                                        ? item.icon!.replaceAll(".svg", "2.svg")
+                                        : item.icon!,
+                                    semanticsLabel: item.text,
                                   ),
                                   onSelected: (value) {
                                     setState(() {
@@ -238,9 +246,9 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                         value: sub_items.content,
                                         child: Row(
                                           children: [
-                                            Icon(
-                                              sub_items.icon,
-                                            ),
+                                            SvgPicture.asset(sub_items.icon!,
+                                                semanticsLabel:
+                                                    sub_items.title),
                                             if (sub_items.title != null) ...{
                                               const SizedBox(
                                                 width: 10,
@@ -284,15 +292,13 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Icon(item.icon,
-                                          color:
-                                              scaffoldService.selectedContent ==
-                                                      item.content
-                                                  ? Palette.drawerColor
-                                                  : item.content == null &&
-                                                          activeSettings
-                                                      ? Palette.drawerColor
-                                                      : Colors.white),
+                                      SvgPicture.asset(
+                                          scaffoldService.selectedContent ==
+                                                  item.content
+                                              ? item.icon!
+                                                  .replaceAll(".svg", "2.svg")
+                                              : item.icon!,
+                                          semanticsLabel: item.text),
                                       if (showDrawerText) ...{
                                         const SizedBox(
                                           width: 10,
@@ -360,14 +366,13 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                   child: Row(
                                     children: [
                                       if (_selectedDrawerItem == item) ...{
-                                        Icon(
-                                          sub_items.icon,
-                                          color:
-                                              scaffoldService.selectedContent ==
-                                                      sub_items.content
-                                                  ? Palette.drawerColor
-                                                  : Colors.white,
-                                        ),
+                                        SvgPicture.asset(
+                                            scaffoldService.selectedContent ==
+                                                    sub_items.content
+                                                ? sub_items.icon!
+                                                    .replaceAll(".svg", "2.svg")
+                                                : sub_items.icon!,
+                                            semanticsLabel: sub_items.title)
                                       },
                                       if (sub_items.title != null) ...{
                                         const SizedBox(
@@ -748,13 +753,13 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                             (!showDrawerText)
                                         ? PopupMenuButton(
                                             tooltip: "Settings",
-                                            icon: Icon(
-                                              item.icon,
-                                              color: item.content == null &&
-                                                      activeSettings
-                                                  ? Palette.drawerColor
-                                                  : Colors.white,
-                                            ),
+                                            icon: SvgPicture.asset(
+                                                item.content == null &&
+                                                        activeSettings
+                                                    ? item.icon!.replaceAll(
+                                                        ".svg", "2.svg")
+                                                    : item.icon!,
+                                                semanticsLabel: item.text),
                                             onSelected: (value) {
                                               setState(() {
                                                 activeSettings = true;
@@ -770,9 +775,10 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                   value: sub_items.content,
                                                   child: Row(
                                                     children: [
-                                                      Icon(
-                                                        sub_items.icon,
-                                                      ),
+                                                      SvgPicture.asset(
+                                                          sub_items.icon!,
+                                                          semanticsLabel:
+                                                              sub_items.title),
                                                       if (sub_items.title !=
                                                           null) ...{
                                                         const SizedBox(
@@ -823,17 +829,21 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Icon(item.icon,
-                                                    color: scaffoldService
+                                                SvgPicture.asset(
+                                                    scaffoldService
                                                                 .selectedContent ==
                                                             item.content
-                                                        ? Palette.drawerColor
+                                                        ? item.icon!.replaceAll(
+                                                            ".svg", "2.svg")
                                                         : item.content ==
                                                                     null &&
                                                                 activeSettings
-                                                            ? Palette
-                                                                .drawerColor
-                                                            : Colors.white),
+                                                            ? item.icon!
+                                                                .replaceAll(
+                                                                    ".svg",
+                                                                    "2.svg")
+                                                            : item.icon!,
+                                                    semanticsLabel: item.text),
                                                 if (showDrawerText) ...{
                                                   const SizedBox(
                                                     width: 10,
@@ -914,14 +924,17 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                               children: [
                                                 if (_selectedDrawerItem ==
                                                     item) ...{
-                                                  Icon(
-                                                    sub_items.icon,
-                                                    color: scaffoldService
-                                                                .selectedContent ==
-                                                            sub_items.content
-                                                        ? Palette.drawerColor
-                                                        : Colors.white,
-                                                  ),
+                                                  SvgPicture.asset(
+                                                      scaffoldService
+                                                                  .selectedContent ==
+                                                              sub_items.content
+                                                          ? sub_items.icon!
+                                                              .replaceAll(
+                                                                  ".svg",
+                                                                  "2.svg")
+                                                          : sub_items.icon!,
+                                                      semanticsLabel:
+                                                          'Acme Logo')
                                                 },
                                                 if (sub_items.title !=
                                                     null) ...{
