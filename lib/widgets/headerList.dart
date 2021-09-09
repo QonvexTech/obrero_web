@@ -135,9 +135,9 @@ class HeaderList extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.monitor,
-                                color: Colors.white,
+                              Image.asset(
+                                "assets/icons/route.png",
+                                width: 25,
                               ),
                               SizedBox(
                                 width: MySpacer.small,
