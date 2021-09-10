@@ -81,28 +81,31 @@ class _GeneralSettingsState extends State<GeneralSettings> with SettingsHelper {
                             bottom: 0,
                             right: 0,
                             child: MaterialButton(
-                                color: Palette.drawerColor,
-                                padding: const EdgeInsets.all(0),
-                                onPressed: () async {
-                                  await FilePicker.platform.pickFiles(
-                                      allowMultiple: false,
-                                      allowedExtensions: [
-                                        'jpg',
-                                        'jpeg',
-                                        'png'
-                                      ]).then((pickedFile) {
-                                    if (pickedFile != null) {
-                                      profileService.base64Image =
-                                          pickedFile.files[0].bytes;
-                                    }
-                                  });
-                                },
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10000)),
-                                minWidth: 50,
-                                height: 50,
-                                child: Icon(Icons.camera_alt,
-                                    color: Colors.white)),
+                              color: Palette.drawerColor,
+                              padding: const EdgeInsets.all(0),
+                              onPressed: () async {
+                                await FilePicker.platform.pickFiles(
+                                    allowMultiple: false,
+                                    allowedExtensions: [
+                                      'jpg',
+                                      'jpeg',
+                                      'png'
+                                    ]).then((pickedFile) {
+                                  if (pickedFile != null) {
+                                    profileService.base64Image =
+                                        pickedFile.files[0].bytes;
+                                  }
+                                });
+                              },
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10000)),
+                              minWidth: 50,
+                              height: 50,
+                              child: Image.asset(
+                                "assets/icons/camera.png",
+                                width: 25,
+                              ),
+                            ),
                           ),
                         ],
                       ),
