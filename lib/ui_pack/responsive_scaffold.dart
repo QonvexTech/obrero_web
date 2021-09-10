@@ -617,7 +617,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                               ),
                                               Image.asset(
                                                 "assets/images/emptynotification.png",
-                                                width: 50,
+                                                width: 25,
                                               ),
                                               SizedBox(
                                                 height: MySpacer.small,
