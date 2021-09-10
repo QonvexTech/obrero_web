@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SubDrawerItems {
-  final IconData? icon;
+  final String? icon;
   final String? title;
   final Widget? content;
   SubDrawerItems(

@@ -11,7 +11,6 @@ import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/mypicker.dart';
 import 'package:uitemplate/widgets/project_card.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
-import 'package:universal_html/html.dart';
 
 class DashBoardScreen extends StatefulWidget {
   @override
@@ -271,14 +270,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             )
           : projectProvider.projectsDateBase.length <= 0
               ? Container(
+                  height: 100,
                   child: EmptyContainer(
-                  addingFunc: ProjectAddScreen(),
-                  title: "Aucun projet cette fois",
-                  description:
-                      "Il est temps de créer un projet\n choisissez le bon client et le bon emplacement pour votre projet.",
-                  buttonText: "Créer",
-                  showButton: true,
-                ))
+                    addingFunc: ProjectAddScreen(),
+                    title: "Aucun projet cette fois",
+                    description:
+                        "Il est temps de créer un projet\n choisissez le bon client et le bon emplacement pour votre projet.",
+                    buttonText: "Créer",
+                    showButton: true,
+                  ))
               : Container(
                   color: Palette.contentBackground,
                   child: ListView.builder(

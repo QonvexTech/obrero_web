@@ -48,7 +48,7 @@ class EmptyContainer extends StatelessWidget {
           ),
           showButton
               ? Container(
-                  width: 160,
+                  width: 200,
                   child: Center(
                     child: AddingButton(
                         addingPage: addingFunc, buttonText: buttonText),

@@ -65,8 +65,7 @@ class HeaderList extends StatelessWidget {
                 title == "Employee"
                     ? Container(
                         height: 40,
-                        child: MaterialButton(
-                          color: Palette.drawerColor,
+                        child: ElevatedButton(
                           onPressed: () {
                             //SHOW MAP MONITOR
                             showDialog(
@@ -136,9 +135,9 @@ class HeaderList extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(
-                                Icons.monitor,
-                                color: Colors.white,
+                              Image.asset(
+                                "assets/icons/route.png",
+                                width: 25,
                               ),
                               SizedBox(
                                 width: MySpacer.small,

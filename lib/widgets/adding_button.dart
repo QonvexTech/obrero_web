@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/services/map_service.dart';
@@ -14,6 +15,7 @@ class AddingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     var mapService = Provider.of<MapService>(context);
     return MaterialButton(
+      height: 50,
       color: Palette.drawerColor,
       onPressed: () {
         mapService.gesture = false;
@@ -27,9 +29,9 @@ class AddingButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.add_circle,
-            color: Colors.white,
+          Image.asset(
+            "assets/icons/add_circle.png",
+            width: 25,
           ),
           SizedBox(
             width: MySpacer.small,

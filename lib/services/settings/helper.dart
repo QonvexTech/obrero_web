@@ -26,11 +26,7 @@ class SettingsHelper {
       required var netWorkImage,
       required String defaultImage}) {
     if (file == null) {
-      if (netWorkImage == null) {
-        return AssetImage(defaultImage);
-      } else {
-        return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
-      }
+      return NetworkImage("https://obrero.checkmy.dev$netWorkImage");
     } else {
       return MemoryImage(file);
     }
