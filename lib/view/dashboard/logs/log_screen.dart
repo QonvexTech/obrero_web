@@ -5,12 +5,11 @@ import 'package:readmore/readmore.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
 import 'package:uitemplate/models/log_model.dart';
-import 'package:uitemplate/services/add_warning_service.dart';
 import 'package:uitemplate/services/history_service.dart';
 import 'package:uitemplate/services/log_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
+import 'package:uitemplate/services/settings/tableHelper.dart';
 import 'package:uitemplate/view_model/logs/loader.dart';
-import 'package:uitemplate/view_model/logs/log_api_call.dart';
 
 class LogScreen extends StatelessWidget {
   @override
@@ -127,12 +126,11 @@ class LogScreen extends StatelessWidget {
                                   foregroundColor: Colors.red,
                                   icon: Icons.delete,
                                   onTap: () {
-                                    History()
-                                        .removeNotification(
-                                            id: result.data![index].id!)
-                                        .whenComplete(() {
-                                      logApiCall.fetchServer();
-                                    });
+                                    TableHelper.showDeleteCard(
+                                        context,
+                                        "this message",
+                                        History().removeNotification,
+                                        result.data![index].id!);
                                   }),
                             ],
                           ),
