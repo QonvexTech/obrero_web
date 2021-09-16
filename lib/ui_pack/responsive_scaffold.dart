@@ -88,7 +88,6 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
         print(e);
       }
     });
-
     super.initState();
   }
 
@@ -462,9 +461,7 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                         ),
                       ),
                     ),
-
                     Spacer(),
-
                     //NOTIFICATIONS
                     PopupMenuButton(
                       tooltip: "Notifications",

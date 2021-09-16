@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:uitemplate/config/global.dart';
+import 'package:uitemplate/view_model/logs/log_api_call.dart';
 
 class History {
   Future removeNotification({required int id}) async {
@@ -20,5 +21,7 @@ class History {
       print(e);
       print("delete fails");
     }
+
+    logApiCall.fetchServer();
   }
 }
