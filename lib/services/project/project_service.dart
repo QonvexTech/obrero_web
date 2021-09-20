@@ -178,7 +178,7 @@ class ProjectProvider extends ChangeNotifier {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
         _pagination.totalEntries = json.decode(response.body)["total"];
-        if (_pagination.totalEntries < _pagination.perPage) {
+        if (_pagination.totalEntries <= _pagination.perPage) {
           _pagination.perPage = _pagination.totalEntries;
         }
         ProjectModel.fromJsonListToProject(data).then((value) {
@@ -187,7 +187,11 @@ class ProjectProvider extends ChangeNotifier {
         });
 
         notifyListeners();
+
         print(data);
+        print("PROJECT PAGE");
+        print(json.decode(response.body)["next_page_url"]);
+        print(_pagination.totalEntries);
       } else {
         print(response.body);
       }
