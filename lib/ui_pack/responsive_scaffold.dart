@@ -21,6 +21,7 @@ import 'package:uitemplate/view/dashboard/project/project_screen.dart';
 import 'package:uitemplate/view/dashboard/settings/change_password_settings.dart';
 import 'package:uitemplate/view/dashboard/settings/general_settings.dart';
 import 'package:uitemplate/view/dashboard/settings/warnings/warning_settings.dart';
+import 'package:uitemplate/widgets/hover_effect.dart';
 import 'children/sub_drawer_item.dart';
 
 class ResponsiveScaffold extends StatefulWidget {
@@ -264,10 +265,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                     }
                                   ],
                                 )
-                              : MaterialButton(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 25),
-                                  onPressed: item.subItems != null &&
+                              : GestureDetector(
+                                  onTap: item.subItems != null &&
                                           item.subItems!.length > 0
                                       ? () {
                                           setState(() {
@@ -288,54 +287,62 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                               Navigator.pop(context);
                                             }
                                           : null,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                          scaffoldService.selectedContent ==
-                                                  item.content
-                                              ? item.icon!
-                                                  .replaceAll(".svg", "2.svg")
-                                              : item.icon!,
-                                          semanticsLabel: item.text),
-                                      if (showDrawerText) ...{
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            "${item.text}",
-                                            style: TextStyle(
-                                                color: scaffoldService
-                                                            .selectedContent ==
-                                                        item.content
-                                                    ? Palette.drawerColor
-                                                    : item.content == null &&
-                                                            activeSettings
+                                  child: OnHover(builder: (isHovered) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 25),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(
+                                              scaffoldService.selectedContent ==
+                                                      item.content
+                                                  ? item.icon!.replaceAll(
+                                                      ".svg", "2.svg")
+                                                  : item.icon!,
+                                              semanticsLabel: item.text),
+                                          if (showDrawerText) ...{
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                "${item.text}",
+                                                style: TextStyle(
+                                                    color: scaffoldService
+                                                                .selectedContent ==
+                                                            item.content
                                                         ? Palette.drawerColor
-                                                        : Colors.white),
-                                          ),
-                                        )
-                                      },
-                                      Spacer(),
-                                      if ((item.subItems != null &&
-                                              item.subItems!.length > 0) &&
-                                          showDrawerText) ...{
-                                        Icon(
-                                          _selectedDrawerItem == item
-                                              ? Icons.keyboard_arrow_up
-                                              : Icons.keyboard_arrow_down,
-                                          color: item.content == null &&
-                                                  activeSettings
-                                              ? Palette.drawerColor
-                                              : Colors.white,
-                                        )
-                                      }
-                                    ],
-                                  ),
-                                ),
+                                                        : item.content ==
+                                                                    null &&
+                                                                activeSettings
+                                                            ? Palette
+                                                                .drawerColor
+                                                            : Colors.white),
+                                              ),
+                                            )
+                                          },
+                                          Spacer(),
+                                          if ((item.subItems != null &&
+                                                  item.subItems!.length > 0) &&
+                                              showDrawerText) ...{
+                                            Icon(
+                                              _selectedDrawerItem == item
+                                                  ? Icons.keyboard_arrow_up
+                                                  : Icons.keyboard_arrow_down,
+                                              color: item.content == null &&
+                                                      activeSettings
+                                                  ? Palette.drawerColor
+                                                  : Colors.white,
+                                            )
+                                          }
+                                        ],
+                                      ),
+                                    );
+                                  })),
                         ),
                         if ((item.subItems != null &&
                             item.subItems!.length > 0)) ...{
@@ -351,8 +358,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                     milliseconds: 100 *
                                         (item.subItems!.indexOf(sub_items) +
                                             1)),
-                                child: MaterialButton(
-                                  onPressed: sub_items.content != null
+                                child: GestureDetector(
+                                  onTap: sub_items.content != null
                                       ? () {
                                           scaffoldService.selectedContent =
                                               sub_items.content;
@@ -362,37 +369,43 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                           });
                                         }
                                       : null,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 35),
-                                  child: Row(
-                                    children: [
-                                      if (_selectedDrawerItem == item) ...{
-                                        SvgPicture.asset(
-                                            scaffoldService.selectedContent ==
-                                                    sub_items.content
-                                                ? sub_items.icon!
-                                                    .replaceAll(".svg", "2.svg")
-                                                : sub_items.icon!,
-                                            semanticsLabel: sub_items.title)
-                                      },
-                                      if (sub_items.title != null) ...{
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            sub_items.title!,
-                                            style: TextStyle(
-                                                color: scaffoldService
+                                  child: OnHover(builder: (onhover) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 35),
+                                      child: Row(
+                                        children: [
+                                          if (_selectedDrawerItem == item) ...{
+                                            SvgPicture.asset(
+                                                scaffoldService
                                                             .selectedContent ==
                                                         sub_items.content
-                                                    ? Palette.drawerColor
-                                                    : Colors.white),
-                                          ),
-                                        )
-                                      }
-                                    ],
-                                  ),
+                                                    ? sub_items.icon!
+                                                        .replaceAll(
+                                                            ".svg", "2.svg")
+                                                    : sub_items.icon!,
+                                                semanticsLabel: sub_items.title)
+                                          },
+                                          if (sub_items.title != null) ...{
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                sub_items.title!,
+                                                style: TextStyle(
+                                                    color: scaffoldService
+                                                                .selectedContent ==
+                                                            sub_items.content
+                                                        ? Palette.drawerColor
+                                                        : Colors.white),
+                                              ),
+                                            )
+                                          }
+                                        ],
+                                      ),
+                                    );
+                                  }),
                                 ))
                           }
                         }
@@ -794,10 +807,8 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                               }
                                             ],
                                           )
-                                        : MaterialButton(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 25),
-                                            onPressed: item.subItems != null &&
+                                        : GestureDetector(
+                                            onTap: item.subItems != null &&
                                                     item.subItems!.length > 0
                                                 ? () {
                                                     setState(() {
@@ -822,71 +833,84 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                         });
                                                       }
                                                     : null,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                SvgPicture.asset(
-                                                    scaffoldService
-                                                                .selectedContent ==
-                                                            item.content
-                                                        ? item.icon!.replaceAll(
-                                                            ".svg", "2.svg")
-                                                        : item.content ==
-                                                                    null &&
-                                                                activeSettings
+                                            child: OnHover(builder: (onHover) {
+                                              return Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 15),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                        scaffoldService
+                                                                    .selectedContent ==
+                                                                item.content
                                                             ? item.icon!
                                                                 .replaceAll(
                                                                     ".svg",
                                                                     "2.svg")
-                                                            : item.icon!,
-                                                    semanticsLabel: item.text),
-                                                if (showDrawerText) ...{
-                                                  const SizedBox(
-                                                    width: 10,
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      "${item.text}",
-                                                      style: TextStyle(
-                                                          color: scaffoldService
-                                                                      .selectedContent ==
-                                                                  item.content
-                                                              ? Palette
-                                                                  .drawerColor
-                                                              : item.content ==
-                                                                          null &&
-                                                                      activeSettings
+                                                            : item.content ==
+                                                                        null &&
+                                                                    activeSettings
+                                                                ? item.icon!
+                                                                    .replaceAll(
+                                                                        ".svg",
+                                                                        "2.svg")
+                                                                : item.icon!,
+                                                        semanticsLabel:
+                                                            item.text),
+                                                    if (showDrawerText) ...{
+                                                      const SizedBox(
+                                                        width: 10,
+                                                      ),
+                                                      Expanded(
+                                                        child: Text(
+                                                          "${item.text}",
+                                                          style: TextStyle(
+                                                              color: scaffoldService
+                                                                          .selectedContent ==
+                                                                      item
+                                                                          .content
                                                                   ? Palette
                                                                       .drawerColor
-                                                                  : Colors
-                                                                      .white),
-                                                    ),
-                                                  )
-                                                },
-                                                Spacer(),
-                                                if ((item.subItems != null &&
-                                                        item.subItems!.length >
-                                                            0) &&
-                                                    showDrawerText) ...{
-                                                  Icon(
-                                                    _selectedDrawerItem == item
-                                                        ? Icons
-                                                            .keyboard_arrow_up
-                                                        : Icons
-                                                            .keyboard_arrow_down,
-                                                    color: item.content ==
+                                                                  : item.content ==
+                                                                              null &&
+                                                                          activeSettings
+                                                                      ? Palette
+                                                                          .drawerColor
+                                                                      : Colors
+                                                                          .white),
+                                                        ),
+                                                      )
+                                                    },
+                                                    Spacer(),
+                                                    if ((item.subItems !=
                                                                 null &&
-                                                            activeSettings
-                                                        ? Palette.drawerColor
-                                                        : Colors.white,
-                                                  )
-                                                }
-                                              ],
-                                            ),
-                                          ),
+                                                            item.subItems!
+                                                                    .length >
+                                                                0) &&
+                                                        showDrawerText) ...{
+                                                      Icon(
+                                                        _selectedDrawerItem == item
+                                                            ? Icons
+                                                                .keyboard_arrow_up
+                                                            : Icons
+                                                                .keyboard_arrow_down,
+                                                        color: item.content ==
+                                                                    null &&
+                                                                activeSettings
+                                                            ? Palette
+                                                                .drawerColor
+                                                            : Colors.white,
+                                                      )
+                                                    }
+                                                  ],
+                                                ),
+                                              );
+                                            })),
                                   ),
                                   if ((item.subItems != null &&
                                       item.subItems!.length > 0)) ...{
@@ -906,57 +930,65 @@ class _ResponsiveScaffoldState extends State<ResponsiveScaffold> {
                                                   (item.subItems!
                                                           .indexOf(sub_items) +
                                                       1)),
-                                          child: MaterialButton(
-                                            onPressed: sub_items.content != null
-                                                ? () {
-                                                    scaffoldService
-                                                            .selectedContent =
-                                                        sub_items.content;
-                                                    setState(() {
-                                                      activeSettings = true;
-                                                    });
-                                                  }
-                                                : null,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 35),
-                                            child: Row(
-                                              children: [
-                                                if (_selectedDrawerItem ==
-                                                    item) ...{
-                                                  SvgPicture.asset(
+                                          child: GestureDetector(
+                                              onTap: sub_items.content != null
+                                                  ? () {
                                                       scaffoldService
-                                                                  .selectedContent ==
-                                                              sub_items.content
-                                                          ? sub_items.icon!
-                                                              .replaceAll(
-                                                                  ".svg",
-                                                                  "2.svg")
-                                                          : sub_items.icon!,
-                                                      semanticsLabel:
-                                                          'Acme Logo')
-                                                },
-                                                if (sub_items.title !=
-                                                    null) ...{
-                                                  const SizedBox(
-                                                    width: 10,
+                                                              .selectedContent =
+                                                          sub_items.content;
+                                                      setState(() {
+                                                        activeSettings = true;
+                                                      });
+                                                    }
+                                                  : null,
+                                              child:
+                                                  OnHover(builder: (onHover) {
+                                                return Container(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 35),
+                                                  child: Row(
+                                                    children: [
+                                                      if (_selectedDrawerItem ==
+                                                          item) ...{
+                                                        SvgPicture.asset(
+                                                            scaffoldService.selectedContent ==
+                                                                    sub_items
+                                                                        .content
+                                                                ? sub_items
+                                                                    .icon!
+                                                                    .replaceAll(
+                                                                        ".svg",
+                                                                        "2.svg")
+                                                                : sub_items
+                                                                    .icon!,
+                                                            semanticsLabel:
+                                                                'Acme Logo')
+                                                      },
+                                                      if (sub_items.title !=
+                                                          null) ...{
+                                                        const SizedBox(
+                                                          width: 10,
+                                                        ),
+                                                        Expanded(
+                                                          child: Text(
+                                                            sub_items.title!,
+                                                            style: TextStyle(
+                                                                color: scaffoldService
+                                                                            .selectedContent ==
+                                                                        sub_items
+                                                                            .content
+                                                                    ? Palette
+                                                                        .drawerColor
+                                                                    : Colors
+                                                                        .white),
+                                                          ),
+                                                        )
+                                                      }
+                                                    ],
                                                   ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      sub_items.title!,
-                                                      style: TextStyle(
-                                                          color: scaffoldService
-                                                                      .selectedContent ==
-                                                                  sub_items
-                                                                      .content
-                                                              ? Palette
-                                                                  .drawerColor
-                                                              : Colors.white),
-                                                    ),
-                                                  )
-                                                }
-                                              ],
-                                            ),
-                                          ))
+                                                );
+                                              })))
                                     }
                                   }
                                 }

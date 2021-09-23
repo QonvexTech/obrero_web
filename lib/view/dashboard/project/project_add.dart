@@ -332,7 +332,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                           padding: const EdgeInsets.symmetric(
                                               vertical: MySpacer.small),
                                           child: Text(
-                                            "La description",
+                                            "Description",
                                             style: boldText,
                                           ),
                                         ),
@@ -525,7 +525,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                                             .symmetric(
                                                         vertical: 10),
                                                     child: Text(
-                                                      "Cliente",
+                                                      "Client",
                                                       style: boldText,
                                                     ),
                                                   ),

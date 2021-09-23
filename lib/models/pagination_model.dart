@@ -13,7 +13,7 @@ class PaginationModel {
     this.totalEntries = 0,
     required this.lastPage,
     required this.fetch,
-    this.isNext = true,
+    this.isNext = false,
     this.isPrev = false,
   });
 }
