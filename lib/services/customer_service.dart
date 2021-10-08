@@ -9,7 +9,7 @@ import 'package:uitemplate/services/widgetService/table_pagination_service.dart'
 import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 
 class CustomerService extends ChangeNotifier {
-  Widget activePageScreen = CustomerList(); //change to list adfter
+  Widget activePageScreen = CustomerList();
   PaginationService paginationService = PaginationService();
   List<CustomerModel> _customers = [];
   List<CustomerModel> _tempCustomer = [];
@@ -40,21 +40,6 @@ class CustomerService extends ChangeNotifier {
     }
     notifyListeners();
   }
-
-  // void edit(EmployeesModel userToEdit) {
-  //   bodyToUpdate.addAll({"user_id": userToEdit.id.toString()});
-  //   print(bodyToUpdate);
-  //   employeeService.updateUser(body: bodyToUpdate).whenComplete(() {
-  //     setState(() {
-  //       widget.userToEdit!.fname = fnameController.text;
-  //       widget.userToEdit!.lname = lnameController.text;
-  //       widget.userToEdit!.email = emailController.text;
-  //       widget.userToEdit!.address = addressController.text;
-  //       widget.userToEdit!.contactNumber = contactNumberController.text;
-  //     });
-  //     Navigator.pop(context);
-  //   });
-  // }
 
   fromJsonListToCustomer(List customers) {
     List<CustomerModel> newCustomers = [];
@@ -89,8 +74,6 @@ class CustomerService extends ChangeNotifier {
         if (json.decode(response.body)["last_page"] != null) {
           _pagination.lastPage = json.decode(response.body)["last_page"];
         }
-
-        // _totalEntries = json.decode(response.body)["next_page_url"];
         print(json.decode(response.body));
         fromJsonListToCustomer(data);
       } else {

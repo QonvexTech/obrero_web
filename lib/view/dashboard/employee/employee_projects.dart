@@ -141,7 +141,7 @@ class _EmployeeProjectsDetailsState extends State<EmployeeProjectsDetails>
                                         children: [
                                           Icon(
                                             Icons.circle,
-                                            color: colorsSettings[project
+                                            color: colorsSettingsStatus[project
                                                     .userProject!.status!]
                                                 .color,
                                             size: 15,
