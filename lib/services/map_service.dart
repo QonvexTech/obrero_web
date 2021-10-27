@@ -299,8 +299,7 @@ class MapService extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    projectAddService.setaddressController = _address;
-    notifyListeners();
+
     notifyListeners();
     return "";
   }

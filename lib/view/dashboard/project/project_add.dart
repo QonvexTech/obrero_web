@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocode/geocode.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/geocoding.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -26,6 +25,7 @@ import 'package:uitemplate/services/project/project_add_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/services/settings/helper.dart';
 import 'package:uitemplate/widgets/map.dart';
+import 'package:google_geocoding/google_geocoding.dart' as googleGeo;
 
 class ProjectAddScreen extends StatefulWidget {
   final ProjectModel? projectToEdit;
@@ -44,7 +44,8 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       new GlobalKey<ScaffoldState>();
   final kGoogleApiKey = "AIzaSyBDdhTPKSLQlm6zmF_OEdFL2rUupPYF_JI";
   bool searchMap = false;
-  final GeoCode geoCode = GeoCode();
+
+  // final GeoCode geoCode = GeoCode();
   Future<void> _showPrediction(
     MapService mapService,
     ProjectAddService projectAddService,
@@ -87,18 +88,19 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     });
     if (p != null && p.description != null) {
       try {
-        setState(() async {
-          Coordinates coordinates =
-              await geoCode.forwardGeocoding(address: p.description!);
+        setState(() {
           projectAddService.setaddressController = "${p.description!}";
-
-          mapService.setCoordinates(
-              coord: LatLng(coordinates.latitude!, coordinates.longitude!),
-              context: context,
-              areaSize: areaSize,
-              isEdit: isEdit,
-              projectId: projectId,
-              isClick: false);
+          var googleGeocoding = googleGeo.GoogleGeocoding(kGoogleApiKey);
+          googleGeocoding.geocoding.get(p.description!, []).then((value) {
+            mapService.setCoordinates(
+                coord: LatLng(value!.results![0].geometry!.location!.lat!,
+                    value.results![0].geometry!.location!.lng!),
+                context: context,
+                areaSize: areaSize,
+                isEdit: isEdit,
+                projectId: projectId,
+                isClick: false);
+          });
 
           searchMap = false;
         });
