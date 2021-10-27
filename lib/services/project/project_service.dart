@@ -206,7 +206,6 @@ class ProjectProvider extends ChangeNotifier {
       DatePickerController2? controller}) async {
     if (dateSelected == null) {
       dateSelected = _selectedDate;
-      // controller!.animateToDate(selectedDate);
     } else {
       _selectedDate = dateSelected;
     }

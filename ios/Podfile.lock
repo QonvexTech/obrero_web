@@ -312,7 +312,7 @@ PODS:
     - Toast
   - google_maps_flutter (0.0.1):
     - Flutter
-    - GoogleMaps (< 3.10)
+    - GoogleMaps
   - GoogleDataTransport (9.1.0):
     - GoogleUtilities/Environment (~> 7.2)
     - nanopb (~> 2.30908.0)
@@ -461,7 +461,7 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 1a33b4af3c8042ed6ddacb6c031894af2064bfab
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
-  google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
+  google_maps_flutter: abdb8dee6c52d4be36ad131ee6ebfacd14417c5a
   GoogleDataTransport: 85fd18ff3019bb85d3f2c551d04c481dedf71fc9
   GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
   GoogleUtilities: 8de2a97a17e15b6b98e38e8770e2d129a57c0040

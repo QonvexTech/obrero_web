@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_add_service.dart';
-import 'package:uitemplate/view/dashboard/project/project_add.dart';
 
 class MapScreen extends StatefulWidget {
   final bool? setCoord;
@@ -45,7 +44,7 @@ class _MapScreenState extends State<MapScreen> {
                   scrollGesturesEnabled: mapService.gesture,
                   onMapCreated: (controller) {
                     setState(() {
-                      mapService.mapController = controller;
+                      mapService.setMapController = controller;
                       widget.onCreate!();
                     });
                   },

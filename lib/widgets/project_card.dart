@@ -29,7 +29,9 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
     MapService mapService = Provider.of<MapService>(context);
     return GestureDetector(
         onTap: () {
-          dashboardService.focusMap(
+          print(widget.project!.coordinates!);
+          print(widget.project!.id);
+          mapService.focusMap(
               coordinates: widget.project!.coordinates!,
               markerId: widget.project!.id.toString());
           dashboardService.selectedPrject = widget.project!.id;
@@ -95,7 +97,7 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
                             IconButton(
                               onPressed: () {
                                 mapService.gesture = false;
-                                dashboardService.focusMap(
+                                mapService.focusMap(
                                     coordinates: widget.project!.coordinates!,
                                     markerId: widget.project!.id.toString());
                                 dashboardService.selectedPrject =

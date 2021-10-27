@@ -57,7 +57,7 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     });
     mapService.removeDefaultMarker();
     if (isEdit) {
-      mapService.mapClear(projectId);
+      mapService.mapClearWithId(projectId);
     }
     Prediction? p = await PlacesAutocomplete.show(
         proxyBaseUrl:
@@ -87,21 +87,18 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
     });
     if (p != null && p.description != null) {
       try {
-        setState(() async {
-          Coordinates coordinates =
-              await geoCode.forwardGeocoding(address: p.description!);
-          projectAddService.setaddressController = "${p.description!}";
-
+        projectAddService.setaddressController = "${p.description!}";
+        geoCode.forwardGeocoding(address: p.description!).then((value) {
           mapService.setCoordinates(
-              coord: LatLng(coordinates.latitude!, coordinates.longitude!),
+              coord: LatLng(value.latitude!, value.longitude!),
               context: context,
               areaSize: areaSize,
               isEdit: isEdit,
               projectId: projectId,
               isClick: false);
-
-          searchMap = false;
         });
+
+        searchMap = false;
       } catch (e) {
         print(e);
         Fluttertoast.showToast(
@@ -151,11 +148,11 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
       if (isEdit) {
         projectId = widget.projectToEdit!.id.toString();
         Provider.of<MapService>(context, listen: false)
-            .mapController!
+            .mapController
             .moveCamera(
                 CameraUpdate.newLatLng(widget.projectToEdit!.coordinates!));
         Provider.of<MapService>(context, listen: false)
-            .mapController!
+            .mapController
             .showMarkerInfoWindow(MarkerId("$projectId"));
       }
     });

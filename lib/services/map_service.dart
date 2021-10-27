@@ -5,7 +5,6 @@ import 'package:location/location.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/models/project_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:uitemplate/services/project/project_add_service.dart';
 
 class MapService extends ChangeNotifier {
   final containerKey = GlobalKey();
@@ -16,20 +15,23 @@ class MapService extends ChangeNotifier {
   String addressGeo = "";
   PermissionStatus? _permissionGranted;
   LocationData? _locationData;
-  GoogleMapController? mapController;
+  GoogleMapController? _mapController;
   bool _gesture = true;
 
   String _address = "";
   TextEditingController location = TextEditingController();
   //
 
+  set setMapController(value) => _mapController = value;
+  GoogleMapController get mapController => _mapController!;
+
   // TextEditingController get address => _address;
 
   void focusMap({required LatLng coordinates, required markerId}) {
-    mapController!.showMarkerInfoWindow(MarkerId(markerId));
-    mapController!
-        .moveCamera(CameraUpdate.newLatLng(coordinates))
-        .whenComplete(() {});
+    print("focusing");
+    mapController.showMarkerInfoWindow(MarkerId(markerId));
+    // mapController.moveCamera(CameraUpdate.newLatLng(coordinates));
+    print('error');
 
     // notifyListeners();
   }
@@ -64,7 +66,7 @@ class MapService extends ChangeNotifier {
     notifyListeners();
   }
 
-  mapClear(String projectId) {
+  mapClearWithId(String projectId) {
     _circles.removeWhere((element) => element.circleId.value == projectId);
     _markers.removeWhere((element) => element.markerId.value == projectId);
     notifyListeners();
@@ -105,8 +107,6 @@ class MapService extends ChangeNotifier {
   }
 
   Future mapInit(List<ProjectModel> projects, context) async {
-    _markers.clear();
-    _circles.clear();
     if (_markers.length > 0) {
       coordinates = _markers.first.position;
       location.text =
@@ -118,14 +118,19 @@ class MapService extends ChangeNotifier {
     }
 
     if (projects.length > 0) {
+      _markers.clear();
+      _circles.clear();
       try {
         for (ProjectModel project in projects) {
+          print("prject id: ${project.id}");
           _markers.add(Marker(
               onTap: () {
                 try {
-                  mapController!
+                  print("showinfomap");
+                  mapController
                       .showMarkerInfoWindow(MarkerId(project.id.toString()));
                 } catch (e) {
+                  print("showinfo error");
                   print(e);
                 }
               },
@@ -135,6 +140,8 @@ class MapService extends ChangeNotifier {
                   colorsSettingsStatus[project.status!].circleAsset!),
               markerId: MarkerId(project.id.toString()),
               position: project.coordinates!));
+          print("MARKERS");
+          print(_markers.length);
 
           _circles.add(Circle(
               fillColor: Color.fromRGBO(60, 120, 225, 0.1),
@@ -246,7 +253,7 @@ class MapService extends ChangeNotifier {
     }
 
     if (!isClick!) {
-      mapController!.moveCamera(CameraUpdate.newLatLng(coordinates));
+      mapController.moveCamera(CameraUpdate.newLatLng(coordinates));
     }
 
     notifyListeners();
@@ -292,6 +299,7 @@ class MapService extends ChangeNotifier {
         });
 
         _address = concatenate.toString();
+        print(_address);
         notifyListeners();
       } else {
         print(response.body);
@@ -299,8 +307,6 @@ class MapService extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
-    projectAddService.setaddressController = _address;
-    notifyListeners();
     notifyListeners();
     return "";
   }

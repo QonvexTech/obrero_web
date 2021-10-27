@@ -53,14 +53,14 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
               MapService mapService =
                   Provider.of<MapService>(context, listen: false);
 
-              mapService.mapController!.showMarkerInfoWindow(MarkerId(
+              mapService.mapController.showMarkerInfoWindow(MarkerId(
                   Provider.of<EmployeeSevice>(context, listen: false)
                       .employeeProjects![0]
                       .userProject!
                       .id!
                       .toString()));
 
-              mapService.mapController!.moveCamera(CameraUpdate.newLatLng(
+              mapService.mapController.moveCamera(CameraUpdate.newLatLng(
                   Provider.of<EmployeeSevice>(context, listen: false)
                       .employeeProjects![0]
                       .userProject!
@@ -89,7 +89,7 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
               onTap: () {
                 try {
                   Provider.of<MapService>(context, listen: false)
-                      .mapController!
+                      .mapController
                       .showMarkerInfoWindow(
                           MarkerId(project.userProject!.id.toString()));
                 } catch (e) {
@@ -296,11 +296,11 @@ class _EmployeeDetailsState extends State<EmployeeDetails> with SettingsHelper {
                                             GestureDetector(
                                               onTap: () {
                                                 print("Click");
-                                                mapService.mapController!
+                                                mapService.mapController
                                                     .showMarkerInfoWindow(
                                                         MarkerId(project.id
                                                             .toString()));
-                                                mapService.mapController!
+                                                mapService.mapController
                                                     .moveCamera(
                                                         CameraUpdate.newLatLng(
                                                             project.userProject!

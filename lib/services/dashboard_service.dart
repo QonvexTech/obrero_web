@@ -7,17 +7,9 @@ import 'package:uitemplate/view/dashboard/customer/customer_screen.dart';
 
 class DashboardService extends ChangeNotifier {
   Widget clientPage = CustomerScreen();
-  GoogleMapController? mapController;
   DateTime? tempDate;
   int _selectedProject = 0;
   bool? _activeAddProject = false;
-
-  void focusMap({required LatLng coordinates, required markerId}) {
-    mapController!.showMarkerInfoWindow(MarkerId(markerId));
-    mapController!.moveCamera(CameraUpdate.newLatLng(coordinates));
-
-    // notifyListeners();
-  }
 
   get activeAddProject => _activeAddProject;
   set activeAddProject(value) {
@@ -26,6 +18,7 @@ class DashboardService extends ChangeNotifier {
   }
 
   initGetId(List<ProjectModel> projects) async {
+    print("permission");
     if (projects.length > 0) {
       _selectedProject = projects[0].id!;
       initialPositon = projects[0].coordinates!;

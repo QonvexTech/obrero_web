@@ -208,10 +208,10 @@ class _CustomerDetailsState extends State<CustomerDetails> with SettingsHelper {
                                       GestureDetector(
                                         onTap: () {
                                           print("Click");
-                                          mapService.mapController!
+                                          mapService.mapController
                                               .showMarkerInfoWindow(MarkerId(
                                                   project.id.toString()));
-                                          mapService.mapController!.moveCamera(
+                                          mapService.mapController.moveCamera(
                                               CameraUpdate.newLatLng(
                                                   project.coordinates!));
 

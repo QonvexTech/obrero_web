@@ -4,7 +4,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uitemplate/config/global.dart';
 import 'package:uitemplate/config/pallete.dart';
-import 'package:uitemplate/services/dashboard_service.dart';
 import 'package:uitemplate/services/map_service.dart';
 import 'package:uitemplate/services/project/project_service.dart';
 import 'package:uitemplate/view/dashboard/project/project_add.dart';
@@ -22,6 +21,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   @override
   void initState() {
+    print("DASHBOARD");
     Provider.of<ProjectProvider>(context, listen: false)
         .fetchProjectsBaseOnDates(context: context)
         .whenComplete(() {
@@ -44,9 +44,6 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
   @override
   Widget build(BuildContext context) {
     ProjectProvider projectProvider = Provider.of<ProjectProvider>(
-      context,
-    );
-    DashboardService dashboardService = Provider.of<DashboardService>(
       context,
     );
     MapService mapService = Provider.of<MapService>(
@@ -206,14 +203,15 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             }
                           },
                           child: GoogleMap(
-                            scrollGesturesEnabled: mapService.gesture,
+                            // scrollGesturesEnabled: mapService.gesture,
                             onMapCreated: (controller) {
                               setState(() {
-                                dashboardService.mapController = controller;
+                                mapService.setMapController = controller;
+
                                 if (projectProvider.projectsDateBase != null) {
                                   if (projectProvider.projectsDateBase.length >
                                       0) {
-                                    dashboardService.mapController!
+                                    mapService.mapController
                                         .showMarkerInfoWindow(MarkerId(
                                             projectProvider
                                                 .projectsDateBase[0].id
@@ -233,6 +231,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                             myLocationEnabled: true,
                             markers: mapService.markers,
                             circles: mapService.circles,
+                            onCameraMoveStarted: () {},
                           ),
                         ),
                       ],
