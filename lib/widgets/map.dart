@@ -42,7 +42,7 @@ class _MapScreenState extends State<MapScreen> {
                   print(value);
                 },
                 child: GoogleMap(
-                  scrollGesturesEnabled: mapService.gesture,
+                  // scrollGesturesEnabled: mapService.gesture,
                   onMapCreated: (controller) {
                     setState(() {
                       mapService.mapController = controller;

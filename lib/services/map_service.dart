@@ -245,9 +245,7 @@ class MapService extends ChangeNotifier {
       notifyListeners();
     }
 
-    if (!isClick!) {
-      mapController!.moveCamera(CameraUpdate.newLatLng(coordinates));
-    }
+    mapController!.moveCamera(CameraUpdate.newLatLng(coordinates));
 
     notifyListeners();
   }

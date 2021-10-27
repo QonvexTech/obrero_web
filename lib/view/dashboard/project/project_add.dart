@@ -281,13 +281,12 @@ class _ProjectAddScreenState extends State<ProjectAddScreen>
                                               0.2,
                                           width: double.infinity,
                                           child: MapScreen(
-                                            setCoord: true,
-                                            onCreate: () {},
-                                            areaSize:
-                                                projectAddService.areaSize,
-                                            isEdit: isEdit,
-                                            projectId: projectId,
-                                          ))
+                                        setCoord: true,
+                                        onCreate: () {},
+                                        areaSize: projectAddService.areaSize,
+                                        isEdit: isEdit,
+                                        projectId: projectId,
+                                      ),)
                                       : SizedBox(),
                                   Expanded(
                                     child: ListView(
