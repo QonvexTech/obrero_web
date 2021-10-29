@@ -289,6 +289,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  geocoding:
+    dependency: "direct main"
+    description:
+      name: geocoding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
+  geocoding_platform_interface:
+    dependency: transitive
+    description:
+      name: geocoding_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   google_api_headers:
     dependency: "direct main"
     description:
@@ -296,13 +310,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  google_geocoding:
+    dependency: "direct main"
+    description:
+      name: google_geocoding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   google_maps:
     dependency: transitive
     description:
       name: google_maps
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.3.0"
   google_maps_flutter:
     dependency: "direct main"
     description:
@@ -372,7 +393,7 @@ packages:
       name: js_wrapping
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.0"
+    version: "0.7.3"
   json_annotation:
     dependency: transitive
     description:
