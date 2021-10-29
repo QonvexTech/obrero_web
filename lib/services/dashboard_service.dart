@@ -11,12 +11,21 @@ class DashboardService extends ChangeNotifier {
   DateTime? tempDate;
   int _selectedProject = 0;
   bool? _activeAddProject = false;
+  bool _showWindow = false;
+
+  get showWindow => _showWindow;
+  set showWindow(value) {
+    _showWindow = value;
+    notifyListeners();
+  }
 
   void focusMap({required LatLng coordinates, required markerId}) {
-    mapController!.showMarkerInfoWindow(MarkerId(markerId));
+    // mapController!.showMarkerInfoWindow(MarkerId(markerId));
+    showWindow = false;
+    Future.delayed(Duration(milliseconds: 150), () => showWindow = true);
     mapController!.moveCamera(CameraUpdate.newLatLng(coordinates));
 
-    // notifyListeners();
+    notifyListeners();
   }
 
   get activeAddProject => _activeAddProject;
@@ -47,7 +56,7 @@ class DashboardService extends ChangeNotifier {
     return LatLng(data.latitude!, data.longitude!);
   }
 
-  get selectedProject => _selectedProject;
+  int get selectedProject => _selectedProject;
   set selectedPrject(value) {
     _selectedProject = value;
     notifyListeners();

@@ -11,6 +11,7 @@ import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/mypicker.dart';
 import 'package:uitemplate/widgets/project_card.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
+import 'package:universal_html/html.dart';
 
 class DashBoardScreen extends StatefulWidget {
   @override
@@ -19,6 +20,7 @@ class DashBoardScreen extends StatefulWidget {
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
   bool listCardloader = true;
+  int activeProjectInMap = 0;
 
   @override
   void initState() {
@@ -205,34 +207,68 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                               mapService.gesture = true;
                             }
                           },
-                          child: GoogleMap(
-                            scrollGesturesEnabled: mapService.gesture,
-                            onMapCreated: (controller) {
-                              setState(() {
-                                dashboardService.mapController = controller;
-                                if (projectProvider.projectsDateBase != null) {
-                                  if (projectProvider.projectsDateBase.length >
-                                      0) {
-                                    dashboardService.mapController!
-                                        .showMarkerInfoWindow(MarkerId(
-                                            projectProvider
-                                                .projectsDateBase[0].id
-                                                .toString()));
-                                  }
-                                }
-                              });
-                            },
-                            myLocationButtonEnabled: true,
-                            rotateGesturesEnabled: true,
-                            initialCameraPosition: CameraPosition(
-                              target: initialPositon,
-                              zoom: mapService.zoom,
-                            ),
-                            buildingsEnabled: true,
-                            mapType: MapType.none,
-                            myLocationEnabled: true,
-                            markers: mapService.markers,
-                            circles: mapService.circles,
+                          child: Stack(
+                            children: [
+                              GoogleMap(
+                                scrollGesturesEnabled: mapService.gesture,
+                                onMapCreated: (controller) {
+                                  setState(() {
+                                    dashboardService.mapController = controller;
+                                    // if (projectProvider.projectsDateBase !=
+                                    //     null) {
+                                    //   if (projectProvider
+                                    //           .projectsDateBase.length >
+                                    //       0) {
+                                    //     dashboardService.mapController!
+                                    //         .showMarkerInfoWindow(MarkerId(
+                                    //             projectProvider
+                                    //                 .projectsDateBase[0].id
+                                    //                 .toString()));
+                                    //   }
+                                    // }
+                                  });
+                                },
+                                myLocationButtonEnabled: true,
+                                rotateGesturesEnabled: true,
+                                initialCameraPosition: CameraPosition(
+                                  target: initialPositon,
+                                  zoom: mapService.zoom,
+                                ),
+                                buildingsEnabled: true,
+                                mapType: MapType.none,
+                                myLocationEnabled: true,
+                                markers: mapService.markers,
+                                circles: mapService.circles,
+                              ),
+                              AnimatedPositioned(
+                                bottom: dashboardService.showWindow ? 0 : -250,
+                                right: 50,
+                                duration: Duration(milliseconds: 250),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10)),
+                                  padding: EdgeInsets.all(20),
+                                  width: 300,
+                                  height: 125,
+                                  child: Card(
+                                    child: Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: Row(
+                                        children: [
+                                          dashboardService.showWindow
+                                              ? Text(projectProvider
+                                                  .projectsDateBase[
+                                                      dashboardService
+                                                          .selectedProject]
+                                                  .name)
+                                              : Container()
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
