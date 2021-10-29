@@ -21,6 +21,7 @@ class ProjectProvider extends ChangeNotifier {
   DatePickerController2 dateController = DatePickerController2();
   DateTime _selectedDate = DateTime.now();
   String hours = "0.00";
+  int _activeIndexCard = 0;
   List<String> listHours = [];
 
   late PaginationModel _pagination =
@@ -30,6 +31,9 @@ class ProjectProvider extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
 
   get selectedDate => _selectedDate;
+  get activeIndexCard => _activeIndexCard;
+
+  set activeIndexCard(value) => _activeIndexCard = value;
 
   Future setSelectedDate(value) async {
     _selectedDate = value;
