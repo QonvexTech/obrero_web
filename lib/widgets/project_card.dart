@@ -33,6 +33,7 @@ class _ProjectCardState extends State<ProjectCard> with SettingsHelper {
               coordinates: widget.project!.coordinates!,
               markerId: widget.project!.id.toString());
           dashboardService.selectedPrject = widget.project!.id;
+          dashboardService.projectSelected = widget.project;
         },
         child: AnimatedContainer(
           margin: widget.lastIndex!

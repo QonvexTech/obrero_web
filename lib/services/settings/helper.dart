@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-
 import '../../config/global.dart';
 
 class SettingsHelper {
