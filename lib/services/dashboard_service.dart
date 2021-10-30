@@ -12,6 +12,13 @@ class DashboardService extends ChangeNotifier {
   int _selectedProject = 0;
   bool? _activeAddProject = false;
   bool _showWindow = false;
+  ProjectModel? _projectSelected;
+
+  ProjectModel? get projectSelected => _projectSelected;
+  set projectSelected(value) {
+    _projectSelected = value;
+    notifyListeners();
+  }
 
   get showWindow => _showWindow;
   set showWindow(value) {

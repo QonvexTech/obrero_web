@@ -11,7 +11,7 @@ import 'package:uitemplate/view/dashboard/project/project_add.dart';
 import 'package:uitemplate/widgets/mypicker.dart';
 import 'package:uitemplate/widgets/project_card.dart';
 import 'package:uitemplate/widgets/empty_container.dart';
-import 'package:universal_html/html.dart';
+import 'package:uitemplate/services/settings/helper.dart';
 
 class DashBoardScreen extends StatefulWidget {
   @override
@@ -240,34 +240,50 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
                                 markers: mapService.markers,
                                 circles: mapService.circles,
                               ),
-                              AnimatedPositioned(
-                                bottom: dashboardService.showWindow ? 0 : -250,
-                                right: 50,
-                                duration: Duration(milliseconds: 250),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  padding: EdgeInsets.all(20),
-                                  width: 300,
-                                  height: 125,
-                                  child: Card(
-                                    child: Container(
-                                      padding: EdgeInsets.all(10),
-                                      child: Row(
-                                        children: [
-                                          dashboardService.showWindow
-                                              ? Text(projectProvider
-                                                  .projectsDateBase[
-                                                      dashboardService
-                                                          .selectedProject]
-                                                  .name)
-                                              : Container()
-                                        ],
+                              dashboardService.projectSelected == null
+                                  ? Container()
+                                  : AnimatedPositioned(
+                                      bottom: dashboardService.showWindow
+                                          ? 0
+                                          : -250,
+                                      right: 50,
+                                      duration: Duration(milliseconds: 250),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        padding: EdgeInsets.all(20),
+                                        width: 300,
+                                        height: 125,
+                                        child: Card(
+                                          child: Container(
+                                              padding: EdgeInsets.all(10),
+                                              child: Row(
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        dashboardService
+                                                            .projectSelected!
+                                                            .name!,
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Text(dashboardService
+                                                          .projectSelected!
+                                                          .address!),
+                                                    ],
+                                                  )
+                                                ],
+                                              )),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                         ),
