@@ -13,9 +13,7 @@ import 'package:uitemplate/view/dashboard/customer/customer_list.dart';
 
 class CustomerService extends ChangeNotifier {
   Widget activePageScreen = CustomerList();
-
   bool _loader = false;
-
   // BuildContext? fromContext;
   PaginationService paginationService = PaginationService();
   TextEditingController searchController = TextEditingController();

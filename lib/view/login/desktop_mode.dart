@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uitemplate/view/login/login_form.dart';
+import 'package:uitemplate/view/login/new_login.dart';
 
 class DesktopMode extends StatefulWidget {
   @override
@@ -18,34 +19,6 @@ class _DesktopModeState extends State<DesktopMode> {
             child: Container(
                 height: heightSize * 0.65,
                 width: widthSize * 0.65,
-                child: Card(
-                    elevation: 5,
-                    child: Row(children: [
-                      Expanded(
-                          flex: 1,
-                          child: Container(
-                              child: Align(
-                            alignment: Alignment.center,
-                            child: Image.network(
-                                'https://raw.githubusercontent.com/RonaldoMurakamiK/flutter-web-login-ui/master/assets/images/login-image.png',
-                                height: heightSize * 0.5,
-                                width: widthSize * 0.5,
-                                semanticLabel: 'test'),
-                          ))),
-                      Expanded(
-                          flex: 1,
-                          child: Container(
-                              padding: EdgeInsets.only(top: 20),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Image.asset('assets/icons/logo.png',
-                                        height: heightSize * 0.2,
-                                        width: widthSize * 0.15),
-                                    SizedBox(height: 20),
-                                    LoginForm(0, 0.009, 16, 0.04, 0.01, 0.04,
-                                        75, 0.01, 0.007, 0.01, 0.006)
-                                  ])))
-                    ])))));
+                child: Card(elevation: 5, child: SequenceAnimationView()))));
   }
 }
